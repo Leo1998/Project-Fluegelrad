@@ -11,7 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectorTask extends AsyncTask<Void, Void, Connection> {
+public class ConnectorTask extends AsyncTask<DatabaseAddress, Void, Connection> {
 
     private Exception exception;
 
@@ -22,7 +22,9 @@ public class ConnectorTask extends AsyncTask<Void, Void, Connection> {
     }
 
     @Override
-    protected Connection doInBackground(Void... params) {
+    protected Connection doInBackground(DatabaseAddress... params) {
+        DatabaseAddress address = params[0];
+
         try {
             checkConnectivity();
         } catch(Exception e) {
@@ -38,7 +40,7 @@ public class ConnectorTask extends AsyncTask<Void, Void, Connection> {
         }
 
         try {
-            Connection c = DriverManager.getConnection("jdbc:mysql://pipigift.ddns.net:3306/fluegelrad", "testuser", "123456");
+            Connection c = DriverManager.getConnection(address.getUrl(), "testuser", "123456");
 
             return c;
         } catch(SQLException e) {

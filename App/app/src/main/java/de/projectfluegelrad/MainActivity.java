@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import de.projectfluegelrad.database.ConnectorTask;
+import de.projectfluegelrad.database.DatabaseAddress;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
              connector = new ConnectorTask(findViewById(R.id.nav_view));
         }
 
-        connector.execute();
+        connector.execute(new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"));
     }
 
     @Override
