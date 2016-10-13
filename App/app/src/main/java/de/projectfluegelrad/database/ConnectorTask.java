@@ -11,7 +11,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectorTask extends ConnectorTaskParent {
+public class ConnectorTask extends  AsyncTask<DatabaseAddress, Void, Connection> {
+
+    private Exception exception;
 
     private View view;
 
@@ -21,7 +23,42 @@ public class ConnectorTask extends ConnectorTaskParent {
 
     @Override
     protected Connection doInBackground(DatabaseAddress... params) {
-        super.doInBackground(DatabaseAddress... params)
+        DatabaseAddress address = params[0];
+
+        try {
+            checkConnectivity();
+        } catch(Exception e) {
+            exception = new DatabaseException("No Network!", e);
+            return null;
+        }
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            exception = new DatabaseException("Driver missing!", e);
+            return null;
+        }
+
+        try {
+            Connection c = DriverManager.getConnection(address.getUrl(), "testuser", "123456");
+
+            return c;
+        } catch(SQLException e) {
+            exception = new DatabaseException("Failed to connect to Database!", e);
+            return null;
+        }
+    }
+
+
+    private void checkConnectivity() throws IllegalStateException {
+        ConnectivityManager cm = (ConnectivityManager) view.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if (!isConnected) {
+            throw new IllegalStateException("No Network!");
+        }
     }
 
     @Override
@@ -36,5 +73,9 @@ public class ConnectorTask extends ConnectorTaskParent {
                 showMessage("Unknown Error!");
             }
         }
+    }
+
+    public Exception getException() {
+        return exception;
     }
 }
