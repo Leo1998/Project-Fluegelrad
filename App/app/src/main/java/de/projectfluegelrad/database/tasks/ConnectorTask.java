@@ -1,14 +1,16 @@
-package de.projectfluegelrad.database;
+package de.projectfluegelrad.database.tasks;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import de.projectfluegelrad.database.DatabaseAddress;
+import de.projectfluegelrad.database.DatabaseException;
 
 public class ConnectorTask extends DatabaseTask<DatabaseAddress, Connection> {
 
@@ -18,6 +20,9 @@ public class ConnectorTask extends DatabaseTask<DatabaseAddress, Connection> {
 
     @Override
     protected Connection run(DatabaseAddress[] params) {
+        if (params == null || params.length != 1) {
+            throwException(new IllegalArgumentException());
+        }
         DatabaseAddress address = params[0];
 
         try {
@@ -41,8 +46,6 @@ public class ConnectorTask extends DatabaseTask<DatabaseAddress, Connection> {
                 throwException(new DatabaseException("Failed to connect to Database!"));
                 return null;
             }
-
-            showMessage("Connected!");
 
             return c;
         } catch(SQLException e) {

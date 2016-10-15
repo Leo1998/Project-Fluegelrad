@@ -1,4 +1,4 @@
-package de.projectfluegelrad.database;
+package de.projectfluegelrad.database.tasks;
 
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -6,6 +6,14 @@ import android.view.View;
 
 
 public abstract class DatabaseTask<Params, Result> {
+
+    public interface Listener<Params, Result> {
+
+        public void onPreRun(Params[] params);
+
+        public void onPostRun(Result result);
+
+    }
 
     /**
      * just a wrapper to execute the <code>run</code> method asynchronously
@@ -16,12 +24,22 @@ public abstract class DatabaseTask<Params, Result> {
         this.asyncTask = new AsyncTask<Params, Void, Result>() {
             @Override
             protected Result doInBackground(Params[] params) {
+                if (listener != null)
+                    listener.onPreRun(params);
+
                 return DatabaseTask.this.run(params);
+            }
+
+            @Override
+            protected void onPostExecute(Result result) {
+                if (listener != null)
+                    listener.onPostRun(result);
             }
         };
     }
 
     private Exception exception;
+    private Listener listener;
     protected View view;
 
     public DatabaseTask(View view) {
@@ -47,11 +65,6 @@ public abstract class DatabaseTask<Params, Result> {
 
     protected abstract Result run(Params[] params);
 
-    protected void showMessage(String msg) {
-        Snackbar snackbar = Snackbar.make(view, msg, 3000);
-        snackbar.show();
-    }
-
     protected void throwException(Exception exception) {
         this.exception = exception;
     }
@@ -60,4 +73,11 @@ public abstract class DatabaseTask<Params, Result> {
         return exception;
     }
 
+    public Listener getListener() {
+        return listener;
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 }
