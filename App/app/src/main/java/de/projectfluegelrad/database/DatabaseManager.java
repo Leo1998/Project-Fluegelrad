@@ -16,10 +16,11 @@ public class DatabaseManager {
         this.attachedView = attachedView;
 
         this.queryExecuter = new QueryExecuter(attachedView, new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"), "testuser", "123456");
-        this.queryExecuter.waitUntilConnected();
 
-        ResultSet result = this.queryExecuter.executeQuery(new BasicQuery("SELECT * FROM events;"));
-        dumpResultSet(result);
+        if (this.queryExecuter.connectAndWait()) {
+            ResultSet result = this.queryExecuter.executeQuery(new BasicQuery("SELECT * FROM events;"));
+            dumpResultSet(result);
+        }
     }
 
     private void dumpResultSet(ResultSet resultSet) {
@@ -35,7 +36,7 @@ public class DatabaseManager {
                 }
                 System.out.println("");
             }
-        }catch(SQLException e) {
+        } catch(SQLException e) {
 
         }
     }

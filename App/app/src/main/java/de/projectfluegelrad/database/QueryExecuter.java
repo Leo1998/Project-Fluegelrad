@@ -34,8 +34,6 @@ public final class QueryExecuter implements Runnable {
         this.address = address;
         this.password = password;
         this.username = username;
-
-        new Thread(this, "QueryExecutor").start();
     }
 
     @Override
@@ -44,6 +42,10 @@ public final class QueryExecuter implements Runnable {
             connect();
         } catch(DatabaseException e) {
             showMessage("Failed to Connect!");
+            synchronized (connectionLock) {
+                connectionLock.notify();
+            }
+            return;
         }
 
         Statement statement = null;
@@ -107,14 +109,19 @@ public final class QueryExecuter implements Runnable {
         }
     }
 
-    public void waitUntilConnected() {
+    public boolean connectAndWait() {
+        new Thread(this, "QueryExecutor").start();
+
         synchronized (connectionLock) {
             try {
                 connectionLock.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                return false;
             }
         }
+
+        return connection != null;
     }
 
     public synchronized ResultSet executeQuery(Query query) {
