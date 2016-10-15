@@ -12,8 +12,8 @@ public class DatabaseAddress {
         this.databaseName = databaseName;
     }
 
-    public String getUrl() {
-        return "jdbc:mysql://" + host + ":" + port + "/" + databaseName;
+    public String getUrl(String username, String password) {
+        return "jdbc:mysql://" + host + ":" + port + "/" + databaseName + "?user=" + username + "&password=" + password + "&autoReconnect=true&useUnicode=yes";
     }
 
     public String getHost() {

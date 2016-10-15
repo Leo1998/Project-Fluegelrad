@@ -10,20 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import de.projectfluegelrad.database.ConnectorTask;
-import de.projectfluegelrad.database.DatabaseAddress;
+import de.projectfluegelrad.database.DatabaseManager;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ConnectorTask connector;
-
-    private void connect() {
-        if (connector == null) {
-             connector = new ConnectorTask(findViewById(R.id.nav_view));
-        }
-
-        connector.execute(new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"));
-    }
+    private DatabaseManager databaseManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        connect();
+        this.databaseManager = new DatabaseManager(findViewById(R.id.nav_view));
     }
 
     @Override
