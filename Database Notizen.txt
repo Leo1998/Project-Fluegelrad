@@ -2,8 +2,8 @@ Ort: String
 Alter: min:int und max:int
 Kategorie: String
 Preis: int (in cent)
-Maximale Teilnehmer: int
-Angemeldete Teilnehmer: int
+			Maximale Teilnehmer: int
+			Angemeldete Teilnehmer: int
 Verantstalter: String
 Datum: Date-Klasse von mysql
 Beschreibung: String
