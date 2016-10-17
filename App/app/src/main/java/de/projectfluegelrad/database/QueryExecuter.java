@@ -21,8 +21,8 @@ public final class QueryExecuter implements Runnable {
     private final String password;
 
     private Connection connection;
+    private ConnectionStatus connectionStatus = ConnectionStatus.NOT_CONNECTED;
 
-    private Object connectionLock = new Object();
     private Object executorLock = new Object();
     private Object executionLock = new Object();
 
@@ -39,20 +39,17 @@ public final class QueryExecuter implements Runnable {
     @Override
     public void run() {
         try {
+            connectionStatus = ConnectionStatus.PENDING;
+
             connect();
+
+            connectionStatus = ConnectionStatus.CONNECTED;
         } catch(DatabaseException e) {
             showMessage("Failed to Connect!");
-            synchronized (connectionLock) {
-                connectionLock.notify();
-            }
-            return;
+            connectionStatus = ConnectionStatus.ERROR;
         }
 
         Statement statement = null;
-
-        synchronized (connectionLock) {
-            connectionLock.notify();
-        }
 
         while(true) {
             synchronized (executorLock) {
@@ -112,16 +109,13 @@ public final class QueryExecuter implements Runnable {
     public boolean connectAndWait() {
         new Thread(this, "QueryExecutor").start();
 
-        synchronized (connectionLock) {
+        while(connectionStatus == ConnectionStatus.PENDING || connectionStatus == ConnectionStatus.NOT_CONNECTED) {
             try {
-                connectionLock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return false;
-            }
+                Thread.sleep(10);
+            } catch(InterruptedException e) {}
         }
 
-        return connection != null;
+        return connectionStatus == ConnectionStatus.CONNECTED;
     }
 
     public synchronized ResultSet executeQuery(Query query) {
