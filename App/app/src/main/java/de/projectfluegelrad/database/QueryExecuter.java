@@ -1,10 +1,7 @@
 package de.projectfluegelrad.database;
 
-import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.design.widget.Snackbar;
-import android.view.View;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,9 +9,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import de.projectfluegelrad.database.logging.Logger;
+
 public final class QueryExecuter implements Runnable {
 
-    private final View attachedView;
+    private final Logger logger;
+
+    private ConnectivityManager cm;
 
     private final DatabaseAddress address;
     private final String username;
@@ -29,8 +30,9 @@ public final class QueryExecuter implements Runnable {
     private Query nextQuery = null;
     private ResultSet result = null;
 
-    public QueryExecuter(View attachedView, DatabaseAddress address, String password, String username) {
-        this.attachedView = attachedView;
+    public QueryExecuter(Logger logger, ConnectivityManager cm, DatabaseAddress address, String password, String username) {
+        this.logger = logger;
+        this.cm = cm;
         this.address = address;
         this.password = password;
         this.username = username;
@@ -45,8 +47,9 @@ public final class QueryExecuter implements Runnable {
 
             connectionStatus = ConnectionStatus.CONNECTED;
         } catch(DatabaseException e) {
+
             //TODO : Wenn wir die Database Exeption schon catchen, können wir auch deren Message showen, oder ?
-            showMessage("Failed to Connect!");
+            logger.log("Failed to Connect!");
             connectionStatus = ConnectionStatus.ERROR;
         }
 
@@ -65,7 +68,7 @@ public final class QueryExecuter implements Runnable {
                 try {
                     statement = connection.createStatement();
                 } catch (SQLException e) {
-                    showMessage("Failed to access database!");
+                    logger.log("Failed to access database!");
                 }
             }
 
@@ -73,7 +76,8 @@ public final class QueryExecuter implements Runnable {
                 try {
                     result = nextQuery.execute(statement);
                 } catch(SQLException e) {
-                    showMessage("Failed to execute Query!");
+                    logger.log("Failed to executeQuery!");
+
                 }
             }
 
@@ -142,19 +146,12 @@ public final class QueryExecuter implements Runnable {
     }
 
     private void checkConnectivity() throws IllegalStateException {
-        ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
         if (!isConnected) {
             throw new IllegalStateException("No Network!");
         }
-    }
-
-    private void showMessage(String msg) {
-        Snackbar snackbar = Snackbar.make(attachedView, msg, 3000);
-        snackbar.show();
     }
 
 }
