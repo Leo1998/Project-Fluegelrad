@@ -6,6 +6,8 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -14,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -180,33 +183,28 @@ public class CalendarView extends LinearLayout {
             if (eventDays != null) {
                 for (Calendar eventDate : eventDays) {
                     if (eventDate.get(Calendar.DAY_OF_MONTH) == day && eventDate.get(Calendar.MONTH) == month && eventDate.get(Calendar.YEAR) == year) {
-                        //view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.event));
-                        GradientDrawable gd = new GradientDrawable();
-                        gd.setShape(GradientDrawable.OVAL);
-                        gd.setColor(ContextCompat.getColor(getContext(), R.color.event));
-
-                        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                            view.setBackgroundDrawable(gd);
-                        } else {
-                            view.setBackground(gd);
-                        }
+                        view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.event));
 
                         break;
                     }
                 }
             }
 
-            ((TextView)view).setTypeface(null, Typeface.NORMAL);
-            ((TextView)view).setTextColor(Color.BLACK);
+            ((CircleText)view).setTypeface(null, Typeface.NORMAL);
+            ((CircleText)view).setTextColor(Color.BLACK);
 
             if (month != currentDate.get(Calendar.MONTH) || year != currentDate.get(Calendar.YEAR)) {
-                ((TextView)view).setTextColor(ContextCompat.getColor(getContext(), R.color.greyed_out));
+                ((CircleText)view).setTextColor(ContextCompat.getColor(getContext(), R.color.greyed_out));
             } else if (month == today.get(Calendar.MONTH) && year == today.get(Calendar.YEAR) && day == today.get(Calendar.DAY_OF_MONTH)) {
-                ((TextView)view).setTypeface(null, Typeface.BOLD);
-                ((TextView)view).setTextColor(ContextCompat.getColor(getContext(), R.color.today));
+                ((CircleText)view).setTypeface(null, Typeface.BOLD);
+                ((CircleText)view).setTextColor(ContextCompat.getColor(getContext(), R.color.today));
             }
 
-            ((TextView)view).setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
+            ((CircleText)view).setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
+
+            GridView.LayoutParams params = new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, grid.getColumnWidth());
+            view.setLayoutParams(params);
+
 
             return view;
         }

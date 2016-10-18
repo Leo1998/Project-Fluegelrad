@@ -62,5 +62,8 @@
         android:id="@+id/calendar_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="7"/>
+        android:numColumns="7"
+        android:verticalSpacing="1dp"
+        android:horizontalSpacing="1dp"
+        android:listSelector="@android:color/transparent"/>
 </LinearLayout>

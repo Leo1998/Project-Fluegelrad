@@ -10,5 +10,6 @@
     <color name="today">#4b82ff</color>
     <color name="greyed_out">#c7c7c7</color>
     <color name="day_week">#44eebd82</color>
-    <color name="event">#FF4081</color>
+    <color name="event">#ff4081</color>
+    <color name="shadow">#969696</color>
 </resources>
