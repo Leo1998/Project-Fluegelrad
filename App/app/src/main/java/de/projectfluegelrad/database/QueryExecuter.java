@@ -45,6 +45,7 @@ public final class QueryExecuter implements Runnable {
 
             connectionStatus = ConnectionStatus.CONNECTED;
         } catch(DatabaseException e) {
+            //TODO : Wenn wir die Database Exeption schon catchen, können wir auch deren Message showen, oder ?
             showMessage("Failed to Connect!");
             connectionStatus = ConnectionStatus.ERROR;
         }
@@ -72,7 +73,7 @@ public final class QueryExecuter implements Runnable {
                 try {
                     result = nextQuery.execute(statement);
                 } catch(SQLException e) {
-                    showMessage("Failed to executeQuery!");
+                    showMessage("Failed to execute Query!");
                 }
             }
 
@@ -96,7 +97,7 @@ public final class QueryExecuter implements Runnable {
         }
 
         try {
-            connection = DriverManager.getConnection(address.getUrl("testuser", "123456"));
+            connection = DriverManager.getConnection(address.getUrl(username, password));
 
             if (connection == null) {
                 throw new DatabaseException("Failed to connect to Database!");
