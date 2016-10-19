@@ -47,9 +47,7 @@ public final class QueryExecuter implements Runnable {
 
             connectionStatus = ConnectionStatus.CONNECTED;
         } catch(DatabaseException e) {
-
-            //TODO : Wenn wir die Database Exeption schon catchen, können wir auch deren Message showen, oder ?
-            logger.log("Failed to Connect!");
+            logger.log("Failed to Connect(" + e.getMessage() + ")");
             connectionStatus = ConnectionStatus.ERROR;
         }
 
