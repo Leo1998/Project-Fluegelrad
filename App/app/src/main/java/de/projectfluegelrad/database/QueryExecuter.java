@@ -11,7 +11,7 @@ import java.sql.Statement;
 
 import de.projectfluegelrad.database.logging.Logger;
 
-public final class QueryExecuter implements Runnable {
+public final class QueryExecuter {
 
     private final Logger logger;
 
@@ -23,12 +23,7 @@ public final class QueryExecuter implements Runnable {
 
     private Connection connection;
     private ConnectionStatus connectionStatus = ConnectionStatus.NOT_CONNECTED;
-
-    private Object executorLock = new Object();
-    private Object executionLock = new Object();
-
-    private Query nextQuery = null;
-    private ResultSet result = null;
+    private Statement statement = null;
 
     public QueryExecuter(Logger logger, ConnectivityManager cm, DatabaseAddress address, String password, String username) {
         this.logger = logger;
@@ -38,54 +33,23 @@ public final class QueryExecuter implements Runnable {
         this.username = username;
     }
 
-    @Override
-    public void run() {
+    public boolean connect() {
         try {
             connectionStatus = ConnectionStatus.PENDING;
 
-            connect();
+            connectInternal();
 
             connectionStatus = ConnectionStatus.CONNECTED;
         } catch(DatabaseException e) {
-            logger.log("Failed to Connect(" + e.getMessage() + ")");
+            e.printStackTrace();
+            logger.log(e.getMessage());
             connectionStatus = ConnectionStatus.ERROR;
         }
 
-        Statement statement = null;
-
-        while(true) {
-            synchronized (executorLock) {
-                try {
-                    executorLock.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (statement == null) {
-                try {
-                    statement = connection.createStatement();
-                } catch (SQLException e) {
-                    logger.log("Failed to access database!");
-                }
-            }
-
-            if (nextQuery != null) {
-                try {
-                    result = nextQuery.execute(statement);
-                } catch(SQLException e) {
-                    logger.log("Failed to executeQuery!");
-
-                }
-            }
-
-            synchronized (executionLock) {
-                executionLock.notify();
-            }
-        }
+        return connectionStatus == ConnectionStatus.CONNECTED;
     }
 
-    private void connect() throws DatabaseException {
+    private void connectInternal() throws DatabaseException {
         try {
             checkConnectivity();
         } catch(Exception e) {
@@ -109,38 +73,26 @@ public final class QueryExecuter implements Runnable {
         }
     }
 
-    public boolean connectAndWait() {
-        new Thread(this, "QueryExecutor").start();
-
-        while(connectionStatus == ConnectionStatus.PENDING || connectionStatus == ConnectionStatus.NOT_CONNECTED) {
-            try {
-                Thread.sleep(10);
-            } catch(InterruptedException e) {}
-        }
-
-        return connectionStatus == ConnectionStatus.CONNECTED;
-    }
-
     public synchronized ResultSet executeQuery(Query query) {
         if (connection == null) {
             throw new IllegalStateException("Not yet connected");
         }
 
-        this.nextQuery = query;
-
-        synchronized (executorLock) {
-            executorLock.notifyAll();
-        }
-
-        synchronized (executionLock) {
+        if (statement == null) {
             try {
-                executionLock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                statement = connection.createStatement();
+            } catch (SQLException e) {
+                logger.log("Failed to access database!");
             }
         }
 
-        return result;
+        try {
+            return query.execute(statement);
+        } catch(SQLException e) {
+            logger.log("Failed to execute Query!");
+        }
+
+        return null;
     }
 
     private void checkConnectivity() throws IllegalStateException {

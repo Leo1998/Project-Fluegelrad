@@ -38,7 +38,7 @@ public class DatabaseManager {
 
         this.queryExecuter = new QueryExecuter(new SnackbarLogger(attachedView), cm, new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"), "testuser", "123456");
 
-        if (this.queryExecuter.connectAndWait()) {
+        if (this.queryExecuter.connect()) {
             refreshEventData();
             saveEvents();
         }
