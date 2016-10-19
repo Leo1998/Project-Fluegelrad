@@ -6,7 +6,8 @@
         </shape>
     </item>
     <item android:state_enabled="true"
-        android:state_pressed="false">
+        android:state_pressed="false"
+        android:id="@+id/shape_enabled">
         <shape android:shape="oval">
             <solid android:color="@android:color/transparent" />
         </shape>
