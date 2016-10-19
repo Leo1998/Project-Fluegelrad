@@ -1,23 +1,15 @@
 package de.projectfluegelrad.Calendar;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.StateListDrawable;
-import android.os.Build;
-import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -27,12 +19,12 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 
 import de.projectfluegelrad.R;
+import de.projectfluegelrad.database.Event;
 
-public class CalendarView extends LinearLayout {
+public class CalenderView extends LinearLayout {
 
     private static final int DAYS_COUNT = 42;
 
@@ -41,30 +33,26 @@ public class CalendarView extends LinearLayout {
     private String dateFormat;
     private Calendar currentDate = Calendar.getInstance();
 
-    private static List<Calendar> events;
-
-    private EventHandler eventHandler = null;
-
     private LinearLayout header;
     private ImageView btnPrev;
     private ImageView btnNext;
     private TextView txtDate;
     private GridView grid;
 
-    public CalendarView(Context context, AttributeSet attrs) {
+    private List<Event> events;
+
+    public CalenderView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initControl(context, attrs);
     }
 
-    public CalendarView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CalenderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initControl(context, attrs);
     }
 
 
     private void initControl(Context context, AttributeSet attrs) {
-        events = new ArrayList<>();
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.calendar_controls, this);
 
@@ -75,15 +63,15 @@ public class CalendarView extends LinearLayout {
         updateCalendar();
     }
 
-    public static List<Calendar> getEvents() {
-        return events;
+    public void setEvents(List<Event> events) {
+        this.events = events;
     }
 
     private void loadDateFormat(AttributeSet attrs) {
-        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.CalendarView);
+        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.CalenderView);
 
         try {
-            dateFormat = ta.getString(R.styleable.CalendarView_dateFormat);
+            dateFormat = ta.getString(R.styleable.CalenderView_dateFormat);
             if (dateFormat == null) {
                 dateFormat = DATE_FORMAT;
             }
@@ -124,15 +112,6 @@ public class CalendarView extends LinearLayout {
             currentDate.add(Calendar.MONTH, -1);
             updateCalendar();
         });
-
-        grid.setOnItemLongClickListener((view, cell, position, id) -> {
-            if (eventHandler == null) {
-                return false;
-            }
-
-            eventHandler.onDayLongPress((Calendar) view.getItemAtPosition(position));
-            return true;
-        });
     }
 
     public void updateCalendar() {
@@ -149,20 +128,17 @@ public class CalendarView extends LinearLayout {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        grid.setAdapter(new CalendarAdapter(getContext(), cells, events));
+        grid.setAdapter(new CalendarAdapter(getContext(), cells));
 
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         txtDate.setText(sdf.format(currentDate.getTime()));
     }
 
     private class CalendarAdapter extends ArrayAdapter<Calendar> {
-        private List<Calendar> eventDays;
-
         private LayoutInflater inflater;
 
-        public CalendarAdapter(Context context, ArrayList<Calendar> days, List<Calendar> eventDays) {
+        public CalendarAdapter(Context context, ArrayList<Calendar> days) {
             super(context, R.layout.control_calendar_day, days);
-            this.eventDays = eventDays;
             inflater = LayoutInflater.from(context);
         }
 
@@ -180,9 +156,12 @@ public class CalendarView extends LinearLayout {
                 view = inflater.inflate(R.layout.control_calendar_day, parent, false);
             }
 
-            if (eventDays != null) {
-                for (Calendar eventDate : eventDays) {
-                    if (eventDate.get(Calendar.DAY_OF_MONTH) == day && eventDate.get(Calendar.MONTH) == month && eventDate.get(Calendar.YEAR) == year) {
+            if (events != null) {
+                for (Event eventDate : events) {
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(eventDate.getDate());
+
+                    if (cal.get(Calendar.DAY_OF_MONTH) == day && cal.get(Calendar.MONTH) == month && cal.get(Calendar.YEAR) == year) {
                         view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.event));
 
                         break;
@@ -208,13 +187,5 @@ public class CalendarView extends LinearLayout {
 
             return view;
         }
-    }
-
-    public void setEventHandler(EventHandler eventHandler) {
-        this.eventHandler = eventHandler;
-    }
-
-    public interface EventHandler {
-        void onDayLongPress(Calendar date);
     }
 }

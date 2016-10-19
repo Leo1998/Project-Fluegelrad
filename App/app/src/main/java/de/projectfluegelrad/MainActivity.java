@@ -1,6 +1,7 @@
 package de.projectfluegelrad;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -11,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import de.projectfluegelrad.Calendar.CalendarFragment;
 import de.projectfluegelrad.database.DatabaseManager;
@@ -18,6 +20,8 @@ import de.projectfluegelrad.database.DatabaseManager;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DatabaseManager databaseManager;
+
+    private CalendarFragment calendarFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"));
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CalendarFragment()).commit();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
+
+        calendarFragment = new CalendarFragment();
+        calendarFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
     }
 
     @Override

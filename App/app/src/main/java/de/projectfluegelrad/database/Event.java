@@ -1,5 +1,8 @@
 package de.projectfluegelrad.database;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -13,7 +16,28 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.sql.Date;
 
-public class Event {
+public class Event implements Parcelable {
+
+    protected Event(Parcel in) {
+        id = in.readInt();
+        location = in.readString();
+        category = in.readString();
+        price = in.readInt();
+        host = in.readString();
+        description = in.readString();
+    }
+
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
 
     public static Event readEvent(InputStream in) throws IOException, JSONException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -122,5 +146,21 @@ public class Event {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(location);
+        parcel.writeString(category);
+        parcel.writeInt(price);
+        parcel.writeString(host);
+        parcel.writeLong(date.getTime());
+        parcel.writeString(description);
     }
 }
