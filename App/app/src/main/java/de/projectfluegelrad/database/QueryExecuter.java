@@ -25,12 +25,12 @@ public final class QueryExecuter {
     private ConnectionStatus connectionStatus = ConnectionStatus.NOT_CONNECTED;
     private Statement statement = null;
 
-    public QueryExecuter(Logger logger, ConnectivityManager cm, DatabaseAddress address, String password, String username) {
+    public QueryExecuter(Logger logger, ConnectivityManager cm, DatabaseAddress address, String username, String password) {
         this.logger = logger;
         this.cm = cm;
         this.address = address;
-        this.password = password;
         this.username = username;
+        this.password = password;
     }
 
     public boolean connect() {

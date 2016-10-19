@@ -18,7 +18,7 @@ import java.util.List;
 
 import de.projectfluegelrad.database.logging.SnackbarLogger;
 
-public class DatabaseManager {
+public class DatabaseManager implements Runnable {
 
     private final View attachedView;
     private final File filesDirectory;
@@ -34,6 +34,11 @@ public class DatabaseManager {
             filesDirectory.mkdirs();
         }
 
+        new Thread(this, "Database Service").start();
+    }
+
+    @Override
+    public void run() {
         ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         this.queryExecuter = new QueryExecuter(new SnackbarLogger(attachedView), cm, new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"), "testuser", "123456");
@@ -64,6 +69,8 @@ public class DatabaseManager {
                 String description = result.getString("description");
 
                 Event event = new Event(id, location, category, price, host, date, description);
+
+                System.out.println(event);
 
                 if (!eventList.contains(event)) {
                     eventList.add(event);
