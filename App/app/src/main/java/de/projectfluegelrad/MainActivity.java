@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_home) {
 
         } else if (id == R.id.nav_calender) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CalendarFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
         } else if (id == R.id.nav_search) {
 
         } else if (id == R.id.nav_info || id == R.id.nav_info2) {
