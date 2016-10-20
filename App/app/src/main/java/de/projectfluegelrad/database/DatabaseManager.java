@@ -23,20 +23,17 @@ public class DatabaseManager implements Runnable {
 
     private final View attachedView;
     private final File filesDirectory;
-    private final Activity activity;
 
     private QueryExecuter queryExecuter;
 
     private final List<Event> eventList = new ArrayList<Event>();
 
-    public DatabaseManager(View attachedView, File filesDirectory, Activity activity) {
+    public DatabaseManager(View attachedView, File filesDirectory) {
         this.attachedView = attachedView;
         this.filesDirectory = filesDirectory;
-        this.activity = activity;
         if (!filesDirectory.exists()) {
             filesDirectory.mkdirs();
         }
-
         new Thread(this, "Database Service").start();
     }
 
@@ -44,7 +41,7 @@ public class DatabaseManager implements Runnable {
     public void run() {
         ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        this.queryExecuter = new QueryExecuter(activity, new SnackbarLogger(attachedView), cm, new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"), "testuser", "123456");
+        this.queryExecuter = new QueryExecuter(attachedView.getContext(), new SnackbarLogger(attachedView), cm, new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"), "testuser", "123456");
 
         if (this.queryExecuter.connect()) {
             refreshEventData();
@@ -103,6 +100,4 @@ public class DatabaseManager implements Runnable {
     public List<Event> getEventList() {
         return eventList;
     }
-
-    public Activity getActivity() {return activity;}
 }
