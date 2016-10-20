@@ -4,7 +4,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="connction_failure">Failed to Connect!</string>
+    <string name="database_connction_failure">Failed to connect to database!</string>
     <string name="database_access_failure">Failed to access database!</string>
     <string name="query_execution_failure">Failed to execute Query!</string>
     <string name="network_failure">No Network!</string>
