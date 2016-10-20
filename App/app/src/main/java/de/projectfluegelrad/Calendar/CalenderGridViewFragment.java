@@ -1,4 +1,4 @@
-package de.projectfluegelrad.Calendar;
+package de.projectfluegelrad.calendar;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,7 +11,7 @@ import java.util.List;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Event;
 
-public class CalenderViewFragment extends Fragment {
+public class CalenderGridViewFragment extends Fragment {
 
     private List<Event> events;
 
@@ -19,9 +19,9 @@ public class CalenderViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         events = getArguments().getParcelableArrayList("eventList");
 
-        CalenderView calenderView = (CalenderView) inflater.inflate(R.layout.calender_grid_fragment, container, false);
-        calenderView.setEvents(events);
+        CalenderGridView calenderGridView = (CalenderGridView) inflater.inflate(R.layout.calender_grid_fragment, container, false);
+        calenderGridView.setEvents(events);
 
-        return calenderView;
+        return calenderGridView;
     }
 }

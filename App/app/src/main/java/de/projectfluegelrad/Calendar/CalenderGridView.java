@@ -1,4 +1,4 @@
-package de.projectfluegelrad.Calendar;
+package de.projectfluegelrad.calendar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -24,11 +24,11 @@ import java.util.List;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Event;
 
-public class CalenderView extends LinearLayout {
+public class CalenderGridView extends LinearLayout {
 
     private static final int DAYS_COUNT = 42;
 
-    private static final String DATE_FORMAT = "MMM yyyy";
+    private final String DATE_FORMAT = "MMM yyyy";
 
     private String dateFormat;
     private Calendar currentDate = Calendar.getInstance();
@@ -41,12 +41,12 @@ public class CalenderView extends LinearLayout {
 
     private List<Event> events;
 
-    public CalenderView(Context context, AttributeSet attrs) {
+    public CalenderGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initControl(context, attrs);
     }
 
-    public CalenderView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CalenderGridView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initControl(context, attrs);
     }
@@ -68,10 +68,10 @@ public class CalenderView extends LinearLayout {
     }
 
     private void loadDateFormat(AttributeSet attrs) {
-        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.CalenderView);
+        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.CalenderGridView);
 
         try {
-            dateFormat = ta.getString(R.styleable.CalenderView_dateFormat);
+            dateFormat = ta.getString(R.styleable.CalenderGridView_dateFormat);
             if (dateFormat == null) {
                 dateFormat = DATE_FORMAT;
             }

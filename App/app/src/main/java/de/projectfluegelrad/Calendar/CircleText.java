@@ -1,27 +1,14 @@
-package de.projectfluegelrad.Calendar;
+package de.projectfluegelrad.calendar;
 
-import android.animation.StateListAnimator;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.graphics.drawable.shapes.Shape;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.PointerIcon;
-import android.view.View;
 import android.widget.TextView;
 
 import de.projectfluegelrad.R;
