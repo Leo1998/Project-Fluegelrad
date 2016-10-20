@@ -7,7 +7,9 @@ import android.view.View;
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -39,6 +41,8 @@ public class DatabaseManager implements Runnable {
 
     @Override
     public void run() {
+        //readEvents();
+
         ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         this.queryExecuter = new QueryExecuter(new SnackbarLogger(attachedView), cm, new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"), "testuser", "123456");
@@ -70,16 +74,35 @@ public class DatabaseManager implements Runnable {
 
                 Event event = new Event(id, location, category, price, host, date, description);
 
-                System.out.println(event);
-
-                if (!eventList.contains(event)) {
-                    eventList.add(event);
-                } else {
-                    // already exists...
-                }
+                registerEvent(event);
             }
         } catch(Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void readEvents() {
+        File[] eventFiles = filesDirectory.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".event");
+            }
+        });
+
+        for (int i = 0; i < eventFiles.length; i++) {
+            File file = eventFiles[i];
+
+            try {
+                Event event = Event.readEvent(new FileInputStream(file));
+
+                System.out.println(event);
+
+                registerEvent(event);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -95,6 +118,10 @@ public class DatabaseManager implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void registerEvent(Event event) {
+        eventList.add(event);
     }
 
     public List<Event> getEventList() {

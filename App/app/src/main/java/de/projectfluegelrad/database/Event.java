@@ -49,7 +49,9 @@ public class Event implements Parcelable {
 
         JSONObject obj = new JSONObject(new JSONTokener(json));
 
-        return null;
+        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getString("host"), new Date(obj.getLong("date")), obj.getString("description"));
+
+        return event;
     }
 
     public static void writeEvent(OutputStream out, Event event) throws IOException, JSONException {
@@ -60,7 +62,7 @@ public class Event implements Parcelable {
         obj.put("category", event.getCategory());
         obj.put("price", event.getPrice());
         obj.put("host", event.getHost());
-        obj.put("date", event.getDate());
+        obj.put("date", event.getDate().getTime());
         obj.put("description", event.getDescription());
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
