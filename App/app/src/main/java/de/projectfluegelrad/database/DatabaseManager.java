@@ -1,5 +1,7 @@
 package de.projectfluegelrad.database;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.view.View;
@@ -14,7 +16,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,6 @@ public class DatabaseManager implements Runnable {
         if (!filesDirectory.exists()) {
             filesDirectory.mkdirs();
         }
-
         new Thread(this, "Database Service").start();
     }
 
@@ -45,7 +45,7 @@ public class DatabaseManager implements Runnable {
 
         ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        this.queryExecuter = new QueryExecuter(new SnackbarLogger(attachedView), cm, new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"), "testuser", "123456");
+        this.queryExecuter = new QueryExecuter(attachedView.getContext(), new SnackbarLogger(attachedView), cm, new DatabaseAddress("pipigift.ddns.net", 3306, "fluegelrad"), "testuser", "123456");
 
         if (this.queryExecuter.connect()) {
             refreshEventData();

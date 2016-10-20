@@ -1,5 +1,7 @@
 package de.projectfluegelrad.database;
 
+import android.app.Activity;
+import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -9,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.logging.Logger;
 
 public final class QueryExecuter {
@@ -21,16 +24,19 @@ public final class QueryExecuter {
     private final String username;
     private final String password;
 
+    private Context context;
+
     private Connection connection;
     private ConnectionStatus connectionStatus = ConnectionStatus.NOT_CONNECTED;
     private Statement statement = null;
 
-    public QueryExecuter(Logger logger, ConnectivityManager cm, DatabaseAddress address, String username, String password) {
+    public QueryExecuter(Context context, Logger logger, ConnectivityManager cm, DatabaseAddress address, String username, String password) {
         this.logger = logger;
         this.cm = cm;
         this.address = address;
         this.username = username;
         this.password = password;
+        this.context = context;
     }
 
     public boolean connect() {
@@ -53,43 +59,43 @@ public final class QueryExecuter {
         try {
             checkConnectivity();
         } catch(Exception e) {
-            throw new DatabaseException("No Network!", e);
+            throw new DatabaseException(context.getResources().getText(R.string.network_failure).toString(),e);
         }
 
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
         } catch (Exception e) {
-            throw new DatabaseException("Driver missing!", e);
+            throw new DatabaseException(context.getResources().getText(R.string.missing_driver_failure).toString(), e);
         }
 
         try {
             connection = DriverManager.getConnection(address.getUrl(username, password));
 
             if (connection == null) {
-                throw new DatabaseException("Failed to connect to Database!");
+                throw new DatabaseException(context.getResources().getText(R.string.database_connction_failure).toString());
             }
         } catch(SQLException e) {
-            throw new DatabaseException("Failed to connect to Database!", e);
+            throw new DatabaseException(context.getResources().getText(R.string.database_connction_failure).toString(), e);
         }
     }
 
     public synchronized ResultSet executeQuery(Query query) {
         if (connection == null) {
-            throw new IllegalStateException("Not yet connected");
+            throw new IllegalStateException(context.getResources().getText(R.string.no_connction_failure).toString());
         }
 
         if (statement == null) {
             try {
                 statement = connection.createStatement();
             } catch (SQLException e) {
-                logger.log("Failed to access database!");
+                logger.log(context.getResources().getText(R.string.database_access_failure).toString());
             }
         }
 
         try {
             return query.execute(statement);
         } catch(SQLException e) {
-            logger.log("Failed to execute Query!");
+            logger.log(context.getResources().getText(R.string.query_execution_failure).toString());
         }
 
         return null;
@@ -100,7 +106,7 @@ public final class QueryExecuter {
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
         if (!isConnected) {
-            throw new IllegalStateException("No Network!");
+            throw new IllegalStateException(context.getResources().getText(R.string.network_failure).toString());
         }
     }
 
