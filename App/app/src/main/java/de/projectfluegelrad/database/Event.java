@@ -24,6 +24,7 @@ public class Event implements Parcelable {
         category = in.readString();
         price = in.readInt();
         host = in.readString();
+        date = new Date(in.readLong());
         description = in.readString();
     }
 
