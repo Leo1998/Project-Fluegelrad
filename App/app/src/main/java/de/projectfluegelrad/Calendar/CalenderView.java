@@ -54,7 +54,7 @@ public class CalenderView extends LinearLayout {
 
     private void initControl(Context context, AttributeSet attrs) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.calendar_controls, this);
+        inflater.inflate(R.layout.calendar_grid_controls, this);
 
         assignUiElements();
         assignClickHandlers();
@@ -138,7 +138,7 @@ public class CalenderView extends LinearLayout {
         private LayoutInflater inflater;
 
         public CalendarAdapter(Context context, ArrayList<Calendar> days) {
-            super(context, R.layout.control_calendar_day, days);
+            super(context, R.layout.calendar_grid_item, days);
             inflater = LayoutInflater.from(context);
         }
 
@@ -153,7 +153,7 @@ public class CalenderView extends LinearLayout {
 
 
             if (view == null) {
-                view = inflater.inflate(R.layout.control_calendar_day, parent, false);
+                view = inflater.inflate(R.layout.calendar_grid_item, parent, false);
             }
 
             if (events != null) {
