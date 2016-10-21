@@ -30,6 +30,8 @@ public class DatabaseManager implements Runnable {
 
     private final List<Event> eventList = new ArrayList<Event>();
 
+    private Object waitLock = new Object();
+
     public DatabaseManager(View attachedView, File filesDirectory) {
         this.attachedView = attachedView;
         this.filesDirectory = filesDirectory;
@@ -41,7 +43,7 @@ public class DatabaseManager implements Runnable {
 
     @Override
     public void run() {
-        //readEvents();
+        readEvents();
 
         ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -50,6 +52,12 @@ public class DatabaseManager implements Runnable {
         if (this.queryExecuter.connect()) {
             refreshEventData();
             saveEvents();
+        }
+
+        synchronized (waitLock) {
+            try {
+                waitLock.wait();
+            } catch(InterruptedException e) {}
         }
     }
 
@@ -92,17 +100,16 @@ public class DatabaseManager implements Runnable {
         for (int i = 0; i < eventFiles.length; i++) {
             File file = eventFiles[i];
 
+            Event event = null;
             try {
-                Event event = Event.readEvent(new FileInputStream(file));
-
-                System.out.println(event);
-
-                registerEvent(event);
+                event = Event.readEvent(new FileInputStream(file));
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            registerEvent(event);
         }
     }
 
@@ -121,6 +128,21 @@ public class DatabaseManager implements Runnable {
     }
 
     private void registerEvent(Event event) {
+        for (int i = 0; i < eventList.size(); i++) {
+            Event currentEvent = eventList.get(i);
+
+            if (currentEvent.equalsId(event)) {
+                if (currentEvent.equals(event)) {
+                    // already exists
+                    return;
+                } else {
+                    // update
+                    eventList.remove(currentEvent);
+                    break;
+                }
+            }
+        }
+
         eventList.add(event);
     }
 

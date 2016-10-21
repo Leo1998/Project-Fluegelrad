@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"));
 
-        List<Event> events = new ArrayList<>();
+        /*List<Event> events = new ArrayList<>();
         Random r = new Random();
         for (int i = 0; i < 50; i++){
             Calendar c = Calendar.getInstance();
@@ -63,11 +63,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             return event.getDate().compareTo(t1.getDate());
-        });
+        });*/
 
         Bundle bundle = new Bundle();
-       // bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
-        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
+        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
+        //bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
 
         calendarFragment = new CalendarFragment();
         calendarFragment.setArguments(bundle);
