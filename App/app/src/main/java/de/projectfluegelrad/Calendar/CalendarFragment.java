@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import de.projectfluegelrad.R;
+import de.projectfluegelrad.calendar.gridview.CalenderGridViewFragment;
+import de.projectfluegelrad.calendar.listview.CalenderListFragment;
 import de.projectfluegelrad.database.Event;
 
 public class CalendarFragment extends Fragment {
@@ -28,6 +30,11 @@ public class CalendarFragment extends Fragment {
 
         tabHost.addTab(tabHost.newTabSpec("calendar_fragment").setIndicator("Kalender"), CalenderGridViewFragment.class, getArguments());
         tabHost.addTab(tabHost.newTabSpec("list").setIndicator("Event Liste"), CalenderListFragment.class, getArguments());
+
+
+        //tabHost.getTabWidget().getChildAt(0).setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+       // tabHost.getTabWidget().getChildAt(1).setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+
 
         if (savedInstanceState != null){
             tabHost.setCurrentTabByTag(savedInstanceState.getString("tab"));

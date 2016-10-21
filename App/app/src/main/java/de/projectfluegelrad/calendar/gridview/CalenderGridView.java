@@ -1,4 +1,4 @@
-package de.projectfluegelrad.calendar;
+package de.projectfluegelrad.calendar.gridview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -40,6 +40,8 @@ public class CalenderGridView extends LinearLayout {
     private GridView grid;
 
     private List<Event> events;
+
+    private ArrayList<Calendar> daysShown;
 
     public CalenderGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -115,7 +117,7 @@ public class CalenderGridView extends LinearLayout {
     }
 
     public void updateCalendar() {
-        ArrayList<Calendar> cells = new ArrayList<>();
+        daysShown = new ArrayList<>();
         Calendar calendar = (Calendar)currentDate.clone();
 
         calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -123,15 +125,19 @@ public class CalenderGridView extends LinearLayout {
 
         calendar.add(Calendar.DAY_OF_MONTH, -monthBeginningCell);
 
-        while (cells.size() < DAYS_COUNT) {
-            cells.add((Calendar) calendar.clone());
+        while (daysShown.size() < DAYS_COUNT) {
+            daysShown.add((Calendar) calendar.clone());
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        grid.setAdapter(new CalendarAdapter(getContext(), cells));
+        grid.setAdapter(new CalendarAdapter(getContext(), daysShown));
 
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
         txtDate.setText(sdf.format(currentDate.getTime()));
+    }
+
+    public ArrayList<Calendar> getDaysShown() {
+        return daysShown;
     }
 
     private class CalendarAdapter extends ArrayAdapter<Calendar> {
