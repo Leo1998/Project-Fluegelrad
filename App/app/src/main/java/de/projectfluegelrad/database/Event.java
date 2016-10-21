@@ -44,7 +44,9 @@ public class Event implements Parcelable {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
         String json = "";
-        while((json += reader.readLine()) != null);
+        for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+            json += line;
+        }
         reader.close();
 
         JSONObject obj = new JSONObject(new JSONTokener(json));
@@ -144,6 +146,10 @@ public class Event implements Parcelable {
         if (!host.equals(event.host)) return false;
         if (!date.equals(event.date)) return false;
         return description.equals(event.description);
+    }
+
+    public boolean equalsId(Event e) {
+        return this.id == e.getId();
     }
 
     @Override

@@ -7,3 +7,8 @@ Preis: int (in cent)
 Verantstalter: String
 Datum: Date-Klasse von mysql
 Beschreibung: String
+
+
+INSERT INTO events(location, category, price, host, date, description) VALUES('Berlin', 'Kategorie 99', 100000, 'Ein Verein', '2016-12-1 9:59:59','Eine Beschreibung');
+INSERT INTO events(location, category, price, host, date, description) VALUES('Dortmund', 'Krass', 9999999, 'Leonard Fricke inc.', '2016-12-22 9:59:59','Da hab ich Geburtstag Biatch');
+INSERT INTO events(location, category, price, host, date, description) VALUES('Bei deiner Mama', 'Was weiﬂ ich', 1, 'Deine Mama ev.', '2016-11-1 1:0:59','Hustensaft');
