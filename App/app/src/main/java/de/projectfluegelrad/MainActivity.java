@@ -15,10 +15,13 @@ import java.io.File;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-import de.projectfluegelrad.Calendar.CalendarFragment;
+import de.projectfluegelrad.calendar.CalendarFragment;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
 
@@ -45,18 +48,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"));
 
-        /*List<Event> events = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
         Random r = new Random();
         for (int i = 0; i < 50; i++){
             Calendar c = Calendar.getInstance();
             c.add(Calendar.DAY_OF_MONTH, r.nextInt(100) - 50);
             Event e = new Event(i, "Strasse" + r.nextInt(100), "Katerogie" + r.nextInt(100), r.nextInt(10), "Verein" + r.nextInt(100), new Date(c.getTimeInMillis()), "Beschreibung" + r.nextInt(100));
             events.add(e);
-        }*/
+        }
+
+        Collections.sort(events, (event, t1) -> {
+            if (event.getDate() == null || t1.getDate() == null) {
+                return 0;
+            }
+
+            return event.getDate().compareTo(t1.getDate());
+        });
 
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
-        //bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
+       // bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
+        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
 
         calendarFragment = new CalendarFragment();
         calendarFragment.setArguments(bundle);
