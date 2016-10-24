@@ -77,7 +77,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             c.add(Calendar.DAY_OF_MONTH, r.nextInt(100) - 50);
             Event e = new Event(i, "Strasse" + r.nextInt(100), "Katerogie" + r.nextInt(100), r.nextInt(10), "Verein" + r.nextInt(100), new Date(c.getTimeInMillis()), "Beschreibung" + r.nextInt(100));
             events.add(e);
-        }
+        }*/
+
+        List<Event> events = databaseManager.getEventList();
 
         Collections.sort(events, (event, t1) -> {
             if (event.getDate() == null || t1.getDate() == null) {
@@ -85,10 +87,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             return event.getDate().compareTo(t1.getDate());
-        });*/
+        });
 
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
+        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
         //bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
 
         calendarFragment = new CalendarFragment();
