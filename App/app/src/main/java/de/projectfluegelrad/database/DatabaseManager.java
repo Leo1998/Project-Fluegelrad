@@ -77,7 +77,7 @@ public class DatabaseManager implements Runnable {
                 String category = result.getString("category");
                 int price = result.getInt("price");
                 String host = result.getString("host");
-                Date date = result.getDate("date");
+                Date date = new Date(result.getTimestamp("date").getTime());
                 String description = result.getString("description");
 
                 Event event = new Event(id, location, category, price, host, date, description);
