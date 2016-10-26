@@ -28,9 +28,7 @@ public class CalenderGridView extends LinearLayout {
 
     private static final int DAYS_COUNT = 42;
 
-    private final String DATE_FORMAT = "MMM yyyy";
-
-    private String dateFormat;
+    private final String DATE_FORMAT = "MMMM yyyy";
     private Calendar currentDate = Calendar.getInstance();
 
     private LinearLayout header;
@@ -43,24 +41,29 @@ public class CalenderGridView extends LinearLayout {
 
     private ArrayList<Calendar> daysShown;
 
+    public CalenderGridView(Context context) {
+        super(context);
+        initControl(context);
+    }
+
     public CalenderGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initControl(context, attrs);
+        initControl(context);
     }
 
     public CalenderGridView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initControl(context, attrs);
+        initControl(context);
     }
 
 
-    private void initControl(Context context, AttributeSet attrs) {
+    private void initControl(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.calendar_grid_controls, this);
 
         assignUiElements();
         assignClickHandlers();
-        loadDateFormat(attrs);
+        loadDateFormat();
 
         updateCalendar();
     }
@@ -69,18 +72,7 @@ public class CalenderGridView extends LinearLayout {
         this.events = events;
     }
 
-    private void loadDateFormat(AttributeSet attrs) {
-        TypedArray ta = getContext().obtainStyledAttributes(attrs, R.styleable.CalenderGridView);
-
-        try {
-            dateFormat = ta.getString(R.styleable.CalenderGridView_dateFormat);
-            if (dateFormat == null) {
-                dateFormat = DATE_FORMAT;
-            }
-        } finally {
-            ta.recycle();
-        }
-
+    private void loadDateFormat() {
         header.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.day_week));
         LinearLayout.LayoutParams params = new LayoutParams(0, LayoutParams.WRAP_CONTENT);
         params.weight = 1;
@@ -132,7 +124,7 @@ public class CalenderGridView extends LinearLayout {
 
         grid.setAdapter(new CalendarAdapter(getContext(), daysShown));
 
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         txtDate.setText(sdf.format(currentDate.getTime()));
     }
 

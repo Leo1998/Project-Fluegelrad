@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseManager databaseManager;
 
     private CalendarFragment calendarFragment;
+    private HomeFragment homeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +46,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-
 
         toggle.setDrawerIndicatorEnabled(true);
         toggle.syncState();
@@ -95,7 +96,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         calendarFragment = new CalendarFragment();
         calendarFragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
+
+        homeFragment = new HomeFragment();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
@@ -140,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
         } else if (id == R.id.nav_calender) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
         } else if (id == R.id.nav_search) {

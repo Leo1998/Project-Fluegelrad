@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Project Fluegelrad</string>
+    <string name="calender_grid">Kalender</string>
+    <string name="calender_list">Event Liste</string>
+    <string name="drawer_about">Info</string>
+    <string name="drawer_calender">Kalender</string>
+    <string name="drawer_home">Start</string>
+    <string name="drawer_search">Suche</string>
+    <string name="drawer_settings">Einstellung</string>
+    <string name="calender_show_adress">Zeige Adresse</string>
+    <string name="drawer_add_calender">Füge Event zum Klaneder hinzu</string>
+    <string name="calender_organized_by">organisiert von</string>
+</resources>

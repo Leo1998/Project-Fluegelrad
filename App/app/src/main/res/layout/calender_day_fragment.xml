@@ -9,7 +9,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/category"
-        android:text="Kategorie"
         android:layout_alignParentLeft="true"
         android:textSize="20sp"
         android:textStyle="bold"/>
@@ -18,7 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/date"
-        android:text="Datum"
         android:layout_alignParentRight="true"
         android:textSize="20sp"
         android:textStyle="bold"/>
@@ -27,7 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/host"
-        android:text="Veranstalter"
         android:paddingTop="5dp"
         android:textSize="16sp"
         android:layout_below="@id/category"/>
@@ -42,7 +39,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/description"
-            android:text="Beschreibung"
             android:paddingTop="10dp" />
 
     </RelativeLayout>
@@ -52,7 +48,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sponsors"
-        android:text="Sponsoren"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true" />
 
@@ -62,14 +57,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/location"
-        android:text="Adresse"
         android:paddingBottom="10dp"
         android:layout_above="@id/sponsors"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Zeige Adresse"
+        android:text="@string/calender_show_adress"
         android:id="@+id/location_button"
         android:layout_toRightOf="@id/location"
         android:layout_above="@id/sponsors"/>
@@ -77,7 +71,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Füge Event zum Klaneder hinzu"
+        android:text="@string/drawer_add_calender"
         android:id="@+id/calender_add_button"
         android:layout_toRightOf="@id/location_button"
         android:layout_above="@id/sponsors"/>

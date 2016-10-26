@@ -28,12 +28,8 @@ public class CalendarFragment extends Fragment {
         tabHost.setup(getActivity(), getChildFragmentManager(), R.layout.calendar_fragment);
 
 
-        tabHost.addTab(tabHost.newTabSpec("calendar_fragment").setIndicator("Kalender"), CalenderGridViewFragment.class, getArguments());
-        tabHost.addTab(tabHost.newTabSpec("list").setIndicator("Event Liste"), CalenderListFragment.class, getArguments());
-
-
-        //tabHost.getTabWidget().getChildAt(0).setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-       // tabHost.getTabWidget().getChildAt(1).setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        tabHost.addTab(tabHost.newTabSpec("calendar_fragment").setIndicator(getString(R.string.calender_grid)), CalenderGridViewFragment.class, getArguments());
+        tabHost.addTab(tabHost.newTabSpec("list").setIndicator(getString(R.string.calender_list)), CalenderListFragment.class, getArguments());
 
 
         if (savedInstanceState != null){

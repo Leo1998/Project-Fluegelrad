@@ -68,7 +68,7 @@ public class CalenderDayFragment extends Fragment{
             day.add(Calendar.HOUR, 2);
             intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,day.getTimeInMillis());
             intent.putExtra(CalendarContract.Events.TITLE, event.getCategory());
-            intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n organisiert von " + event.getHost());
+            intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + getString(R.string.calender_organized_by) + " " + event.getHost());
             intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation());
 
             startActivity(intent);
