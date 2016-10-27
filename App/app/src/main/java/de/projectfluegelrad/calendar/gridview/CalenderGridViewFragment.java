@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.calendar.CalenderDayFragment;
 import de.projectfluegelrad.database.Event;
@@ -26,9 +29,9 @@ public class CalenderGridViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         events = getArguments().getParcelableArrayList("eventList");
 
-        LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.calender_grid_fragment, container, false);
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout)inflater.inflate(R.layout.calender_grid_fragment, container, false);
 
-        CalenderGridView calenderGridView = (CalenderGridView) linearLayout.findViewById(R.id.calendar_view);
+        CalenderGridView calenderGridView = (CalenderGridView) swipeRefreshLayout.findViewById(R.id.calendar_view);
         calenderGridView.setEvents(events);
 
         GridView gridView = (GridView) calenderGridView.findViewById(R.id.calendar_grid);
@@ -65,6 +68,13 @@ public class CalenderGridViewFragment extends Fragment {
             }
 
         });
-        return linearLayout;
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            ((MainActivity) getActivity()).refreshData();
+
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+        return swipeRefreshLayout;
     }
 }

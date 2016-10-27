@@ -2,6 +2,7 @@ package de.projectfluegelrad.calendar.listview;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Event;
 
@@ -20,7 +22,9 @@ public class CalenderListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(R.layout.calender_list_fragment, container, false);
+        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.calender_list_fragment, container, false);
+
+        RecyclerView recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
@@ -42,6 +46,12 @@ public class CalenderListFragment extends Fragment {
         adapter.setActivity(getActivity());
         recyclerView.setAdapter(adapter);
 
-        return recyclerView;
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            ((MainActivity) getActivity()).refreshData();
+
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+        return swipeRefreshLayout;
     }
 }
