@@ -16,6 +16,8 @@ import java.util.List;
 
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
+import de.projectfluegelrad.database.DatabaseRequest;
+import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
 
 public class CalenderListFragment extends Fragment {
@@ -47,9 +49,12 @@ public class CalenderListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            ((MainActivity) getActivity()).refreshData();
-
-            swipeRefreshLayout.setRefreshing(false);
+            ((MainActivity) getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, false, new DatabaseRequestListener() {
+                @Override
+                public void onFinish() {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
         });
 
         return swipeRefreshLayout;

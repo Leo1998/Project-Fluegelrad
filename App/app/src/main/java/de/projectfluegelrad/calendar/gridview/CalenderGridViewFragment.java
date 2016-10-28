@@ -5,12 +5,10 @@ import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,6 +17,8 @@ import java.util.List;
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.calendar.CalenderDayFragment;
+import de.projectfluegelrad.database.DatabaseRequest;
+import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
 
 public class CalenderGridViewFragment extends Fragment {
@@ -70,9 +70,12 @@ public class CalenderGridViewFragment extends Fragment {
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            ((MainActivity) getActivity()).refreshData();
-
-            swipeRefreshLayout.setRefreshing(false);
+            ((MainActivity) getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, false, new DatabaseRequestListener() {
+                @Override
+                public void onFinish() {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            });
         });
 
         return swipeRefreshLayout;

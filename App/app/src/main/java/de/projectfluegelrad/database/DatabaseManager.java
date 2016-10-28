@@ -1,7 +1,5 @@
 package de.projectfluegelrad.database;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.view.View;
@@ -30,7 +28,9 @@ public class DatabaseManager implements Runnable {
 
     private final List<Event> eventList = new ArrayList<Event>();
 
+    private boolean running = false;
     private Object waitLock = new Object();
+    private DatabaseRequest currentRequest = null;
 
     public DatabaseManager(View attachedView, File filesDirectory) {
         this.attachedView = attachedView;
@@ -38,6 +38,7 @@ public class DatabaseManager implements Runnable {
         if (!filesDirectory.exists()) {
             filesDirectory.mkdirs();
         }
+
         new Thread(this, "Database Service").start();
     }
 
@@ -51,14 +52,49 @@ public class DatabaseManager implements Runnable {
 
         if (this.queryExecuter.connect()) {
             refreshEventData();
-            saveEvents();
+
+            running = true;
+            while (running) {
+                synchronized (waitLock) {
+                    try {
+                        waitLock.wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+
+                switch (currentRequest) {
+                    case RefreshEventList:
+                        refreshEventData();
+                        break;
+                    default:
+                        break;
+                }
+
+                currentRequest = null;
+            }
         }
+    }
+
+    public synchronized void request(DatabaseRequest request, boolean wait) {
+        request(request, wait, null);
+    }
+
+    public synchronized void request(DatabaseRequest request, boolean wait, DatabaseRequestListener listener) {
+        this.currentRequest = request;
 
         synchronized (waitLock) {
-            try {
-                waitLock.wait();
-            } catch(InterruptedException e) {}
+            waitLock.notify();
         }
+
+        while (wait && this.currentRequest == request) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+            }
+        }
+
+        if (listener != null)
+            listener.onFinish();
     }
 
     private void refreshEventData() {
@@ -87,6 +123,8 @@ public class DatabaseManager implements Runnable {
         } catch(Exception e) {
             e.printStackTrace();
         }
+
+        saveEvents();
     }
 
     private void readEvents() {
@@ -148,5 +186,9 @@ public class DatabaseManager implements Runnable {
 
     public List<Event> getEventList() {
         return eventList;
+    }
+
+    public void stopDatabaseService() {
+        running = false;
     }
 }

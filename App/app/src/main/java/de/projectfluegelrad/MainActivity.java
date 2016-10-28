@@ -1,11 +1,8 @@
 package de.projectfluegelrad;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,17 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import java.io.File;
-import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 
 import de.projectfluegelrad.calendar.CalendarFragment;
 import de.projectfluegelrad.database.DatabaseManager;
@@ -161,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public void refreshData(){
-        //databaseManager.refreshEventData();
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 }
