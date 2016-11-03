@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private CalendarFragment calendarFragment;
     private HomeFragment homeFragment;
+    private SettingsFragment settingsFragment;
+    private SearchFragment searchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +85,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
-        //bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
 
         calendarFragment = new CalendarFragment();
         calendarFragment.setArguments(bundle);
 
         homeFragment = new HomeFragment();
+        settingsFragment = new SettingsFragment();
+        searchFragment = new SearchFragment();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
         navigationView.getMenu().getItem(0).setChecked(true);
@@ -106,21 +109,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.nav_home) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+        } else if (id == R.id.nav_calender) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
+        } else if (id == R.id.nav_search) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchFragment).commit();
+        } else if (id == R.id.nav_settings) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
         }
 
         return super.onOptionsItemSelected(item);
@@ -140,11 +144,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_calender) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
         } else if (id == R.id.nav_search) {
-
-        } else if (id == R.id.nav_info || id == R.id.nav_info2) {
-
-        } else if (id == R.id.nav_setting) {
-
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchFragment).commit();
+        } else if (id == R.id.nav_settings) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

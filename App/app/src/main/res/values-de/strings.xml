@@ -7,8 +7,9 @@
     <string name="drawer_calender">Kalender</string>
     <string name="drawer_home">Start</string>
     <string name="drawer_search">Suche</string>
-    <string name="drawer_settings">Einstellung</string>
+    <string name="drawer_settings">Einstellungen</string>
     <string name="calender_show_adress">Zeige Adresse</string>
     <string name="drawer_add_calender">Füge Event zum Klaneder hinzu</string>
     <string name="calender_organized_by">organisiert von</string>
+    <string name="action_settings">Einstellungen</string>
 </resources>
