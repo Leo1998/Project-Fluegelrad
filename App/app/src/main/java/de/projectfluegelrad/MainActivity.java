@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private CalendarFragment calendarFragment;
     private HomeFragment homeFragment;
+    private SettingsFragment settingsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         homeFragment = new HomeFragment();
 
+        settingsFragment = new SettingsFragment();
+
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
         navigationView.getMenu().getItem(0).setChecked(true);
     }
@@ -144,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_info || id == R.id.nav_info2) {
 
         } else if (id == R.id.nav_setting) {
-
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
