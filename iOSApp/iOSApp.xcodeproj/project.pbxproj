@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */; };
 		AB9C31D91DCA2D4C0091C55F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */; };
 		AB9C31E01DCA2D4C0091C55F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB9C31DE1DCA2D4C0091C55F /* Main.storyboard */; };
 		AB9C31E21DCA2D4C0091C55F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB9C31E11DCA2D4C0091C55F /* Assets.xcassets */; };
@@ -15,9 +16,10 @@
 		AB9C31FB1DCA2D4C0091C55F /* iOSAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31FA1DCA2D4C0091C55F /* iOSAppUITests.swift */; };
 		AB9C32091DCA3C670091C55F /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C32081DCA3C670091C55F /* SearchViewController.swift */; };
 		AB9C320B1DCA410A0091C55F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C320A1DCA410A0091C55F /* HomeViewController.swift */; };
-		AB9C320D1DCA41290091C55F /* CalenderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C320C1DCA41290091C55F /* CalenderViewController.swift */; };
+		AB9C320D1DCA41290091C55F /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C320C1DCA41290091C55F /* CalendarViewController.swift */; };
 		AB9C320F1DCA41430091C55F /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C320E1DCA41430091C55F /* AboutViewController.swift */; };
 		AB9C32111DCA41530091C55F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C32101DCA41530091C55F /* SettingsViewController.swift */; };
+		AB9C32131DCA6F940091C55F /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C32121DCA6F940091C55F /* CalendarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridCell.swift; sourceTree = "<group>"; };
 		AB9C31D51DCA2D4C0091C55F /* iOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AB9C31DF1DCA2D4C0091C55F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -52,9 +55,10 @@
 		AB9C31FC1DCA2D4C0091C55F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AB9C32081DCA3C670091C55F /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		AB9C320A1DCA410A0091C55F /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		AB9C320C1DCA41290091C55F /* CalenderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalenderViewController.swift; sourceTree = "<group>"; };
+		AB9C320C1DCA41290091C55F /* CalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		AB9C320E1DCA41430091C55F /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AB9C32101DCA41530091C55F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		AB9C32121DCA6F940091C55F /* CalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +109,7 @@
 		AB9C31D71DCA2D4C0091C55F /* iOSApp */ = {
 			isa = PBXGroup;
 			children = (
-				AB9C320C1DCA41290091C55F /* CalenderViewController.swift */,
+				AB9C32141DCA6FBD0091C55F /* Calendar */,
 				AB9C320E1DCA41430091C55F /* AboutViewController.swift */,
 				AB9C32101DCA41530091C55F /* SettingsViewController.swift */,
 				AB9C320A1DCA410A0091C55F /* HomeViewController.swift */,
@@ -135,6 +139,16 @@
 				AB9C31FC1DCA2D4C0091C55F /* Info.plist */,
 			);
 			path = iOSAppUITests;
+			sourceTree = "<group>";
+		};
+		AB9C32141DCA6FBD0091C55F /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				AB9C320C1DCA41290091C55F /* CalendarViewController.swift */,
+				AB9C32121DCA6F940091C55F /* CalendarView.swift */,
+				AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */,
+			);
+			name = Calendar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,7 +288,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB9C320D1DCA41290091C55F /* CalenderViewController.swift in Sources */,
+				AB9C320D1DCA41290091C55F /* CalendarViewController.swift in Sources */,
+				AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */,
+				AB9C32131DCA6F940091C55F /* CalendarView.swift in Sources */,
 				AB9C31D91DCA2D4C0091C55F /* AppDelegate.swift in Sources */,
 				AB9C32091DCA3C670091C55F /* SearchViewController.swift in Sources */,
 				AB9C320F1DCA41430091C55F /* AboutViewController.swift in Sources */,
@@ -530,6 +546,7 @@
 				AB9C32011DCA2D4C0091C55F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AB9C32021DCA2D4C0091C55F /* Build configuration list for PBXNativeTarget "iOSAppTests" */ = {
 			isa = XCConfigurationList;
@@ -538,6 +555,7 @@
 				AB9C32041DCA2D4C0091C55F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AB9C32051DCA2D4C0091C55F /* Build configuration list for PBXNativeTarget "iOSAppUITests" */ = {
 			isa = XCConfigurationList;
@@ -546,6 +564,7 @@
 				AB9C32071DCA2D4C0091C55F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
