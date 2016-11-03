@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home"
-            android:title="@string/drawer_home" />
-        <item
-            android:id="@+id/nav_calender"
-            android:icon="@drawable/ic_today"
-            android:title="@string/drawer_calender" />
-        <item
-            android:id="@+id/nav_search"
-            android:icon="@drawable/ic_search"
-            android:title="@string/drawer_search" />
-        <item
-            android:id="@+id/nav_info"
-            android:icon="@drawable/ic_info"
-            android:title="@string/drawer_about" />
-        <item
-            android:id="@+id/nav_info2"
-            android:icon="@drawable/ic_info_outline"
-            android:title="@string/drawer_about" />
-        <item
-            android:id="@+id/nav_setting"
-            android:icon="@drawable/ic_settings"
-            android:title="@string/drawer_settings" />
-    </group>
+    <item android:title="@string/drawer_home"
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:enabled="true" />
+    <item android:title="@string/drawer_calender"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:id="@+id/nav_calender"
+        android:enabled="true" />
+    <item android:title="@string/drawer_search"
+        android:id="@+id/nav_search"
+        android:icon="@drawable/ic_search"
+        android:enabled="true" />
+    <item android:title="@string/drawer_settings"
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_settings"
+        android:enabled="true" />
 
 </menu>
