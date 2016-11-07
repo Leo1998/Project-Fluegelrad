@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB59B9EE1DCFB99200E4E9FE /* CalendarGridHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */; };
 		AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */; };
 		AB9C31D91DCA2D4C0091C55F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */; };
 		AB9C31E01DCA2D4C0091C55F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB9C31DE1DCA2D4C0091C55F /* Main.storyboard */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridHeader.swift; sourceTree = "<group>"; };
 		AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridCell.swift; sourceTree = "<group>"; };
 		AB9C31D51DCA2D4C0091C55F /* iOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 				AB9C320C1DCA41290091C55F /* CalendarViewController.swift */,
 				AB9C32121DCA6F940091C55F /* CalendarView.swift */,
 				AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */,
+				AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */,
 			);
 			name = Calendar;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB59B9EE1DCFB99200E4E9FE /* CalendarGridHeader.swift in Sources */,
 				AB9C320D1DCA41290091C55F /* CalendarViewController.swift in Sources */,
 				AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */,
 				AB9C32131DCA6F940091C55F /* CalendarView.swift in Sources */,

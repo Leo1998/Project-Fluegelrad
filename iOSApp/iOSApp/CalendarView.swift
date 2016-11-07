@@ -10,8 +10,8 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
     
     var left: UIButton!
     var right: UIButton!
-    
     var month: UILabel!
+    
     
     var dayGrid: UICollectionView!
     
@@ -26,36 +26,70 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         
         updateCalendar()
         
-        autoresizesSubviews = false
-        
         backgroundColor = tintColor
         
-        left = UIButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        left = UIButton()
+        left.translatesAutoresizingMaskIntoConstraints = false
         left.setImage(#imageLiteral(resourceName: "ic_arrow_back"), for: UIControlState.normal)
-        //left.frame = CGRect(x: 0, y: 0, width: left.frame.width, height: left.frame.height)
         
-        right = UIButton(frame: CGRect(x: frame.width-left.frame.width, y: 0, width: left.frame.width, height: left.frame.height))
+        right = UIButton()
+        right.translatesAutoresizingMaskIntoConstraints = false
         right.setImage(#imageLiteral(resourceName: "ic_arrow_forward"), for: UIControlState.normal)
-        //right.frame = CGRect(x: frame.width-right.frame.width, y: 0, width: right.frame.width, height: right.frame.height)
-
         
-        month = UILabel(frame: CGRect(x: left.frame.width * 2, y: 0, width: 200, height: 50))
+        month = UILabel()
         let monthInt = calendar.components([.month], from: date as Date).month!
+        month.translatesAutoresizingMaskIntoConstraints = false
         month.text = calendar.monthSymbols[monthInt - 1]
         
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 10, right: 10)
-        layout.itemSize = CGSize(width: 25, height: 25)
         
-        dayGrid = UICollectionView(frame: frame, collectionViewLayout: layout)
+        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        let dia = (UIScreen.main.bounds.width-5-5 - (7-1))/7
+        layout.itemSize = CGSize(width: dia, height: dia)
+        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = layout.minimumInteritemSpacing
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 100)
+        
+        dayGrid = UICollectionView(frame: CGRect(), collectionViewLayout: layout)
+        dayGrid.translatesAutoresizingMaskIntoConstraints = false
         dayGrid.dataSource = self
         dayGrid.delegate = self
+        dayGrid.register(CalendarGridHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "Header")
         dayGrid.register(CalendarGridCell.self, forCellWithReuseIdentifier: "Cell")
 
+        
         addSubview(left)
         addSubview(right)
         addSubview(month)
         addSubview(dayGrid)
+        
+        let leftButtonX = NSLayoutConstraint(item: left, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
+        let leftButtonY = NSLayoutConstraint(item: left, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
+        NSLayoutConstraint.activate([leftButtonX, leftButtonY])
+        
+        let rightButtonX = NSLayoutConstraint(item: right, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0)
+        let rightButtonY = NSLayoutConstraint(item: right, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
+        NSLayoutConstraint.activate([rightButtonX, rightButtonY])
+        
+        let monthLabelX = NSLayoutConstraint(item: month, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.centerX, multiplier: 1, constant: 0)
+        let monthLabelY = NSLayoutConstraint(item: month, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
+        NSLayoutConstraint.activate([monthLabelX, monthLabelY])
+        
+        let views = ["dayGrid": dayGrid]
+        let widthConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:[dayGrid(\(UIScreen.main.bounds.width))]", options: NSLayoutFormatOptions(rawValue: 0), metrics: nil, views: views)
+        NSLayoutConstraint.activate(widthConstraints)
+
+        let dayGridX = NSLayoutConstraint(item: dayGrid, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
+        let dayGridY = NSLayoutConstraint(item: dayGrid, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
+        NSLayoutConstraint.activate([dayGridX, dayGridY])
+        
+        let dayGridSpacingY = NSLayoutConstraint(item: dayGrid, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: left, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 50)
+        NSLayoutConstraint.activate([dayGridSpacingY])
+        
+        
+        
+
+
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -80,6 +114,17 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView,viewForSupplementaryElementOfKind kind: String,at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+            case UICollectionElementKindSectionHeader:
+                let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,withReuseIdentifier: "Header",for: indexPath) as! CalendarGridHeader
+
+                return headerView
+            default:
+                assert(false, "Unexpected element kind")
+        }
+    }
+    
     func updateCalendar() -> Void {
         daysShown.removeAll()
         
@@ -96,7 +141,7 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
 
         var dateBegin = calendar.date(byAdding: [.day], value: -monthBeginningCell, to: dateTemp, options: [])
         
-        while daysShown.count < 42 {
+        while daysShown.count <= 42 {
             dateBegin = calendar.date(byAdding: [.day], value: 1, to: dateBegin!, options: [])
             
             daysShown.append(dateBegin!)
