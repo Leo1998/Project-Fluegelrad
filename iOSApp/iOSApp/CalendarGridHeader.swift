@@ -1,17 +1,32 @@
 import UIKit
+import QuartzCore
 
 class CalendarGridHeader: UICollectionReusableView {
-    var numberLabel: UILabel!
+    var weekLabels = [UILabel]()
     
     override init(frame: CGRect){
         super.init(frame: frame)
         
-        numberLabel = UILabel(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
-        numberLabel.backgroundColor = UIColor.red
-        numberLabel.textAlignment = NSTextAlignment.center
-        numberLabel.text = "Hello World!"
+        let calendar = NSCalendar.autoupdatingCurrent
+        let weekString = calendar.shortWeekdaySymbols
         
-        addSubview(numberLabel)
+        for week in 0...6{
+            let tempLabel = UILabel(frame: CGRect(x: ((frame.size.width-5-5 - (7-1))/7+1) * CGFloat(week)+5, y: 0, width: (frame.size.width-5-5 - (7-1))/7, height: frame.size.height))
+            tempLabel.backgroundColor = UIColor.cyan
+            tempLabel.textAlignment = NSTextAlignment.center
+            
+            if week == 6 {
+                tempLabel.text = weekString[0]
+            }else{
+                tempLabel.text = weekString[week+1]
+            }
+            
+            weekLabels.append(tempLabel)
+            
+            addSubview(tempLabel)
+            
+        }
+        
     }
     
     required init?(coder aDecoder: NSCoder) {

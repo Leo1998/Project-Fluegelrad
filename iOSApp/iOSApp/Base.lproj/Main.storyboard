@@ -52,10 +52,24 @@
                     <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v3x-I7-JVv">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <items>
+                                    <barButtonItem title="Test" id="PWv-W9-RM8"/>
+                                </items>
+                            </toolbar>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="v3x-I7-JVv" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" id="2Um-sV-G2W"/>
+                            <constraint firstAttribute="trailing" secondItem="v3x-I7-JVv" secondAttribute="trailing" id="HzH-Yg-737"/>
+                            <constraint firstItem="v3x-I7-JVv" firstAttribute="top" secondItem="L7p-HK-0SC" secondAttribute="bottom" id="hzg-06-huQ"/>
+                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Calendar" image="ic_today" selectedImage="ic_today" id="cPa-gy-q4n"/>
                     <connections>
+                        <outlet property="calendarViewPH" destination="v3x-I7-JVv" id="yPu-m5-ggJ"/>
                         <outlet property="calendarViewPlaceHolder" destination="QS5-Rx-YEW" id="deN-6g-Wxh"/>
                     </connections>
                 </viewController>

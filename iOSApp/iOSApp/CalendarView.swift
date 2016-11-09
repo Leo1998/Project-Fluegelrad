@@ -23,6 +23,7 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         
         date = NSDate()
         calendar = Calendar.autoupdatingCurrent as NSCalendar!
+        calendar.firstWeekday = 2
         
         updateCalendar()
         
@@ -31,15 +32,16 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         left = UIButton()
         left.translatesAutoresizingMaskIntoConstraints = false
         left.setImage(#imageLiteral(resourceName: "ic_arrow_back"), for: UIControlState.normal)
+        left.addTarget(self, action: "buttonLeftClicked", for: .touchUpInside)
         
         right = UIButton()
         right.translatesAutoresizingMaskIntoConstraints = false
         right.setImage(#imageLiteral(resourceName: "ic_arrow_forward"), for: UIControlState.normal)
+        right.addTarget(self, action: "buttonRightClicked", for: .touchUpInside)
         
         month = UILabel()
-        let monthInt = calendar.components([.month], from: date as Date).month!
         month.translatesAutoresizingMaskIntoConstraints = false
-        month.text = calendar.monthSymbols[monthInt - 1]
+        
         
         
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
@@ -48,7 +50,7 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         layout.itemSize = CGSize(width: dia, height: dia)
         layout.minimumInteritemSpacing = 1
         layout.minimumLineSpacing = layout.minimumInteritemSpacing
-        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 100)
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: (UIScreen.main.bounds.width-5-5 - (7-1))/7)
         
         dayGrid = UICollectionView(frame: CGRect(), collectionViewLayout: layout)
         dayGrid.translatesAutoresizingMaskIntoConstraints = false
@@ -57,6 +59,7 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         dayGrid.register(CalendarGridHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "Header")
         dayGrid.register(CalendarGridCell.self, forCellWithReuseIdentifier: "Cell")
 
+        updateViews()
         
         addSubview(left)
         addSubview(right)
@@ -96,6 +99,18 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         fatalError("init(coder:) has not been implemented")
     }
     
+    func buttonLeftClicked(){
+        date = calendar.date(byAdding: [.month], value: -1, to: date as Date, options: []) as NSDate!
+        updateCalendar()
+        updateViews()
+    }
+    
+    func buttonRightClicked(){
+        date = calendar.date(byAdding: [.month], value: 1, to: date as Date, options: []) as NSDate!
+        updateCalendar()
+        updateViews()
+    }
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 42
     }
@@ -128,18 +143,18 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
     func updateCalendar() -> Void {
         daysShown.removeAll()
         
-        var dateTemp = Date()
+        var dateTemp = date.copy()
 
-        var dateComponents = calendar.components([.era, .year, .month], from: dateTemp)
+        var dateComponents = calendar.components([.era, .year, .month], from: dateTemp as! Date)
         dateComponents.day = 1
         
         dateTemp = calendar.date(from: dateComponents)!
         
-        let monthBeginningCell = calendar.components([.weekday], from: dateTemp).weekday! - 1
+        let monthBeginningCell = calendar.components([.weekday], from: dateTemp as! Date).weekday! - 1
         
         dateComponents.day = -monthBeginningCell
 
-        var dateBegin = calendar.date(byAdding: [.day], value: -monthBeginningCell, to: dateTemp, options: [])
+        var dateBegin = calendar.date(byAdding: [.day], value: -monthBeginningCell, to: dateTemp as! Date, options: [])
         
         while daysShown.count <= 42 {
             dateBegin = calendar.date(byAdding: [.day], value: 1, to: dateBegin!, options: [])
@@ -147,5 +162,13 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
             daysShown.append(dateBegin!)
         }
         
+    }
+    
+    func updateViews(){
+        let monthInt = calendar.components([.month], from: date as Date).month!
+        let yearInt = calendar.components([.year], from: date as Date).year!
+        month.text = calendar.monthSymbols[monthInt - 1] + " \(yearInt)"
+        
+        dayGrid.reloadData()
     }
 }

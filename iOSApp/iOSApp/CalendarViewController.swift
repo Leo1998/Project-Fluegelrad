@@ -4,6 +4,7 @@ class CalenderViewController: UIViewController {
     
     @IBOutlet var calendarViewPlaceHolder: UIView!
     
+    @IBOutlet var calendarViewPH: UIToolbar!
     var calendarView: CalendarView!
 
     
@@ -15,7 +16,7 @@ class CalenderViewController: UIViewController {
 
     override func viewDidLoad() {
         calendarView = CalendarView(frame: calendarViewPlaceHolder.bounds)
-        calendarViewPlaceHolder.addSubview(calendarView)
+        calendarViewPH.addSubview(calendarView)
 
         
         super.viewDidLoad()
