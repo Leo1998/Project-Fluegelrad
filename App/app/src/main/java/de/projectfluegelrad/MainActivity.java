@@ -19,6 +19,7 @@ import java.util.List;
 
 import de.projectfluegelrad.calendar.CalendarFragment;
 import de.projectfluegelrad.database.DatabaseManager;
+import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.Event;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -156,10 +157,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public void onDestroy() {
-        databaseManager.destroy();
+    protected void onPause() {
+        super.onPause();
 
-        super.onDestroy();
+        databaseManager.request(DatabaseRequest.SaveEventList, false);
     }
 
     public DatabaseManager getDatabaseManager() {
