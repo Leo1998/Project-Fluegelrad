@@ -110,4 +110,17 @@ public final class QueryExecuter {
         }
     }
 
+    public void closeConnection() {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+
+            connectionStatus = ConnectionStatus.NOT_CONNECTED;
+        } catch(SQLException e) {
+        }
+    }
 }

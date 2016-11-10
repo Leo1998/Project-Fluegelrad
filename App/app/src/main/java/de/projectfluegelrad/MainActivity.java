@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import de.projectfluegelrad.calendar.CalendarFragment;
 import de.projectfluegelrad.database.DatabaseManager;
+import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.Event;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -152,6 +154,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        databaseManager.request(DatabaseRequest.SaveEventList, false);
     }
 
     public DatabaseManager getDatabaseManager() {

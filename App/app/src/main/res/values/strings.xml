@@ -25,9 +25,6 @@
     <string name="calender_show_adress">Show Adress</string>
     <string name="drawer_add_calender">Add event to calender</string>
 
-    <string name="licenses_open">Open-Source-Lizenzen</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="licenses_open">Open-Source-Licences</string>
 
 </resources>

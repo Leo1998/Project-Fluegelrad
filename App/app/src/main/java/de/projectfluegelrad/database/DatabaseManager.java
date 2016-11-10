@@ -3,6 +3,7 @@ package de.projectfluegelrad.database;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.view.View;
+import android.widget.Toast;
 
 import org.json.JSONException;
 
@@ -15,6 +16,8 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import de.projectfluegelrad.database.logging.SnackbarLogger;
@@ -65,6 +68,9 @@ public class DatabaseManager implements Runnable {
                 switch (currentRequest) {
                     case RefreshEventList:
                         refreshEventData();
+                        break;
+                    case SaveEventList:
+                        saveEvents();
                         break;
                     default:
                         break;
@@ -124,6 +130,7 @@ public class DatabaseManager implements Runnable {
             e.printStackTrace();
         }
 
+        sortEvents();
         saveEvents();
     }
 
@@ -149,6 +156,8 @@ public class DatabaseManager implements Runnable {
 
             registerEvent(event);
         }
+
+        sortEvents();
     }
 
     private void saveEvents() {
@@ -184,11 +193,28 @@ public class DatabaseManager implements Runnable {
         eventList.add(event);
     }
 
+    private void sortEvents() {
+        Collections.sort(eventList, new Comparator<Event>() {
+            @Override
+            public int compare(Event e1, Event e2) {
+                return e1.getDate().compareTo(e2.getDate());
+            }
+        });
+    }
+
     public List<Event> getEventList() {
         return eventList;
     }
 
     public void stopDatabaseService() {
         running = false;
+    }
+
+    public void destroy() {
+        saveEvents();
+
+        running = false;
+
+        queryExecuter.closeConnection();
     }
 }
