@@ -39,9 +39,9 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="750" y="-320"/>
+            <point key="canvasLocation" x="750" y="-2072"/>
         </scene>
-        <!--Calender-->
+        <!--Calendar-->
         <scene sceneID="wg7-f3-ORb">
             <objects>
                 <viewController id="8rJ-Kc-sve" customClass="CalenderViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -53,25 +53,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Calender" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="zEq-FU-wV5">
-                                <rect key="frame" x="114.5" y="313" width="146.5" height="42"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="36"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v3x-I7-JVv">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <items>
+                                    <barButtonItem title="Test" id="PWv-W9-RM8"/>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="centerX" secondItem="zEq-FU-wV5" secondAttribute="centerX" id="qqM-NS-xev"/>
-                            <constraint firstAttribute="centerY" secondItem="zEq-FU-wV5" secondAttribute="centerY" id="qzY-Ky-pLD"/>
+                            <constraint firstItem="v3x-I7-JVv" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" id="2Um-sV-G2W"/>
+                            <constraint firstAttribute="trailing" secondItem="v3x-I7-JVv" secondAttribute="trailing" id="HzH-Yg-737"/>
+                            <constraint firstItem="v3x-I7-JVv" firstAttribute="top" secondItem="L7p-HK-0SC" secondAttribute="bottom" id="hzg-06-huQ"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Calender" image="ic_today" selectedImage="ic_today" id="cPa-gy-q4n"/>
+                    <tabBarItem key="tabBarItem" title="Calendar" image="ic_today" selectedImage="ic_today" id="cPa-gy-q4n"/>
+                    <connections>
+                        <outlet property="calendarViewPH" destination="v3x-I7-JVv" id="yPu-m5-ggJ"/>
+                        <outlet property="calendarViewPlaceHolder" destination="QS5-Rx-YEW" id="deN-6g-Wxh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="750" y="360"/>
+            <point key="canvasLocation" x="750" y="-1329"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
@@ -125,7 +129,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="06F-dl-hbt" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="750" y="1097"/>
+            <point key="canvasLocation" x="750" y="-582"/>
         </scene>
         <!--About us-->
         <scene sceneID="qBH-Nn-8Cd">
@@ -157,7 +161,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ayi-lF-5VE" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="750" y="-1066"/>
+            <point key="canvasLocation" x="750" y="249"/>
         </scene>
         <!--Settings-->
         <scene sceneID="lnE-B3-rFu">
@@ -189,7 +193,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="u1i-rT-9IO" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="750" y="-1791"/>
+            <point key="canvasLocation" x="750" y="1068"/>
         </scene>
     </scenes>
     <resources>
