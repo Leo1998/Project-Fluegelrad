@@ -2,6 +2,6 @@ package de.projectfluegelrad.database;
 
 public enum DatabaseRequest {
 
-    RefreshEventList
+    RefreshEventList, SaveEventList
 
 }

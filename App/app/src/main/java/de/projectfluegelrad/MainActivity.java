@@ -154,6 +154,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    public void onDestroy() {
+        databaseManager.destroy();
+
+        super.onDestroy();
+    }
+
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
     }
