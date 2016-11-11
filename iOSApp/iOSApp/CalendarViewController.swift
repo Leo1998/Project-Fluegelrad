@@ -15,11 +15,15 @@ class CalenderViewController: UIViewController {
 
 
     override func viewDidLoad() {
+        super.viewDidLoad()
+        
         calendarView = CalendarView(frame: calendarViewPlaceHolder.bounds)
         calendarViewPH.addSubview(calendarView)
 
         
-        super.viewDidLoad()
+        
+        
+
     }
 
 

@@ -32,12 +32,12 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         left = UIButton()
         left.translatesAutoresizingMaskIntoConstraints = false
         left.setImage(#imageLiteral(resourceName: "ic_arrow_back"), for: UIControlState.normal)
-        left.addTarget(self, action: "buttonLeftClicked", for: .touchUpInside)
+        left.addTarget(self, action: #selector(CalendarView.buttonLeftClicked), for: .touchUpInside)
         
         right = UIButton()
         right.translatesAutoresizingMaskIntoConstraints = false
         right.setImage(#imageLiteral(resourceName: "ic_arrow_forward"), for: UIControlState.normal)
-        right.addTarget(self, action: "buttonRightClicked", for: .touchUpInside)
+        right.addTarget(self, action: #selector(CalendarView.buttonRightClicked), for: .touchUpInside)
         
         month = UILabel()
         month.translatesAutoresizingMaskIntoConstraints = false
@@ -124,8 +124,6 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         
         cell.numberLabel.text = "\(labelText)"
         
-        print(labelText)
-
         return cell
     }
     
