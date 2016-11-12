@@ -55,21 +55,17 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             
             jsonElement = jsonResult[i] as! NSDictionary
             
-            let event = Event()
             
-            if let id = jsonElement["id"] as? String,let location = jsonElement["location"] as? String,let category = jsonElement["category"] as? String,let price = jsonElement["price"] as? String,let host = jsonElement["host"] as? String,let date = jsonElement["date"] as? String,let description = jsonElement["description"] as? String{
+            if let id = jsonElement["id"] as? String,let location = jsonElement["location"] as? String,let category = jsonElement["category"] as? String,let price = jsonElement["price"] as? String,let host = jsonElement["host"] as? String,let dateString = jsonElement["date"] as? String,let description = jsonElement["description"] as? String{
                 
-                event.id = Int(id)
-                event.location = location
-                event.category = category
-                event.price = Int(price)
-                event.host = host
-                event.date = Date()
-                event.descriptionEvent = description
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                let date = dateFormatter.date(from: dateString)
                 
+                let event = Event(id: Int(id)!, location: location, category: category, price: Int(price)!, host: host, date: date!, descriptionEvent: description)
+                events.add(event)
             }
             
-            events.add(event)
             
         }
         
