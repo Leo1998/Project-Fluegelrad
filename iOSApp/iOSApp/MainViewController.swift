@@ -5,8 +5,6 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
     var databaseManager:DatabaseManager!
     
     var  events: NSArray = NSArray()
-    var selectedEvent: Event = Event()
-    
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder);
@@ -15,6 +13,7 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
         databaseManager = DatabaseManager()
         databaseManager.delegate = self
         databaseManager.downloadItems()
@@ -22,6 +21,14 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
     
     func itemsDownloaded(items: NSArray) {
         events = items
+        
+        let eventsDict = NSMutableArray()
+        for event in events {
+            eventsDict.add((event as! Event).getDictonary())
+        }
+        
+        
+        UserDefaults.standard.set(eventsDict, forKey: "events")
     }
 
     override func didReceiveMemoryWarning() {

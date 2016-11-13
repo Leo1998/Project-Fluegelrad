@@ -15,11 +15,21 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
     
     var dayGrid: UICollectionView!
     
-    
+    var events: NSArray!
     
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        if let array: NSArray = UserDefaults.standard.object(forKey: "events") as! NSArray?{
+            
+            let eventsMutable = NSMutableArray()
+            for dict in array {
+                eventsMutable.add(Event(dict: dict as! NSDictionary))
+            }
+            
+            events = eventsMutable as NSArray
+        }
         
         date = NSDate()
         calendar = Calendar.autoupdatingCurrent as NSCalendar!
@@ -118,11 +128,33 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! CalendarGridCell
         
-        let dateDate: Date = daysShown[indexPath.item]
+        cell.numberLabel.textColor = UIColor.black
+        cell.numberLabel.backgroundColor = UIColor.yellow
         
-        let labelText = calendar.components([.day], from: dateDate).day!
+        let cellDate: Date = daysShown[indexPath.item]
         
-        cell.numberLabel.text = "\(labelText)"
+        let cellDateComponents = calendar.components([.year, .month, .day], from: cellDate)
+        let todayDateComponents = calendar.components([.year, .month, .day], from: NSDate() as Date)
+        let currentDateComponents = calendar.components([.year, .month, .day], from: date as Date)
+        
+        cell.numberLabel.text = "\(Int(cellDateComponents.day!))"
+        
+        if cellDateComponents.year == todayDateComponents.year && cellDateComponents.month == todayDateComponents.month && cellDateComponents.day == todayDateComponents.day {
+            cell.numberLabel.textColor = UIColor.blue
+        }else if cellDateComponents.month != currentDateComponents.month{
+            cell.numberLabel.textColor = UIColor.gray
+        }
+        
+        for event in events{
+            let eventDateComponents = calendar.components([.year, .month, .day], from: (event as! Event).date!)
+
+            if cellDateComponents.year == eventDateComponents.year && cellDateComponents.month == eventDateComponents.month && cellDateComponents.day == eventDateComponents.day {            cell.numberLabel.backgroundColor = UIColor.magenta
+                
+                break
+            }
+        }
+        
+        
         
         return cell
     }
