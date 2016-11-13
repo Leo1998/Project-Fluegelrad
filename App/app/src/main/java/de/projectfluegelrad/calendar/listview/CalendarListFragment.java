@@ -20,7 +20,7 @@ import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
 
-public class CalenderListFragment extends Fragment {
+public class CalendarListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class CalenderListFragment extends Fragment {
         Collections.reverse(events);
 
 
-        CalenderRecyclerViewAdapter adapter = new CalenderRecyclerViewAdapter(events);
+        CalendarRecyclerViewAdapter adapter = new CalendarRecyclerViewAdapter(events);
         adapter.setActivity(getActivity());
         recyclerView.setAdapter(adapter);
 

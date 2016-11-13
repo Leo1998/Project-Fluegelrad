@@ -14,15 +14,15 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.calendar.CalenderDayFragment;
+import de.projectfluegelrad.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.Event;
 
-public class CalenderRecyclerViewAdapter extends RecyclerView.Adapter<CalenderRecyclerViewAdapter.ViewHolder>{
+public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRecyclerViewAdapter.ViewHolder>{
 
     private List<Event> eventList;
     private FragmentActivity activity;
 
-    CalenderRecyclerViewAdapter(List<Event> events){
+    CalendarRecyclerViewAdapter(List<Event> events){
         this.eventList = events;
     }
 
@@ -57,11 +57,11 @@ public class CalenderRecyclerViewAdapter extends RecyclerView.Adapter<CalenderRe
             Bundle bundle = new Bundle();
             bundle.putParcelable("event", eventList.get(position));
 
-            CalenderDayFragment calenderDayFragment = new CalenderDayFragment();
-            calenderDayFragment.setArguments(bundle);
+            CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
+            calendarDayFragment.setArguments(bundle);
 
             if (activity != null) {
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calenderDayFragment).addToBackStack("calenderDayFragment").commit();
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
             }
         });
     }

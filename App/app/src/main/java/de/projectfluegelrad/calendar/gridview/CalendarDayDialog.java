@@ -1,21 +1,17 @@
 package de.projectfluegelrad.calendar.gridview;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 
 import java.util.List;
 
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.calendar.CalenderDayFragment;
+import de.projectfluegelrad.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.Event;
 
-public class CalenderDayDialog extends DialogFragment {
+public class CalendarDayDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -37,10 +33,10 @@ public class CalenderDayDialog extends DialogFragment {
             Bundle bundle = new Bundle();
             bundle.putParcelable("event", events.get(i));
 
-            CalenderDayFragment calenderDayFragment = new CalenderDayFragment();
-            calenderDayFragment.setArguments(bundle);
+            CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
+            calendarDayFragment.setArguments(bundle);
 
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calenderDayFragment).addToBackStack("calenderDayFragment").commit();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
         });
 
         return builder.create();

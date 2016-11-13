@@ -24,7 +24,7 @@ import java.util.Calendar;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Event;
 
-public class CalenderDayFragment extends Fragment{
+public class CalendarDayFragment extends Fragment{
 
     private Event event;
 

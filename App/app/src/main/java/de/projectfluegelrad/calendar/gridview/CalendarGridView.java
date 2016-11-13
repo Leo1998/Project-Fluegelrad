@@ -24,7 +24,7 @@ import java.util.List;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Event;
 
-public class CalenderGridView extends LinearLayout {
+public class CalendarGridView extends LinearLayout {
 
     private static final int DAYS_COUNT = 42;
 
@@ -41,17 +41,17 @@ public class CalenderGridView extends LinearLayout {
 
     private ArrayList<Calendar> daysShown;
 
-    public CalenderGridView(Context context) {
+    public CalendarGridView(Context context) {
         super(context);
         initControl(context);
     }
 
-    public CalenderGridView(Context context, AttributeSet attrs) {
+    public CalendarGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initControl(context);
     }
 
-    public CalenderGridView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CalendarGridView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initControl(context);
     }

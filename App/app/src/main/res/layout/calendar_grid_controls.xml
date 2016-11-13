@@ -57,7 +57,6 @@
 
     </LinearLayout>
 
-    <!-- days view -->
     <GridView
         android:id="@+id/calendar_grid"
         android:layout_width="match_parent"
