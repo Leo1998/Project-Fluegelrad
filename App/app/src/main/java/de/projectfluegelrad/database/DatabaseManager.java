@@ -110,7 +110,7 @@ public class DatabaseManager implements Runnable {
             ResultSetMetaData metaData = result.getMetaData();
 
             while (result.next()) {
-                if (metaData.getColumnCount() != 9) {
+                if (metaData.getColumnCount() != 10) {
                     throw new DatabaseException("Bad Event Data! (column count == " + metaData.getColumnCount() + ")");
                 }
 
@@ -123,8 +123,9 @@ public class DatabaseManager implements Runnable {
                 String description = result.getString("description");
                 int maxParticipants = result.getInt("maxParticipants");
                 int participants = result.getInt("participants");
+                int age = result.getInt("age");
 
-                Event event = new Event(id, location, category, price, host, date, description, maxParticipants, participants);
+                Event event = new Event(id, location, category, price, host, date, description, maxParticipants, participants, age);
 
                 registerEvent(event);
             }
