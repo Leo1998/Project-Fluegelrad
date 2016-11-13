@@ -26,6 +26,8 @@ public class Event implements Parcelable {
         host = in.readString();
         date = new Date(in.readLong());
         description = in.readString();
+        maxParticipants = in.readInt();
+        participants = in.readInt();
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -51,7 +53,7 @@ public class Event implements Parcelable {
 
         JSONObject obj = new JSONObject(new JSONTokener(json));
 
-        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getString("host"), new Date(obj.getLong("date")), obj.getString("description"));
+        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getString("host"), new Date(obj.getLong("date")), obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"));
 
         return event;
     }
@@ -66,6 +68,8 @@ public class Event implements Parcelable {
         obj.put("host", event.getHost());
         obj.put("date", event.getDate().getTime());
         obj.put("description", event.getDescription());
+        obj.put("maxParticipants", event.getMaxParticipants());
+        obj.put("participants", event.getParticipants());
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 
@@ -80,8 +84,10 @@ public class Event implements Parcelable {
     private String host;
     private Date date;
     private String description;
+    private int maxParticipants;
+    private int participants;
 
-    public Event(int id, String location, String category, int price, String host, Date date, String description) {
+    public Event(int id, String location, String category, int price, String host, Date date, String description, int maxParticipants, int participants) {
         this.id = id;
         this.location = location;
         this.category = category;
@@ -89,6 +95,8 @@ public class Event implements Parcelable {
         this.host = host;
         this.date = date;
         this.description = description;
+        this.maxParticipants = maxParticipants;
+        this.participants = participants;
     }
 
     public int getId() {
@@ -119,6 +127,14 @@ public class Event implements Parcelable {
         return description;
     }
 
+    public int getMaxParticipants() {
+        return maxParticipants;
+    }
+
+    public int getParticipants() {
+        return participants;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
@@ -129,23 +145,9 @@ public class Event implements Parcelable {
                 ", host='" + host + '\'' +
                 ", date=" + date +
                 ", description='" + description + '\'' +
+                ", maxParticipants=" + maxParticipants +
+                ", participants=" + participants +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Event event = (Event) o;
-
-        if (id != event.id) return false;
-        if (price != event.price) return false;
-        if (!location.equals(event.location)) return false;
-        if (!category.equals(event.category)) return false;
-        if (!host.equals(event.host)) return false;
-        if (!date.equals(event.date)) return false;
-        return description.equals(event.description);
     }
 
     public boolean equalsId(Event e) {
@@ -171,5 +173,7 @@ public class Event implements Parcelable {
         parcel.writeString(host);
         parcel.writeLong(date.getTime());
         parcel.writeString(description);
+        parcel.writeInt(maxParticipants);
+        parcel.writeInt(participants);
     }
 }
