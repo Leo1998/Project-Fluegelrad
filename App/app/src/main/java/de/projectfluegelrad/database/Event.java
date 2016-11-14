@@ -28,6 +28,7 @@ public class Event implements Parcelable {
         description = in.readString();
         maxParticipants = in.readInt();
         participants = in.readInt();
+        age = in.readInt();
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -53,7 +54,7 @@ public class Event implements Parcelable {
 
         JSONObject obj = new JSONObject(new JSONTokener(json));
 
-        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getString("host"), new Date(obj.getLong("date")), obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"));
+        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getString("host"), new Date(obj.getLong("date")), obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("age"));
 
         return event;
     }
@@ -70,6 +71,7 @@ public class Event implements Parcelable {
         obj.put("description", event.getDescription());
         obj.put("maxParticipants", event.getMaxParticipants());
         obj.put("participants", event.getParticipants());
+        obj.put("age", event.getAge());
 
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 
@@ -86,8 +88,9 @@ public class Event implements Parcelable {
     private String description;
     private int maxParticipants;
     private int participants;
+    private int age;
 
-    public Event(int id, String location, String category, int price, String host, Date date, String description, int maxParticipants, int participants) {
+    public Event(int id, String location, String category, int price, String host, Date date, String description, int maxParticipants, int participants, int age) {
         this.id = id;
         this.location = location;
         this.category = category;
@@ -97,6 +100,7 @@ public class Event implements Parcelable {
         this.description = description;
         this.maxParticipants = maxParticipants;
         this.participants = participants;
+        this.age = age;
     }
 
     public int getId() {
@@ -135,6 +139,10 @@ public class Event implements Parcelable {
         return participants;
     }
 
+    public int getAge() {
+        return age;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
@@ -147,6 +155,7 @@ public class Event implements Parcelable {
                 ", description='" + description + '\'' +
                 ", maxParticipants=" + maxParticipants +
                 ", participants=" + participants +
+                ", age=" + age +
                 '}';
     }
 
@@ -175,5 +184,6 @@ public class Event implements Parcelable {
         parcel.writeString(description);
         parcel.writeInt(maxParticipants);
         parcel.writeInt(participants);
+        parcel.writeInt(age);
     }
 }

@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.calendar.gridview.CalenderGridViewFragment;
-import de.projectfluegelrad.calendar.listview.CalenderListFragment;
+import de.projectfluegelrad.calendar.gridview.CalendarGridViewFragment;
+import de.projectfluegelrad.calendar.listview.CalendarListFragment;
 import de.projectfluegelrad.database.Event;
 
 public class CalendarFragment extends Fragment {
@@ -28,8 +28,8 @@ public class CalendarFragment extends Fragment {
         tabHost.setup(getActivity(), getChildFragmentManager(), R.layout.calendar_fragment);
 
 
-        tabHost.addTab(tabHost.newTabSpec("calendar_fragment").setIndicator(getString(R.string.calender_grid)), CalenderGridViewFragment.class, getArguments());
-        tabHost.addTab(tabHost.newTabSpec("list").setIndicator(getString(R.string.calender_list)), CalenderListFragment.class, getArguments());
+        tabHost.addTab(tabHost.newTabSpec("calendar_fragment").setIndicator(getString(R.string.calender_grid)), CalendarGridViewFragment.class, getArguments());
+        tabHost.addTab(tabHost.newTabSpec("list").setIndicator(getString(R.string.calender_list)), CalendarListFragment.class, getArguments());
 
 
         if (savedInstanceState != null){
