@@ -1,6 +1,6 @@
 import UIKit
 
-class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate{
+class CalendarGridView: UIView, UICollectionViewDataSource, UICollectionViewDelegate{
 
     var calendar: NSCalendar!
     var date: NSDate!
@@ -42,12 +42,12 @@ class CalendarView: UIView, UICollectionViewDataSource, UICollectionViewDelegate
         left = UIButton()
         left.translatesAutoresizingMaskIntoConstraints = false
         left.setImage(#imageLiteral(resourceName: "ic_arrow_back"), for: UIControlState.normal)
-        left.addTarget(self, action: #selector(CalendarView.buttonLeftClicked), for: .touchUpInside)
+        left.addTarget(self, action: #selector(CalendarGridView.buttonLeftClicked), for: .touchUpInside)
         
         right = UIButton()
         right.translatesAutoresizingMaskIntoConstraints = false
         right.setImage(#imageLiteral(resourceName: "ic_arrow_forward"), for: UIControlState.normal)
-        right.addTarget(self, action: #selector(CalendarView.buttonRightClicked), for: .touchUpInside)
+        right.addTarget(self, action: #selector(CalendarGridView.buttonRightClicked), for: .touchUpInside)
         
         month = UILabel()
         month.translatesAutoresizingMaskIntoConstraints = false
