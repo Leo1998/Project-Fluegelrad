@@ -3,17 +3,19 @@ import UIKit
 class CalenderViewController: UIViewController {
     
     @IBOutlet var calendarViewPlaceHolder: UIView!
-    
-    @IBOutlet var segmentController: UISegmentedControl!
 
+    @IBOutlet var navigationBar: UINavigationBar!
+    @IBOutlet var segmentController: UISegmentedControl!
+    
     var calendarGridView: CalendarGridView!
+    
     var calendarListView: CalendarListView!
     
     @IBAction func indexChanged(_ sender: Any) {
         switch segmentController.selectedSegmentIndex {
         case 0:
             calendarViewPlaceHolder.addSubview(calendarGridView)
-            
+          
             calendarListView.removeFromSuperview()
             break
         case 1:
@@ -36,13 +38,10 @@ class CalenderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        calendarGridView = CalendarGridView(frame: CGRect(x: 0, y: segmentController.frame.size.height*2, width: calendarViewPlaceHolder.frame.size.width, height: calendarViewPlaceHolder.frame.size.height - segmentController.frame.size.height))
+        calendarGridView = CalendarGridView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: calendarViewPlaceHolder.frame.size.height))
         calendarViewPlaceHolder.addSubview(calendarGridView)
-
         
-        calendarListView = CalendarListView(frame: CGRect(x: 0, y: segmentController.frame.size.height*2, width: calendarViewPlaceHolder.frame.size.width, height: calendarViewPlaceHolder.frame.size.height - segmentController.frame.size.height))
-        
-
+        calendarListView = CalendarListView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: calendarViewPlaceHolder.frame.size.height))
     }
 
 

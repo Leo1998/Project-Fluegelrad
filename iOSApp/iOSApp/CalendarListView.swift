@@ -23,7 +23,7 @@ class CalendarListView: UIView, UITableViewDelegate, UITableViewDataSource {
         eventTable = UITableView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
         eventTable.delegate = self
         eventTable.dataSource = self
-        eventTable.translatesAutoresizingMaskIntoConstraints = false
+        //eventTable.translatesAutoresizingMaskIntoConstraints = false
         eventTable.register(CalendarListCell.self, forCellReuseIdentifier: "cell")
         
         addSubview(eventTable)

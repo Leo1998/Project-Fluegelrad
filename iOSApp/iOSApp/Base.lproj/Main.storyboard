@@ -51,29 +51,48 @@
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="DbH-jO-TkU">
-                                <rect key="frame" x="118" y="20" width="139" height="29"/>
-                                <segments>
-                                    <segment title="Calendar"/>
-                                    <segment title="List"/>
-                                </segments>
-                                <connections>
-                                    <action selector="indexChanged:" destination="8rJ-Kc-sve" eventType="valueChanged" id="yjU-14-zuM"/>
-                                </connections>
-                            </segmentedControl>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CLc-SJ-LUH">
+                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                                <items>
+                                    <navigationItem id="SCG-lr-1MR">
+                                        <nil key="title"/>
+                                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="DbH-jO-TkU">
+                                            <rect key="frame" x="118" y="8" width="139" height="29"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                            <segments>
+                                                <segment title="Calendar"/>
+                                                <segment title="List"/>
+                                            </segments>
+                                            <connections>
+                                                <action selector="indexChanged:" destination="8rJ-Kc-sve" eventType="valueChanged" id="yjU-14-zuM"/>
+                                            </connections>
+                                        </segmentedControl>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1HW-qP-T1R">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="DbH-jO-TkU" firstAttribute="top" secondItem="L7p-HK-0SC" secondAttribute="bottom" id="Nbe-dd-8Gu"/>
-                            <constraint firstItem="DbH-jO-TkU" firstAttribute="centerX" secondItem="QS5-Rx-YEW" secondAttribute="centerX" id="pT5-tD-vjX"/>
+                            <constraint firstItem="1HW-qP-T1R" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" id="4Cb-ld-S15"/>
+                            <constraint firstAttribute="bottom" secondItem="1HW-qP-T1R" secondAttribute="bottom" id="7Xj-fM-btG"/>
+                            <constraint firstAttribute="trailing" secondItem="1HW-qP-T1R" secondAttribute="trailing" id="8Zh-0y-Z6x"/>
+                            <constraint firstItem="CLc-SJ-LUH" firstAttribute="top" secondItem="L7p-HK-0SC" secondAttribute="bottom" id="CJh-Ht-oXc"/>
+                            <constraint firstItem="CLc-SJ-LUH" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" id="gIe-Kv-hXo"/>
+                            <constraint firstItem="CLc-SJ-LUH" firstAttribute="bottom" secondItem="1HW-qP-T1R" secondAttribute="top" id="svk-bZ-BNb"/>
+                            <constraint firstItem="1HW-qP-T1R" firstAttribute="trailing" secondItem="CLc-SJ-LUH" secondAttribute="trailing" id="yNe-0J-KJn"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Calendar" image="ic_today" selectedImage="ic_today" id="cPa-gy-q4n"/>
                     <connections>
-                        <outlet property="calendarViewPlaceHolder" destination="QS5-Rx-YEW" id="Qt6-fY-8BU"/>
-                        <outlet property="segmentController" destination="DbH-jO-TkU" id="3F5-cr-OSA"/>
+                        <outlet property="calendarViewPlaceHolder" destination="1HW-qP-T1R" id="EuS-k5-k9v"/>
+                        <outlet property="navigationBar" destination="CLc-SJ-LUH" id="vpB-dn-sdc"/>
+                        <outlet property="segmentController" destination="DbH-jO-TkU" id="fJe-Ox-Bd5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
