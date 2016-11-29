@@ -2,15 +2,21 @@ import UIKit
 import QuartzCore
 
 class CalendarGridHeader: UICollectionReusableView {
-    var weekView: UIView!
+    private var weekView: UIView!
     
-    var left: UIButton!
-    var right: UIButton!
-    var month: UILabel!
+    private(set) var left: UIButton!
+    private(set) var right: UIButton!
+    private(set) var month: UILabel!
     
     override init(frame: CGRect){
         super.init(frame: frame)
         
+        setupWeekView()
+        setupMonthChanger()
+        setupConstraints()
+    }
+    
+    private func setupWeekView(){
         let calendar = NSCalendar.autoupdatingCurrent
         let weekString = calendar.shortWeekdaySymbols
         
@@ -30,9 +36,11 @@ class CalendarGridHeader: UICollectionReusableView {
             
             weekView.addSubview(tempLabel)
         }
-
-        addSubview(weekView)
         
+        addSubview(weekView)
+    }
+    
+    private func setupMonthChanger(){
         left = UIButton()
         left.translatesAutoresizingMaskIntoConstraints = false
         left.setImage(#imageLiteral(resourceName: "ic_arrow_back"), for: UIControlState.normal)
@@ -43,12 +51,13 @@ class CalendarGridHeader: UICollectionReusableView {
         
         month = UILabel()
         month.translatesAutoresizingMaskIntoConstraints = false
-
+        
         addSubview(left)
         addSubview(right)
         addSubview(month)
-        
-        
+    }
+    
+    private func setupConstraints(){
         let leftButtonX = NSLayoutConstraint(item: left, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
         let leftButtonY = NSLayoutConstraint(item: left, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
         NSLayoutConstraint.activate([leftButtonX, leftButtonY])

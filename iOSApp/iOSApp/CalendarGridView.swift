@@ -1,23 +1,32 @@
 import UIKit
 
-class CalendarGridView: UIView, UICollectionViewDataSource, UICollectionViewDelegate{
+class CalendarGridView: UIView, UICollectionViewDataSource{
 
-    var calendar: NSCalendar!
-    var date: NSDate!
+    private var calendar: NSCalendar!
+    private var date: NSDate!
     
-    var daysShown = [Date]()
+    private var daysShown = [Date]()
     
     
-    var dayGrid: UICollectionView!
+    private(set) var dayGrid: UICollectionView!
     
-    var events: NSArray!
+    private var events: NSArray!
+    private(set) var shownEvents = [Int: Event]()
     
-    var headerView: CalendarGridHeader!
+    private var headerView: CalendarGridHeader!
     
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
+        setupEvents()
+        updateCalendar()
+        setupDayGrid()
+        updateViews(fromReload: false)
+        setupConstraints()
+    }
+    
+    private func setupEvents(){
         if let array: NSArray = UserDefaults.standard.object(forKey: "events") as! NSArray?{
             
             let eventsMutable = NSMutableArray()
@@ -31,10 +40,9 @@ class CalendarGridView: UIView, UICollectionViewDataSource, UICollectionViewDele
         date = NSDate()
         calendar = Calendar.autoupdatingCurrent as NSCalendar!
         calendar.firstWeekday = 2
-        
-        updateCalendar()
-        
-        
+    }
+    
+    private func setupDayGrid(){
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         let dia = (frame.size.width-5-5 - (7-1))/7
@@ -46,22 +54,22 @@ class CalendarGridView: UIView, UICollectionViewDataSource, UICollectionViewDele
         dayGrid = UICollectionView(frame: CGRect(), collectionViewLayout: layout)
         dayGrid.translatesAutoresizingMaskIntoConstraints = false
         dayGrid.dataSource = self
-        dayGrid.delegate = self
         dayGrid.register(CalendarGridHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "Header")
         dayGrid.register(CalendarGridCell.self, forCellWithReuseIdentifier: "Cell")
         dayGrid.backgroundColor = UIColor.clear
         
-        updateViews(fromReload: false)
-        
         addSubview(dayGrid)
-        
+    }
+    
+    private func setupConstraints(){
         let widthConstraints = NSLayoutConstraint(item: dayGrid, attribute: NSLayoutAttribute.width, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: frame.size.width)
         let heightConstraints = NSLayoutConstraint(item: dayGrid, attribute: NSLayoutAttribute.height, relatedBy: NSLayoutRelation.equal, toItem: nil, attribute: NSLayoutAttribute.notAnAttribute, multiplier: 1, constant: frame.size.height)
         NSLayoutConstraint.activate([widthConstraints, heightConstraints])
-
+        
         let dayGridX = NSLayoutConstraint(item: dayGrid, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
         let dayGridY = NSLayoutConstraint(item: dayGrid, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
         NSLayoutConstraint.activate([dayGridX, dayGridY])
+
     }
     
     public required init(coder aDecoder: NSCoder) {
@@ -109,6 +117,9 @@ class CalendarGridView: UIView, UICollectionViewDataSource, UICollectionViewDele
 
             if cellDateComponents.year == eventDateComponents.year && cellDateComponents.month == eventDateComponents.month && cellDateComponents.day == eventDateComponents.day {
                 cell.numberLabel.backgroundColor = UIColor.red
+                
+                shownEvents[indexPath.item] = event as? Event
+                
                 break
             }
         }
@@ -134,7 +145,7 @@ class CalendarGridView: UIView, UICollectionViewDataSource, UICollectionViewDele
         }
     }
     
-    func updateCalendar() -> Void {
+    private func updateCalendar() -> Void {
         daysShown.removeAll()
         
         var dateTemp = date.copy()
@@ -158,7 +169,7 @@ class CalendarGridView: UIView, UICollectionViewDataSource, UICollectionViewDele
         
     }
     
-    func updateViews(fromReload: Bool){
+    private func updateViews(fromReload: Bool){
         let monthInt = calendar.components([.month], from: date as Date).month!
         let yearInt = calendar.components([.year], from: date as Date).year!
         

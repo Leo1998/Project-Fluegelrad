@@ -2,23 +2,15 @@ import UIKit
 
 class CalendarListView: UIView, UITableViewDelegate, UITableViewDataSource {
     
-    var eventTable: UITableView!
+    private var eventTable: UITableView!
     
-    var events: NSArray!
+    private var events: NSArray!
 
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-
-        if let array: NSArray = UserDefaults.standard.object(forKey: "events") as! NSArray?{
-            
-            let eventsMutable = NSMutableArray()
-            for dict in array {
-                eventsMutable.add(Event(dict: dict as! NSDictionary))
-            }
-            
-            events = eventsMutable as NSArray
-        }
+        
+        setupEvents()
         
         eventTable = UITableView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
         eventTable.delegate = self
@@ -28,6 +20,18 @@ class CalendarListView: UIView, UITableViewDelegate, UITableViewDataSource {
         
         addSubview(eventTable)
 
+    }
+    
+    private func setupEvents(){
+        if let array: NSArray = UserDefaults.standard.object(forKey: "events") as! NSArray?{
+            
+            let eventsMutable = NSMutableArray()
+            for dict in array {
+                eventsMutable.add(Event(dict: dict as! NSDictionary))
+            }
+            
+            events = eventsMutable as NSArray
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

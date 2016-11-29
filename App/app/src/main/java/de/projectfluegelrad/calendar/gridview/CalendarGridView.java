@@ -113,7 +113,7 @@ public class CalendarGridView extends LinearLayout {
         Calendar calendar = (Calendar)currentDate.clone();
 
         calendar.set(Calendar.DAY_OF_MONTH, 1);
-        int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 2;
+        int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 1 == 0 ? 6 : calendar.get(Calendar.DAY_OF_WEEK) - 1 - 1;
 
         calendar.add(Calendar.DAY_OF_MONTH, -monthBeginningCell);
 

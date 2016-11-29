@@ -2,7 +2,7 @@ import UIKit
 import QuartzCore
 
 class CalendarGridCell: UICollectionViewCell {
-    var numberLabel: UILabel!
+    private(set) var numberLabel: UILabel!
     
     override init(frame: CGRect){
         super.init(frame: frame)

@@ -2,9 +2,9 @@ import UIKit
 
 class MainViewController: UITabBarController, DatabaseManagerProtocol {
     
-    var databaseManager:DatabaseManager!
+    private var databaseManager:DatabaseManager!
     
-    var  events: NSArray = NSArray()
+    private var events: NSArray = NSArray()
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder);
