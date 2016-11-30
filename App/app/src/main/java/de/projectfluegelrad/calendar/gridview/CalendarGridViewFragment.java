@@ -36,12 +36,11 @@ public class CalendarGridViewFragment extends Fragment {
 
         GridView gridView = (GridView) calendarGridView.findViewById(R.id.calendar_grid);
         gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Calendar calendar = Calendar.getInstance();
 
             List<Event> eventsOnDate = new ArrayList<Event>();
 
             for (Event e : events){
-                calendar.setTime(e.getDate());
+                Calendar calendar = e.getDate();
 
                 if (calendar.get(Calendar.YEAR) == calendarGridView.getDaysShown().get(i).get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == calendarGridView.getDaysShown().get(i).get(Calendar.MONTH) && calendar.get(Calendar.DAY_OF_MONTH) == calendarGridView.getDaysShown().get(i).get(Calendar.DAY_OF_MONTH)){
                     eventsOnDate.add(e);

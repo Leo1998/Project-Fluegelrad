@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class CalendarListFragment extends Fragment {
         List<Event> original = getArguments().getParcelableArrayList("eventList");
 
         for (int i = original.size()-1; i >= 0; i--){
-            if (original.get(i).getDate().compareTo(new Date(System.currentTimeMillis())) > 0){
+            if (original.get(i).getDate().compareTo(Calendar.getInstance()) > 0){
                 events.add(original.get(i));
             }else {
                 break;

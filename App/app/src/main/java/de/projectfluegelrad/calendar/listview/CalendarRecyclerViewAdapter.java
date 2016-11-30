@@ -40,14 +40,13 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Calendar i = Calendar.getInstance();
-        i.setTime(eventList.get(position).getDate());
+        Calendar i = eventList.get(position).getDate();
 
         holder.getCategoryTextView().setText(eventList.get(position).getCategory());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
-        holder.getDateTextView().setText(simpleDateFormat.format(eventList.get(position).getDate()));
+        holder.getDateTextView().setText(simpleDateFormat.format(eventList.get(position).getDate().getTime()));
 
         //TODO
         holder.getLocationTextView().setText(eventList.get(position).getLocation());

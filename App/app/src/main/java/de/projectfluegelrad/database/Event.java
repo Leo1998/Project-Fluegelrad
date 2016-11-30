@@ -5,16 +5,11 @@ import android.os.Parcelable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class Event implements Parcelable {
 
@@ -24,7 +19,9 @@ public class Event implements Parcelable {
         category = in.readString();
         price = in.readInt();
         host = in.readString();
-        date = new Date(in.readLong());
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date(in.readLong()));
+        date = c;
         description = in.readString();
         maxParticipants = in.readInt();
         participants = in.readInt();
@@ -43,23 +40,17 @@ public class Event implements Parcelable {
         }
     };
 
-    public static Event readEvent(InputStream in) throws IOException, JSONException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+    public static Event readEvent(JSONObject obj) throws JSONException, ParseException {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        c.setTime(simpleDateFormat.parse(obj.getString("date")));
 
-        String json = "";
-        for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-            json += line;
-        }
-        reader.close();
-
-        JSONObject obj = new JSONObject(new JSONTokener(json));
-
-        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getString("host"), new Date(obj.getLong("date")), obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("age"));
+        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getString("host"), c, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("age"));
 
         return event;
     }
 
-    public static void writeEvent(OutputStream out, Event event) throws IOException, JSONException {
+    public static JSONObject writeEvent(Event event) throws JSONException {
         JSONObject obj = new JSONObject();
 
         obj.put("id", event.getId());
@@ -67,16 +58,13 @@ public class Event implements Parcelable {
         obj.put("category", event.getCategory());
         obj.put("price", event.getPrice());
         obj.put("host", event.getHost());
-        obj.put("date", event.getDate().getTime());
+        obj.put("date", event.getDateFormatted());
         obj.put("description", event.getDescription());
         obj.put("maxParticipants", event.getMaxParticipants());
         obj.put("participants", event.getParticipants());
         obj.put("age", event.getAge());
 
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
-
-        writer.write(obj.toString());
-        writer.close();
+        return obj;
     }
 
     private int id;
@@ -84,13 +72,13 @@ public class Event implements Parcelable {
     private String category;
     private int price;
     private String host;
-    private Date date;
+    private Calendar date;
     private String description;
     private int maxParticipants;
     private int participants;
     private int age;
 
-    public Event(int id, String location, String category, int price, String host, Date date, String description, int maxParticipants, int participants, int age) {
+    public Event(int id, String location, String category, int price, String host, Calendar date, String description, int maxParticipants, int participants, int age) {
         this.id = id;
         this.location = location;
         this.category = category;
@@ -123,8 +111,13 @@ public class Event implements Parcelable {
         return host;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         return date;
+    }
+
+    public String getDateFormatted() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        return simpleDateFormat.format(this.date.getTime());
     }
 
     public String getDescription() {
@@ -180,7 +173,7 @@ public class Event implements Parcelable {
         parcel.writeString(category);
         parcel.writeInt(price);
         parcel.writeString(host);
-        parcel.writeLong(date.getTime());
+        parcel.writeLong(date.getTimeInMillis());
         parcel.writeString(description);
         parcel.writeInt(maxParticipants);
         parcel.writeInt(participants);

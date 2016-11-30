@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -156,8 +157,7 @@ public class CalendarGridView extends LinearLayout {
 
             if (events != null) {
                 for (Event eventDate : events) {
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(eventDate.getDate());
+                    Calendar cal = eventDate.getDate();
 
                     if (cal.get(Calendar.DAY_OF_MONTH) == day && cal.get(Calendar.MONTH) == month && cal.get(Calendar.YEAR) == year) {
                         view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.event));
