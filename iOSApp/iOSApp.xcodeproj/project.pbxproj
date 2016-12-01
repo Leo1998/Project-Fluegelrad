@@ -134,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				AB7913731DD4B99500EF8B97 /* DatabaseManager.swift */,
+				AB7913711DD4B73200EF8B97 /* Event.swift */,
 			);
 			name = database;
 			sourceTree = "<group>";
@@ -161,6 +162,7 @@
 		AB9C31D71DCA2D4C0091C55F /* iOSApp */ = {
 			isa = PBXGroup;
 			children = (
+				AB7913751DD4C68900EF8B97 /* MainViewController.swift */,
 				AB7913701DD4B6EB00EF8B97 /* database */,
 				AB79136F1DD4B6A000EF8B97 /* calendar */,
 				AB9C320E1DCA41430091C55F /* AboutViewController.swift */,
@@ -168,12 +170,10 @@
 				AB9C320A1DCA410A0091C55F /* HomeViewController.swift */,
 				AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */,
 				AB9C32081DCA3C670091C55F /* SearchViewController.swift */,
-				AB7913751DD4C68900EF8B97 /* MainViewController.swift */,
 				AB9C31E11DCA2D4C0091C55F /* Assets.xcassets */,
 				AB0C85361DF04E5B00314F0C /* Main.storyboard */,
 				AB9C31E31DCA2D4C0091C55F /* LaunchScreen.storyboard */,
 				AB9C31E61DCA2D4C0091C55F /* Info.plist */,
-				AB7913711DD4B73200EF8B97 /* Event.swift */,
 			);
 			path = iOSApp;
 			sourceTree = "<group>";

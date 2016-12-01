@@ -1,15 +1,17 @@
 import Foundation
 
 protocol DatabaseManagerProtocol: class {
-    func itemsDownloaded(items: NSArray)
+    func itemsDownloaded(items: [Event])
 }
 
 class DatabaseManager: NSObject, URLSessionDataDelegate{
     weak var delegate: DatabaseManagerProtocol!
     
-    var data: NSMutableData = NSMutableData()
+    private var data: NSMutableData = NSMutableData()
     
-    let urlPath: String = "http://pipigift.ddns.net/dbService.php"
+    private let urlPath: String = "http://pipigift.ddns.net/dbService.php"
+    
+    private var events = [Event]()
     
     func downloadItems() {
         let url: URL = URL(string: urlPath)!
@@ -29,6 +31,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        events = UserDefaults.standard.array(forKey: "events") as! [Event]
         if error != nil {
             print("Failed to download data")
         }else {
@@ -36,9 +39,13 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             self.parseJSON()
         }
         
+        let queue = DispatchQueue(label: "de.project.iOSApp.DatabaseManager", qos: .utility, target: nil)
+        queue.async {
+            self.delegate.itemsDownloaded(items: self.events)
+        }
     }
 
-    func parseJSON() {
+    private func parseJSON() {
         var jsonResult: NSArray = NSArray()
         
         do{
@@ -69,11 +76,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             
         }
         
-        let queue = DispatchQueue(label: "de.project.iOSApp.DatabaseManager", qos: .utility, target: nil)
-            queue.async {
-            self.delegate.itemsDownloaded(items: events)
-        }
+        self.events = events as NSArray as! [Event]
 
     }
-
 }
