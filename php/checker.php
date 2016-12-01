@@ -2,6 +2,12 @@
 	//Initalize PDO for mysql
 	$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'testuser', 'ebLBBnZ8XCHSyQTJ');
 	
+	//Delete expired Users
+	$time = time();
+	$deleteUsers = $pdo->prepare("DELETE FROM user WHERE expire < :time");
+	$deleteUsers->bindParam('time', $time, PDO::PARAM_INT);
+	$deleteUsers->execute();
+	
 	//Get UserId(u)
 	if(isset($_GET['u'])) {
 		$u = $_GET['u'];
@@ -44,11 +50,13 @@
 		//Checks token with hashed token
 		if(password_verify($t, $sHash)){
 			$idPresent = true;
-			//Creates new token if token is correct
+			//Creates new token and updates expire if token is correct
 			$newToken = random_string();
 			$newHash = password_hash($newToken, PASSWORD_DEFAULT);
-			$updateToken = $pdo->prepare("UPDATE user SET token = ? WHERE id = ?");
-			$updateToken->execute(array($newHash,$sId));
+			$expire = time();
+			$expire += 30758400;
+			$updateToken = $pdo->prepare("UPDATE user SET token = ? , expire = ? WHERE id = ?");
+			$updateToken->execute(array($newHash,$expire,$sId));
 			//Echos new token
 			echo json_encode(array($newToken));
 			break;

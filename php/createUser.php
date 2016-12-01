@@ -1,6 +1,12 @@
 <?php
 	$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'testuser', 'ebLBBnZ8XCHSyQTJ');
 	
+	//Delete expired Users
+	$time = time();
+	$deleteUsers = $pdo->prepare("DELETE FROM user WHERE expire < :time");
+	$deleteUsers->bindParam('time', $time, PDO::PARAM_INT);
+	$deleteUsers->execute();
+	
 	//Returns a random String
 	function random_string() {
 		if(function_exists('random_bytes')) {
@@ -32,5 +38,5 @@
 	$id = intval($pdo->lastInsertId());
 	
 	//Echos Token and Id
-	echo json_encode(array($id,$token,$hash));
+	echo json_encode(array($id,$token));
 ?>
