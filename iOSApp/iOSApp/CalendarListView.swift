@@ -1,10 +1,11 @@
 import UIKit
 
-class CalendarListView: UIView, UITableViewDelegate, UITableViewDataSource {
+class CalendarListView: UIView, UITableViewDataSource {
     
-    private var eventTable: UITableView!
+    private(set) var eventTable: UITableView!
     
     private var events: NSArray!
+    private(set) var shownEvents = [Event]()
 
     
     public override init(frame: CGRect) {
@@ -13,9 +14,7 @@ class CalendarListView: UIView, UITableViewDelegate, UITableViewDataSource {
         setupEvents()
         
         eventTable = UITableView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
-        eventTable.delegate = self
         eventTable.dataSource = self
-        //eventTable.translatesAutoresizingMaskIntoConstraints = false
         eventTable.register(CalendarListCell.self, forCellReuseIdentifier: "cell")
         
         addSubview(eventTable)
@@ -31,6 +30,23 @@ class CalendarListView: UIView, UITableViewDelegate, UITableViewDataSource {
             }
             
             events = eventsMutable as NSArray
+        }
+        
+        shownEvents = events.sortedArray(comparator: {
+            (event1, event2) -> ComparisonResult in
+            
+            let date1 = (event1 as! Event).date
+            let date2 = (event2 as! Event).date
+            
+            return (date1!.compare(date2!))
+        
+        }) as! [Event]
+
+        let today = Date()
+        for (index, value) in events.enumerated(){
+            if (value as! Event).date.compare(today) == ComparisonResult.orderedAscending{
+                shownEvents.remove(at: index)
+            }
         }
     }
     

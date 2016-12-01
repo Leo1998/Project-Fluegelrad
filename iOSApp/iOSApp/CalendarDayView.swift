@@ -45,8 +45,11 @@ class CalendarDayView: UIView {
         addSubview(hostLabel)
         addSubview(descriptionLabel)
         addSubview(prizeLabel)
-        
-        
+
+        setupConstraints()
+    }
+    
+    private func setupConstraints(){
         let categoryLabelX = NSLayoutConstraint(item: categoryLabel, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
         let categoryLabelY = NSLayoutConstraint(item: categoryLabel, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
         NSLayoutConstraint.activate([categoryLabelX, categoryLabelY])
@@ -68,7 +71,7 @@ class CalendarDayView: UIView {
         NSLayoutConstraint.activate([descriptionLabelX, descriptionLabelY])
         
         let prizeLabelX = NSLayoutConstraint(item: prizeLabel, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0)
-        let prizeLabelY = NSLayoutConstraint(item: prizeLabel, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
+        let prizeLabelY = NSLayoutConstraint(item: prizeLabel, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: -100)
         NSLayoutConstraint.activate([prizeLabelX, prizeLabelY])
     }
     

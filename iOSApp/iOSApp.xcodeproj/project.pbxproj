@@ -9,14 +9,14 @@
 /* Begin PBXBuildFile section */
 		AB037A931DD9CA96004D4AAC /* CalendarListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB037A921DD9CA96004D4AAC /* CalendarListView.swift */; };
 		AB037A951DDA452F004D4AAC /* CalendarListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB037A941DDA452F004D4AAC /* CalendarListCell.swift */; };
-		AB57ED931DDDD7ED006C1121 /* CalendarDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB57ED921DDDD7ED006C1121 /* CalendarDayView.swift */; };
+		AB0C85371DF04E5B00314F0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB0C85361DF04E5B00314F0C /* Main.storyboard */; };
+		AB35C5091DEF2FFB006D7A6D /* CalendarDayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */; };
 		AB59B9EE1DCFB99200E4E9FE /* CalendarGridHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */; };
 		AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */; };
 		AB7913721DD4B73200EF8B97 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7913711DD4B73200EF8B97 /* Event.swift */; };
 		AB7913741DD4B99500EF8B97 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7913731DD4B99500EF8B97 /* DatabaseManager.swift */; };
 		AB7913761DD4C68900EF8B97 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7913751DD4C68900EF8B97 /* MainViewController.swift */; };
 		AB9C31D91DCA2D4C0091C55F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */; };
-		AB9C31E01DCA2D4C0091C55F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB9C31DE1DCA2D4C0091C55F /* Main.storyboard */; };
 		AB9C31E21DCA2D4C0091C55F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB9C31E11DCA2D4C0091C55F /* Assets.xcassets */; };
 		AB9C31E51DCA2D4C0091C55F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB9C31E31DCA2D4C0091C55F /* LaunchScreen.storyboard */; };
 		AB9C31F01DCA2D4C0091C55F /* iOSAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31EF1DCA2D4C0091C55F /* iOSAppTests.swift */; };
@@ -49,7 +49,8 @@
 /* Begin PBXFileReference section */
 		AB037A921DD9CA96004D4AAC /* CalendarListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarListView.swift; sourceTree = "<group>"; };
 		AB037A941DDA452F004D4AAC /* CalendarListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarListCell.swift; sourceTree = "<group>"; };
-		AB57ED921DDDD7ED006C1121 /* CalendarDayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarDayView.swift; sourceTree = "<group>"; };
+		AB0C85361DF04E5B00314F0C /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = ../../../Main.storyboard; sourceTree = "<group>"; };
+		AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarDayViewController.swift; sourceTree = "<group>"; };
 		AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridHeader.swift; sourceTree = "<group>"; };
 		AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridCell.swift; sourceTree = "<group>"; };
 		AB7913711DD4B73200EF8B97 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -57,7 +58,6 @@
 		AB7913751DD4C68900EF8B97 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		AB9C31D51DCA2D4C0091C55F /* iOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		AB9C31DF1DCA2D4C0091C55F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AB9C31E11DCA2D4C0091C55F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AB9C31E41DCA2D4C0091C55F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AB9C31E61DCA2D4C0091C55F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -123,7 +123,7 @@
 			isa = PBXGroup;
 			children = (
 				AB9C320C1DCA41290091C55F /* CalendarViewController.swift */,
-				AB57ED921DDDD7ED006C1121 /* CalendarDayView.swift */,
+				AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */,
 				AB569B781DD9CA25001B513B /* list */,
 				AB569B771DD9CA18001B513B /* grid */,
 			);
@@ -168,9 +168,9 @@
 				AB9C320A1DCA410A0091C55F /* HomeViewController.swift */,
 				AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */,
 				AB9C32081DCA3C670091C55F /* SearchViewController.swift */,
-				AB9C31DE1DCA2D4C0091C55F /* Main.storyboard */,
 				AB7913751DD4C68900EF8B97 /* MainViewController.swift */,
 				AB9C31E11DCA2D4C0091C55F /* Assets.xcassets */,
+				AB0C85361DF04E5B00314F0C /* Main.storyboard */,
 				AB9C31E31DCA2D4C0091C55F /* LaunchScreen.storyboard */,
 				AB9C31E61DCA2D4C0091C55F /* Info.plist */,
 				AB7913711DD4B73200EF8B97 /* Event.swift */,
@@ -306,9 +306,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB0C85371DF04E5B00314F0C /* Main.storyboard in Resources */,
 				AB9C31E51DCA2D4C0091C55F /* LaunchScreen.storyboard in Resources */,
 				AB9C31E21DCA2D4C0091C55F /* Assets.xcassets in Resources */,
-				AB9C31E01DCA2D4C0091C55F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB59B9EE1DCFB99200E4E9FE /* CalendarGridHeader.swift in Sources */,
+				AB35C5091DEF2FFB006D7A6D /* CalendarDayViewController.swift in Sources */,
 				AB7913741DD4B99500EF8B97 /* DatabaseManager.swift in Sources */,
 				AB9C320D1DCA41290091C55F /* CalendarViewController.swift in Sources */,
 				AB7913761DD4C68900EF8B97 /* MainViewController.swift in Sources */,
@@ -342,7 +343,6 @@
 				AB7913721DD4B73200EF8B97 /* Event.swift in Sources */,
 				AB037A951DDA452F004D4AAC /* CalendarListCell.swift in Sources */,
 				AB9C31D91DCA2D4C0091C55F /* AppDelegate.swift in Sources */,
-				AB57ED931DDDD7ED006C1121 /* CalendarDayView.swift in Sources */,
 				AB037A931DD9CA96004D4AAC /* CalendarListView.swift in Sources */,
 				AB9C32091DCA3C670091C55F /* SearchViewController.swift in Sources */,
 				AB9C320F1DCA41430091C55F /* AboutViewController.swift in Sources */,
@@ -383,14 +383,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		AB9C31DE1DCA2D4C0091C55F /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AB9C31DF1DCA2D4C0091C55F /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		AB9C31E31DCA2D4C0091C55F /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
