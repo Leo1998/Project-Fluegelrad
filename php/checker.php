@@ -1,6 +1,10 @@
 <?php
 	//Initalize PDO for mysql
-	$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'testuser', 'ebLBBnZ8XCHSyQTJ');
+	try {
+		$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'dbUser', 'fluegelrad');
+	} catch(PDOException $e) {
+		echo "Connection failed: " . $e->getMessage();
+    }
 	
 	//Delete expired Users
 	$time = time();
