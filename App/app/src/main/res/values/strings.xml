@@ -26,5 +26,6 @@
     <string name="drawer_add_calender">Add event to calender</string>
 
     <string name="licenses_open">Open-Source-Licences</string>
+    <string name="clear_cache">Clear Cache</string>
 
 </resources>

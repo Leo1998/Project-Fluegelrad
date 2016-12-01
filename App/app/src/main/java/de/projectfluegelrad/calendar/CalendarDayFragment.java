@@ -38,7 +38,7 @@ public class CalendarDayFragment extends Fragment{
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
-        ((TextView) layout.findViewById(R.id.date)).setText(simpleDateFormat.format(event.getDate()));
+        ((TextView) layout.findViewById(R.id.date)).setText(simpleDateFormat.format(event.getDate().getTime()));
 
         ((TextView) layout.findViewById(R.id.host)).setText(event.getHost());
 
@@ -47,20 +47,19 @@ public class CalendarDayFragment extends Fragment{
 
         ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation());
 
-        ((Button) layout.findViewById(R.id.location_button)).setOnClickListener(view -> {
+        layout.findViewById(R.id.location_button).setOnClickListener(view -> {
             //TODO:Location
             Uri uri = Uri.parse("geo:0,0?q=" + event.getLocation());
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
         });
 
-        ((Button) layout.findViewById(R.id.calender_add_button)).setOnClickListener(view -> {
+        layout.findViewById(R.id.calender_add_button).setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_INSERT);
 
             intent.setData(CalendarContract.Events.CONTENT_URI);
 
-            Calendar day = Calendar.getInstance();
-            day.setTime(event.getDate());
+            Calendar day = event.getDate();
 
             intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, day.getTimeInMillis());
             //TODO:Ende des Events
