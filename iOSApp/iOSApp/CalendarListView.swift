@@ -4,7 +4,7 @@ class CalendarListView: UIView, UITableViewDataSource {
     
     private(set) var eventTable: UITableView!
     
-    private var events: NSArray!
+    private var events = [Event]()
     private(set) var shownEvents = [Event]()
 
     
@@ -22,29 +22,21 @@ class CalendarListView: UIView, UITableViewDataSource {
     }
     
     private func setupEvents(){
-        if let array: NSArray = UserDefaults.standard.object(forKey: "events") as! NSArray?{
-            
-            let eventsMutable = NSMutableArray()
-            for dict in array {
-                eventsMutable.add(Event(dict: dict as! NSDictionary))
-            }
-            
-            events = eventsMutable as NSArray
-        }
+        events = UserDefaults.standard.array(forKey: "events") as! [Event]
         
-        shownEvents = events.sortedArray(comparator: {
-            (event1, event2) -> ComparisonResult in
+        shownEvents = events.sorted(by: {
+            (event1, event2) -> Bool in
             
-            let date1 = (event1 as! Event).date
-            let date2 = (event2 as! Event).date
+            let date1 = (event1 ).date
+            let date2 = (event2 ).date
             
-            return (date1!.compare(date2!))
+            return (date1!.compare(date2!)) == ComparisonResult.orderedAscending
         
-        }) as! [Event]
+        }) 
 
         let today = Date()
         for (index, value) in events.enumerated(){
-            if (value as! Event).date.compare(today) == ComparisonResult.orderedAscending{
+            if (value ).date.compare(today) == ComparisonResult.orderedAscending{
                 shownEvents.remove(at: index)
             }
         }
@@ -61,7 +53,7 @@ class CalendarListView: UIView, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:CalendarListCell = eventTable.dequeueReusableCell(withIdentifier: "cell")! as! CalendarListCell
         
-        let event:Event = (events[indexPath.row] as! Event)
+        let event:Event = (events[indexPath.row] )
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
