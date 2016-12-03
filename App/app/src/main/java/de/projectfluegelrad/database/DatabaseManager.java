@@ -37,6 +37,7 @@ public class DatabaseManager implements Runnable {
     private final File filesDirectory;
 
     private final List<Event> eventList = new ArrayList<Event>();
+    private User user;
 
     private Logger logger;
 
@@ -58,6 +59,8 @@ public class DatabaseManager implements Runnable {
 
     @Override
     public void run() {
+        login();
+
         readEvents();
 
         refreshEventData();
@@ -83,6 +86,49 @@ public class DatabaseManager implements Runnable {
             }
 
             currentRequest = null;
+        }
+    }
+
+    private void login() {
+        if (user == null) {
+            try {
+                File userFile = new File(filesDirectory, "user.dat");
+                String userJson = null;
+                if (userFile.exists()) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(userFile)));
+
+                    StringBuilder jsonBuilder = new StringBuilder();
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null)
+                        jsonBuilder.append(inputLine);
+                    in.close();
+                    userJson = jsonBuilder.toString();
+                } else {
+                    URL url = new URL("http://fluegelrad.ddns.net/createUser.php");
+                    URLConnection c = url.openConnection();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
+
+                    StringBuilder jsonBuilder = new StringBuilder();
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null)
+                        jsonBuilder.append(inputLine);
+                    in.close();
+
+                    userJson = jsonBuilder.toString();
+
+                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userFile)));
+                    writer.write(userJson);
+                    writer.close();
+                }
+
+                JSONArray array = new JSONArray(new JSONTokener(userJson));
+                int id = array.getInt(0);
+                String token = array.getString(1);
+
+                this.user = new User(id, token);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -118,7 +164,7 @@ public class DatabaseManager implements Runnable {
                 throw new IllegalStateException(attachedView.getContext().getResources().getText(R.string.network_failure).toString());
             }
 
-            URL dbServiceURL = new URL("http://pipigift.ddns.net/dbService.php");
+            URL dbServiceURL = new URL("http://fluegelrad.ddns.net/recieveDatabase.php?u=" + user.getId() + "&t=" + user.getHashedToken());
             URLConnection c = dbServiceURL.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
 
@@ -128,7 +174,14 @@ public class DatabaseManager implements Runnable {
                 jsonBuilder.append(inputLine);
             in.close();
 
-            JSONArray array = new JSONArray(new JSONTokener(jsonBuilder.toString()));
+            System.out.println(jsonBuilder.toString());
+
+            JSONArray rootArray = new JSONArray(new JSONTokener(jsonBuilder.toString()));
+            JSONArray array = rootArray.getJSONArray(1);
+
+            String newToken = rootArray.getJSONArray(0).getString(0);
+            user.setNewToken(newToken);
+
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
 
