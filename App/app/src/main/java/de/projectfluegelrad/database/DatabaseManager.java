@@ -132,6 +132,24 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    private void refreshToken(String newToken) {
+        user.setNewToken(newToken);
+
+        File userFile = new File(filesDirectory, "user.dat");
+
+        try {
+            JSONArray array = new JSONArray();
+            array.put(user.getId());
+            array.put(user.getHashedToken());
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userFile)));
+            writer.write(array.toString());
+            writer.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public synchronized void request(DatabaseRequest request, boolean wait) {
         request(request, wait, null);
     }
@@ -174,13 +192,19 @@ public class DatabaseManager implements Runnable {
                 jsonBuilder.append(inputLine);
             in.close();
 
-            System.out.println(jsonBuilder.toString());
+            String raw = jsonBuilder.toString();
+            String header = raw.split(",")[0];
+            String json = raw.substring(header.length() + 1);
 
-            JSONArray rootArray = new JSONArray(new JSONTokener(jsonBuilder.toString()));
-            JSONArray array = rootArray.getJSONArray(1);
+            if (header.equals("Invalid Token")) {
+                throw new IllegalStateException("Invalid Token!");
+            }
 
-            String newToken = rootArray.getJSONArray(0).getString(0);
-            user.setNewToken(newToken);
+            JSONArray headerArray = new JSONArray(new JSONTokener(header));
+            String newToken = headerArray.getString(0);
+            refreshToken(newToken);
+
+            JSONArray array = new JSONArray(new JSONTokener(json));
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
