@@ -62,7 +62,7 @@
 			$updateToken = $pdo->prepare("UPDATE user SET token = ? , expire = ? WHERE id = ?");
 			$updateToken->execute(array($newHash,$expire,$sId));
 			//Echos new token
-			echo json_encode(array($newToken));
+			echo json_encode(array($newToken)) . ", ";
 			break;
 		}else{
 			exit("Invalid Token");

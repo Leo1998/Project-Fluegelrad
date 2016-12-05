@@ -18,7 +18,7 @@ public class Event implements Parcelable {
         location = in.readString();
         category = in.readString();
         price = in.readInt();
-        host = in.readString();
+        host = in.readInt();
         Calendar c = Calendar.getInstance();
         c.setTime(new Date(in.readLong()));
         date = c;
@@ -45,7 +45,7 @@ public class Event implements Parcelable {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         c.setTime(simpleDateFormat.parse(obj.getString("date")));
 
-        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getString("host"), c, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("age"));
+        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getInt("hostId"), c, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("age"));
 
         return event;
     }
@@ -71,14 +71,14 @@ public class Event implements Parcelable {
     private String location;
     private String category;
     private int price;
-    private String host;
+    private int host;
     private Calendar date;
     private String description;
     private int maxParticipants;
     private int participants;
     private int age;
 
-    public Event(int id, String location, String category, int price, String host, Calendar date, String description, int maxParticipants, int participants, int age) {
+    public Event(int id, String location, String category, int price, int host, Calendar date, String description, int maxParticipants, int participants, int age) {
         this.id = id;
         this.location = location;
         this.category = category;
@@ -107,7 +107,7 @@ public class Event implements Parcelable {
         return price;
     }
 
-    public String getHost() {
+    public int getHost() {
         return host;
     }
 
@@ -172,7 +172,7 @@ public class Event implements Parcelable {
         parcel.writeString(location);
         parcel.writeString(category);
         parcel.writeInt(price);
-        parcel.writeString(host);
+        parcel.writeInt(host);
         parcel.writeLong(date.getTimeInMillis());
         parcel.writeString(description);
         parcel.writeInt(maxParticipants);

@@ -50,7 +50,7 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
 
         //TODO
         holder.getLocationTextView().setText(eventList.get(position).getLocation());
-        holder.getHostTextView().setText(eventList.get(position).getHost());
+        holder.getHostTextView().setText("N/A");
 
         holder.getCardView().setOnClickListener(view -> {
             Bundle bundle = new Bundle();

@@ -40,7 +40,7 @@ public class CalendarDayFragment extends Fragment{
         simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
         ((TextView) layout.findViewById(R.id.date)).setText(simpleDateFormat.format(event.getDate().getTime()));
 
-        ((TextView) layout.findViewById(R.id.host)).setText(event.getHost());
+        ((TextView) layout.findViewById(R.id.host)).setText("N/A");
 
         RelativeLayout descriptionContainer = (RelativeLayout)  layout.findViewById(R.id.description_container);
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
