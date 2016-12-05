@@ -11,6 +11,7 @@
 		AB037A951DDA452F004D4AAC /* CalendarListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB037A941DDA452F004D4AAC /* CalendarListCell.swift */; };
 		AB0C85371DF04E5B00314F0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB0C85361DF04E5B00314F0C /* Main.storyboard */; };
 		AB35C5091DEF2FFB006D7A6D /* CalendarDayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */; };
+		AB4CB52B1DF4904C003F4E18 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4CB52A1DF4904C003F4E18 /* User.swift */; };
 		AB59B9EE1DCFB99200E4E9FE /* CalendarGridHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */; };
 		AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */; };
 		AB7913721DD4B73200EF8B97 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7913711DD4B73200EF8B97 /* Event.swift */; };
@@ -51,6 +52,7 @@
 		AB037A941DDA452F004D4AAC /* CalendarListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarListCell.swift; sourceTree = "<group>"; };
 		AB0C85361DF04E5B00314F0C /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = ../../../Main.storyboard; sourceTree = "<group>"; };
 		AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarDayViewController.swift; sourceTree = "<group>"; };
+		AB4CB52A1DF4904C003F4E18 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridHeader.swift; sourceTree = "<group>"; };
 		AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridCell.swift; sourceTree = "<group>"; };
 		AB7913711DD4B73200EF8B97 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 			children = (
 				AB7913731DD4B99500EF8B97 /* DatabaseManager.swift */,
 				AB7913711DD4B73200EF8B97 /* Event.swift */,
+				AB4CB52A1DF4904C003F4E18 /* User.swift */,
 			);
 			name = database;
 			sourceTree = "<group>";
@@ -337,6 +340,7 @@
 				AB35C5091DEF2FFB006D7A6D /* CalendarDayViewController.swift in Sources */,
 				AB7913741DD4B99500EF8B97 /* DatabaseManager.swift in Sources */,
 				AB9C320D1DCA41290091C55F /* CalendarViewController.swift in Sources */,
+				AB4CB52B1DF4904C003F4E18 /* User.swift in Sources */,
 				AB7913761DD4C68900EF8B97 /* MainViewController.swift in Sources */,
 				AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */,
 				AB9C32131DCA6F940091C55F /* CalendarGridView.swift in Sources */,

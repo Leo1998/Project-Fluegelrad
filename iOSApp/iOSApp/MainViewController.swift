@@ -20,15 +20,10 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
     }
     
     internal func itemsDownloaded(items: [Event]) {
+        
         events = items
         
-        let eventsDict = NSMutableArray()
-        for event in events {
-            eventsDict.add(event.getDictonary())
-        }
-        
-        
-        UserDefaults.standard.set(eventsDict, forKey: "events")
+        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: items), forKey: "events")
         UserDefaults.standard.synchronize()
     }
 

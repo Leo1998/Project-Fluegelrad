@@ -22,7 +22,8 @@ class CalendarListView: UIView, UITableViewDataSource {
     }
     
     private func setupEvents(){
-        events = UserDefaults.standard.array(forKey: "events") as! [Event]
+        let eventData = UserDefaults.standard.object(forKey: "events")
+        events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
         
         shownEvents = events.sorted(by: {
             (event1, event2) -> Bool in
@@ -61,7 +62,7 @@ class CalendarListView: UIView, UITableViewDataSource {
         cell.categoryLabel.text = event.category
         cell.locationLabel.text = event.location
         cell.dateLabel.text = dateFormatter.string(from: event.date)
-        cell.hostLabel.text = event.host
+        cell.hostLabel.text = String(event.hostId)
         
         return cell
     }

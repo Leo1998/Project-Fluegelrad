@@ -40,8 +40,6 @@ class CalendarViewController: UIViewController, UICollectionViewDelegate, UIColl
     
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder);
-        
-        events = UserDefaults.standard.array(forKey: "events") as! [Event]
     }
 
 
@@ -49,6 +47,9 @@ class CalendarViewController: UIViewController, UICollectionViewDelegate, UIColl
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let eventData = UserDefaults.standard.object(forKey: "events")
+        events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
+
         calendarGridView = CalendarGridView(frame: view.frame)
         view.addSubview(calendarGridView)
         calendarGridView.dayGrid.delegate = self
