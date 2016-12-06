@@ -21,18 +21,13 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     private let configuration = URLSessionConfiguration.default
     
     func downloadItems() {
-        var url: URL!
-        
         session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
 
         
         let userData = UserDefaults.standard.object(forKey: "user")
         
         if userData == nil {
-            url = URL(string: self.url + createUser)!
-            
-            let task = session.dataTask(with: url)
-            task.resume()
+            newUser()
         }else{
             user = NSKeyedUnarchiver.unarchiveObject(with: userData as! Data) as! User
             
@@ -77,7 +72,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             }
         }
         
-        if task.currentRequest?.url?.absoluteString != url + createUser{
+        if task.currentRequest?.url?.absoluteString != url + createUser && String(data: data as Data, encoding: .utf8) != "" {
             let queue = DispatchQueue(label: "de.project.iOSApp.DatabaseManager", qos: .utility, target: nil)
             queue.async {
                 self.delegate.itemsDownloaded(items: self.events)
@@ -85,6 +80,14 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
         }
         
         data = NSMutableData()
+    }
+    
+    private func newUser(){
+        var url: URL!
+        url = URL(string: self.url + createUser)!
+        
+        let task = session.dataTask(with: url)
+        task.resume()
     }
     
     private func getEvents(){
@@ -99,41 +102,49 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     private func parseJSON() {
         let jsonDataAll = String(data: data as Data, encoding: .utf8)
         
-        let jsonDataToken = jsonDataAll?.substring(to: (jsonDataAll?.characters.index(after: (jsonDataAll?.characters.index(of: "]"))!))!)
-
-        var jsonDataEvents = jsonDataAll?.substring(from: (jsonDataAll?.characters.index(of: "]"))!)
-        jsonDataEvents = jsonDataEvents?.substring(from: (jsonDataEvents?.characters.index(of: "["))!)
         
-        var jsonResultEvent: NSArray = NSArray()
-        var jsonResultToken: NSArray = NSArray()
+        if (jsonDataAll == "Invalid Token" || jsonDataAll == "Unknown ID") {
+            newUser()
+            
+            data = NSMutableData()
+        }else{
+        
+            let jsonDataToken = jsonDataAll?.substring(to: (jsonDataAll?.characters.index(after: (jsonDataAll?.characters.index(of: "]"))!))!)
 
-        do{
-            jsonResultToken = try JSONSerialization.jsonObject(with: (jsonDataToken?.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSArray
-            jsonResultEvent = try JSONSerialization.jsonObject(with: (jsonDataEvents?.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSArray
-        } catch let error as NSError {
-            print(error)
+            var jsonDataEvents = jsonDataAll?.substring(from: (jsonDataAll?.characters.index(of: "]"))!)
+            jsonDataEvents = jsonDataEvents?.substring(from: (jsonDataEvents?.characters.index(of: "["))!)
+        
+            var jsonResultEvent: NSArray = NSArray()
+            var jsonResultToken: NSArray = NSArray()
+
+            do{
+                jsonResultToken = try JSONSerialization.jsonObject(with: (jsonDataToken?.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSArray
+                jsonResultEvent = try JSONSerialization.jsonObject(with: (jsonDataEvents?.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSArray
+            } catch let error as NSError {
+                print(error)
+            }
+        
+            var jsonElement: NSMutableDictionary = NSMutableDictionary()
+            let events: NSMutableArray = NSMutableArray()
+        
+            for i in 0 ..< jsonResultEvent.count{
+            
+                jsonElement = (jsonResultEvent[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
+
+            
+                let event = Event.init(dict: jsonElement)
+                events.add(event)
+            
+            
+            }
+        
+            user.token = jsonResultToken[0] as! String
+        
+            UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: user), forKey: "user")
+            UserDefaults.standard.synchronize()
+        
+            self.events = events as NSArray as! [Event]
         }
-        
-        var jsonElement: NSMutableDictionary = NSMutableDictionary()
-        let events: NSMutableArray = NSMutableArray()
-        
-        for i in 0 ..< jsonResultEvent.count{
-            
-            jsonElement = (jsonResultEvent[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
-
-            
-            let event = Event.init(dict: jsonElement)
-            events.add(event)
-            
-            
-        }
-        
-        user.token = jsonResultToken[0] as! String
-        
-        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: user), forKey: "user")
-        UserDefaults.standard.synchronize()
-        
-        self.events = events as NSArray as! [Event]
 
     }
 }

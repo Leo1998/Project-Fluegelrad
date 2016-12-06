@@ -160,14 +160,14 @@ class CalendarViewController: UIViewController, UICollectionViewDelegate, UIColl
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if shownEvents[indexPath.item] != nil {
-            performSegue(withIdentifier: "CalendarDayViewController", sender: self)
             dayEvent = shownEvents[indexPath.item]
+            performSegue(withIdentifier: "CalendarDayViewController", sender: self)
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "CalendarDayViewController", sender: self)
         dayEvent = calendarListView.shownEvents[indexPath.item]
+        performSegue(withIdentifier: "CalendarDayViewController", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
