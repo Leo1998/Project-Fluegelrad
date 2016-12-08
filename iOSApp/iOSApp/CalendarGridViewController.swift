@@ -9,22 +9,15 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     private var daysShown = [Date]()
     
     private var dayEvent: Event?
+    
+    private var calendar: Calendar!
+    private var date: Date!
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
-        let eventData = UserDefaults.standard.object(forKey: "events")
-        events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
         
-        calendarGridView = CalendarGridView(frame: view.frame)
-        view.addSubview(calendarGridView)
-        calendarGridView.dayGrid.delegate = self
-        calendarGridView.dayGrid.dataSource = self
-        
-        updateCalendar()
-
-
+        reset()
     }
 
     override func didReceiveMemoryWarning() {
@@ -39,9 +32,9 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         
         let cellDate: Date = daysShown[indexPath.item]
         
-        let cellDateComponents = calendarGridView.calendar.dateComponents([.year, .month, .day], from: cellDate)
-        let todayDateComponents = calendarGridView.calendar.dateComponents([.year, .month, .day], from: Date())
-        let currentDateComponents = calendarGridView.calendar.dateComponents([.year, .month, .day], from: calendarGridView.date)
+        let cellDateComponents = calendar.dateComponents([.year, .month, .day], from: cellDate)
+        let todayDateComponents = calendar.dateComponents([.year, .month, .day], from: Date())
+        let currentDateComponents = calendar.dateComponents([.year, .month, .day], from: date)
         
         cell.numberLabel.text = "\(Int(cellDateComponents.day!))"
         
@@ -52,7 +45,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         }
         
         for event in events{
-            let eventDateComponents = calendarGridView.calendar.dateComponents([.year, .month, .day], from: (event ).date!)
+            let eventDateComponents = calendar.dateComponents([.year, .month, .day], from: (event ).date!)
             
             if cellDateComponents.year == eventDateComponents.year && cellDateComponents.month == eventDateComponents.month && cellDateComponents.day == eventDateComponents.day {
                 cell.numberLabel.backgroundColor = UIColor.red
@@ -70,7 +63,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         case UICollectionElementKindSectionHeader:
             calendarGridView.headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,withReuseIdentifier: "Header",for: indexPath) as! CalendarGridHeader
             
-            calendarGridView.updateViews(fromReload: true)
+            updateViews(fromReload: true)
             calendarGridView.headerView.right.addTarget(self, action: #selector(CalendarGridViewController.buttonNextMonthClicked), for: .touchUpInside)
             calendarGridView.headerView.left.addTarget(self, action: #selector(CalendarGridViewController.buttonPrevMonthClicked), for: .touchUpInside)
             
@@ -88,37 +81,37 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     private func updateCalendar() -> Void {
         daysShown.removeAll()
         
-        var dateTemp = Date(timeIntervalSince1970: calendarGridView.date.timeIntervalSince1970)
+        var dateTemp = Date(timeIntervalSince1970: date.timeIntervalSince1970)
         
-        var dateComponents = calendarGridView.calendar.dateComponents([.era, .year, .month], from: dateTemp )
+        var dateComponents = calendar.dateComponents([.era, .year, .month], from: dateTemp )
         dateComponents.day = 1
         
-        dateTemp = calendarGridView.calendar.date(from: dateComponents)!
+        dateTemp = calendar.date(from: dateComponents)!
         
-        let monthBeginningCell = calendarGridView.calendar.dateComponents([.weekday], from: dateTemp ).weekday! == 1 ? 7 : calendarGridView.calendar.dateComponents([.weekday], from: dateTemp ).weekday! - 1
+        let monthBeginningCell = calendar.dateComponents([.weekday], from: dateTemp ).weekday! == 1 ? 7 : calendar.dateComponents([.weekday], from: dateTemp ).weekday! - 1
         
         dateComponents.day = -monthBeginningCell
         
-        var dateBegin = calendarGridView.calendar.date(byAdding: .day, value: -monthBeginningCell, to: dateTemp, wrappingComponents: false)
+        var dateBegin = calendar.date(byAdding: .day, value: -monthBeginningCell, to: dateTemp, wrappingComponents: false)
         
         while daysShown.count <= 42 {
-            dateBegin = calendarGridView.calendar.date(byAdding: .day, value: 1, to: dateBegin!, wrappingComponents: false)
+            dateBegin = calendar.date(byAdding: .day, value: 1, to: dateBegin!, wrappingComponents: false)
             
             daysShown.append(dateBegin!)
         }
         
     }
     
-    func buttonPrevMonthClicked(){
-        calendarGridView.date = calendarGridView.calendar.date(byAdding: .month, value: -1, to: calendarGridView.date, wrappingComponents: false)
+    internal func buttonPrevMonthClicked(){
+        date = calendar.date(byAdding: .month, value: -1, to: date, wrappingComponents: false)
         updateCalendar()
-        calendarGridView.updateViews(fromReload: false)
+        updateViews(fromReload: false)
     }
     
-    func buttonNextMonthClicked(){
-        calendarGridView.date = calendarGridView.calendar.date(byAdding: .month, value: 1, to: calendarGridView.date, wrappingComponents: false)
+    internal func buttonNextMonthClicked(){
+        date = calendar.date(byAdding: .month, value: 1, to: date, wrappingComponents: false)
         updateCalendar()
-        calendarGridView.updateViews(fromReload: false)
+        updateViews(fromReload: false)
     }
     
     
@@ -135,5 +128,54 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
             vc.event = dayEvent
             dayEvent = nil
         }
+    }
+    
+    private func updateViews(fromReload: Bool){
+        let monthInt = calendar.dateComponents([.month], from: date).month!
+        let yearInt = calendar.dateComponents([.year], from: date).year!
+        
+        if !fromReload {
+            calendarGridView.dayGrid.reloadData()
+        }
+        
+        if calendarGridView.headerView != nil {
+            calendarGridView.headerView.month.text = calendar.monthSymbols[monthInt - 1] + " \(yearInt)"
+        }
+    }
+
+    internal func refresh(){
+        print("Refresh")
+        
+        MainViewController.refresh()
+        
+        updateCalendar()
+        updateViews(fromReload: false)
+        
+        calendarGridView.refreshControl.endRefreshing()
+    }
+    
+    public func reset(){
+        if calendarGridView != nil {
+            calendarGridView.removeFromSuperview()
+        }
+        
+        date = Date()
+        calendar = Calendar.autoupdatingCurrent
+        calendar.firstWeekday = 2
+        
+        
+        let eventData = UserDefaults.standard.object(forKey: "events")
+        events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
+        
+        calendarGridView = CalendarGridView(frame: view.frame)
+        calendarGridView.dayGrid.delegate = self
+        calendarGridView.dayGrid.dataSource = self
+        
+        calendarGridView.refreshControl.addTarget(self, action: #selector(CalendarGridViewController.refresh), for: .valueChanged)
+        view.addSubview(calendarGridView)
+        
+        updateCalendar()
+        
+        updateViews(fromReload: false)
     }
 }

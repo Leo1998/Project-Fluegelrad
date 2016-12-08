@@ -3,6 +3,7 @@ import UIKit
 class CalendarListView: UIView {
     
     private(set) var eventTable: UITableView!
+    private(set) var refreshControl: UIRefreshControl!
 
     
     public override init(frame: CGRect) {
@@ -13,7 +14,9 @@ class CalendarListView: UIView {
         eventTable.register(CalendarListCell.self, forCellReuseIdentifier: "cell")
         
         addSubview(eventTable)
-
+        
+        refreshControl = UIRefreshControl()
+        eventTable.addSubview(refreshControl)
     }
     
     required init?(coder aDecoder: NSCoder) {

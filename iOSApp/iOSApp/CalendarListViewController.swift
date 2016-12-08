@@ -12,14 +12,8 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupEvents()
-
+        reset()
         
-        calendarListView = CalendarListView(frame: view.frame)
-        calendarListView.eventTable.delegate = self
-        calendarListView.eventTable.dataSource = self
-
-        view.addSubview(calendarListView)
     }
 
     override func didReceiveMemoryWarning() {
@@ -80,5 +74,32 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
         cell.hostLabel.text = String(event.hostId)
         
         return cell
+    }
+    
+    internal func refresh(){
+        print("Refresh")
+        
+        MainViewController.refresh()
+        
+        setupEvents()
+        calendarListView.eventTable.reloadData()
+        
+        calendarListView.refreshControl.endRefreshing()
+    }
+    
+    public func reset(){
+        if calendarListView != nil {
+            calendarListView.removeFromSuperview()
+        }
+        
+        setupEvents()
+        
+        calendarListView = CalendarListView(frame: view.frame)
+        calendarListView.eventTable.delegate = self
+        calendarListView.eventTable.dataSource = self
+        view.addSubview(calendarListView)
+
+        
+        calendarListView.refreshControl.addTarget(self, action: #selector(CalendarListViewController.refresh), for: .valueChanged)
     }
 }
