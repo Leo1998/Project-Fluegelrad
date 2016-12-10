@@ -10,14 +10,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.projectfluegelrad.calendar.CalendarFragment;
+import de.projectfluegelrad.calendar.gridview.CalendarGridViewFragment;
+import de.projectfluegelrad.calendar.listview.CalendarListFragment;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.Event;
@@ -26,8 +26,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private DatabaseManager databaseManager;
 
-    private CalendarFragment calendarFragment;
     private HomeFragment homeFragment;
+    private CalendarListFragment calendarListFragment;
+    private CalendarGridViewFragment calendarFragment;
     private SettingsFragment settingsFragment;
     private SearchFragment searchFragment;
 
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         toggle.setDrawerIndicatorEnabled(true);
@@ -66,15 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"));
 
-        /*List<Event> events = new ArrayList<>();
-        Random r = new Random();
-        for (int i = 0; i < 50; i++){
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.DAY_OF_MONTH, r.nextInt(100) - 50);
-            Event e = new Event(i, "Strasse" + r.nextInt(100), "Katerogie" + r.nextInt(100), r.nextInt(10), "Verein" + r.nextInt(100), new Date(c.getTimeInMillis()), "Beschreibung" + r.nextInt(100));
-            events.add(e);
-        }*/
-
         List<Event> events = databaseManager.getEventList();
 
         Collections.sort(events, (event, t1) -> {
@@ -88,8 +79,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
 
-        calendarFragment = new CalendarFragment();
+        calendarFragment = new CalendarGridViewFragment();
         calendarFragment.setArguments(bundle);
+
+        calendarListFragment = new CalendarListFragment();
+        calendarListFragment.setArguments(bundle);
 
         homeFragment = new HomeFragment();
         settingsFragment = new SettingsFragment();
@@ -119,15 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-        } else if (id == R.id.nav_calender) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
-        } else if (id == R.id.nav_search) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchFragment).commit();
-        } else if (id == R.id.nav_settings) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
-        }
+        onFragmentTransaction(id);
 
         return super.onOptionsItemSelected(item);
     }
@@ -141,19 +127,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
-        } else if (id == R.id.nav_calender) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
-        } else if (id == R.id.nav_search) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, searchFragment).commit();
-        } else if (id == R.id.nav_settings) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
-        }
+        onFragmentTransaction(id);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * Helper method
+     *
+     * @param id
+     */
+    private void onFragmentTransaction(int id) {
+        if (id == R.id.nav_home) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+        } else if (id == R.id.nav_calender) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
+        } else if (id == R.id.nav_calender_list) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarListFragment).commit();
+        } else if (id == R.id.nav_settings) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
+        }
     }
 
     @Override

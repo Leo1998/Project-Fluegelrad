@@ -2,8 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="4dp">
+    android:layout_height="match_parent">
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,51 +28,56 @@
         android:textSize="16sp"
         android:layout_below="@id/category"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/host"
-        android:id="@+id/description_container">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/description"
-            android:paddingTop="10dp" />
-
-    </RelativeLayout>
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sponsors"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" />
-
-
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/location"
         android:paddingBottom="10dp"
-        android:layout_above="@id/sponsors"/>
+        android:layout_below="@+id/category"
+        android:layout_toRightOf="@+id/host"
+        android:layout_toEndOf="@+id/host"
+        android:layout_marginLeft="41dp"
+        android:layout_marginStart="41dp" />
 
-    <Button
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/calender_show_adress"
-        android:id="@+id/location_button"
-        android:layout_toRightOf="@id/location"
-        android:layout_above="@id/sponsors"/>
+        android:layout_below="@id/location">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/drawer_add_calender"
-        android:id="@+id/calender_add_button"
-        android:layout_toRightOf="@id/location_button"
-        android:layout_above="@id/sponsors"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/host"
+            android:id="@+id/description_container">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/description"
+                android:paddingTop="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/description"
+                android:layout_marginBottom="20dp"
+                android:id="@+id/sponsors" />
+
+            <com.google.android.gms.maps.MapView
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/mapView"
+                android:layout_below="@+id/sponsors" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/drawer_add_calender"
+                android:id="@+id/calender_add_button"
+                android:layout_below="@+id/mapView" />
+
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>
