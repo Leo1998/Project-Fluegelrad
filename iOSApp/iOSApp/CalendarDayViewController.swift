@@ -30,7 +30,7 @@ class CalendarDayViewController: UIViewController {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
         hostLabel = UILabel()
-        hostLabel.text = event.host
+        hostLabel.text = String(event.hostId)
         hostLabel.translatesAutoresizingMaskIntoConstraints = false
         
         descriptionLabel = UILabel()

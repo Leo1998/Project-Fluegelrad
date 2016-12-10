@@ -2,7 +2,7 @@ import UIKit
 
 class MainViewController: UITabBarController, DatabaseManagerProtocol {
     
-    private var databaseManager:DatabaseManager!
+    private static var databaseManager:DatabaseManager!
     
     private var events = [Event]()
     
@@ -14,21 +14,16 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
         super.viewDidLoad()
         
         
-        databaseManager = DatabaseManager()
-        databaseManager.delegate = self
-        databaseManager.downloadItems()
+        MainViewController.databaseManager = DatabaseManager()
+        MainViewController.databaseManager.delegate = self
+        MainViewController.databaseManager.downloadItems()
     }
     
     internal func itemsDownloaded(items: [Event]) {
+        
         events = items
         
-        let eventsDict = NSMutableArray()
-        for event in events {
-            eventsDict.add(event.getDictonary())
-        }
-        
-        
-        UserDefaults.standard.set(eventsDict, forKey: "events")
+        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: items), forKey: "events")
         UserDefaults.standard.synchronize()
     }
 
@@ -36,4 +31,7 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
         super.didReceiveMemoryWarning()
     }
 
+    public static func refresh(){
+        databaseManager.downloadItems()
+    }
 }
