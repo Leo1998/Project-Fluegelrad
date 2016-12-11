@@ -93,6 +93,9 @@ public class CalendarDayFragment extends Fragment{
 
                 if (address != null) {
                     map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(address.getLatitude(), address.getLongitude())).title("Marker"));
+
+                    CameraUpdate cam = CameraUpdateFactory.newLatLngZoom(new LatLng(address.getLatitude(), address.getLongitude()), 15);
+                    map.animateCamera(cam);
                 }
             }
         });
