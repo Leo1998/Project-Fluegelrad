@@ -9,8 +9,12 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
     
     private var dayEvent: Event?
     
+    private var frame: CGRect!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        frame = view.frame
         
         reset()
         
@@ -69,7 +73,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
         dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
         
         cell.categoryLabel.text = event.category
-        cell.locationLabel.text = event.location
+        cell.locationLabel.text = event.location.title
         cell.dateLabel.text = dateFormatter.string(from: event.date)
         cell.hostLabel.text = String(event.hostId)
         
@@ -94,12 +98,13 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
         
         setupEvents()
         
-        calendarListView = CalendarListView(frame: view.frame)
+        calendarListView = CalendarListView(frame: frame)
         calendarListView.eventTable.delegate = self
         calendarListView.eventTable.dataSource = self
         view.addSubview(calendarListView)
 
         
         calendarListView.refreshControl.addTarget(self, action: #selector(CalendarListViewController.refresh), for: .valueChanged)
+        
     }
 }

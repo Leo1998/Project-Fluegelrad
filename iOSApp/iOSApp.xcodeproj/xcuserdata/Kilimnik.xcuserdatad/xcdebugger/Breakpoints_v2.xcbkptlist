@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "iOSApp/DatabaseManager.swift"
-            timestampString = "502744903.813817"
+            timestampString = "503144005.962376"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "parseJSON()"
             landmarkType = "7">
          </BreakpointContent>

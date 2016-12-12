@@ -12,10 +12,15 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     
     private var calendar: Calendar!
     private var date: Date!
+    
+    private var frame: CGRect!
+
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        frame = view.frame
         
         reset()
     }
@@ -167,7 +172,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         let eventData = UserDefaults.standard.object(forKey: "events")
         events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
         
-        calendarGridView = CalendarGridView(frame: view.frame)
+        calendarGridView = CalendarGridView(frame: frame)
         calendarGridView.dayGrid.delegate = self
         calendarGridView.dayGrid.dataSource = self
         

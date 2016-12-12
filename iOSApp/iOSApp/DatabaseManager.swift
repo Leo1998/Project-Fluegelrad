@@ -41,15 +41,20 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?){
-        if error != nil {
+        if error != nil || (String(data: data as Data, encoding: .utf8)?.contains("Please"))! {
             print("Failed to download data")
             
-            let tempArray = UserDefaults.standard.array(forKey: "events")
+            let tempArray = UserDefaults.standard.object(forKey: "events")
+            
             if tempArray != nil {
-                events = tempArray as! [Event]
+                events = NSKeyedUnarchiver.unarchiveObject(with: tempArray as! Data) as! [Event]
+
             }else{
                 events = [Event]()
             }
+            
+            self.delegate.itemsDownloaded(items: self.events)
+
 
         }else {
             if task.currentRequest?.url?.absoluteString == url + createUser{
@@ -107,7 +112,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             newUser()
             
             data = NSMutableData()
-        }else{
+        }else if (jsonDataAll?.contains("["))! {
         
             let jsonDataToken = jsonDataAll?.substring(to: (jsonDataAll?.characters.index(after: (jsonDataAll?.characters.index(of: "]"))!))!)
 
