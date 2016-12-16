@@ -9,9 +9,13 @@
 /* Begin PBXBuildFile section */
 		AB037A931DD9CA96004D4AAC /* CalendarListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB037A921DD9CA96004D4AAC /* CalendarListView.swift */; };
 		AB037A951DDA452F004D4AAC /* CalendarListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB037A941DDA452F004D4AAC /* CalendarListCell.swift */; };
-		AB0C85371DF04E5B00314F0C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB0C85361DF04E5B00314F0C /* Main.storyboard */; };
+		AB1E8A001DFDAD8900CDDADB /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB1E89FF1DFDAD8900CDDADB /* Location.swift */; };
+		AB1E8A031DFF31F100CDDADB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB1E8A021DFF31F100CDDADB /* MapKit.framework */; };
 		AB35C5091DEF2FFB006D7A6D /* CalendarDayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */; };
 		AB4CB52B1DF4904C003F4E18 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4CB52A1DF4904C003F4E18 /* User.swift */; };
+		AB4CB52D1DF88FED003F4E18 /* CalendarGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4CB52C1DF88FED003F4E18 /* CalendarGridViewController.swift */; };
+		AB4CB52F1DF89027003F4E18 /* CalendarListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4CB52E1DF89027003F4E18 /* CalendarListViewController.swift */; };
+		AB4CB5331DF8A0F4003F4E18 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB4CB5321DF8A0F4003F4E18 /* Main.storyboard */; };
 		AB59B9EE1DCFB99200E4E9FE /* CalendarGridHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */; };
 		AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */; };
 		AB7913721DD4B73200EF8B97 /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7913711DD4B73200EF8B97 /* Event.swift */; };
@@ -22,10 +26,8 @@
 		AB9C31E51DCA2D4C0091C55F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB9C31E31DCA2D4C0091C55F /* LaunchScreen.storyboard */; };
 		AB9C31F01DCA2D4C0091C55F /* iOSAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31EF1DCA2D4C0091C55F /* iOSAppTests.swift */; };
 		AB9C31FB1DCA2D4C0091C55F /* iOSAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31FA1DCA2D4C0091C55F /* iOSAppUITests.swift */; };
-		AB9C32091DCA3C670091C55F /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C32081DCA3C670091C55F /* SearchViewController.swift */; };
 		AB9C320B1DCA410A0091C55F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C320A1DCA410A0091C55F /* HomeViewController.swift */; };
 		AB9C320D1DCA41290091C55F /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C320C1DCA41290091C55F /* CalendarViewController.swift */; };
-		AB9C320F1DCA41430091C55F /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C320E1DCA41430091C55F /* AboutViewController.swift */; };
 		AB9C32111DCA41530091C55F /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C32101DCA41530091C55F /* SettingsViewController.swift */; };
 		AB9C32131DCA6F940091C55F /* CalendarGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C32121DCA6F940091C55F /* CalendarGridView.swift */; };
 /* End PBXBuildFile section */
@@ -50,9 +52,13 @@
 /* Begin PBXFileReference section */
 		AB037A921DD9CA96004D4AAC /* CalendarListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarListView.swift; sourceTree = "<group>"; };
 		AB037A941DDA452F004D4AAC /* CalendarListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarListCell.swift; sourceTree = "<group>"; };
-		AB0C85361DF04E5B00314F0C /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = ../../../Main.storyboard; sourceTree = "<group>"; };
+		AB1E89FF1DFDAD8900CDDADB /* Location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		AB1E8A021DFF31F100CDDADB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarDayViewController.swift; sourceTree = "<group>"; };
 		AB4CB52A1DF4904C003F4E18 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		AB4CB52C1DF88FED003F4E18 /* CalendarGridViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridViewController.swift; sourceTree = "<group>"; };
+		AB4CB52E1DF89027003F4E18 /* CalendarListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarListViewController.swift; sourceTree = "<group>"; };
+		AB4CB5321DF8A0F4003F4E18 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = ../../../Main.storyboard; sourceTree = "<group>"; };
 		AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridHeader.swift; sourceTree = "<group>"; };
 		AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridCell.swift; sourceTree = "<group>"; };
 		AB7913711DD4B73200EF8B97 /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
@@ -69,10 +75,8 @@
 		AB9C31F61DCA2D4C0091C55F /* iOSAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB9C31FA1DCA2D4C0091C55F /* iOSAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSAppUITests.swift; sourceTree = "<group>"; };
 		AB9C31FC1DCA2D4C0091C55F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AB9C32081DCA3C670091C55F /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		AB9C320A1DCA410A0091C55F /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		AB9C320C1DCA41290091C55F /* CalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
-		AB9C320E1DCA41430091C55F /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		AB9C32101DCA41530091C55F /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		AB9C32121DCA6F940091C55F /* CalendarGridView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarGridView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB1E8A031DFF31F100CDDADB /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,9 +107,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AB1E89F91DFB521900CDDADB /* day */ = {
+			isa = PBXGroup;
+			children = (
+				AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */,
+			);
+			name = day;
+			sourceTree = "<group>";
+		};
+		AB1E8A011DFF31F100CDDADB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AB1E8A021DFF31F100CDDADB /* MapKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		AB569B771DD9CA18001B513B /* grid */ = {
 			isa = PBXGroup;
 			children = (
+				AB4CB52C1DF88FED003F4E18 /* CalendarGridViewController.swift */,
 				AB9C32121DCA6F940091C55F /* CalendarGridView.swift */,
 				AB623D8C1DCBECEF0048886F /* CalendarGridCell.swift */,
 				AB59B9ED1DCFB99200E4E9FE /* CalendarGridHeader.swift */,
@@ -115,6 +137,7 @@
 		AB569B781DD9CA25001B513B /* list */ = {
 			isa = PBXGroup;
 			children = (
+				AB4CB52E1DF89027003F4E18 /* CalendarListViewController.swift */,
 				AB037A921DD9CA96004D4AAC /* CalendarListView.swift */,
 				AB037A941DDA452F004D4AAC /* CalendarListCell.swift */,
 			);
@@ -125,7 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				AB9C320C1DCA41290091C55F /* CalendarViewController.swift */,
-				AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */,
+				AB1E89F91DFB521900CDDADB /* day */,
 				AB569B781DD9CA25001B513B /* list */,
 				AB569B771DD9CA18001B513B /* grid */,
 			);
@@ -136,8 +159,9 @@
 			isa = PBXGroup;
 			children = (
 				AB7913731DD4B99500EF8B97 /* DatabaseManager.swift */,
-				AB7913711DD4B73200EF8B97 /* Event.swift */,
 				AB4CB52A1DF4904C003F4E18 /* User.swift */,
+				AB7913711DD4B73200EF8B97 /* Event.swift */,
+				AB1E89FF1DFDAD8900CDDADB /* Location.swift */,
 			);
 			name = database;
 			sourceTree = "<group>";
@@ -149,6 +173,7 @@
 				AB9C31EE1DCA2D4C0091C55F /* iOSAppTests */,
 				AB9C31F91DCA2D4C0091C55F /* iOSAppUITests */,
 				AB9C31D61DCA2D4C0091C55F /* Products */,
+				AB1E8A011DFF31F100CDDADB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -168,13 +193,11 @@
 				AB7913751DD4C68900EF8B97 /* MainViewController.swift */,
 				AB7913701DD4B6EB00EF8B97 /* database */,
 				AB79136F1DD4B6A000EF8B97 /* calendar */,
-				AB9C320E1DCA41430091C55F /* AboutViewController.swift */,
 				AB9C32101DCA41530091C55F /* SettingsViewController.swift */,
 				AB9C320A1DCA410A0091C55F /* HomeViewController.swift */,
 				AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */,
-				AB9C32081DCA3C670091C55F /* SearchViewController.swift */,
 				AB9C31E11DCA2D4C0091C55F /* Assets.xcassets */,
-				AB0C85361DF04E5B00314F0C /* Main.storyboard */,
+				AB4CB5321DF8A0F4003F4E18 /* Main.storyboard */,
 				AB9C31E31DCA2D4C0091C55F /* LaunchScreen.storyboard */,
 				AB9C31E61DCA2D4C0091C55F /* Info.plist */,
 			);
@@ -269,6 +292,14 @@
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = H9NQ4ZA4J7;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 0;
+							};
+							com.apple.Maps.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					AB9C31EA1DCA2D4C0091C55F = {
 						CreatedOnToolsVersion = 8.1;
@@ -309,7 +340,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB0C85371DF04E5B00314F0C /* Main.storyboard in Resources */,
+				AB4CB5331DF8A0F4003F4E18 /* Main.storyboard in Resources */,
 				AB9C31E51DCA2D4C0091C55F /* LaunchScreen.storyboard in Resources */,
 				AB9C31E21DCA2D4C0091C55F /* Assets.xcassets in Resources */,
 			);
@@ -340,16 +371,17 @@
 				AB35C5091DEF2FFB006D7A6D /* CalendarDayViewController.swift in Sources */,
 				AB7913741DD4B99500EF8B97 /* DatabaseManager.swift in Sources */,
 				AB9C320D1DCA41290091C55F /* CalendarViewController.swift in Sources */,
+				AB1E8A001DFDAD8900CDDADB /* Location.swift in Sources */,
+				AB4CB52F1DF89027003F4E18 /* CalendarListViewController.swift in Sources */,
 				AB4CB52B1DF4904C003F4E18 /* User.swift in Sources */,
 				AB7913761DD4C68900EF8B97 /* MainViewController.swift in Sources */,
 				AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */,
+				AB4CB52D1DF88FED003F4E18 /* CalendarGridViewController.swift in Sources */,
 				AB9C32131DCA6F940091C55F /* CalendarGridView.swift in Sources */,
 				AB7913721DD4B73200EF8B97 /* Event.swift in Sources */,
 				AB037A951DDA452F004D4AAC /* CalendarListCell.swift in Sources */,
 				AB9C31D91DCA2D4C0091C55F /* AppDelegate.swift in Sources */,
 				AB037A931DD9CA96004D4AAC /* CalendarListView.swift in Sources */,
-				AB9C32091DCA3C670091C55F /* SearchViewController.swift in Sources */,
-				AB9C320F1DCA41430091C55F /* AboutViewController.swift in Sources */,
 				AB9C320B1DCA410A0091C55F /* HomeViewController.swift in Sources */,
 				AB9C32111DCA41530091C55F /* SettingsViewController.swift in Sources */,
 			);

@@ -1,6 +1,9 @@
 import UIKit
+import MapKit
 
 class CalendarDayViewController: UIViewController {
+    
+    @IBOutlet var mapView: MKMapView!
 
     var event: Event!
     
@@ -20,7 +23,7 @@ class CalendarDayViewController: UIViewController {
         categoryLabel.translatesAutoresizingMaskIntoConstraints = false
         
         locationLabel = UILabel()
-        locationLabel.text = event.location
+        locationLabel.text = event.location.title
         locationLabel.translatesAutoresizingMaskIntoConstraints = false
         
         let dateFormatter = DateFormatter()
@@ -49,6 +52,17 @@ class CalendarDayViewController: UIViewController {
         view.addSubview(prizeLabel)
         
         setupConstraints()
+        
+        mapView.addAnnotation(event.location)
+        mapView.setCenter(event.location.coordinate, animated: true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
+            let regionRadius: CLLocationDistance = 0.01
+            let region = MKCoordinateRegion(center: self.event.location.coordinate, span: MKCoordinateSpan(latitudeDelta: regionRadius * 2, longitudeDelta: regionRadius * 2))
+            self.mapView.setRegion(region, animated: true)
+
+        })
+        
     }
     
     private func setupConstraints(){
@@ -75,8 +89,8 @@ class CalendarDayViewController: UIViewController {
         let prizeLabelX = NSLayoutConstraint(item: prizeLabel, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0)
         let prizeLabelY = NSLayoutConstraint(item: prizeLabel, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: view, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
         NSLayoutConstraint.activate([prizeLabelX, prizeLabelY])
-    }
 
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

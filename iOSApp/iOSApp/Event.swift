@@ -3,7 +3,7 @@ import Foundation
 class Event: NSObject, NSCoding {
     var id:Int!
     var name:String!
-    var location:String!
+    var location:Location!
     var category:String!
     var price:Int!
     var hostId:Int!
@@ -16,7 +16,7 @@ class Event: NSObject, NSCoding {
     init(id: Int, name: String, location: String, category: String, price: Int, host: Int, date: Date, descriptionEvent: String, maxParticipants: Int, participants: Int, age: Int){
         self.id = id
         self.name = name
-        self.location = location
+        self.location = Location(address: location)
         self.category = category
         self.price = price
         self.hostId = host
@@ -31,7 +31,7 @@ class Event: NSObject, NSCoding {
     init(dict: NSDictionary) {
         self.id = Int(dict.object(forKey: "id") as! String)
         self.name = dict.object(forKey: "name") as! String
-        self.location = dict.object(forKey: "location") as! String
+        self.location = Location(address: dict.object(forKey: "location") as! String)
         self.category = dict.object(forKey: "category") as! String
         self.price = Int(dict.object(forKey: "price") as! String)
         self.hostId = Int(dict.object(forKey: "hostId") as! String)
@@ -67,7 +67,7 @@ class Event: NSObject, NSCoding {
     required init(coder aDecoder: NSCoder) {
         id = aDecoder.decodeObject(forKey: "id") as! Int
         name = aDecoder.decodeObject(forKey: "name") as! String
-        location = aDecoder.decodeObject(forKey: "location") as! String
+        location = aDecoder.decodeObject(forKey: "location") as! Location
         category = aDecoder.decodeObject(forKey: "category") as! String
         price = aDecoder.decodeObject(forKey: "price") as! Int
         hostId = aDecoder.decodeObject(forKey: "hostId") as! Int
@@ -76,6 +76,8 @@ class Event: NSObject, NSCoding {
         maxParticipants = aDecoder.decodeObject(forKey: "maxParticipants") as! Int
         participants = aDecoder.decodeObject(forKey: "participants") as! Int
         age = aDecoder.decodeObject(forKey: "age") as! Int
+        
+        
 
     }
     

@@ -3,21 +3,18 @@ import UIKit
 class CalendarGridView: UIView{
 
     private(set) var dayGrid: UICollectionView!
+    private(set) var refreshControl: UIRefreshControl!
     
-    var headerView: CalendarGridHeader!
+    public var headerView: CalendarGridHeader!
     
-    var calendar: Calendar!
-    var date: Date!
+    
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
         
-        date = Date()
-        calendar = Calendar.autoupdatingCurrent
-        calendar.firstWeekday = 2
- 
+        refreshControl = UIRefreshControl()
+        
         setupDayGrid()
-        updateViews(fromReload: false)
         setupConstraints()
     }
     
@@ -37,6 +34,9 @@ class CalendarGridView: UIView{
         dayGrid.backgroundColor = UIColor.clear
         
         addSubview(dayGrid)
+        
+        dayGrid.addSubview(refreshControl)
+        dayGrid.alwaysBounceVertical = true
     }
     
     private func setupConstraints(){
@@ -54,16 +54,4 @@ class CalendarGridView: UIView{
         fatalError("init(coder:) has not been implemented")
     }
     
-    internal func updateViews(fromReload: Bool){
-        let monthInt = calendar.dateComponents([.month], from: date).month!
-        let yearInt = calendar.dateComponents([.year], from: date).year!
-        
-        if !fromReload {
-            dayGrid.reloadData()
-        }
-        
-        if headerView != nil {
-            headerView.month.text = calendar.monthSymbols[monthInt - 1] + " \(yearInt)"
-        }
-    }
 }
