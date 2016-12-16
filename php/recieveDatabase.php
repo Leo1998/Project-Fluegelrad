@@ -6,7 +6,7 @@
 	$emparray = array();
 	
 	//SQL Statement
-	$eventsGet = $pdo->prepare("SELECT * FROM events");
+	$eventsGet = $pdo->prepare("SELECT `events`.*,`locations`.`address`,`locations`.`longitude`,`locations`.`latitude` FROM `events` JOIN `locations` ON `events`.`locationId` = `locations`.`id`");
 	$eventsGet->execute();
 	
 	//Iterate, put rows in emparray

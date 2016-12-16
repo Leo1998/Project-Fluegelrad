@@ -1,9 +1,7 @@
 <?php
-	try {
-		$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'dbUser', 'fluegelrad');
-	} catch(PDOException $e) {
-		echo "Connection failed: " . $e->getMessage();
-    }
+	//Spam protection, IP ban, Initalize PDO
+	$type=1;
+	require('spamProtector.php');
 	
 	//Delete expired Users
 	$time = time();
