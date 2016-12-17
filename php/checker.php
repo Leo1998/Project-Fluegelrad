@@ -1,17 +1,4 @@
 <?php
-	//Initalize PDO for mysql
-	try {
-		$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'dbUser', 'fluegelrad');
-	} catch(PDOException $e) {
-		echo "Connection failed: " . $e->getMessage();
-    }
-	
-	//Delete expired Users
-	$time = time();
-	$deleteUsers = $pdo->prepare("DELETE FROM user WHERE expire < :time");
-	$deleteUsers->bindParam('time', $time, PDO::PARAM_INT);
-	$deleteUsers->execute();
-	
 	//Get UserId(u)
 	if(isset($_GET['u'])) {
 		$u = $_GET['u'];
@@ -25,6 +12,16 @@
 	} else {
 		exit("?t is not set");
 	}
+
+	//Spam protection, IP ban, Initalize PDO
+	$type=0;
+	require('spamProtector.php');
+	
+	//Delete expired Users
+	$time = time();
+	$deleteUsers = $pdo->prepare("DELETE FROM user WHERE expire < :time");
+	$deleteUsers->bindParam('time', $time, PDO::PARAM_INT);
+	$deleteUsers->execute();
 
 	//Create random string
 	function random_string() {
@@ -62,7 +59,7 @@
 			$updateToken = $pdo->prepare("UPDATE user SET token = ? , expire = ? WHERE id = ?");
 			$updateToken->execute(array($newHash,$expire,$sId));
 			//Echos new token
-			echo json_encode(array($newToken)) . ", ";
+			echo json_encode(array($newToken)).",";
 			break;
 		}else{
 			exit("Invalid Token");
