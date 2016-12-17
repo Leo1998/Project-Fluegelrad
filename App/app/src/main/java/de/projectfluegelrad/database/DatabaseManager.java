@@ -196,10 +196,6 @@ public class DatabaseManager implements Runnable {
             String header = raw.split(",")[0];
             String json = raw.substring(header.length() + 1);
 
-            if (header.equals("Invalid Token")) {
-                throw new IllegalStateException("Invalid Token!");
-            }
-
             JSONArray headerArray = new JSONArray(new JSONTokener(header));
             String newToken = headerArray.getString(0);
             refreshToken(newToken);

@@ -15,7 +15,7 @@ public class Event implements Parcelable {
 
     protected Event(Parcel in) {
         id = in.readInt();
-        location = in.readString();
+        location = new Location(in.readString(), in.readDouble(), in.readDouble());
         category = in.readString();
         price = in.readInt();
         host = in.readInt();
@@ -45,7 +45,7 @@ public class Event implements Parcelable {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         c.setTime(simpleDateFormat.parse(obj.getString("date")));
 
-        Event event = new Event(obj.getInt("id"), obj.getString("location"), obj.getString("category"), obj.getInt("price"), obj.getInt("hostId"), c, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("age"));
+        Event event = new Event(obj.getInt("id"), new Location(obj.getString("address"), obj.getDouble("longitude"), obj.getDouble("latitude")), obj.getString("category"), obj.getInt("price"), obj.getInt("hostId"), c, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("age"));
 
         return event;
     }
@@ -54,7 +54,9 @@ public class Event implements Parcelable {
         JSONObject obj = new JSONObject();
 
         obj.put("id", event.getId());
-        obj.put("location", event.getLocation());
+        obj.put("address", event.getLocation().getAddress());
+        obj.put("longitude", event.getLocation().getLongitude());
+        obj.put("latitude", event.getLocation().getLatitude());
         obj.put("category", event.getCategory());
         obj.put("price", event.getPrice());
         obj.put("host", event.getHost());
@@ -68,7 +70,7 @@ public class Event implements Parcelable {
     }
 
     private int id;
-    private String location;
+    private Location location;
     private String category;
     private int price;
     private int host;
@@ -78,7 +80,7 @@ public class Event implements Parcelable {
     private int participants;
     private int age;
 
-    public Event(int id, String location, String category, int price, int host, Calendar date, String description, int maxParticipants, int participants, int age) {
+    public Event(int id, Location location, String category, int price, int host, Calendar date, String description, int maxParticipants, int participants, int age) {
         this.id = id;
         this.location = location;
         this.category = category;
@@ -95,7 +97,7 @@ public class Event implements Parcelable {
         return id;
     }
 
-    public String getLocation() {
+    public Location getLocation() {
         return location;
     }
 
@@ -169,7 +171,9 @@ public class Event implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
-        parcel.writeString(location);
+        parcel.writeString(location.getAddress());
+        parcel.writeDouble(location.getLongitude());
+        parcel.writeDouble(location.getLatitude());
         parcel.writeString(category);
         parcel.writeInt(price);
         parcel.writeInt(host);

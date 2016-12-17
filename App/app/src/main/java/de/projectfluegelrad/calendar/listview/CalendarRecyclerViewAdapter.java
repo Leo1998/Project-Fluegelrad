@@ -49,7 +49,7 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
         holder.getDateTextView().setText(simpleDateFormat.format(eventList.get(position).getDate().getTime()));
 
         //TODO
-        holder.getLocationTextView().setText(eventList.get(position).getLocation());
+        holder.getLocationTextView().setText(eventList.get(position).getLocation().getAddress());
         holder.getHostTextView().setText("N/A");
 
         holder.getCardView().setOnClickListener(view -> {

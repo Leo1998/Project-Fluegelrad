@@ -62,7 +62,7 @@ public class CalendarDayFragment extends Fragment{
         RelativeLayout descriptionContainer = (RelativeLayout)  layout.findViewById(R.id.description_container);
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 
-        ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation());
+        ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
 
         /*layout.findViewById(R.id.location_button).setOnClickListener(view -> {
             //TODO:Location
@@ -83,7 +83,7 @@ public class CalendarDayFragment extends Fragment{
 
                 Address address = null;
                 try {
-                    List<Address> addresses = geocoder.getFromLocationName(event.getLocation(), 1);
+                    List<Address> addresses = geocoder.getFromLocationName(event.getLocation().getAddress(), 1);
                     if (addresses.size() > 0) {
                         address = addresses.get(0);
                     }
@@ -114,7 +114,7 @@ public class CalendarDayFragment extends Fragment{
             intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,day.getTimeInMillis());
             intent.putExtra(CalendarContract.Events.TITLE, event.getCategory());
             intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + getString(R.string.calender_organized_by) + " " + event.getHost());
-            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation());
+            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
 
             startActivity(intent);
         });
