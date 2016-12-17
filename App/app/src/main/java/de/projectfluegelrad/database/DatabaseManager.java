@@ -37,6 +37,7 @@ public class DatabaseManager implements Runnable {
     private final File filesDirectory;
 
     private final List<Event> eventList = new ArrayList<Event>();
+    private ImageAtlas imageAtlas;
     private User user;
 
     private Logger logger;
@@ -173,48 +174,84 @@ public class DatabaseManager implements Runnable {
     }
 
     private void refreshEventData() {
-        ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
         try {
-            if (!isConnected) {
-                throw new IllegalStateException(attachedView.getContext().getResources().getText(R.string.network_failure).toString());
+            {
+                String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php");
+
+                JSONArray array = new JSONArray(new JSONTokener(json));
+
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
+
+                    Event event = Event.readEvent(obj);
+
+                    registerEvent(event);
+                }
             }
 
-            URL dbServiceURL = new URL("http://fluegelrad.ddns.net/recieveDatabase.php?u=" + user.getId() + "&t=" + user.getHashedToken());
-            URLConnection c = dbServiceURL.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
+            {
+                String json = executeScript("http://fluegelrad.ddns.net/recieveImagePaths.php");
 
-            StringBuilder jsonBuilder = new StringBuilder();
-            String inputLine;
-            while ((inputLine = in.readLine()) != null)
-                jsonBuilder.append(inputLine);
-            in.close();
+                ImageAtlas atlas = new ImageAtlas();
+                JSONArray array = new JSONArray(new JSONTokener(json));
 
-            String raw = jsonBuilder.toString();
-            String header = raw.split(",")[0];
-            String json = raw.substring(header.length() + 1);
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
 
-            JSONArray headerArray = new JSONArray(new JSONTokener(header));
-            String newToken = headerArray.getString(0);
-            refreshToken(newToken);
+                    Image image = Image.readImage(obj);
 
-            JSONArray array = new JSONArray(new JSONTokener(json));
+                    atlas.addImage(image);
+                }
 
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject obj = array.getJSONObject(i);
-
-                Event event = Event.readEvent(obj);
-
-                registerEvent(event);
+                this.imageAtlas = atlas;
             }
         } catch(Exception e) {
+            logger.log(e.getMessage());
             e.printStackTrace();
         }
 
         sortEvents();
         saveEvents();
+    }
+
+    /**
+     *
+     * @param scriptAddress the scripts address (without arguments)
+     * @return the json text
+     * @throws DatabaseException
+     */
+    private String executeScript(String scriptAddress) throws Exception {
+        ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+
+        if (!isConnected) {
+            throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.network_failure).toString());
+        }
+
+        String address = scriptAddress + "?u=" + user.getId() + "&t=" + user.getHashedToken();
+        URL url = new URL(address);
+        URLConnection c = url.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
+
+        StringBuilder jsonBuilder = new StringBuilder();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null)
+            jsonBuilder.append(inputLine);
+        in.close();
+
+        String raw = jsonBuilder.toString();
+        if (raw.startsWith("Error:"))
+            throw new DatabaseException(raw);
+
+        String header = raw.split(",")[0];
+        String json = raw.substring(header.length() + 1);
+
+        JSONArray headerArray = new JSONArray(new JSONTokener(header));
+        String newToken = headerArray.getString(0);
+        refreshToken(newToken);
+
+        return json;
     }
 
     private void readEvents() {

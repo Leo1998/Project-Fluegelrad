@@ -39,11 +39,13 @@ public class SettingsFragment extends Fragment {
         });
 
         layout.findViewById(R.id.clear_cache_button).setOnClickListener(v -> {
-            File dir = new File(this.getContext().getFilesDir(), "database");
+            try {
+                // clearing app data
+                Runtime runtime = Runtime.getRuntime();
+                runtime.exec("pm clear de.projectfluegelrad");
 
-            if (dir.exists()) {
-                dir.delete();
-                dir.mkdirs();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 

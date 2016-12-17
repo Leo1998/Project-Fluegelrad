@@ -64,13 +64,6 @@ public class CalendarDayFragment extends Fragment{
 
         ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
 
-        /*layout.findViewById(R.id.location_button).setOnClickListener(view -> {
-            //TODO:Location
-            Uri uri = Uri.parse("geo:0,0?q=" + event.getLocation());
-            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(intent);
-        });*/
-
         mapView = (MapView) layout.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
 
@@ -79,24 +72,13 @@ public class CalendarDayFragment extends Fragment{
             public void onMapReady(GoogleMap map) {
                 map.getUiSettings().setMyLocationButtonEnabled(false);
 
-                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                double latitude = event.getLocation().getLatitude();
+                double longitude = event.getLocation().getLongitude();
 
-                Address address = null;
-                try {
-                    List<Address> addresses = geocoder.getFromLocationName(event.getLocation().getAddress(), 1);
-                    if (addresses.size() > 0) {
-                        address = addresses.get(0);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(latitude, longitude)).title("Marker"));
 
-                if (address != null) {
-                    map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(address.getLatitude(), address.getLongitude())).title("Marker"));
-
-                    CameraUpdate cam = CameraUpdateFactory.newLatLngZoom(new LatLng(address.getLatitude(), address.getLongitude()), 15);
-                    map.animateCamera(cam);
-                }
+                CameraUpdate cam = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15);
+                map.animateCamera(cam);
             }
         });
 

@@ -59,7 +59,7 @@ public class Event implements Parcelable {
         obj.put("latitude", event.getLocation().getLatitude());
         obj.put("category", event.getCategory());
         obj.put("price", event.getPrice());
-        obj.put("host", event.getHost());
+        obj.put("hostId", event.getHost());
         obj.put("date", event.getDateFormatted());
         obj.put("description", event.getDescription());
         obj.put("maxParticipants", event.getMaxParticipants());
