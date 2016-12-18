@@ -3,6 +3,7 @@ package de.projectfluegelrad;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -66,15 +67,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"));
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
-        bundle.putParcelable("imageAtlas", databaseManager.getImageAtlas());
-
         calendarFragment = new CalendarGridViewFragment();
-        calendarFragment.setArguments(bundle);
 
         calendarListFragment = new CalendarListFragment();
-        calendarListFragment.setArguments(bundle);
 
         homeFragment = new HomeFragment();
         settingsFragment = new SettingsFragment();
@@ -131,15 +126,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param id
      */
     private void onFragmentTransaction(int id) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
+        bundle.putParcelable("imageAtlas", databaseManager.getImageAtlas());
+
+        Fragment fragment = null;
+
         if (id == R.id.nav_home) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
+            fragment = homeFragment;
         } else if (id == R.id.nav_calender) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarFragment).commit();
+            fragment = calendarFragment;
         } else if (id == R.id.nav_calender_list) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarListFragment).commit();
+            fragment = calendarListFragment;
         } else if (id == R.id.nav_settings) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, settingsFragment).commit();
+            fragment = settingsFragment;
         }
+
+        fragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
 
     @Override
