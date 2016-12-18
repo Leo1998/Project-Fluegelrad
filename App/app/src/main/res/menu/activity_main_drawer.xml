@@ -9,7 +9,7 @@
         android:icon="@drawable/ic_today"
         android:id="@+id/nav_calender" />
     <item android:title="@string/calender_list"
-        android:icon="@drawable/ic_today"
+        android:icon="@drawable/ic_list"
         android:id="@+id/nav_calender_list" />
     <item android:title="@string/drawer_settings"
         android:id="@+id/nav_settings"

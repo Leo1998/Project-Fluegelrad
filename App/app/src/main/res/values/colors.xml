@@ -4,8 +4,6 @@
     <color name="colorPrimaryDark">#049b25</color>
     <color name="colorAccent">#FFFFFF</color>
 
-
-
     <!--Calendar-->
     <color name="today">#4b82ff</color>
     <color name="greyed_out">#c7c7c7</color>

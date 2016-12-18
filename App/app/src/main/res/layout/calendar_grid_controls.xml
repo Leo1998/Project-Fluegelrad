@@ -23,7 +23,8 @@
             android:layout_height="30dp"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_arrow_back"/>
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@color/colorAccent"/>
 
         <!-- date title -->
         <TextView
@@ -35,7 +36,7 @@
             android:layout_toLeftOf="@+id/calendar_next_button"
             android:gravity="center"
             android:textAppearance="@android:style/TextAppearance.Medium"
-            android:textColor="#222222"
+            android:textColor="@color/colorAccent"
             android:text="current date"/>
 
         <!-- next button -->
@@ -45,7 +46,8 @@
             android:layout_height="30dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_arrow_forward"/>
+            android:src="@drawable/ic_arrow_forward"
+            android:tint="@color/colorAccent"/>
     </RelativeLayout>
 
     <!-- days header -->

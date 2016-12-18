@@ -4,49 +4,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/category"
-        android:layout_alignParentLeft="true"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="category" />
+        android:id="@+id/header_container"
+        android:background="@color/colorPrimary">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/date"
-        android:layout_alignParentRight="true"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="date" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/category"
+            android:layout_alignParentLeft="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:text="category" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/host"
-        android:paddingTop="5dp"
-        android:textSize="16sp"
-        android:layout_below="@id/category"
-        android:text="host" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/date"
+            android:layout_alignParentRight="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:text="date" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/location"
-        android:paddingBottom="10dp"
-        android:layout_below="@+id/category"
-        android:layout_toRightOf="@+id/host"
-        android:layout_toEndOf="@+id/host"
-        android:layout_marginLeft="41dp"
-        android:layout_marginStart="41dp"
-        android:text="location" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/host"
+            android:paddingTop="5dp"
+            android:textSize="16sp"
+            android:textColor="@color/colorAccent"
+            android:layout_below="@id/category"
+            android:text="host" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/location"
+            android:textColor="@color/colorAccent"
+            android:paddingBottom="10dp"
+            android:layout_below="@+id/category"
+            android:layout_toRightOf="@+id/host"
+            android:layout_toEndOf="@+id/host"
+            android:layout_marginLeft="41dp"
+            android:layout_marginStart="41dp"
+            android:text="location" />
+    </RelativeLayout>
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/location">
+        android:layout_below="@id/header_container">
 
         <RelativeLayout
             android:layout_width="match_parent"
