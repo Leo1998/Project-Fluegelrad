@@ -99,23 +99,26 @@ public class CalendarDayFragment extends Fragment{
             }
         });
 
-        layout.findViewById(R.id.calender_add_button).setOnClickListener(view -> {
-            Intent intent = new Intent(Intent.ACTION_INSERT);
+        layout.findViewById(R.id.calender_add_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_INSERT);
 
-            intent.setData(CalendarContract.Events.CONTENT_URI);
+                intent.setData(CalendarContract.Events.CONTENT_URI);
 
-            Calendar day = event.getDate();
+                Calendar day = event.getDate();
 
-            intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, day.getTimeInMillis());
-            //TODO:Ende des Events
-            //day.setTime(event.getEndDate());
-            day.add(Calendar.HOUR, 2);
-            intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME,day.getTimeInMillis());
-            intent.putExtra(CalendarContract.Events.TITLE, event.getCategory());
-            intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + getString(R.string.calender_organized_by) + " " + event.getHost());
-            intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
+                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, day.getTimeInMillis());
+                //TODO:Ende des Events
+                //day.setTime(event.getEndDate());
+                day.add(Calendar.HOUR, 2);
+                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, day.getTimeInMillis());
+                intent.putExtra(CalendarContract.Events.TITLE, event.getCategory());
+                intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + event.getHost());
+                intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
 
-            startActivity(intent);
+                CalendarDayFragment.this.startActivity(intent);
+            }
         });
 
         //TODO:Sponsoren

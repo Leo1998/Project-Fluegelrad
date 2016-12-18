@@ -98,14 +98,20 @@ public class CalendarGridView extends LinearLayout {
     }
 
     private void assignClickHandlers() {
-        btnNext.setOnClickListener(v -> {
-            currentDate.add(Calendar.MONTH, 1);
-            updateCalendar();
+        btnNext.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentDate.add(Calendar.MONTH, 1);
+                CalendarGridView.this.updateCalendar();
+            }
         });
 
-        btnPrev.setOnClickListener(v -> {
-            currentDate.add(Calendar.MONTH, -1);
-            updateCalendar();
+        btnPrev.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentDate.add(Calendar.MONTH, -1);
+                CalendarGridView.this.updateCalendar();
+            }
         });
     }
 

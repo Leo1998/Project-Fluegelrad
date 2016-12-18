@@ -26,7 +26,7 @@ public class CalendarListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.calender_list_fragment, container, false);
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.calender_list_fragment, container, false);
 
         RecyclerView recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -51,13 +51,16 @@ public class CalendarListFragment extends Fragment {
         adapter.setActivity(getActivity());
         recyclerView.setAdapter(adapter);
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            ((MainActivity) getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, false, new DatabaseRequestListener() {
-                @Override
-                public void onFinish() {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            });
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                ((MainActivity) CalendarListFragment.this.getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, false, new DatabaseRequestListener() {
+                    @Override
+                    public void onFinish() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
         });
 
         return swipeRefreshLayout;

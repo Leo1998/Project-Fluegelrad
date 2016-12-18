@@ -43,7 +43,7 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         Calendar i = eventList.get(position).getDate();
 
         holder.getCategoryTextView().setText(eventList.get(position).getCategory());
@@ -56,16 +56,19 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
         holder.getLocationTextView().setText(eventList.get(position).getLocation().getAddress());
         holder.getHostTextView().setText("N/A");
 
-        holder.getCardView().setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("event", eventList.get(position));
-            bundle.putParcelable("imageAtlas", imageAtlas);
+        holder.getCardView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("event", eventList.get(position));
+                bundle.putParcelable("imageAtlas", imageAtlas);
 
-            CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
-            calendarDayFragment.setArguments(bundle);
+                CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
+                calendarDayFragment.setArguments(bundle);
 
-            if (activity != null) {
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                if (activity != null) {
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                }
             }
         });
     }

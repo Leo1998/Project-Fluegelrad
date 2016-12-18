@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,22 +45,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         toggle.setDrawerIndicatorEnabled(true);
         toggle.syncState();
 
-        toggle.setToolbarNavigationClickListener(v -> {
-            getSupportFragmentManager().popBackStack();
+        toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.getSupportFragmentManager().popBackStack();
+            }
         });
 
-        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
-            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                toggle.setDrawerIndicatorEnabled(false);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            }else {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                toggle.setDrawerIndicatorEnabled(true);
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                if (MainActivity.this.getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    toggle.setDrawerIndicatorEnabled(false);
+                    MainActivity.this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                } else {
+                    MainActivity.this.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                    toggle.setDrawerIndicatorEnabled(true);
+                }
             }
         });
 
