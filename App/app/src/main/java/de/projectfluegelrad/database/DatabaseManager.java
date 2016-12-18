@@ -37,7 +37,7 @@ public class DatabaseManager implements Runnable {
     private final File filesDirectory;
 
     private final List<Event> eventList = new ArrayList<Event>();
-    private ImageAtlas imageAtlas;
+    private final ImageAtlas imageAtlas = new ImageAtlas();
     private User user;
 
     private Logger logger;
@@ -192,7 +192,7 @@ public class DatabaseManager implements Runnable {
             {
                 String json = executeScript("http://fluegelrad.ddns.net/recieveImagePaths.php");
 
-                ImageAtlas atlas = new ImageAtlas();
+                imageAtlas.clearImages();
                 JSONArray array = new JSONArray(new JSONTokener(json));
 
                 for (int i = 0; i < array.length(); i++) {
@@ -200,10 +200,8 @@ public class DatabaseManager implements Runnable {
 
                     Image image = Image.readImage(obj);
 
-                    atlas.addImage(image);
+                    imageAtlas.addImage(image);
                 }
-
-                this.imageAtlas = atlas;
             }
         } catch(Exception e) {
             logger.log(e.getMessage());
@@ -332,6 +330,10 @@ public class DatabaseManager implements Runnable {
 
     public List<Event> getEventList() {
         return eventList;
+    }
+
+    public ImageAtlas getImageAtlas() {
+        return imageAtlas;
     }
 
     public void stopDatabaseService() {

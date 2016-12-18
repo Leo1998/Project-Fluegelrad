@@ -20,6 +20,7 @@ import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.database.ImageAtlas;
 
 public class CalendarListFragment extends Fragment {
 
@@ -44,8 +45,9 @@ public class CalendarListFragment extends Fragment {
 
         Collections.reverse(events);
 
+        ImageAtlas imageAtlas = getArguments().getParcelable("imageAtlas");
 
-        CalendarRecyclerViewAdapter adapter = new CalendarRecyclerViewAdapter(events);
+        CalendarRecyclerViewAdapter adapter = new CalendarRecyclerViewAdapter(events, imageAtlas);
         adapter.setActivity(getActivity());
         recyclerView.setAdapter(adapter);
 

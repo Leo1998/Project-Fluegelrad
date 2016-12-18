@@ -66,18 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"));
 
-        List<Event> events = databaseManager.getEventList();
-
-        Collections.sort(events, (event, t1) -> {
-            if (event.getDate() == null || t1.getDate() == null) {
-                return 0;
-            }
-
-            return event.getDate().compareTo(t1.getDate());
-        });
-
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) events);
+        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
+        bundle.putParcelable("imageAtlas", databaseManager.getImageAtlas());
 
         calendarFragment = new CalendarGridViewFragment();
         calendarFragment.setArguments(bundle);

@@ -10,7 +10,8 @@
         android:id="@+id/category"
         android:layout_alignParentLeft="true"
         android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:text="category" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -18,7 +19,8 @@
         android:id="@+id/date"
         android:layout_alignParentRight="true"
         android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:text="date" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -26,7 +28,8 @@
         android:id="@+id/host"
         android:paddingTop="5dp"
         android:textSize="16sp"
-        android:layout_below="@id/category"/>
+        android:layout_below="@id/category"
+        android:text="host" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -37,7 +40,8 @@
         android:layout_toRightOf="@+id/host"
         android:layout_toEndOf="@+id/host"
         android:layout_marginLeft="41dp"
-        android:layout_marginStart="41dp" />
+        android:layout_marginStart="41dp"
+        android:text="location" />
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -47,35 +51,46 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/host"
-            android:id="@+id/description_container">
+            android:id="@+id/scroll_container">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/description"
-                android:paddingTop="10dp" />
+                android:paddingTop="10dp"
+                android:text="description" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/images_container"
+                android:layout_below="@+id/description"
+                android:layout_marginTop="25dp"></LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/description"
+                android:layout_below="@+id/images_container"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:id="@+id/sponsors" />
-
-            <com.google.android.gms.maps.MapView
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:layout_marginRight="10dp"
-                android:id="@+id/mapView"
-                android:layout_below="@+id/sponsors" />
+                android:id="@+id/sponsors"
+                android:text="sponsors" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/drawer_add_calender"
                 android:id="@+id/calender_add_button"
-                android:layout_below="@+id/mapView" />
+                android:layout_below="@+id/sponsors" />
+
+            <com.google.android.gms.maps.MapView
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:id="@+id/mapView"
+                android:layout_below="@+id/calender_add_button"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true" />
 
         </RelativeLayout>
     </ScrollView>

@@ -20,6 +20,7 @@ import de.projectfluegelrad.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.database.ImageAtlas;
 
 public class CalendarGridViewFragment extends Fragment {
 
@@ -50,6 +51,7 @@ public class CalendarGridViewFragment extends Fragment {
             if (eventsOnDate.size() == 1){
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("event", eventsOnDate.get(0));
+                bundle.putParcelable("imageAtlas", getArguments().getParcelable("imageAtlas"));
 
                 CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                 calendarDayFragment.setArguments(bundle);
@@ -61,6 +63,7 @@ public class CalendarGridViewFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) eventsOnDate);
+                bundle.putParcelable("imageAtlas", getArguments().getParcelable("imageAtlas"));
 
                 newFragment.setArguments(bundle);
                 newFragment.show(getActivity().getSupportFragmentManager(), "eventsOnDateDialog");

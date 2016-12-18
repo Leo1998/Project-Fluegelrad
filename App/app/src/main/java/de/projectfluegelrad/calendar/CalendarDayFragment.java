@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,16 +40,20 @@ import java.util.Locale;
 
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.database.Image;
+import de.projectfluegelrad.database.ImageAtlas;
 
 public class CalendarDayFragment extends Fragment{
 
     private Event event;
+    private ImageAtlas imageAtlas;
 
     private MapView mapView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        event = getArguments().getParcelable("event");
+        this.event = getArguments().getParcelable("event");
+        this.imageAtlas = getArguments().getParcelable("imageAtlas");
 
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.calender_day_fragment, container, false);
 
@@ -59,8 +65,19 @@ public class CalendarDayFragment extends Fragment{
 
         ((TextView) layout.findViewById(R.id.host)).setText("N/A");
 
-        RelativeLayout descriptionContainer = (RelativeLayout)  layout.findViewById(R.id.description_container);
+        RelativeLayout scrollContainer = (RelativeLayout)  layout.findViewById(R.id.scroll_container);
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
+
+        LinearLayout imagesContainer = (LinearLayout) layout.findViewById(R.id.images_container);
+        List<Image> images = imageAtlas.getImages(this.event);
+        for (int i = 0; i < images.size(); i++) {
+            Image image = images.get(i);
+
+            ImageView imageView = new ImageView(this.getContext());
+            imageView.setImageBitmap(image.getBitmap());
+
+            imagesContainer.addView(imageView);
+        }
 
         ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
 

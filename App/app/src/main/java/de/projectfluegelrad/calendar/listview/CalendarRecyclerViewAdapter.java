@@ -16,14 +16,18 @@ import java.util.List;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.database.ImageAtlas;
 
 public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRecyclerViewAdapter.ViewHolder>{
 
     private List<Event> eventList;
+    private ImageAtlas imageAtlas;
+
     private FragmentActivity activity;
 
-    CalendarRecyclerViewAdapter(List<Event> events){
+    CalendarRecyclerViewAdapter(List<Event> events, ImageAtlas imageAtlas){
         this.eventList = events;
+        this.imageAtlas = imageAtlas;
     }
 
     public void setActivity(FragmentActivity activity) {
@@ -55,6 +59,7 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
         holder.getCardView().setOnClickListener(view -> {
             Bundle bundle = new Bundle();
             bundle.putParcelable("event", eventList.get(position));
+            bundle.putParcelable("imageAtlas", imageAtlas);
 
             CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
             calendarDayFragment.setArguments(bundle);
