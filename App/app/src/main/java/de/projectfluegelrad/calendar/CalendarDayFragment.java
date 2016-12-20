@@ -1,42 +1,28 @@
 package de.projectfluegelrad.calendar;
 
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.NavUtils;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Event;
@@ -73,10 +59,9 @@ public class CalendarDayFragment extends Fragment{
         for (int i = 0; i < images.size(); i++) {
             Image image = images.get(i);
 
-            ImageView imageView = new ImageView(this.getContext());
-            imageView.setImageBitmap(image.getBitmap());
+            ImageHolder imageView = new ImageHolder(this.getContext(), image);
 
-            imagesContainer.addView(imageView);
+            imagesContainer.addView(imageView.getLayout());
         }
 
         ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
