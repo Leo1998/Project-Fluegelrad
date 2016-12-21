@@ -3,14 +3,14 @@
 	if(isset($_GET['u'])) {
 		$u = $_GET['u'];
 	} else {
-		exit("?u is not set");
+		exit("Error: ?u is not set");
 	}
 	
 	//Get Token(t)
 	if(isset($_GET['t'])) {
 		$t = $_GET['t'];
 	} else {
-		exit("?t is not set");
+		exit("Error: ?t is not set");
 	}
 
 	//Spam protection, IP ban, Initalize PDO
@@ -19,7 +19,7 @@
 	
 	//Delete expired Users
 	$time = time();
-	$deleteUsers = $pdo->prepare("DELETE FROM user WHERE expire < :time");
+	$deleteUsers = $pdo->prepare("DELETE FROM users WHERE expire < :time");
 	$deleteUsers->bindParam('time', $time, PDO::PARAM_INT);
 	$deleteUsers->execute();
 
@@ -41,7 +41,7 @@
 	}
 	
 	//Get hashed token from database
-	$selectTokens = $pdo->prepare("SELECT token,id FROM user WHERE id = ?");
+	$selectTokens = $pdo->prepare("SELECT token,id FROM users WHERE id = ?");
 	$selectTokens->execute(array($u));
 	//Stays false, if database does not contain id
 	$idPresent = false;
@@ -56,18 +56,18 @@
 			$newHash = password_hash($newToken, PASSWORD_DEFAULT);
 			$expire = time();
 			$expire += 30758400;
-			$updateToken = $pdo->prepare("UPDATE user SET token = ? , expire = ? WHERE id = ?");
+			$updateToken = $pdo->prepare("UPDATE users SET token = ? , expire = ? WHERE id = ?");
 			$updateToken->execute(array($newHash,$expire,$sId));
 			//Echos new token
 			echo json_encode(array($newToken)).",";
 			break;
 		}else{
-			exit("Invalid Token");
+			exit("Error: Invalid Token");
 		}
 	}
 	
 	//exit if database does not contain token
 	if(!$idPresent){
-		exit("Unknown ID");
+		exit("Error: Unknown ID");
 	}
 ?>

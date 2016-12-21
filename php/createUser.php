@@ -5,7 +5,7 @@
 	
 	//Delete expired Users
 	$time = time();
-	$deleteUsers = $pdo->prepare("DELETE FROM user WHERE expire < :time");
+	$deleteUsers = $pdo->prepare("DELETE FROM users WHERE expire < :time");
 	$deleteUsers->bindParam('time', $time, PDO::PARAM_INT);
 	$deleteUsers->execute();
 	
@@ -35,7 +35,7 @@
 	$expire += 30758400;
 	
 	//Insert data in database and get Id
-	$insertUser = $pdo->prepare("INSERT INTO `user` (`id`, `token`, `expire`, `hostId`) VALUES (NULL, ?, ?, 0);");
+	$insertUser = $pdo->prepare("INSERT INTO `users` (`id`, `token`, `expire`, `hostId`) VALUES (NULL, ?, ?, 0);");
 	$insertUser->execute(array($hash,$expire));
 	$id = intval($pdo->lastInsertId());
 	

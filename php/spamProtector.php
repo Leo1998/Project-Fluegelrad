@@ -4,7 +4,7 @@
 		$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'testuser', 'BLysbG6Bsa2qn6nJ',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 		//$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'dbUser', 'fluegelrad',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 	} catch(PDOException $e) {
-		exit("Connection failed");
+		exit("Error: Connection failed");
     }
 	
 	// Function to get the client ip address
@@ -51,18 +51,18 @@
 	
 	//Stop if totalCount to high
 	if($type == 0 && $totalCount > 25){ //Allow maximum of 25 type 0 requests per Ip
-		exit("Please wait ".($expire-time())." secounds before trying again");
+		exit("Error: Please wait ".($expire-time())." secounds before trying again");
 	}else if($type == 1 && $totalCount > 30){ //Allow maximum of 30 type 1 requests per Ip
 		if($knownIp){
-			exit("Please wait ".($expire-time())." secounds before trying again");
+			exit("Error: Please wait ".($expire-time())." secounds before trying again");
 		}else{
-			exit("Please wait before trying again");
+			exit("Error: Please wait before trying again");
 		}
 	}else if($type != 0 && $type != 1){ //Throw Error if type unknown
 		if($knownIp){
-			exit("Please wait ".($expire-time())." secounds before trying again");
+			exit("Error: Please wait ".($expire-time())." secounds before trying again");
 		}else{
-			exit("Please wait before trying again");
+			exit("Error: Please wait before trying again");
 		}
 	}
 	
@@ -84,9 +84,9 @@
 		}else{
 			//Choose for Type
 			if($type = 0 && $count > 2){ //Allow 3 type 0 requests per Ip+Port
-				exit("Please wait ".($expire-time())." secounds before trying again");
+				exit("Error: Please wait ".($expire-time())." secounds before trying again");
 			}else if($type = 1 && $count > 0){ //Allow 1 type 1 request per Ip+Port
-				exit("Please wait ".($expire-time())." secounds before trying again");
+				exit("Error: Please wait ".($expire-time())." secounds before trying again");
 			}else{ //Not blocked
 				$updateIp = $pdo->prepare("UPDATE spamProtection SET expire = ?,count = ? WHERE ip = ? AND type = ?");
 				$updateIp->execute(array($newExpire,$count+1,$ip,$type));
