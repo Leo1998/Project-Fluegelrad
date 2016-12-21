@@ -6,7 +6,6 @@ import android.net.NetworkInfo;
 import android.view.View;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -15,8 +14,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -33,6 +30,8 @@ import de.projectfluegelrad.database.logging.SnackbarLogger;
 
 public class DatabaseManager implements Runnable {
 
+    public static DatabaseManager INSTANCE;
+
     private final View attachedView;
     private final File filesDirectory;
 
@@ -47,6 +46,10 @@ public class DatabaseManager implements Runnable {
     private DatabaseRequest currentRequest = null;
 
     public DatabaseManager(View attachedView, File filesDirectory) {
+        if (INSTANCE != null)
+            throw new IllegalStateException("Only one Instance allowed!");
+        INSTANCE = this;
+
         this.attachedView = attachedView;
         this.filesDirectory = filesDirectory;
         if (!filesDirectory.exists()) {
@@ -62,7 +65,7 @@ public class DatabaseManager implements Runnable {
     public void run() {
         login();
 
-        readEvents();
+        readEventData();
 
         refreshEventData();
 
@@ -80,7 +83,7 @@ public class DatabaseManager implements Runnable {
                 refreshEventData();
                 break;
             case SaveEventList:
-                saveEvents();
+                saveEventData();
                 break;
             default:
                 break;
@@ -175,13 +178,18 @@ public class DatabaseManager implements Runnable {
 
     private void refreshEventData() {
         try {
+            String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php");
+
+            System.out.println(json);
+
+            JSONObject root = new JSONObject(new JSONTokener(json));
+
+            JSONArray eventDataArray = root.getJSONArray("events");
+            JSONArray imageAtlasArray = root.getJSONArray("images");
+
             {
-                String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php");
-
-                JSONArray array = new JSONArray(new JSONTokener(json));
-
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject obj = array.getJSONObject(i);
+                for (int i = 0; i < eventDataArray.length(); i++) {
+                    JSONObject obj = eventDataArray.getJSONObject(i);
 
                     Event event = Event.readEvent(obj);
 
@@ -190,13 +198,10 @@ public class DatabaseManager implements Runnable {
             }
 
             {
-                String json = executeScript("http://fluegelrad.ddns.net/recieveImagePaths.php");
-
                 imageAtlas.clearImages();
-                JSONArray array = new JSONArray(new JSONTokener(json));
 
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject obj = array.getJSONObject(i);
+                for (int i = 0; i < imageAtlasArray.length(); i++) {
+                    JSONObject obj = imageAtlasArray.getJSONObject(i);
 
                     Image image = Image.readImage(obj);
 
@@ -209,7 +214,7 @@ public class DatabaseManager implements Runnable {
         }
 
         sortEvents();
-        saveEvents();
+        saveEventData();
     }
 
     /**
@@ -252,19 +257,12 @@ public class DatabaseManager implements Runnable {
         return json;
     }
 
-    private void readEvents() {
-        File[] eventFiles = filesDirectory.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(".event");
-            }
-        });
+    private void readEventData() {
+        File eventFile = new File(filesDirectory, "events");
 
-        for (int i = 0; i < eventFiles.length; i++) {
-            File file = eventFiles[i];
-
+        if (eventFile.exists()) {
             try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(eventFile)));
 
                 String json = "";
                 for (String line = reader.readLine(); line != null; line = reader.readLine()) {
@@ -272,31 +270,43 @@ public class DatabaseManager implements Runnable {
                 }
                 reader.close();
 
-                JSONObject obj = new JSONObject(new JSONTokener(json));
+                JSONArray array = new JSONArray(new JSONTokener(json));
 
-                Event event = Event.readEvent(obj);
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
 
-                registerEvent(event);
-            } catch(Exception e) {
-                 e.printStackTrace();
-            }
-        }
+                    Event event = Event.readEvent(obj);
 
-        sortEvents();
-    }
-
-    private void saveEvents() {
-        for (int i = 0; i < eventList.size(); i++) {
-            Event event = eventList.get(i);
-
-            try {
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(filesDirectory, event.getId() + ".event"))));
-
-                writer.write(Event.writeEvent(event).toString());
-                writer.close();
+                    registerEvent(event);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            sortEvents();
+        }
+    }
+
+    private void saveEventData() {
+        File eventFile = new File(filesDirectory, "events");
+
+        try {
+            JSONArray array = new JSONArray();
+
+            for (int i = 0; i < eventList.size(); i++) {
+                Event event = eventList.get(i);
+
+                JSONObject obj = Event.writeEvent(event);
+
+                array.put(obj);
+            }
+
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(eventFile)));
+
+            writer.write(array.toString());
+            writer.close();
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -341,7 +351,7 @@ public class DatabaseManager implements Runnable {
     }
 
     public void destroy() {
-        saveEvents();
+        saveEventData();
 
         running = false;
     }

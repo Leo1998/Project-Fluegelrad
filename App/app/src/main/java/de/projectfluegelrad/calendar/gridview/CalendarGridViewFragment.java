@@ -18,6 +18,7 @@ import java.util.List;
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.calendar.CalendarDayFragment;
+import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
@@ -25,11 +26,10 @@ import de.projectfluegelrad.database.ImageAtlas;
 
 public class CalendarGridViewFragment extends Fragment {
 
-    private List<Event> events;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        events = getArguments().getParcelableArrayList("eventList");
+        final List<Event> events = DatabaseManager.INSTANCE.getEventList();
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout)inflater.inflate(R.layout.calender_grid_fragment, container, false);
 
@@ -53,8 +53,7 @@ public class CalendarGridViewFragment extends Fragment {
 
                 if (eventsOnDate.size() == 1) {
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable("event", eventsOnDate.get(0));
-                    bundle.putParcelable("imageAtlas", CalendarGridViewFragment.this.getArguments().getParcelable("imageAtlas"));
+                    bundle.putInt("eventId", eventsOnDate.get(0).getId());
 
                     CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                     calendarDayFragment.setArguments(bundle);
@@ -65,8 +64,7 @@ public class CalendarGridViewFragment extends Fragment {
                     DialogFragment newFragment = new CalendarDayDialog();
 
                     Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) eventsOnDate);
-                    bundle.putParcelable("imageAtlas", CalendarGridViewFragment.this.getArguments().getParcelable("imageAtlas"));
+                    //bundle.putIntArray("eventIds", (ArrayList<? extends Parcelable>) eventsOnDate);
 
                     newFragment.setArguments(bundle);
                     newFragment.show(CalendarGridViewFragment.this.getActivity().getSupportFragmentManager(), "eventsOnDateDialog");

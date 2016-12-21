@@ -134,10 +134,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param id
      */
     private void onFragmentTransaction(int id) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("eventList", (ArrayList<? extends Parcelable>) databaseManager.getEventList());
-        bundle.putParcelable("imageAtlas", databaseManager.getImageAtlas());
-
         Fragment fragment = null;
 
         if (id == R.id.nav_home) {
@@ -149,8 +145,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_settings) {
             fragment = settingsFragment;
         }
-
-        fragment.setArguments(bundle);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }

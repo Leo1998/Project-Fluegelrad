@@ -17,6 +17,7 @@ import java.util.List;
 
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
+import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
@@ -33,7 +34,7 @@ public class CalendarListFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         List<Event> events = new ArrayList<>();
-        List<Event> original = getArguments().getParcelableArrayList("eventList");
+        List<Event> original = DatabaseManager.INSTANCE.getEventList();
 
         for (int i = original.size()-1; i >= 0; i--){
             if (original.get(i).getDate().compareTo(Calendar.getInstance()) > 0){
@@ -45,9 +46,7 @@ public class CalendarListFragment extends Fragment {
 
         Collections.reverse(events);
 
-        ImageAtlas imageAtlas = getArguments().getParcelable("imageAtlas");
-
-        CalendarRecyclerViewAdapter adapter = new CalendarRecyclerViewAdapter(events, imageAtlas);
+        CalendarRecyclerViewAdapter adapter = new CalendarRecyclerViewAdapter(events);
         adapter.setActivity(getActivity());
         recyclerView.setAdapter(adapter);
 

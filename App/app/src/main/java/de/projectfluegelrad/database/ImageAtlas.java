@@ -5,33 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public class ImageAtlas implements Parcelable {
-
-    public static final Creator<ImageAtlas> CREATOR = new Creator<ImageAtlas>() {
-        @Override
-        public ImageAtlas createFromParcel(Parcel in) {
-            return new ImageAtlas(in);
-        }
-
-        @Override
-        public ImageAtlas[] newArray(int size) {
-            return new ImageAtlas[size];
-        }
-    };
-
-    protected ImageAtlas(Parcel in) {
-        this.images = in.readArrayList(this.getClass().getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(images);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
+public class ImageAtlas {
 
     private ArrayList<Image> images;
 

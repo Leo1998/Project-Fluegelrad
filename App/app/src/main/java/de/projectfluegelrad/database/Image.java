@@ -9,46 +9,17 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 
-public class Image implements Parcelable{
-
-    protected Image(Parcel in) {
-        id = in.readInt();
-        path = in.readString();
-        eventId = in.readInt();
-        description = in.readString();
-        bitmap = in.readParcelable(Bitmap.class.getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(path);
-        dest.writeInt(eventId);
-        dest.writeString(description);
-        dest.writeParcelable(bitmap, flags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Image> CREATOR = new Creator<Image>() {
-        @Override
-        public Image createFromParcel(Parcel in) {
-            return new Image(in);
-        }
-
-        @Override
-        public Image[] newArray(int size) {
-            return new Image[size];
-        }
-    };
+public class Image {
 
     public static Image readImage(JSONObject obj) throws JSONException, ParseException {
         Image image = new Image(obj.getInt("id"), obj.getString("path"), obj.getInt("eventId"), obj.getString("description"));
@@ -79,8 +50,6 @@ public class Image implements Parcelable{
         this.path = path;
         this.eventId = eventId;
         this.description = description;
-
-        this.loadBitmap();
     }
 
     public int getId() {
@@ -103,20 +72,26 @@ public class Image implements Parcelable{
         return bitmap;
     }
 
-    public void loadBitmap() {
-        try {
+    public void load(File cacheDir) throws IOException {
+        File cachedFile = new File(cacheDir, "image#" + this.id);
+
+        if (!cachedFile.exists()) {
             URL url = new URL("http://fluegelrad.ddns.net/" + this.path);
             URLConnection c = url.openConnection();
 
             InputStream in = c.getInputStream();
+            OutputStream out = new FileOutputStream(cachedFile);
 
-            this.bitmap = BitmapFactory.decodeStream(in);
-            System.out.println(toString() + " was loaded!");
-
+            StreamUtils.copyStream(in, out);
             in.close();
-        } catch(Exception e) {
-            e.printStackTrace();
+            out.close();
         }
+
+        InputStream in = new FileInputStream(cachedFile);
+
+        Image.this.bitmap = BitmapFactory.decodeStream(in);
+
+        in.close();
     }
 
     public void disposeBitmap() {

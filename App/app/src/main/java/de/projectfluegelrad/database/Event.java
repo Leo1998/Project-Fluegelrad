@@ -11,34 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Event implements Parcelable {
-
-    protected Event(Parcel in) {
-        id = in.readInt();
-        location = new Location(in.readString(), in.readDouble(), in.readDouble());
-        category = in.readString();
-        price = in.readInt();
-        host = in.readInt();
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date(in.readLong()));
-        date = c;
-        description = in.readString();
-        maxParticipants = in.readInt();
-        participants = in.readInt();
-        age = in.readInt();
-    }
-
-    public static final Creator<Event> CREATOR = new Creator<Event>() {
-        @Override
-        public Event createFromParcel(Parcel in) {
-            return new Event(in);
-        }
-
-        @Override
-        public Event[] newArray(int size) {
-            return new Event[size];
-        }
-    };
+public class Event {
 
     public static Event readEvent(JSONObject obj) throws JSONException, ParseException {
         Calendar c = Calendar.getInstance();
@@ -161,26 +134,5 @@ public class Event implements Parcelable {
     @Override
     public int hashCode() {
         return id;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeString(location.getAddress());
-        parcel.writeDouble(location.getLongitude());
-        parcel.writeDouble(location.getLatitude());
-        parcel.writeString(category);
-        parcel.writeInt(price);
-        parcel.writeInt(host);
-        parcel.writeLong(date.getTimeInMillis());
-        parcel.writeString(description);
-        parcel.writeInt(maxParticipants);
-        parcel.writeInt(participants);
-        parcel.writeInt(age);
     }
 }

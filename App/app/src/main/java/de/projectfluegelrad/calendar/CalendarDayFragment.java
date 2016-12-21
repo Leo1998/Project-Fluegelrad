@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.projectfluegelrad.R;
+import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
 import de.projectfluegelrad.database.Image;
 import de.projectfluegelrad.database.ImageAtlas;
@@ -32,14 +33,17 @@ import de.projectfluegelrad.database.ImageAtlas;
 public class CalendarDayFragment extends Fragment{
 
     private Event event;
-    private ImageAtlas imageAtlas;
 
     private MapView mapView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        this.event = getArguments().getParcelable("event");
-        this.imageAtlas = getArguments().getParcelable("imageAtlas");
+        List<Event> events = DatabaseManager.INSTANCE.getEventList();
+        for (Event e : events) {
+            if (e.getId() == getArguments().getInt("eventId")) {
+                this.event = e;
+            }
+        }
 
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.calender_day_fragment, container, false);
 
@@ -55,6 +59,7 @@ public class CalendarDayFragment extends Fragment{
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 
         LinearLayout imagesContainer = (LinearLayout) layout.findViewById(R.id.images_container);
+        ImageAtlas imageAtlas = DatabaseManager.INSTANCE.getImageAtlas();
         List<Image> images = imageAtlas.getImages(this.event);
         for (int i = 0; i < images.size(); i++) {
             Image image = images.get(i);
