@@ -3,7 +3,7 @@
 	if(isset($_GET['k'])) {
 		$k = $_GET['k'];
 	} else {
-		exit("?k is not set");
+		exit("Error: ?k is not set");
 	}
 	
 	//check token & id
@@ -22,6 +22,6 @@
 		$participantsSet = $pdo->prepare("UPDATE events SET participants = ? WHERE id = ?");
 		$participantsSet->execute(array($participants + 1, $k));
 	}else{
-		exit("max participants already reached");
+		exit("Error: max participants already reached");
 	}
 ?>

@@ -24,13 +24,13 @@
 	//Testing type
 	$allowed_extensions = array('png', 'jpg', 'jpeg', 'gif');
 	if(!in_array($extension, $allowed_extensions)) {
-		exit("Invalid type. Only png, jpg and gif are allowed");
+		exit("Error: Invalid type. Only png, jpg and gif are allowed");
 	}
  
 	//Testing size
 	$max_size = 500*1024; //500 KB
 	if($_FILES['userImage']['size'] > $max_size) {
-		exit("Image has to be smaller then or equal to 500 kb");
+		exit("Error: Image has to be smaller then or equal to 500 kb");
 	}
  
 	//Searching image for errors
@@ -38,7 +38,7 @@
 		$allowed_types = array(IMAGETYPE_PNG, IMAGETYPE_JPEG, IMAGETYPE_GIF);
 		$detected_type = exif_imagetype($_FILES['userImage']['tmp_name']);
 		if(!in_array($detected_type, $allowed_types)) {
-			exit("Only Images can be uploaded");
+			exit("Error: Only Images can be uploaded");
 		}
 	}
  
@@ -59,6 +59,6 @@
 	echo 'Succesfull upload: <a href="'.$new_path.'">'.$new_path.'</a>';
 	
 	//Push path to Database
-	$pathInsert = $pdo->prepare("INSERT INTO `imagepaths` (`id`, `path`, `eventId`, `decribtion`) VALUES (NULL, ?, ?, ?)");
+	$pathInsert = $pdo->prepare("INSERT INTO `imagePaths` (`id`, `path`, `eventId`, `description`) VALUES (NULL, ?, ?, ?)");
 	$pathInsert->execute(array($new_path,$eventId,$describtion));
 ?>
