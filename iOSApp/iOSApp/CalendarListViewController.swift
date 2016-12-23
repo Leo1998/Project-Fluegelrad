@@ -4,7 +4,6 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 
     private var calendarListView: CalendarListView!
     
-    private var events = [Event]()
     private var shownEvents = [Event]()
     
     private var dayEvent: Event?
@@ -26,13 +25,13 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 
     private func setupEvents(){
         let eventData = UserDefaults.standard.object(forKey: "events")
-        events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
+        let events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
         
         shownEvents = events.sorted(by: {
             (event1, event2) -> Bool in
             
-            let date1 = (event1 ).date
-            let date2 = (event2 ).date
+            let date1 = (event1 ).dateStart
+            let date2 = (event2 ).dateStart
             
             return (date1!.compare(date2!)) == ComparisonResult.orderedAscending
             
@@ -40,7 +39,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
         
         let today = Date()
         for (index, value) in events.enumerated(){
-            if (value ).date.compare(today) == ComparisonResult.orderedAscending{
+            if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
                 shownEvents.remove(at: index)
             }
         }
@@ -61,20 +60,19 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return events.count
+        return shownEvents.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:CalendarListCell = calendarListView.eventTable.dequeueReusableCell(withIdentifier: "cell")! as! CalendarListCell
         
-        let event:Event = (events[indexPath.row] )
+        let event:Event = (shownEvents[indexPath.row] )
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
         
-        cell.categoryLabel.text = event.category
         cell.locationLabel.text = event.location.title
-        cell.dateLabel.text = dateFormatter.string(from: event.date)
+        cell.dateLabel.text = dateFormatter.string(from: event.dateStart)
         cell.hostLabel.text = String(event.hostId)
         
         return cell

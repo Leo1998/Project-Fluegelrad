@@ -50,7 +50,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         }
         
         for event in events{
-            let eventDateComponents = calendar.dateComponents([.year, .month, .day], from: (event ).date!)
+            let eventDateComponents = calendar.dateComponents([.year, .month, .day], from: (event ).dateStart!)
             
             if cellDateComponents.year == eventDateComponents.year && cellDateComponents.month == eventDateComponents.month && cellDateComponents.day == eventDateComponents.day {
                 cell.numberLabel.backgroundColor = UIColor.red
