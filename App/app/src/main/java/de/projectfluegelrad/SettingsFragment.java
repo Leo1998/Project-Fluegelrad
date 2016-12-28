@@ -41,20 +41,6 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        layout.findViewById(R.id.clear_cache_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    // clearing app data
-                    Runtime runtime = Runtime.getRuntime();
-                    runtime.exec("pm clear de.projectfluegelrad");
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
         return layout;
     }
 

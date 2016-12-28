@@ -23,6 +23,7 @@ import de.projectfluegelrad.calendar.gridview.CalendarGridViewFragment;
 import de.projectfluegelrad.calendar.listview.CalendarListFragment;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
+import de.projectfluegelrad.database.DatabaseUpdateListener;
 import de.projectfluegelrad.database.Event;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -73,7 +74,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"));
+        this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"), new DatabaseUpdateListener() {
+            @Override
+            public void onDatabaseChanged() {
+                relayoutAllFragments();
+            }
+        });
 
         calendarFragment = new CalendarGridViewFragment();
 
@@ -154,6 +160,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onPause();
 
         databaseManager.request(DatabaseRequest.SaveEventList, false);
+    }
+
+    private void relayoutAllFragments() {
+        Fragment fragment = findVisibleFragment();
+
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
+        }
+    }
+
+    public Fragment findVisibleFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        if(fragments != null){
+            for(Fragment fragment : fragments){
+                if(fragment != null && fragment.isVisible())
+                    return fragment;
+            }
+        }
+        return null;
     }
 
     public DatabaseManager getDatabaseManager() {

@@ -13,12 +13,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/category"
+            android:id="@+id/name"
             android:layout_alignParentLeft="true"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/colorAccent"
-            android:text="category" />
+            android:text="name" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,18 +37,19 @@
             android:paddingTop="5dp"
             android:textSize="16sp"
             android:textColor="@color/colorAccent"
-            android:layout_below="@id/category"
+            android:layout_below="@id/name"
             android:text="host" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/location"
+            android:textSize="16sp"
             android:textColor="@color/colorAccent"
-            android:paddingBottom="10dp"
-            android:layout_below="@+id/category"
+            android:layout_below="@+id/name"
             android:layout_toRightOf="@+id/host"
             android:layout_toEndOf="@+id/host"
+            android:layout_alignBaseline="@id/host"
             android:layout_marginLeft="41dp"
             android:layout_marginStart="41dp"
             android:text="location" />

@@ -14,11 +14,15 @@ import java.util.Date;
 public class Event {
 
     public static Event readEvent(JSONObject obj) throws JSONException, ParseException {
-        Calendar c = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        c.setTime(simpleDateFormat.parse(obj.getString("date")));
 
-        Event event = new Event(obj.getInt("id"), new Location(obj.getString("address"), obj.getDouble("longitude"), obj.getDouble("latitude")), obj.getString("category"), obj.getInt("price"), obj.getInt("hostId"), c, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("age"));
+        Calendar cStart = Calendar.getInstance();
+        cStart.setTime(simpleDateFormat.parse(obj.getString("dateStart")));
+
+        Calendar cEnd = Calendar.getInstance();
+        cEnd.setTime(simpleDateFormat.parse(obj.getString("dateEnd")));
+
+        Event event = new Event(obj.getInt("id"), obj.getString("name"), new Location(obj.getString("address"), obj.getDouble("longitude"), obj.getDouble("latitude")), obj.getInt("price"), obj.getInt("hostId"), cStart, cEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"));
 
         return event;
     }
@@ -27,55 +31,61 @@ public class Event {
         JSONObject obj = new JSONObject();
 
         obj.put("id", event.getId());
+        obj.put("name", event.getName());
         obj.put("address", event.getLocation().getAddress());
         obj.put("longitude", event.getLocation().getLongitude());
         obj.put("latitude", event.getLocation().getLatitude());
-        obj.put("category", event.getCategory());
         obj.put("price", event.getPrice());
         obj.put("hostId", event.getHost());
-        obj.put("date", event.getDateFormatted());
+        obj.put("dateStart", event.getDateStartFormatted());
+        obj.put("dateEnd", event.getDateEndFormatted());
         obj.put("description", event.getDescription());
         obj.put("maxParticipants", event.getMaxParticipants());
         obj.put("participants", event.getParticipants());
-        obj.put("age", event.getAge());
+        obj.put("ageMin", event.getAgeMin());
+        obj.put("ageMax", event.getAgeMax());
 
         return obj;
     }
 
     private int id;
+    private String name;
     private Location location;
-    private String category;
     private int price;
     private int host;
-    private Calendar date;
+    private Calendar dateStart;
+    private Calendar dateEnd;
     private String description;
     private int maxParticipants;
     private int participants;
-    private int age;
+    private int ageMin;
+    private int ageMax;
 
-    public Event(int id, Location location, String category, int price, int host, Calendar date, String description, int maxParticipants, int participants, int age) {
+    public Event(int id, String name, Location location, int price, int host, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax) {
         this.id = id;
+        this.name = name;
         this.location = location;
-        this.category = category;
         this.price = price;
         this.host = host;
-        this.date = date;
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
         this.description = description;
         this.maxParticipants = maxParticipants;
         this.participants = participants;
-        this.age = age;
+        this.ageMin = ageMin;
+        this.ageMax = ageMax;
     }
 
     public int getId() {
         return id;
     }
 
-    public Location getLocation() {
-        return location;
+    public String getName() {
+        return name;
     }
 
-    public String getCategory() {
-        return category;
+    public Location getLocation() {
+        return location;
     }
 
     public int getPrice() {
@@ -86,13 +96,22 @@ public class Event {
         return host;
     }
 
-    public Calendar getDate() {
-        return date;
+    public Calendar getDateStart() {
+        return dateStart;
     }
 
-    public String getDateFormatted() {
+    public String getDateStartFormatted() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        return simpleDateFormat.format(this.date.getTime());
+        return simpleDateFormat.format(this.dateStart.getTime());
+    }
+
+    public Calendar getDateEnd() {
+        return dateEnd;
+    }
+
+    public String getDateEndFormatted() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        return simpleDateFormat.format(this.dateEnd.getTime());
     }
 
     public String getDescription() {
@@ -107,23 +126,29 @@ public class Event {
         return participants;
     }
 
-    public int getAge() {
-        return age;
+    public int getAgeMin() {
+        return ageMin;
+    }
+
+    public int getAgeMax() {
+        return ageMax;
     }
 
     @Override
     public String toString() {
         return "Event{" +
                 "id=" + id +
-                ", location='" + location + '\'' +
-                ", category='" + category + '\'' +
+                ", name=" + name +
+                ", location=" + location +
                 ", price=" + price +
-                ", host='" + host + '\'' +
-                ", date=" + date +
+                ", host=" + host +
+                ", dateStart=" + dateStart +
+                ", dateEnd=" + dateEnd +
                 ", description='" + description + '\'' +
                 ", maxParticipants=" + maxParticipants +
                 ", participants=" + participants +
-                ", age=" + age +
+                ", ageMin=" + ageMin +
+                ", ageMax=" + ageMax +
                 '}';
     }
 

@@ -47,11 +47,11 @@ public class CalendarDayFragment extends Fragment{
 
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.calender_day_fragment, container, false);
 
-        ((TextView) layout.findViewById(R.id.category)).setText(event.getCategory());
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
-        ((TextView) layout.findViewById(R.id.date)).setText(simpleDateFormat.format(event.getDate().getTime()));
+        ((TextView) layout.findViewById(R.id.date)).setText(simpleDateFormat.format(event.getDateStart().getTime()));
+
+        ((TextView) layout.findViewById(R.id.name)).setText(event.getName());
 
         ((TextView) layout.findViewById(R.id.host)).setText("N/A");
 
@@ -96,14 +96,13 @@ public class CalendarDayFragment extends Fragment{
 
                 intent.setData(CalendarContract.Events.CONTENT_URI);
 
-                Calendar day = event.getDate();
+                Calendar day = event.getDateStart();
 
                 intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, day.getTimeInMillis());
                 //TODO:Ende des Events
                 //day.setTime(event.getEndDate());
                 day.add(Calendar.HOUR, 2);
                 intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, day.getTimeInMillis());
-                intent.putExtra(CalendarContract.Events.TITLE, event.getCategory());
                 intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + event.getHost());
                 intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
 

@@ -42,13 +42,13 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        Calendar i = eventList.get(position).getDate();
+        Calendar i = eventList.get(position).getDateStart();
 
-        holder.getCategoryTextView().setText(eventList.get(position).getCategory());
+        holder.getNameTextView().setText(eventList.get(position).getName());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
-        holder.getDateTextView().setText(simpleDateFormat.format(eventList.get(position).getDate().getTime()));
+        holder.getDateTextView().setText(simpleDateFormat.format(eventList.get(position).getDateStart().getTime()));
 
         //TODO
         holder.getLocationTextView().setText(eventList.get(position).getLocation().getAddress());
@@ -77,7 +77,7 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView dateTextView;
-        private TextView categoryTextView;
+        private TextView nameTextView;
         private TextView locationTextView;
         private TextView hostTextView;
 
@@ -86,7 +86,7 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
         ViewHolder(View itemView) {
             super(itemView);
             dateTextView = (TextView)itemView.findViewById(R.id.date);
-            categoryTextView = (TextView)itemView.findViewById(R.id.category);
+            nameTextView = (TextView)itemView.findViewById(R.id.name);
             locationTextView = (TextView)itemView.findViewById(R.id.location);
             hostTextView = (TextView)itemView.findViewById(R.id.host);
 
@@ -97,8 +97,8 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
             return dateTextView;
         }
 
-        public TextView getCategoryTextView() {
-            return categoryTextView;
+        public TextView getNameTextView() {
+            return nameTextView;
         }
 
         public TextView getLocationTextView() {

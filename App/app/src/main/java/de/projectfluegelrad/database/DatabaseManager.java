@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.view.View;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -19,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +34,7 @@ public class DatabaseManager implements Runnable {
 
     public static DatabaseManager INSTANCE;
 
+    private final DatabaseUpdateListener updateListener;
     private final View attachedView;
     private final File filesDirectory;
 
@@ -45,7 +48,7 @@ public class DatabaseManager implements Runnable {
     private Object waitLock = new Object();
     private DatabaseRequest currentRequest = null;
 
-    public DatabaseManager(View attachedView, File filesDirectory) {
+    public DatabaseManager(View attachedView, File filesDirectory, DatabaseUpdateListener updateListener) {
         if (INSTANCE != null)
             throw new IllegalStateException("Only one Instance allowed!");
         INSTANCE = this;
@@ -55,6 +58,7 @@ public class DatabaseManager implements Runnable {
         if (!filesDirectory.exists()) {
             filesDirectory.mkdirs();
         }
+        this.updateListener = updateListener;
 
         this.logger = new SnackbarLogger(attachedView);
 
@@ -63,11 +67,11 @@ public class DatabaseManager implements Runnable {
 
     @Override
     public void run() {
+        readDatabaseFromStorage();
+
         login();
 
-        readEventData();
-
-        refreshEventData();
+        readDatabaseFromServer();
 
         running = true;
         while (running) {
@@ -80,10 +84,10 @@ public class DatabaseManager implements Runnable {
 
         switch (currentRequest) {
             case RefreshEventList:
-                refreshEventData();
+                readDatabaseFromServer();
                 break;
             case SaveEventList:
-                saveEventData();
+                saveDatabaseToStorage();
                 break;
             default:
                 break;
@@ -176,47 +180,6 @@ public class DatabaseManager implements Runnable {
             listener.onFinish();
     }
 
-    private void refreshEventData() {
-        try {
-            String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php");
-
-            System.out.println(json);
-
-            JSONObject root = new JSONObject(new JSONTokener(json));
-
-            JSONArray eventDataArray = root.getJSONArray("events");
-            JSONArray imageAtlasArray = root.getJSONArray("images");
-
-            {
-                for (int i = 0; i < eventDataArray.length(); i++) {
-                    JSONObject obj = eventDataArray.getJSONObject(i);
-
-                    Event event = Event.readEvent(obj);
-
-                    registerEvent(event);
-                }
-            }
-
-            {
-                imageAtlas.clearImages();
-
-                for (int i = 0; i < imageAtlasArray.length(); i++) {
-                    JSONObject obj = imageAtlasArray.getJSONObject(i);
-
-                    Image image = Image.readImage(obj);
-
-                    imageAtlas.addImage(image);
-                }
-            }
-        } catch(Exception e) {
-            logger.log(e.getMessage());
-            e.printStackTrace();
-        }
-
-        sortEvents();
-        saveEventData();
-    }
-
     /**
      *
      * @param scriptAddress the scripts address (without arguments)
@@ -257,12 +220,12 @@ public class DatabaseManager implements Runnable {
         return json;
     }
 
-    private void readEventData() {
-        File eventFile = new File(filesDirectory, "events");
+    private void readDatabaseFromStorage() {
+        File databaseFile = new File(filesDirectory, "database");
 
-        if (eventFile.exists()) {
+        if (databaseFile.exists()) {
             try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(eventFile)));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(databaseFile)));
 
                 String json = "";
                 for (String line = reader.readLine(); line != null; line = reader.readLine()) {
@@ -270,40 +233,86 @@ public class DatabaseManager implements Runnable {
                 }
                 reader.close();
 
-                JSONArray array = new JSONArray(new JSONTokener(json));
-
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject obj = array.getJSONObject(i);
-
-                    Event event = Event.readEvent(obj);
-
-                    registerEvent(event);
-                }
+                readDatabase(json, false);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            sortEvents();
         }
     }
 
-    private void saveEventData() {
-        File eventFile = new File(filesDirectory, "events");
+    private void readDatabaseFromServer() {
+        try {
+            String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php");
+
+            readDatabase(json, true);
+
+            updateListener.onDatabaseChanged();
+        } catch(Exception e) {
+            logger.log(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void readDatabase(String json, boolean save) throws JSONException, ParseException {
+        JSONObject root = new JSONObject(new JSONTokener(json));
+
+        JSONArray eventDataArray = root.getJSONArray("events");
+        JSONArray imageAtlasArray = root.getJSONArray("images");
+
+        for (int i = 0; i < eventDataArray.length(); i++) {
+            JSONObject obj = eventDataArray.getJSONObject(i);
+
+            Event event = Event.readEvent(obj);
+
+            registerEvent(event);
+        }
+
+        imageAtlas.clearImages();
+
+        for (int i = 0; i < imageAtlasArray.length(); i++) {
+            JSONObject obj = imageAtlasArray.getJSONObject(i);
+
+            Image image = Image.readImage(obj);
+
+            imageAtlas.addImage(image);
+        }
+
+        sortEvents();
+
+        if (save)
+            saveDatabaseToStorage();
+    }
+
+    private void saveDatabaseToStorage() {
+        File eventFile = new File(filesDirectory, "database");
 
         try {
-            JSONArray array = new JSONArray();
-
+            JSONArray eventDataArray = new JSONArray();
             for (int i = 0; i < eventList.size(); i++) {
                 Event event = eventList.get(i);
 
                 JSONObject obj = Event.writeEvent(event);
 
-                array.put(obj);
+                eventDataArray.put(obj);
             }
+
+            JSONArray imageAtlasArray = new JSONArray();
+            List<Image> images = imageAtlas.getAllImages();
+            for (int i = 0; i < images.size(); i++) {
+                Image image = images.get(i);
+
+                JSONObject obj = Image.writeImage(image);
+
+                imageAtlasArray.put(obj);
+            }
+
+            JSONObject root = new JSONObject();
+            root.put("events", eventDataArray);
+            root.put("images", imageAtlasArray);
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(eventFile)));
 
-            writer.write(array.toString());
+            writer.write(root.toString());
             writer.close();
         } catch(Exception e) {
             e.printStackTrace();
@@ -333,7 +342,7 @@ public class DatabaseManager implements Runnable {
         Collections.sort(eventList, new Comparator<Event>() {
             @Override
             public int compare(Event e1, Event e2) {
-                return e1.getDate().compareTo(e2.getDate());
+                return e1.getDateStart().compareTo(e2.getDateStart());
             }
         });
     }
@@ -351,7 +360,7 @@ public class DatabaseManager implements Runnable {
     }
 
     public void destroy() {
-        saveEventData();
+        saveDatabaseToStorage();
 
         running = false;
     }
