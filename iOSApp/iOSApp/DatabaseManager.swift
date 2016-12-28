@@ -1,4 +1,4 @@
-import Foundation
+import UIKit
 
 protocol DatabaseManagerProtocol: class {
     func itemsDownloaded(items: [Event])
@@ -9,9 +9,9 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     
     private var data: NSMutableData = NSMutableData()
     
-    private var url: String = "http://fluegelrad.ddns.net/"
+    static var url: String = "http://fluegelrad.ddns.net/"
     private let getDatabase = "recieveDatabase.php"
-    private let createUser =  "createUser.php"
+    private let createUser = "createUser.php"
     
     private var events = [Event]()
     
@@ -41,8 +41,8 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?){
-        if error != nil || (String(data: data as Data, encoding: .utf8)?.contains("Please"))! {
-            print("Failed to download data")
+        if error != nil {
+            print("Failed to download data : !nil")
             
             let tempArray = UserDefaults.standard.object(forKey: "events")
             
@@ -55,9 +55,14 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             
             self.delegate.itemsDownloaded(items: self.events)
 
-
+            
+        }else if (String(data: data as Data, encoding: .utf8)?.contains("Error"))!{
+            print("Failed to download data : Error")
+            newUser()
+            getEvents()
+            
         }else {
-            if task.currentRequest?.url?.absoluteString == url + createUser{
+            if task.currentRequest?.url?.absoluteString == DatabaseManager.url + createUser{
                 print("User created")
 
                 var jsonResult: NSArray = NSArray()
@@ -77,26 +82,19 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             }
         }
         
-        if task.currentRequest?.url?.absoluteString != url + createUser && String(data: data as Data, encoding: .utf8) != "" {
-            let queue = DispatchQueue(label: "de.project.iOSApp.DatabaseManager", qos: .utility, target: nil)
-            queue.async {
-                self.delegate.itemsDownloaded(items: self.events)
-            }
-        }
-        
         data = NSMutableData()
     }
     
     private func newUser(){
         var url: URL!
-        url = URL(string: self.url + createUser)!
+        url = URL(string: DatabaseManager.url + createUser)!
         
         let task = session.dataTask(with: url)
         task.resume()
     }
     
     private func getEvents(){
-        let url1 = self.url + getDatabase
+        let url1 = DatabaseManager.url + getDatabase
         let url2 = "?u=" + String(user.id) + "&t=" + user.token
         let url = URL(string: url1 + url2)!
         
@@ -106,50 +104,70 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 
     private func parseJSON() {
         let jsonDataAll = String(data: data as Data, encoding: .utf8)
+        let jsonResult: NSDictionary = stringToJSonArray(jsonString: jsonDataAll!)
+        let events: NSMutableArray = NSMutableArray()
         
-        
-        if (jsonDataAll == "Invalid Token" || jsonDataAll == "Unknown ID") {
-            newUser()
-            
-            data = NSMutableData()
-        }else if (jsonDataAll?.contains("["))! {
-        
-            let jsonDataToken = jsonDataAll?.substring(to: (jsonDataAll?.characters.index(after: (jsonDataAll?.characters.index(of: "]"))!))!)
+        let jsonResultEvent: NSArray = jsonResult.object(forKey: "events") as! NSArray
+        let jsonResultImages: NSArray = jsonResult.object(forKey: "images") as! NSArray
 
-            var jsonDataEvents = jsonDataAll?.substring(from: (jsonDataAll?.characters.index(of: "]"))!)
-            jsonDataEvents = jsonDataEvents?.substring(from: (jsonDataEvents?.characters.index(of: "["))!)
         
-            var jsonResultEvent: NSArray = NSArray()
-            var jsonResultToken: NSArray = NSArray()
-
-            do{
-                jsonResultToken = try JSONSerialization.jsonObject(with: (jsonDataToken?.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSArray
-                jsonResultEvent = try JSONSerialization.jsonObject(with: (jsonDataEvents?.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSArray
-            } catch let error as NSError {
-                print(error)
-            }
-        
-            var jsonElement: NSMutableDictionary = NSMutableDictionary()
-            let events: NSMutableArray = NSMutableArray()
-        
-            for i in 0 ..< jsonResultEvent.count{
+        var jsonElement: NSMutableDictionary = NSMutableDictionary()
+        for i in 0 ..< jsonResultEvent.count{
+            jsonElement = (jsonResultEvent[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
             
-                jsonElement = (jsonResultEvent[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
-
-            
-                let event = Event.init(dict: jsonElement)
-                events.add(event)
-            
-            
-            }
-        
-            user.token = jsonResultToken[0] as! String
-        
-            UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: user), forKey: "user")
-            UserDefaults.standard.synchronize()
-        
-            self.events = events as NSArray as! [Event]
+            let event = Event(dict: jsonElement)
+            events.add(event)
         }
 
+        
+        for i in 0 ..< jsonResultImages.count{
+            jsonElement = (jsonResultImages[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
+            
+            for item in events{
+                if (item as! Event).id == Int(jsonElement.object(forKey: "eventId") as! String)!{
+                    (item as! Event).addImage(dict: jsonElement)
+                }
+            }
+        }
+        
+        self.events = events as NSArray as! [Event]
+            
+        self.delegate.itemsDownloaded(items: self.events)
+    }
+    
+    private func stringToJSonArray(jsonString: String) -> NSDictionary{
+        let jsonDataToken = jsonString.substring(to: (jsonString.characters.index(of: ","))!)
+        
+        let jsonDataEvents = jsonString.substring(from: (jsonString.characters.index(after: jsonString.characters.index(of: ",")!)))
+        
+        var jsonResultEvent: NSDictionary = NSDictionary()
+        var jsonResultToken: NSArray = NSArray()
+        
+        do{
+            jsonResultToken = try JSONSerialization.jsonObject(with: (jsonDataToken.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSArray
+            jsonResultEvent = try JSONSerialization.jsonObject(with: (jsonDataEvents.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSDictionary
+        } catch let error as NSError {
+            print(error)
+        }
+
+        user.token = jsonResultToken[0] as! String
+        
+        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: user), forKey: "user")
+        UserDefaults.standard.synchronize()
+        
+        return jsonResultEvent
+    }
+    
+    public static func loadImage(url: String, view: UIImageView){
+        
+        let url = URL(string: self.url + url)!
+        
+        let task = URLSession.shared.dataTask(with: url) { (responseData, responseUrl, error) -> Void in
+            if let data = responseData{
+                view.image = UIImage(data: data)
+            }
+        }
+        
+        task.resume()
     }
 }
