@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/drawer_add_calender"
+        android:id="@+id/add_calendar"
+        android:icon="@drawable/ic_today"
+        app:itemIconTint="@color/colorAccent"
+        app:showAsAction="ifRoom" />
+    <item android:title="@string/share"
+        android:id="@+id/share"
+        android:icon="@drawable/ic_share"
+        app:itemIconTint="@color/colorAccent"
+        app:showAsAction="always" />
+</menu>

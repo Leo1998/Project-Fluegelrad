@@ -1,11 +1,16 @@
 package de.projectfluegelrad.calendar;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -44,6 +49,8 @@ public class CalendarDayFragment extends Fragment{
                 this.event = e;
             }
         }
+
+        this.setHasOptionsMenu(true);
 
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.calender_day_fragment, container, false);
 
@@ -89,31 +96,58 @@ public class CalendarDayFragment extends Fragment{
             }
         });
 
-        layout.findViewById(R.id.calender_add_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_INSERT);
-
-                intent.setData(CalendarContract.Events.CONTENT_URI);
-
-                Calendar day = event.getDateStart();
-
-                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, day.getTimeInMillis());
-                //TODO:Ende des Events
-                //day.setTime(event.getEndDate());
-                day.add(Calendar.HOUR, 2);
-                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, day.getTimeInMillis());
-                intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + event.getHost());
-                intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
-
-                CalendarDayFragment.this.startActivity(intent);
-            }
-        });
-
         //TODO:Sponsoren
         ((TextView) layout.findViewById(R.id.sponsors)).setText("Sponsoren");
 
         return layout;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.day_view_menu, menu);
+
+        for(int i = 0; i < menu.size(); i++){
+            Drawable drawable = menu.getItem(i).getIcon();
+            if(drawable != null) {
+                drawable.mutate();
+                drawable.setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.share) {
+            share();
+        } else if (id == R.id.add_calendar) {
+            addToCalendar();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void share() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "N/A");//TODO!!!
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
+
+    private void addToCalendar() {
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+
+        intent.setData(CalendarContract.Events.CONTENT_URI);
+
+        intent.putExtra(CalendarContract.Events.TITLE, event.getName());
+        intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateStart().getTimeInMillis());
+        intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDateEnd().getTimeInMillis());
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + event.getHost());
+        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
+
+        CalendarDayFragment.this.startActivity(intent);
     }
 
     @Override

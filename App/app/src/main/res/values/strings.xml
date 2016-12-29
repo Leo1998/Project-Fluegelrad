@@ -27,5 +27,6 @@
 
     <string name="licenses_open">Open-Source-Licences</string>
     <string name="clear_cache">Clear App-Data</string>
+    <string name="share">Share</string>
 
 </resources>

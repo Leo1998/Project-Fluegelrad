@@ -13,4 +13,11 @@
         <item name="color">@android:color/white</item>
     </style>
 
+    <style name="ToolbarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>
+        <item name="colorControlNormal">@color/colorAccent</item>
+    </style>
+
 </resources>
