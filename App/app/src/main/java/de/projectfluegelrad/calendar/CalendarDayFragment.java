@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,25 +18,28 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.OverlayItem;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.List;
 
+import de.projectfluegelrad.BuildConfig;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
 import de.projectfluegelrad.database.Image;
 import de.projectfluegelrad.database.ImageAtlas;
 
-public class CalendarDayFragment extends Fragment{
+public class CalendarDayFragment extends Fragment {
 
     private Event event;
 
@@ -43,6 +47,11 @@ public class CalendarDayFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // setup osmdroid
+        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+        Configuration.getInstance().setOsmdroidBasePath(new File(getContext().getCacheDir(), "osmdroid"));
+        Configuration.getInstance().setOsmdroidTileCache(new File(Configuration.getInstance().getOsmdroidBasePath(), "tiles"));
+
         List<Event> events = DatabaseManager.INSTANCE.getEventList();
         for (Event e : events) {
             if (e.getId() == getArguments().getInt("eventId")) {
@@ -79,22 +88,37 @@ public class CalendarDayFragment extends Fragment{
         ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
 
         mapView = (MapView) layout.findViewById(R.id.mapView);
-        mapView.onCreate(savedInstanceState);
+        mapView.setMultiTouchControls(true);
+        mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap map) {
-                map.getUiSettings().setMyLocationButtonEnabled(false);
+        {
+            double latitude = event.getLocation().getLatitude();
+            double longitude = event.getLocation().getLongitude();
 
-                double latitude = event.getLocation().getLatitude();
-                double longitude = event.getLocation().getLongitude();
+            IMapController mapController = mapView.getController();
+            mapController.setZoom(90);
+            GeoPoint point = new GeoPoint(latitude, longitude);
+            mapController.setCenter(point);
 
-                map.addMarker(new MarkerOptions().draggable(true).position(new LatLng(latitude, longitude)).title("Marker"));
+            ArrayList<OverlayItem> items = new ArrayList<OverlayItem>();
+            items.add(new OverlayItem(event.getName(), "", point));
 
-                CameraUpdate cam = CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15);
-                map.animateCamera(cam);
-            }
-        });
+            ItemizedOverlayWithFocus<OverlayItem> mOverlay = new ItemizedOverlayWithFocus<OverlayItem>(getContext(), items,
+                    new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+                        @Override
+                        public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
+                            return false;
+                        }
+                        @Override
+                        public boolean onItemLongPress(final int index, final OverlayItem item) {
+                            return false;
+                        }
+                    });
+
+            mOverlay.setFocusItemsOnTap(true);
+
+            mapView.getOverlays().add(mOverlay);
+        }
 
         //TODO:Sponsoren
         ((TextView) layout.findViewById(R.id.sponsors)).setText("Sponsoren");
@@ -150,27 +174,4 @@ public class CalendarDayFragment extends Fragment{
         CalendarDayFragment.this.startActivity(intent);
     }
 
-    @Override
-    public void onResume() {
-        mapView.onResume();
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mapView.onLowMemory();
-    }
 }
