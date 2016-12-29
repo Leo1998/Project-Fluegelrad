@@ -1,13 +1,36 @@
 <!DOCTYPE html>
 <html>
 	<head>
+	<title> 1 nicer Create </title>
 		<style type="text/css">
+			*{font-family:   Helvetica, Arial, sans-serif;}
+			
+			.header{
+				background-color: rgb(50,200,50);
+			}
+			
+			form , .header{
+				display: flex; align-items: center; justify-content: center;
+				
+			}
 			html, body { height: 100%; margin: 0; padding: 0; }
-			#map { height: 300px; width: 400px; }
+			#map { padding-top:50px;  height: 300px; width: 400px; margin: 0 auto;}
+		
+			#formDiv{ background-color: burlywood;}
 		</style>
 	</head>
 	<body>
-		<div id="map"></div>
+		<div class=header>
+			<h1> Swag </h1>
+		</div>		
+		
+		<!--<h1> Events</h1>
+		<h2> Events</h2>
+		<h3> Events</h3>
+		<h4> Events</h4>
+		<h5> Events</h5>
+		<h6> Events</h6>
+		-->
 		<script type="text/javascript">
 
 			var map;
@@ -32,39 +55,65 @@
 		<script async defer
 			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmPb2IySGuGowFXpFW4033gUSeSrAgrpw&callback=initMap">
 		</script>
+		
+		<div id= "formDiv">
 		<form action="uploadEvent.php" id="event" method="post">
+		<uol>
+			<li>
 			<label for="eventName">Eventname</label>
 			<input type="text" name="eventName" id="eventName" maxLength="30">
+			</li>
 			<br>
+			<li>
 			<label for="price">Preis</label>
 			<input type="number" name="price" id="price" min="0" max="128" step="0.01">
 			<label>€</label>
+			</li>
 			<br>
+			<li>
 			<label for="participants">Maximale Teilnehmerzahl</label>
 			<input type="number" name="participants" id="participants" min="1" max="2048">
+			</li>
 			<br>
+			<li>
 			<label>Datum und Zeit von</label>
 			<input type="datetime-local" name="dateStart" id="dateStart" max="9999-12-31T23:59:59">
 			<label>bis</label>
 			<input type="datetime-local" name="dateEnd" id="dateEnd" max="9999-12-31T23:59:59">
+			</li>
 			<br>
+			<li>
 			<label for="description">Beschreibung</label>
 			<textarea name="description" id="description"></textarea>
+			</li>
 			<br>
+			<li>
 			<label>Alter von</label>
 			<input type="number" name="ageMin" id="ageMin" min="0" max="128">
 			<label>bis</label>
 			<input type="number" name="ageMax" id="ageMax" min="0" max="128">
+			</li>
 			<br>
+			<li>
 			<label for="address">Addresse</label>
 			<input type="text" name="address" id="address" maxLength="30">
+			</li>
 			<br>
+			<li>
 			<label>Position</label>
 			<input type="number" name="latitude" id="latitude" min="-180" max = "180" step="any">
 			<input type="number" name="longitude" id="longitude" min="-180" max = "180" step="any">
 			<a href="#" onClick="applyLatLng();">Anwenden</a>
 			<br>
+			<br>
+			<div id="map"></div>
+			</li>
+			<br>
+			<li>
 			<input type="submit" value="Event erstellen" class="btnSubmit" />
+			</li>
+		</uol>
 		</form>
+		</div>
 	</body>
 </html>
