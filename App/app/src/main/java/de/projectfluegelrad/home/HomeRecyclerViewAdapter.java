@@ -40,28 +40,31 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Calendar i = eventList.get(position).getDate();
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        Calendar i = eventList.get(position).getDateStart();
 
-        holder.getCategoryTextView().setText(eventList.get(position).getCategory());
+        holder.getCategoryTextView().setText(eventList.get(position).getName());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
-        holder.getDateTextView().setText(simpleDateFormat.format(eventList.get(position).getDate().getTime()));
+        holder.getDateTextView().setText(simpleDateFormat.format(eventList.get(position).getDateStart().getTime()));
 
 
         holder.getLocationTextView().setText(eventList.get(position).getLocation().getAddress());
         holder.getHostTextView().setText("N/A");
 
-        holder.getCardView().setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("event", eventList.get(position));
+        holder.getCardView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("eventId", eventList.get(position).getId());
 
-            CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
-            calendarDayFragment.setArguments(bundle);
+                CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
+                calendarDayFragment.setArguments(bundle);
 
-            if (activity != null) {
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                if (activity != null) {
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                }
             }
         });
     }

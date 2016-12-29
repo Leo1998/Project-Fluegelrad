@@ -17,6 +17,7 @@ import java.util.List;
 
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
+import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
@@ -25,17 +26,17 @@ public class HomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.home_fragment, container, false);
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.home_fragment, container, false);
 
         RecyclerView recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
         List<Event> events = new ArrayList<>();
-        List<Event> original = getArguments().getParcelableArrayList("eventList");
+        List<Event> original = DatabaseManager.INSTANCE.getEventList();
 
         for (int i = original.size()-1; i >= 0; i--){
-            if (original.get(i).getDate().compareTo(Calendar.getInstance()) > 0){
+            if (original.get(i).getDateStart().compareTo(Calendar.getInstance()) > 0){
                 events.add(original.get(i));
             }else {
                 break;
