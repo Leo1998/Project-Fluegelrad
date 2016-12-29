@@ -25,6 +25,7 @@ import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseUpdateListener;
 import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
