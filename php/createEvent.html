@@ -1,27 +1,52 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	<title> 1 nicer Create </title>
+	<title> Erstelle Event </title>
 		<style type="text/css">
 			*{font-family:   Helvetica, Arial, sans-serif;}
-			
-			.header{
-				background-color: rgb(50,200,50);
-			}
-			
-			form , .header{
-				display: flex; align-items: center; justify-content: center;
+			body {
 				
 			}
+			.header, .footer, #bannerRight, #bannerLeft{
+				background-color: #12b736;
+			}
+			
+			.footer {
+			height: 10%;
+			clear:both;
+			}
+			
+			#bannerRight, #bannerLeft{
+			
+			width: 10%;
+			height: 100%;
+			}
+			
+			#bannerRight{
+			float: right;
+			}
+			
+			#bannerLeft{
+			float: left;
+			}
+			
+			 .header, #formDiv{
+				display: flex; align-items: center; justify-content: center;
+				
+				
+			}
+			
 			html, body { height: 100%; margin: 0; padding: 0; }
+			
 			#map { padding-top:50px;  height: 300px; width: 400px; margin: 0 auto;}
 		
-			#formDiv{ background-color: burlywood;}
+			#formDiv{ margin-left:10%; margin-right:10%; margin-top:100px; margin-bottom: 100px; }
+			
 		</style>
 	</head>
 	<body>
 		<div class=header>
-			<h1> Swag </h1>
+			<h1>Erstelle Event </h1>
 		</div>		
 		
 		<!--<h1> Events</h1>
@@ -55,6 +80,13 @@
 		<script async defer
 			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmPb2IySGuGowFXpFW4033gUSeSrAgrpw&callback=initMap">
 		</script>
+		<div id= "bannerRight" >
+		
+		</div>
+		
+		<div id= "bannerLeft" >
+		
+		</div>
 		
 		<div id= "formDiv">
 		<form action="uploadEvent.php" id="event" method="post">
@@ -114,6 +146,10 @@
 			</li>
 		</uol>
 		</form>
+		</div>
+		
+		<div id="footerDiv" class="footer">
+			
 		</div>
 	</body>
 </html>
