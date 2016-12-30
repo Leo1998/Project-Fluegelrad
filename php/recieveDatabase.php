@@ -6,7 +6,15 @@
 	$emparray = array();
 	
 	//SQL Statement
-	$eventsGet = $pdo->prepare("SELECT `events`.*,`locations`.`address`,`locations`.`longitude`,`locations`.`latitude` FROM `events` JOIN `locations` ON `events`.`locationId` = `locations`.`id`");
+	$eventsGet = $pdo->prepare("SELECT 
+		`events`.`id` , `events`.`name` , `events`.`price` , `events`.`maxParticipants` , `events`.`participants` , `events`.`dateStart` , `events`.`dateEnd` , `events`.`description` , `events`.`ageMin` , `events`.`ageMax` ,`events`.`formId` ,  
+		`locations`.`address`,`locations`.`longitude`,`locations`.`latitude` ,
+		`sponsors`.`mail` , `sponsors`.`phone` , `sponsors`.`web`,
+		`sponsors`.`name` AS `hostName`, `sponsors`.`description` AS `hostDescription`, `sponsors`.`image` AS `hostImage`, `sponsors`.`id` AS `hostId`
+		FROM `events` 
+		JOIN `locations` ON `events`.`locationId` = `locations`.`id`
+		JOIN `hosts` ON `hosts`.`id` = `events`.`hostId`
+		JOIN `sponsors` ON `sponsors`.`id` = `hosts`.`sponsorId`");
 	$eventsGet->execute();
 	
 	$eventArray = array();
