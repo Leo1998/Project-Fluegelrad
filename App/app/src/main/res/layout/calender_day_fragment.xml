@@ -89,18 +89,11 @@
                 android:id="@+id/sponsors"
                 android:text="sponsors" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/drawer_add_calender"
-                android:id="@+id/calender_add_button"
-                android:layout_below="@+id/sponsors" />
-
-            <com.google.android.gms.maps.MapView
+            <de.projectfluegelrad.calendar.HackyMapView
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
                 android:id="@+id/mapView"
-                android:layout_below="@+id/calender_add_button"
+                android:layout_below="@+id/sponsors"
                 android:layout_marginTop="20dp"
                 android:layout_centerHorizontal="true" />
 

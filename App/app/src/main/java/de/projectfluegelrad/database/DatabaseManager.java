@@ -129,6 +129,9 @@ public class DatabaseManager implements Runnable {
                     writer.close();
                 }
 
+                if (userJson.startsWith("Error:"))
+                    throw new DatabaseException(userJson);
+
                 JSONArray array = new JSONArray(new JSONTokener(userJson));
                 int id = array.getInt(0);
                 String token = array.getString(1);
