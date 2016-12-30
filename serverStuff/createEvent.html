@@ -53,6 +53,11 @@
             map.addControl(click);
 
             click.activate();
+			
+			placeMarker((new OpenLayers.LonLat(7.462485015869233,51.516002997651704)),"Location 1",1);
+			placeMarker((new OpenLayers.LonLat(7.4691798095703446,51.51247766287808)),"Location 2",2);
+			placeMarker((new OpenLayers.LonLat(7.459008872985841,51.51156957791462)),"Location 3",3);
+			placeMarker((new OpenLayers.LonLat(7.46467369842534,51.514267071442795)),"Location 4",4);
 		};
 
 		OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {               
@@ -79,17 +84,20 @@
 			},
 
 			trigger: function(e) {
-				var lonlat = map.getLonLatFromPixel(e.xy);
-				lonlat1= new OpenLayers.LonLat(lonlat.lon,lonlat.lat).transform(toProjection,fromProjection);
-				document.getElementById("latitude").value = lonlat1.lat;
-				document.getElementById("longitude").value = lonlat1.lon;
-				if(state == 0){
-					newLocMarker = placeMarker(lonlat1,'Test');
-					state = 1;
-				}else if (state == 1){
-					newLocMarker.move(lonlat);
+				var checkbox = document.getElementById("setMarker");
+				if(checkbox.checked){
+					checkbox.checked = false;
+					var lonlat = map.getLonLatFromPixel(e.xy);
+					lonlat1= new OpenLayers.LonLat(lonlat.lon,lonlat.lat).transform(toProjection,fromProjection);
+					document.getElementById("latitude").value = lonlat1.lat;
+					document.getElementById("longitude").value = lonlat1.lon;
+					if(state == 0){
+						newLocMarker = placeMarker(lonlat1,'Test',0);
+						state = 1;
+					}else if (state == 1){
+						newLocMarker.move(lonlat);
+					}
 				}
-				
 			}
 			/**
 			
@@ -98,20 +106,34 @@
 			*/
 		});
 		
-		function applyLatLng(){
+		function applyLonLat(){
 			var lon = document.getElementById("longitude").value;
 			var lat = document.getElementById("latitude").value;
 			map.setCenter((new OpenLayers.LonLat(lon, lat)).transform( fromProjection, toProjection), zoom);
 		}
 		
-		function placeMarker(lonlat,popuptext){
+		function placeMarker(lonlat,popuptext,v){
 			var feature = new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.Point( lonlat.lon,  lonlat.lat ).transform(fromProjection, toProjection),
-				{description:popuptext} ,
+				{description:popuptext , value:v} ,
 				{externalGraphic: 'img/marker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
 				);    
 			vectorLayer.addFeatures(feature);
 			return feature;
+		}
+		
+		function setNewMarker(){
+			var lon = document.getElementById("longitude").value;
+			var lat = document.getElementById("latitude").value;
+			var lonlat = new OpenLayers.LonLat(lon, lat);
+			var lonlat1 = lonlat.transform( fromProjection, toProjection);
+			if(state == 0){
+				newLocMarker = placeMarker(lonlat,'Test',0);
+				state = 1;
+			}else if (state == 1){
+				newLocMarker.move(lonlat1);
+			}
+			map.setCenter(lonlat1, zoom);
 		}
 		
 		function createPopup(feature) {
@@ -123,8 +145,15 @@
 				true,
 				function() { controls['selector'].unselectAll(); }
 			);
-			//feature.popup.closeOnMove = true;
+			feature.popup.closeOnMove = true;
 			map.addPopup(feature.popup);
+			var value = feature.attributes.value;
+			if(value == 0){
+				document.getElementById('newLoc').checked = true;
+			}else{
+				document.getElementById('oldLoc').checked = true;
+				document.getElementById('location').value = value;
+			}
 		}
 
 		function destroyPopup(feature) {
@@ -174,23 +203,33 @@
 					</li>
 					<br>
 					<li>
-						<label for="address">Addresse</label>
-						<input type="text" name="address" id="address" maxLength="30">
-					</li>
-					<br>
-					<li>
 						<label>Position</label>
-						<input type="number" name="latitude" id="latitude" min="-180" max = "180" step="any">
-						<input type="number" name="longitude" id="longitude" min="-180" max = "180" step="any">
-						<a href="#" onClick="applyLatLng();">Anwenden</a>
 						<br>
+						<input type = "radio" name = "knowLoc" id = "oldLoc" checked>Bekannte Location</input>
 						<br>
+						<select name = "location" id = "location" size="5">
+							<option value = "1">Location 1</option>
+							<option value = "2">Location 2</option>
+							<option value = "3">Location 3</option>
+							<option value = "4">Location 4</option>
+						</select>
+						<br>
+						<input type = "radio" name = "knowLoc" id = "newLoc">Neue Location</input>
+						<br>
+						<label for="newAddress">Addresse:</label>
+						<input type = "text" name = "newAddress" id = "newAddress" max = 30></input>
+						<input type = "checkbox" name = "setMarker" id = "setMarker">Marker platzieren</input>
+						<br>
+						<input type="number" name="latitude" id="latitude" min="-180" max = "180" step="any" value = 0>
+						<input type="number" name="longitude" id="longitude" min="-180" max = "180" step="any" value = 0>
+						<a href="#" onClick="applyLonLat();">Zu Position springen</a>
+						<a href="#" onClick="setNewMarker();">Marker platzieren</a>
+						<div id="Map" style="height:350px ; width:500px"></div>
 						<div id="mapHeader">
-							Karte: &#xa9;<a href="http://www.openstreetmap.org">OpenStreetMap</a>
+							&#xa9;<a href="http://www.openstreetmap.org">OpenStreetMap</a>
 							und <a href="http://www.openstreetmap.org/copyright">Mitwirkende</a>,
 							<a href="http://creativecommons.org/licenses/by-sa/2.0/deed.de">CC-BY-SA</a>
 						</div>
-						<div id="Map" style="height:350px ; width:500px"></div>
 					</li>
 					<br>
 					<li>
