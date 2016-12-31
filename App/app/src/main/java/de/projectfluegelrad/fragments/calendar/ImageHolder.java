@@ -18,7 +18,7 @@ import de.projectfluegelrad.database.Image;
 
 public class ImageHolder {
 
-    private File cacheDir;
+    private File imageCacheDir;
 
     private ImageView imageHolder;
     private TextView descriptionView;
@@ -27,11 +27,10 @@ public class ImageHolder {
     private RelativeLayout layout;
 
     public ImageHolder(Context context, Image image) {
-        this.cacheDir = context.getCacheDir();
+        this.imageCacheDir = new File(context.getCacheDir(), "imagecache");
+        this.imageCacheDir.mkdir();
 
         this.layout = new RelativeLayout(context);
-
-        layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 
         if (image != null) {
             this.progressSpinner = new ProgressBar(context);
@@ -78,7 +77,7 @@ public class ImageHolder {
             final Image image = images[0];
 
             try {
-                image.load(cacheDir);
+                image.load(imageCacheDir);
             } catch (IOException e) {
                 e.printStackTrace();
             }

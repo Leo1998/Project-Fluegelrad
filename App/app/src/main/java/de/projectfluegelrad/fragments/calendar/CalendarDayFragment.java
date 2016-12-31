@@ -7,12 +7,15 @@ import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +30,7 @@ import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -92,16 +96,24 @@ public class CalendarDayFragment extends Fragment {
 
             ImageHolder imageView = new ImageHolder(this.getContext(), image);
 
-            imagesContainer.addView(imageView.getLayout());
+            imagesContainer.addView(imageView.getLayout(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 
     private void buildSponsorsContainer(LinearLayout sponsorsContainer) {
-        ImageAtlas imageAtlas = DatabaseManager.INSTANCE.getImageAtlas();
+        File imageCacheDir = new File(sponsorsContainer.getContext().getCacheDir(), "imagecache");
+        imageCacheDir.mkdir();
 
-        Image hostImage = imageAtlas.getImage(event.getHost().getImagePath());
-        ImageHolder hostImageView = new ImageHolder(this.getContext(), hostImage);
-        sponsorsContainer.addView(hostImageView.getLayout());
+        Image hostImage = new Image(event.getHost().getImagePath());
+        try {
+            hostImage.load(imageCacheDir);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ImageView iconView = new ImageView(sponsorsContainer.getContext());
+        iconView.setImageBitmap(hostImage.getBitmap());
+        sponsorsContainer.addView(iconView);
     }
 
     private void buildMapView(MapView mapView) {
