@@ -47,4 +47,17 @@ public class Sponsor {
     public String getWeb() {
         return web;
     }
+
+    @Override
+    public String toString() {
+        return "Sponsor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                ", mail='" + mail + '\'' +
+                ", phone='" + phone + '\'' +
+                ", web='" + web + '\'' +
+                '}';
+    }
 }
