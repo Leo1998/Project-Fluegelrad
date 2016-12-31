@@ -1,4 +1,4 @@
-package de.projectfluegelrad.calendar.gridview;
+package de.projectfluegelrad.fragments.calendar.gridview;
 
 import android.content.Context;
 import android.graphics.Canvas;

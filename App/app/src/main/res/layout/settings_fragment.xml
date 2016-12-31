@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsFragment"
+    tools:context=".fragments.settings.SettingsFragment"
     android:weightSum="1">
 
     <!-- TODO: Update blank fragment layout -->

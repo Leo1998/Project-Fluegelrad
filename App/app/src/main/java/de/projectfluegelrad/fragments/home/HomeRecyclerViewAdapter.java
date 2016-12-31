@@ -1,4 +1,4 @@
-package de.projectfluegelrad.home;
+package de.projectfluegelrad.fragments.home;
 
 
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.calendar.CalendarDayFragment;
+import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.Event;
 
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.ViewHolder>{

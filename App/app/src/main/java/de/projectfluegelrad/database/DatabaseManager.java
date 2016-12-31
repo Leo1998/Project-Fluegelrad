@@ -3,6 +3,7 @@ package de.projectfluegelrad.database;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -267,6 +268,8 @@ public class DatabaseManager implements Runnable {
 
             Event event = Event.readEvent(obj);
 
+            Log.i("DatabaseManager", "Event: " + event.toString());
+
             registerEvent(event);
         }
 
@@ -277,10 +280,13 @@ public class DatabaseManager implements Runnable {
 
             Image image = Image.readImage(obj);
 
+            Log.i("DatabaseManager", "Image: " + image.toString());
+
             imageAtlas.addImage(image);
         }
 
         sortEvents();
+
 
         if (save)
             saveDatabaseToStorage();

@@ -1,4 +1,4 @@
-package de.projectfluegelrad.calendar.gridview;
+package de.projectfluegelrad.fragments.calendar.gridview;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.calendar.CalendarDayFragment;
+import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
 
@@ -43,7 +43,7 @@ public class CalendarDayDialog extends DialogFragment {
         }
         String[] shortDescriptions = new String[events.size()];
         for (int i = 0; i < events.size(); i++){
-            shortDescriptions[i] = events.get(i).getName() + " von " + events.get(i).getHost();
+            shortDescriptions[i] = events.get(i).getName() + " von " + "N/A";//TODO
         }
 
         builder.setItems(shortDescriptions, new DialogInterface.OnClickListener() {

@@ -1,10 +1,10 @@
 package de.projectfluegelrad.database;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +45,14 @@ public class Image {
 
     private Bitmap bitmap;
 
+    /**
+     *
+     * @param path
+     */
+    public Image(String path) {
+        this.path = path;
+    }
+
     public Image(int id, String path, int eventId, String description) {
         this.id = id;
         this.path = path;
@@ -72,8 +80,8 @@ public class Image {
         return bitmap;
     }
 
-    public void load(File cacheDir) throws IOException {
-        File cachedFile = new File(cacheDir, "image#" + this.id);
+    public void load(File imageCacheDir) throws IOException {
+        File cachedFile = new File(imageCacheDir, Utils.hashPath(this.path));
 
         if (!cachedFile.exists()) {
             URL url = new URL("http://fluegelrad.ddns.net/" + this.path);
@@ -82,7 +90,7 @@ public class Image {
             InputStream in = c.getInputStream();
             OutputStream out = new FileOutputStream(cachedFile);
 
-            StreamUtils.copyStream(in, out);
+            Utils.copyStream(in, out);
             in.close();
             out.close();
         }
@@ -103,7 +111,7 @@ public class Image {
         return "Image{" +
                 "id=" + id +
                 ", path='" + path + '\'' +
-                ", eventId=" + eventId +
+                ", eventId=" + eventId + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }

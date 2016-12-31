@@ -1,19 +1,21 @@
-package de.projectfluegelrad.calendar;
+package de.projectfluegelrad.fragments.calendar;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +45,6 @@ import de.projectfluegelrad.database.ImageAtlas;
 public class CalendarDayFragment extends Fragment {
 
     private Event event;
-
-    private MapView mapView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,25 +70,53 @@ public class CalendarDayFragment extends Fragment {
 
         ((TextView) layout.findViewById(R.id.name)).setText(event.getName());
 
-        ((TextView) layout.findViewById(R.id.host)).setText("N/A");
-
         RelativeLayout scrollContainer = (RelativeLayout)  layout.findViewById(R.id.scroll_container);
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 
-        LinearLayout imagesContainer = (LinearLayout) layout.findViewById(R.id.images_container);
+        LinearLayout imageContainer = (LinearLayout) layout.findViewById(R.id.images_container);
+        buildImageContainer(imageContainer);
+
+        LinearLayout sponsorsContainer = (LinearLayout) layout.findViewById(R.id.sponsors_container);
+        buildSponsorsContainer(sponsorsContainer);
+
+        ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
+
+        MapView mapView = (MapView) layout.findViewById(R.id.mapView);
+        buildMapView(mapView);
+
+        return layout;
+    }
+
+    private void buildImageContainer(LinearLayout imagesContainer) {
         ImageAtlas imageAtlas = DatabaseManager.INSTANCE.getImageAtlas();
+
         List<Image> images = imageAtlas.getImages(this.event);
         for (int i = 0; i < images.size(); i++) {
             Image image = images.get(i);
 
             ImageHolder imageView = new ImageHolder(this.getContext(), image);
 
-            imagesContainer.addView(imageView.getLayout());
+            imagesContainer.addView(imageView.getLayout(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+    }
+
+    private void buildSponsorsContainer(LinearLayout sponsorsContainer) {
+        File imageCacheDir = new File(sponsorsContainer.getContext().getCacheDir(), "imagecache");
+        imageCacheDir.mkdir();
+
+        Image hostImage = new Image(event.getHost().getImagePath());
+        try {
+            hostImage.load(imageCacheDir);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
+        ImageView iconView = new ImageView(sponsorsContainer.getContext());
+        iconView.setImageBitmap(hostImage.getBitmap());
+        sponsorsContainer.addView(iconView);
+    }
 
-        mapView = (MapView) layout.findViewById(R.id.mapView);
+    private void buildMapView(MapView mapView) {
         mapView.setMultiTouchControls(true);
         mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 
@@ -119,17 +148,13 @@ public class CalendarDayFragment extends Fragment {
 
             mapView.getOverlays().add(mOverlay);
         }
-
-        //TODO:Sponsoren
-        ((TextView) layout.findViewById(R.id.sponsors)).setText("Sponsoren");
-
-        return layout;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.day_view_menu, menu);
 
+        // tint icons
         for(int i = 0; i < menu.size(); i++){
             Drawable drawable = menu.getItem(i).getIcon();
             if(drawable != null) {
@@ -168,7 +193,7 @@ public class CalendarDayFragment extends Fragment {
         intent.putExtra(CalendarContract.Events.TITLE, event.getName());
         intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateStart().getTimeInMillis());
         intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDateEnd().getTimeInMillis());
-        intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + event.getHost());
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + "N/A");//TODO
         intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
 
         CalendarDayFragment.this.startActivity(intent);
