@@ -11,9 +11,9 @@ class CalendarGridHeader: UICollectionReusableView {
     override init(frame: CGRect){
         super.init(frame: frame)
         
-        setupWeekView()
         setupMonthChanger()
-        setupConstraints()
+        setupWeekView()
+
     }
     
     private func setupWeekView(){
@@ -38,41 +38,26 @@ class CalendarGridHeader: UICollectionReusableView {
         }
         
         addSubview(weekView)
+        weekView.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: left, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
     }
     
     private func setupMonthChanger(){
         left = UIButton()
         left.translatesAutoresizingMaskIntoConstraints = false
         left.setImage(#imageLiteral(resourceName: "ic_arrow_back"), for: UIControlState.normal)
-        
+        addSubview(left)
+        left.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+
         right = UIButton()
         right.translatesAutoresizingMaskIntoConstraints = false
         right.setImage(#imageLiteral(resourceName: "ic_arrow_forward"), for: UIControlState.normal)
-        
+        addSubview(right)
+        right.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+
         month = UILabel()
         month.translatesAutoresizingMaskIntoConstraints = false
-        
-        addSubview(left)
-        addSubview(right)
         addSubview(month)
-    }
-    
-    private func setupConstraints(){
-        let leftButtonX = NSLayoutConstraint(item: left, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
-        let leftButtonY = NSLayoutConstraint(item: left, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([leftButtonX, leftButtonY])
-        
-        let rightButtonX = NSLayoutConstraint(item: right, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0)
-        let rightButtonY = NSLayoutConstraint(item: right, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([rightButtonX, rightButtonY])
-        
-        let monthLabelX = NSLayoutConstraint(item: month, attribute: NSLayoutAttribute.centerX, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.centerX, multiplier: 1, constant: 0)
-        let monthLabelY = NSLayoutConstraint(item: month, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([monthLabelX, monthLabelY])
-        
-        let weekViewX = NSLayoutConstraint(item: weekView, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
-        let weekViewY = NSLayoutConstraint(item: weekView, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: left, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([weekViewX, weekViewY])
+        month.addConstraintsXY(xView: self, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
     }
     
     required init?(coder aDecoder: NSCoder) {

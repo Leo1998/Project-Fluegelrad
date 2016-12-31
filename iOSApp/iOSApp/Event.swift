@@ -21,7 +21,8 @@ class Event: NSObject, NSCoding {
         self.id = Int(dict.object(forKey: "id") as! String)
         self.name = dict.object(forKey: "name") as! String
         self.price = Int(dict.object(forKey: "price") as! String)
-        self.hostId = Int(dict.object(forKey: "hostId") as! String)
+        //self.hostId = Int(dict.object(forKey: "hostId") as! String)
+        self.hostId = 0
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"

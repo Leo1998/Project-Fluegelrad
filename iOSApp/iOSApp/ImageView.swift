@@ -22,17 +22,17 @@ class ImageView: UIView {
         }
         image = UIImageView(image: eventImage.image)
         image.translatesAutoresizingMaskIntoConstraints = false
-        
+        addSubview(image)
+        image.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+
         imageDescription = UILabel()
         imageDescription.translatesAutoresizingMaskIntoConstraints = false
         imageDescription.lineBreakMode = .byWordWrapping
         imageDescription.numberOfLines = 0
         imageDescription.text = eventImage.imageDescription
-        
-        addSubview(image)
         addSubview(imageDescription)
+        imageDescription.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: image, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         
-        setupConstraints()
         
         layoutIfNeeded()
         height += image.frame.height
@@ -42,15 +42,5 @@ class ImageView: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setupConstraints(){
-        let imageX = NSLayoutConstraint(item: image, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
-        let imageY = NSLayoutConstraint(item: image, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([imageX, imageY])
-        
-        let imageDescriptionX = NSLayoutConstraint(item: imageDescription, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
-        let imageDescriptionY = NSLayoutConstraint(item: imageDescription, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: image, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([imageDescriptionX, imageDescriptionY])
     }
 }

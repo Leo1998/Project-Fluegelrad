@@ -10,45 +10,25 @@ class CalendarListCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        setupViews()
-        setupConstraints()
-    }
-    
-    private func setupViews(){
         categoryLabel = UILabel()
         categoryLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(categoryLabel)
+        categoryLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
         
         locationLabel = UILabel()
         locationLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(locationLabel)
+        locationLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         
         dateLabel = UILabel()
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(dateLabel)
+        dateLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
         
         hostLabel = UILabel()
         hostLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        addSubview(categoryLabel)
-        addSubview(locationLabel)
-        addSubview(dateLabel)
         addSubview(hostLabel)
-    }
-    
-    private func setupConstraints(){
-        let categoryLabelX = NSLayoutConstraint(item: categoryLabel, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
-        let categoryLabelY = NSLayoutConstraint(item: categoryLabel, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([categoryLabelX, categoryLabelY])
-        
-        let locationLabelLabelX = NSLayoutConstraint(item: locationLabel, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
-        let locationLabelLabelY = NSLayoutConstraint(item: locationLabel, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([locationLabelLabelX, locationLabelLabelY])
-        
-        let dateLabelLabelX = NSLayoutConstraint(item: dateLabel, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0)
-        let dateLabelLabelY = NSLayoutConstraint(item: dateLabel, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([dateLabelLabelX, dateLabelLabelY])
-        
-        let hostLabelX = NSLayoutConstraint(item: hostLabel, attribute: NSLayoutAttribute.trailing, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.trailing, multiplier: 1, constant: 0)
-        let hostLabelY = NSLayoutConstraint(item: hostLabel, attribute: NSLayoutAttribute.bottom, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([hostLabelX, hostLabelY])
+        hostLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
     }
     
     required init?(coder aDecoder: NSCoder) {

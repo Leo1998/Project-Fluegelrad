@@ -1,5 +1,6 @@
 import UIKit
 import MapKit
+import EventKit
 
 class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet var superView: UIView!
@@ -85,16 +86,13 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         mapView.addAnnotation(event.location)
         mapView.setCenter(event.location.coordinate, animated: true)
+        let regionRadius: CLLocationDistance = 0.01
+        let region = MKCoordinateRegion(center: self.event.location.coordinate, span: MKCoordinateSpan(latitudeDelta: regionRadius * 2, longitudeDelta: regionRadius * 2))
+        mapView.setRegion(region, animated: true)
         content.addSubview(mapView)
         mapView.addConstraintsXY(xView: content, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: prizeLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         mapView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: view.frame.width/2)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2), execute: {
-            let regionRadius: CLLocationDistance = 0.01
-            let region = MKCoordinateRegion(center: self.event.location.coordinate, span: MKCoordinateSpan(latitudeDelta: regionRadius * 2, longitudeDelta: regionRadius * 2))
-            self.mapView.setRegion(region, animated: true)
-            
-        })
+
         
         view.layoutIfNeeded()
         
@@ -104,6 +102,90 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         totalHeight += mapView.frame.height
         
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
+        
+        let saveEventButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_event_note"), style: .plain, target: self, action: #selector(CalendarDayViewController.saveEvent))
+        let shareEventButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_share"), style: .plain, target: self, action: #selector(CalendarDayViewController.share))
+
+        navigationItem.setRightBarButtonItems([shareEventButton, saveEventButton], animated: false)
+    }
+    
+    func saveEvent(){
+        let eventStore = EKEventStore()
+        
+        switch EKEventStore.authorizationStatus(for: .event) {
+        case .authorized:
+            saving(eventStore: eventStore)
+            break
+        case .denied:
+            print("Calndar Access denied")
+            break
+        case .notDetermined:
+            eventStore.requestAccess(to: .event, completion: { (granted, error) in
+                if granted {
+                    self.saving(eventStore: eventStore)
+                }else{
+                    print("Calndar Access denied")
+                }
+            })
+            break
+        default:
+            print("Calndar Access default")
+        }
+    }
+    
+    private func saving(eventStore: EKEventStore){
+        let eventCalendar = eventStore.defaultCalendarForNewEvents
+        eventCalendar.title = "Dortmunder Events"
+        eventCalendar.cgColor = UIColor.green.cgColor
+        
+        var alreadySaved = false
+        
+        let predicate = eventStore.predicateForEvents(withStart: event.dateStart, end: event.dateEnd, calendars: [eventCalendar])
+        let events = eventStore.events(matching: predicate)
+        
+        for value in events{
+            if value.title == event.name && value.location == event.location.title && value.notes == event.descriptionEvent {
+                alreadySaved = true
+                
+                let alert = UIAlertController(title: "Event already saved", message: nil, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                
+                present(alert, animated: true, completion: nil)
+                break
+            }
+        }
+
+        if !alreadySaved {
+            let newEvent = EKEvent(eventStore: eventStore)
+            newEvent.calendar = eventCalendar
+            newEvent.title = event.name
+            newEvent.startDate = event.dateStart
+            newEvent.endDate = event.dateEnd
+            newEvent.location = event.location.title
+            newEvent.notes = event.descriptionEvent
+            
+            do {
+                try eventStore.save(newEvent, span: .thisEvent, commit: true)
+                
+                let alert = UIAlertController(title: "Event saved", message: nil, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                
+                present(alert, animated: true, completion: nil)
+            } catch {
+                let alert = UIAlertController(title: "Event couldnot be saved", message: error.localizedDescription, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                alert.addAction(okAction)
+                
+                present(alert, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func share(){
+        let activityViewController = UIActivityViewController(activityItems: ["Test"], applicationActivities: nil)
+        present(activityViewController, animated: true, completion: nil)
     }
     
 
