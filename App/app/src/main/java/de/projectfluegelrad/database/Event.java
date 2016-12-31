@@ -60,6 +60,8 @@ public class Event {
     private int participants;
     private int ageMin;
     private int ageMax;
+    private int formId;
+
 
     public Event(int id, String name, Location location, int price, int host, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax) {
         this.id = id;

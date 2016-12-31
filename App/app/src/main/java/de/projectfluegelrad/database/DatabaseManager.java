@@ -3,6 +3,7 @@ package de.projectfluegelrad.database;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -257,6 +258,8 @@ public class DatabaseManager implements Runnable {
     }
 
     private void readDatabase(String json, boolean save) throws JSONException, ParseException {
+        Log.i("DatabaseManager", "Reading Database... json: " + json);
+
         JSONObject root = new JSONObject(new JSONTokener(json));
 
         JSONArray eventDataArray = root.getJSONArray("events");
