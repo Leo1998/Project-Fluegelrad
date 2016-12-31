@@ -33,16 +33,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/host"
-            android:paddingTop="5dp"
-            android:textSize="16sp"
-            android:textColor="@color/colorAccent"
-            android:layout_below="@id/name"
-            android:text="host" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/location"
             android:textSize="16sp"
             android:textColor="@color/colorAccent"
@@ -78,16 +68,17 @@
                 android:layout_height="match_parent"
                 android:id="@+id/images_container"
                 android:layout_below="@+id/description"
-                android:layout_marginTop="25dp"></LinearLayout>
+                android:layout_marginTop="25dp">
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/sponsors_container"
                 android:layout_below="@+id/images_container"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                android:id="@+id/sponsors"
-                android:text="sponsors" />
+                android:layout_marginTop="25dp">
+            </LinearLayout>
 
             <de.projectfluegelrad.fragments.calendar.HackyMapView
                 android:layout_width="match_parent"

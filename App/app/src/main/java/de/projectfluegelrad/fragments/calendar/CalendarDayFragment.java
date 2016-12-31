@@ -42,8 +42,6 @@ public class CalendarDayFragment extends Fragment {
 
     private Event event;
 
-    private MapView mapView;
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // setup osmdroid
@@ -68,13 +66,26 @@ public class CalendarDayFragment extends Fragment {
 
         ((TextView) layout.findViewById(R.id.name)).setText(event.getName());
 
-        ((TextView) layout.findViewById(R.id.host)).setText("N/A");
-
         RelativeLayout scrollContainer = (RelativeLayout)  layout.findViewById(R.id.scroll_container);
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 
-        LinearLayout imagesContainer = (LinearLayout) layout.findViewById(R.id.images_container);
+        LinearLayout imageContainer = (LinearLayout) layout.findViewById(R.id.images_container);
+        buildImageContainer(imageContainer);
+
+        LinearLayout sponsorsContainer = (LinearLayout) layout.findViewById(R.id.sponsors_container);
+        buildSponsorsContainer(sponsorsContainer);
+
+        ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
+
+        MapView mapView = (MapView) layout.findViewById(R.id.mapView);
+        buildMapView(mapView);
+
+        return layout;
+    }
+
+    private void buildImageContainer(LinearLayout imagesContainer) {
         ImageAtlas imageAtlas = DatabaseManager.INSTANCE.getImageAtlas();
+
         List<Image> images = imageAtlas.getImages(this.event);
         for (int i = 0; i < images.size(); i++) {
             Image image = images.get(i);
@@ -83,10 +94,17 @@ public class CalendarDayFragment extends Fragment {
 
             imagesContainer.addView(imageView.getLayout());
         }
+    }
 
-        ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
+    private void buildSponsorsContainer(LinearLayout sponsorsContainer) {
+        ImageAtlas imageAtlas = DatabaseManager.INSTANCE.getImageAtlas();
 
-        mapView = (MapView) layout.findViewById(R.id.mapView);
+        Image hostImage = imageAtlas.getImage(event.getHost().getImagePath());
+        ImageHolder hostImageView = new ImageHolder(this.getContext(), hostImage);
+        sponsorsContainer.addView(hostImageView.getLayout());
+    }
+
+    private void buildMapView(MapView mapView) {
         mapView.setMultiTouchControls(true);
         mapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
 
@@ -118,17 +136,13 @@ public class CalendarDayFragment extends Fragment {
 
             mapView.getOverlays().add(mOverlay);
         }
-
-        //TODO:Sponsoren
-        ((TextView) layout.findViewById(R.id.sponsors)).setText("Sponsoren");
-
-        return layout;
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.day_view_menu, menu);
 
+        // tint icons
         for(int i = 0; i < menu.size(); i++){
             Drawable drawable = menu.getItem(i).getIcon();
             if(drawable != null) {

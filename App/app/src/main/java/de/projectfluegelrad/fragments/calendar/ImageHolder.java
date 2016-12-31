@@ -33,39 +33,41 @@ public class ImageHolder {
 
         layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
 
-        this.progressSpinner = new ProgressBar(context);
-        this.progressSpinner.setId((int) System.currentTimeMillis());
-        this.progressSpinner.setIndeterminate(true);
+        if (image != null) {
+            this.progressSpinner = new ProgressBar(context);
+            this.progressSpinner.setId((int) System.currentTimeMillis());
+            this.progressSpinner.setIndeterminate(true);
 
-        this.imageHolder = new ImageView(context);
-        this.imageHolder.setId((int) System.currentTimeMillis() + 50);
-        this.imageHolder.setVisibility(View.INVISIBLE);
-        this.imageHolder.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            this.imageHolder = new ImageView(context);
+            this.imageHolder.setId((int) System.currentTimeMillis() + 50);
+            this.imageHolder.setVisibility(View.INVISIBLE);
+            this.imageHolder.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        this.descriptionView = new TextView(context);
-        this.descriptionView.setId((int) System.currentTimeMillis() + 100);
-        this.descriptionView.setVisibility(View.INVISIBLE);
-        this.descriptionView.setGravity(Gravity.CENTER_HORIZONTAL);
-        this.descriptionView.setText(image.getDescription());
+            this.descriptionView = new TextView(context);
+            this.descriptionView.setId((int) System.currentTimeMillis() + 100);
+            this.descriptionView.setVisibility(View.INVISIBLE);
+            this.descriptionView.setGravity(Gravity.CENTER_HORIZONTAL);
+            this.descriptionView.setText(image.getDescription());
 
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, displayMetrics);
+            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+            int bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, displayMetrics);
 
-        RelativeLayout.LayoutParams spinnerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams spinnerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        final RelativeLayout.LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            final RelativeLayout.LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-        RelativeLayout.LayoutParams descriptionViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        descriptionViewParams.addRule(RelativeLayout.BELOW, imageHolder.getId());
-        descriptionViewParams.bottomMargin = bottomMargin;
+            RelativeLayout.LayoutParams descriptionViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            descriptionViewParams.addRule(RelativeLayout.BELOW, imageHolder.getId());
+            descriptionViewParams.bottomMargin = bottomMargin;
 
-        layout.addView(progressSpinner, spinnerParams);
-        layout.addView(imageHolder, imageHolderParams);
-        layout.addView(descriptionView, descriptionViewParams);
+            layout.addView(progressSpinner, spinnerParams);
+            layout.addView(imageHolder, imageHolderParams);
+            layout.addView(descriptionView, descriptionViewParams);
 
-        LoadImageTask task = new LoadImageTask();
+            LoadImageTask task = new LoadImageTask();
 
-        task.execute(image);
+            task.execute(image);
+        }
     }
 
     private class LoadImageTask extends AsyncTask<Image, Void, Void> {

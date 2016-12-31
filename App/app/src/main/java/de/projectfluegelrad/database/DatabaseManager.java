@@ -258,8 +258,6 @@ public class DatabaseManager implements Runnable {
     }
 
     private void readDatabase(String json, boolean save) throws JSONException, ParseException {
-        Log.i("DatabaseManager", "Reading Database... json: " + json);
-
         JSONObject root = new JSONObject(new JSONTokener(json));
 
         JSONArray eventDataArray = root.getJSONArray("events");
@@ -269,6 +267,8 @@ public class DatabaseManager implements Runnable {
             JSONObject obj = eventDataArray.getJSONObject(i);
 
             Event event = Event.readEvent(obj);
+
+            Log.i("DatabaseManager", "Event: " + event.toString());
 
             registerEvent(event);
         }
@@ -280,10 +280,13 @@ public class DatabaseManager implements Runnable {
 
             Image image = Image.readImage(obj);
 
+            Log.i("DatabaseManager", "Image: " + image.toString());
+
             imageAtlas.addImage(image);
         }
 
         sortEvents();
+
 
         if (save)
             saveDatabaseToStorage();

@@ -2,6 +2,7 @@ package de.projectfluegelrad.database;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,18 @@ public class ImageAtlas {
         }
 
         return list;
+    }
+
+    public Image getImage(String imagePath) {
+        for (int i = 0; i < images.size(); i++) {
+            Image image = images.get(i);
+
+            if (image.getPath().equals(imagePath)) {
+                return image;
+            }
+        }
+
+        return null;
     }
 
     public void clearImages() {
