@@ -22,7 +22,7 @@ public class Event {
         Calendar cEnd = Calendar.getInstance();
         cEnd.setTime(simpleDateFormat.parse(obj.getString("dateEnd")));
 
-        Event event = new Event(obj.getInt("id"), obj.getString("name"), new Location(obj.getString("address"), obj.getDouble("longitude"), obj.getDouble("latitude")), obj.getInt("price"), obj.getInt("hostId"), cStart, cEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"));
+        Event event = new Event(obj.getInt("id"), obj.getString("name"), new Location(obj.getString("address"), obj.getDouble("longitude"), obj.getDouble("latitude")), obj.getInt("price"), cStart, cEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"));
 
         return event;
     }
@@ -36,7 +36,6 @@ public class Event {
         obj.put("longitude", event.getLocation().getLongitude());
         obj.put("latitude", event.getLocation().getLatitude());
         obj.put("price", event.getPrice());
-        obj.put("hostId", event.getHost());
         obj.put("dateStart", event.getDateStartFormatted());
         obj.put("dateEnd", event.getDateEndFormatted());
         obj.put("description", event.getDescription());
@@ -52,7 +51,6 @@ public class Event {
     private String name;
     private Location location;
     private int price;
-    private int host;
     private Calendar dateStart;
     private Calendar dateEnd;
     private String description;
@@ -63,12 +61,11 @@ public class Event {
     private int formId;
 
 
-    public Event(int id, String name, Location location, int price, int host, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax) {
+    public Event(int id, String name, Location location, int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.price = price;
-        this.host = host;
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
         this.description = description;
@@ -92,10 +89,6 @@ public class Event {
 
     public int getPrice() {
         return price;
-    }
-
-    public int getHost() {
-        return host;
     }
 
     public Calendar getDateStart() {
@@ -143,7 +136,6 @@ public class Event {
                 ", name=" + name +
                 ", location=" + location +
                 ", price=" + price +
-                ", host=" + host +
                 ", dateStart=" + dateStart +
                 ", dateEnd=" + dateEnd +
                 ", description='" + description + '\'' +

@@ -10,7 +10,7 @@
 		`events`.`id` , `events`.`name` , `events`.`price` , `events`.`maxParticipants` , `events`.`participants` , `events`.`dateStart` , `events`.`dateEnd` , `events`.`description` , `events`.`ageMin` , `events`.`ageMax` ,`events`.`formId` ,  
 		`locations`.`address`,`locations`.`longitude`,`locations`.`latitude` ,
 		`sponsors`.`mail` , `sponsors`.`phone` , `sponsors`.`web`,
-		`sponsors`.`name` AS `hostName`, `sponsors`.`description` AS `hostDescription`, `sponsors`.`image` AS `hostImage`, `sponsors`.`id` AS `hostId`
+		`sponsors`.`name` , `sponsors`.`description` , `sponsors`.`image` , `sponsors`.`id` 
 		FROM `events` 
 		JOIN `locations` ON `events`.`locationId` = `locations`.`id`
 		JOIN `hosts` ON `hosts`.`id` = `events`.`hostId`
