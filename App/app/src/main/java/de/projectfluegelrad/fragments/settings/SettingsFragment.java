@@ -1,4 +1,4 @@
-package de.projectfluegelrad;
+package de.projectfluegelrad.fragments.settings;
 
 
 import android.os.Bundle;
@@ -6,11 +6,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import java.io.File;
-
+import de.projectfluegelrad.R;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;

@@ -1,7 +1,6 @@
-package de.projectfluegelrad.calendar.gridview;
+package de.projectfluegelrad.fragments.calendar.gridview;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,12 +16,11 @@ import java.util.List;
 
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.calendar.CalendarDayFragment;
+import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
-import de.projectfluegelrad.database.ImageAtlas;
 
 public class CalendarGridViewFragment extends Fragment {
 

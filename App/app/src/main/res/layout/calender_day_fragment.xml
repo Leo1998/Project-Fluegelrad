@@ -89,7 +89,7 @@
                 android:id="@+id/sponsors"
                 android:text="sponsors" />
 
-            <de.projectfluegelrad.calendar.HackyMapView
+            <de.projectfluegelrad.fragments.calendar.HackyMapView
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
                 android:id="@+id/mapView"

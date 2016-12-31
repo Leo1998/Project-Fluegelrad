@@ -1,7 +1,6 @@
 package de.projectfluegelrad;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,17 +14,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import de.projectfluegelrad.calendar.gridview.CalendarGridViewFragment;
-import de.projectfluegelrad.calendar.listview.CalendarListFragment;
+import de.projectfluegelrad.fragments.calendar.gridview.CalendarGridViewFragment;
+import de.projectfluegelrad.fragments.calendar.listview.CalendarListFragment;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseUpdateListener;
-import de.projectfluegelrad.database.Event;
-import de.projectfluegelrad.home.HomeFragment;
+import de.projectfluegelrad.fragments.home.HomeFragment;
+import de.projectfluegelrad.fragments.settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 

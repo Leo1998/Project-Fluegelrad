@@ -1,10 +1,9 @@
-package de.projectfluegelrad.calendar;
+package de.projectfluegelrad.fragments.calendar;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;

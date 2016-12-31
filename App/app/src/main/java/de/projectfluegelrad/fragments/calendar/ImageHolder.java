@@ -1,4 +1,4 @@
-package de.projectfluegelrad.calendar;
+package de.projectfluegelrad.fragments.calendar;
 
 import android.content.Context;
 import android.os.AsyncTask;

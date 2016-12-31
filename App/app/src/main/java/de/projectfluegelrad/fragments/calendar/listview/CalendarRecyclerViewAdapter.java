@@ -1,4 +1,4 @@
-package de.projectfluegelrad.calendar.listview;
+package de.projectfluegelrad.fragments.calendar.listview;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -14,9 +14,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.calendar.CalendarDayFragment;
+import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.Event;
-import de.projectfluegelrad.database.ImageAtlas;
 
 public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRecyclerViewAdapter.ViewHolder>{
 
