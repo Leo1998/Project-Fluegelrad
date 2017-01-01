@@ -53,7 +53,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         var imageViewsTemp = [ImageView]()
         var imageViewHeight: CGFloat = 0
         for (index, item) in event.images.enumerated() {
-            let imageTemp = ImageView(eventImage: item)
+			let imageTemp = ImageView(frame: view.frame, eventImage: item)
             imageTemp.translatesAutoresizingMaskIntoConstraints = false
             imageView.addSubview(imageTemp)
 

@@ -6,8 +6,8 @@ class ImageView: UIView {
     
     private(set) var height: CGFloat = 0
     
-    init(eventImage: EventImage) {
-        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+	init(frame: CGRect,eventImage: EventImage) {
+        super.init(frame: frame)
         
         if !eventImage.scaled {
             let imageTemp = eventImage.image
@@ -27,13 +27,13 @@ class ImageView: UIView {
 
         imageDescription = UILabel()
         imageDescription.translatesAutoresizingMaskIntoConstraints = false
-        imageDescription.lineBreakMode = .byWordWrapping
+		imageDescription.text = eventImage.imageDescription
+		imageDescription.lineBreakMode = .byWordWrapping
         imageDescription.numberOfLines = 0
-        imageDescription.text = eventImage.imageDescription
         addSubview(imageDescription)
         imageDescription.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: image, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-        
-        
+		imageDescription.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.size.width, yView: image, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
         layoutIfNeeded()
         height += image.frame.height
         height += imageDescription.frame.height

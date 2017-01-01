@@ -33,7 +33,7 @@ class CalendarDayViewHeader: UIView {
         dateEndLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: dateStartLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 
         hostLabel = UILabel()
-        hostLabel.text = String(event.hostId)
+        hostLabel.text = event.host.name
         hostLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(hostLabel)
         hostLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
