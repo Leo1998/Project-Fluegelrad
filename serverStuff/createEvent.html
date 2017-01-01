@@ -6,12 +6,19 @@
     <title>Event erstellen</title>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
     <script>
+		var imageCount = 0;
+		
         var map,vectorLayer,selectMarkerControl,selectedFeature;
         var lat = 51.514;
         var lon = 7.463;
         var zoom = 15;
         var curpos = new Array();
         var position;
+		
+		const longitudes = Array(7.462485015869233 , 7.4691798095703446 , 7.459008872985841 , 7.46467369842534);
+		const latitudes = Array(51.516002997651704 , 51.51247766287808 , 51.51156957791462 , 51.514267071442795);
+		const addresses = Array("Location 1" , "Location 2" , "Location 3" , "Location 4");
+		const sponsors = Array("Sponsor 1" , "Sponsor 2" , "Sponsor 3" , "Sponsor 4");
 		
 		var newLocMarker;
 		var state = 0;
@@ -35,10 +42,9 @@
                     ]
                 });
             var mapnik      = new OpenLayers.Layer.OSM("MAP"); 
-            var markers     = new OpenLayers.Layer.Markers( "Markers" );
-			vectorLayer = new OpenLayers.Layer.Vector("Overlay");
+			vectorLayer = new OpenLayers.Layer.Vector("Locations");
 			
-            map.addLayers([mapnik,markers,vectorLayer]);
+            map.addLayers([mapnik,vectorLayer]);
             map.addLayer(mapnik);
             map.setCenter(cntrposition, zoom);
 			
@@ -54,10 +60,32 @@
 
             click.activate();
 			
-			placeMarker((new OpenLayers.LonLat(7.462485015869233,51.516002997651704)),"Location 1",1);
-			placeMarker((new OpenLayers.LonLat(7.4691798095703446,51.51247766287808)),"Location 2",2);
-			placeMarker((new OpenLayers.LonLat(7.459008872985841,51.51156957791462)),"Location 3",3);
-			placeMarker((new OpenLayers.LonLat(7.46467369842534,51.514267071442795)),"Location 4",4);
+			var locationSelect = document.getElementById('location');
+			
+			for(var i = 0 ; i < longitudes.length  && i < latitudes.length && i < addresses.length ; i++){
+				placeMarker((new OpenLayers.LonLat(longitudes[i],latitudes[i])),addresses[i],i+1);
+				var opt = document.createElement('option');
+				opt.value = i+1;
+				opt.innerHTML = addresses[i];
+				locationSelect.appendChild(opt);
+			}
+			
+			var sponsorsSelect = document.getElementById('sponsors');
+			
+			for(var i = 0 ; i < sponsors.length ; i++){
+				var checkbox = document.createElement('input');
+				checkbox.type = "checkbox";
+				checkbox.name = "sponsor "+(i+1);
+				checkbox.value = i+1;
+				checkbox.id = "sponsor "+(i+1);
+				
+				var label = document.createElement('label')
+				label.htmlFor = "sponsor "+(i+1);
+				label.appendChild(document.createTextNode(sponsors[i]));
+				
+				sponsorsSelect.appendChild(checkbox);
+				sponsorsSelect.appendChild(label);
+			}
 		};
 
 		OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {               
@@ -160,6 +188,56 @@
 			feature.popup.destroy();
 			feature.popup = null;
 		}
+		
+		function readURL(input) {
+			if (input.files && input.files[0]) {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					var li = document.createElement('li');
+					li.id = "previewNode"+imageCount;
+					
+					var img=document.createElement('img');
+					img.src= e.target.result;
+					img.alt= "Vorschau nicht verfügbar";
+					img.title= "Vorschau";
+					img.style.height="100px";
+					
+					var label = document.createTextNode("Beschreibung");
+					
+					var text = document.createElement('input');
+					text.type = "text";
+					text.id = "imageDescription"+imageCount;
+					text.name = "imageDescription"+imageCount;
+					text.max = "50";
+					
+					var srcText = document.createElement('input');
+					srcText.type = "text";
+					srcText.id = "imageSrc"+imageCount;
+					srcText.name = "imageSrc"+imageCount;
+					srcText.value = e.target.result;
+					srcText.style.position = "absolute";
+					srcText.style.display = "none";
+					
+					var span = document.createElement('span');
+					span.innerHTML = '<button type="button" onclick="removeImage('+imageCount+');" >Bild entfernen</button>';
+					
+					li.appendChild(img);
+					li.appendChild(label);
+					li.appendChild(text);
+					li.appendChild(srcText);
+					li.appendChild(span);
+					
+					document.getElementById('previews').appendChild(li);
+				}
+				reader.readAsDataURL(input.files[0]);
+			}
+			imageCount++;
+		}
+		
+		function removeImage(id){
+			li = document.getElementById("previewNode"+id);
+			li.parentNode.removeChild(li);
+		}
 	</script>
 	</head>
 
@@ -174,13 +252,15 @@
 					<br>
 					<li>
 						<label for="price">Preis</label>
-						<input type="number" name="price" id="price" min="0" max="128" step="0.01">
+						<input type="number" name="price" id="price" min="0" max="128" step="0.01" value = 0>
 						<label> &#x20ac;</label>
 					</li>
 					<br>
 					<li>
 						<label for="participants">Maximale Teilnehmerzahl</label>
-						<input type="number" name="participants" id="participants" min="1" max="2048">
+						<input type="number" name="participants" id="participants" min="1" >
+						<input type="checkbox" name="countParticipants" name="countParticipants" checked>
+						<label for="countParticipants">Teilnehmer z&#xe4;hlen</label>
 					</li>
 					<br>
 					<li>
@@ -197,9 +277,9 @@
 					<br>
 					<li>
 						<label>Alter von</label>
-						<input type="number" name="ageMin" id="ageMin" min="0" max="128">
+						<input type="number" name="ageMin" id="ageMin" min="0" max="99" value = 0>
 						<label>bis</label>
-						<input type="number" name="ageMax" id="ageMax" min="0" max="128">
+						<input type="number" name="ageMax" id="ageMax" min="0" max="99" value = 99>
 					</li>
 					<br>
 					<li>
@@ -207,11 +287,7 @@
 						<br>
 						<input type = "radio" name = "knowLoc" id = "oldLoc" checked>Bekannte Location</input>
 						<br>
-						<select name = "location" id = "location" size="5">
-							<option value = "1">Location 1</option>
-							<option value = "2">Location 2</option>
-							<option value = "3">Location 3</option>
-							<option value = "4">Location 4</option>
+						<select name = "location" id = "location">
 						</select>
 						<br>
 						<input type = "radio" name = "knowLoc" id = "newLoc">Neue Location</input>
@@ -232,6 +308,15 @@
 						</div>
 					</li>
 					<br>
+					<li>
+						<label>Sponsoren</label>
+						<div name = "sponsors" id = "sponsors" multiple>
+						</div>
+					</li>
+					<li>
+						<input onchange="readURL(this);" type="file" />
+						<oul id="previews"></oul>
+					</li>
 					<li>
 						<input type="submit" value="Event erstellen" class="btnSubmit" />
 					</li>
