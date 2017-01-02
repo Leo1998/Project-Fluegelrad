@@ -1,6 +1,6 @@
 import UIKit
 
-class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating {
+class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating, UISearchBarDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
 	
 	private var searchController: UISearchController!
 	
@@ -13,6 +13,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 	private var dayEvent: Event?
 	
 	private var frame: CGRect!
+	
+	private var picker: SortPicker!
+	private var sortCategory: SortingCategory!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -132,20 +135,138 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		searchController.searchResultsUpdater = self
 		searchController.dimsBackgroundDuringPresentation = false
 		definesPresentationContext = true
-		eventTable.tableHeaderView = searchController.searchBar
+
+		let allTempEnum = Filter.all
+		var allTempString = [String]()
 		
+		for value in allTempEnum{
+			allTempString.append(value.rawValue)
+		}
+		
+		searchController.searchBar.scopeButtonTitles = allTempString
+		searchController.searchBar.delegate = self
+		searchController.searchBar.setImage(#imageLiteral(resourceName: "ic_sort"), for: .bookmark, state: .normal)
+		searchController.searchBar.showsBookmarkButton = true
+		
+		eventTable.tableHeaderView = searchController.searchBar
+
 		eventTable.reloadData()
+		
+		picker = SortPicker(frame: view.frame)
+		picker.picker.dataSource = self
+		picker.picker.delegate = self
+		picker.isHidden = true
+		view.addSubview(picker)
+		
+		sortCategory = .rating
 	}
 
-	private func filterEvents(searchText: String, scope: String = "All"){
+	private func filterEvents(searchText: String, scope: String){
 		filteredEvents = allEvents.filter({ event in
-			return event.name.lowercased().contains(searchText.lowercased())
+			switch scope{
+			case Filter.name.rawValue:
+				return event.name.lowercased().contains(searchText.lowercased())
+			case Filter.host.rawValue:
+				return event.host.name.lowercased().contains(searchText.lowercased())
+			case Filter.age.rawValue:
+				return event.ageMin <= (Int(searchText) == nil ? Int.max : Int(searchText)!)
+			case Filter.free.rawValue:
+				return event.price == 0 && event.name.lowercased().contains(searchText.lowercased())
+			default:
+				return false
+			}
+			
 		})
 		
 		eventTable.reloadData()
 	}
 	
 	func updateSearchResults(for searchController: UISearchController) {
-		filterEvents(searchText: searchController.searchBar.text!)
+		let scope = searchController.searchBar.scopeButtonTitles![searchController.searchBar.selectedScopeButtonIndex]
+		filterEvents(searchText: searchController.searchBar.text!, scope: scope)
 	}
+	
+	func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+		
+		let scope = searchBar.scopeButtonTitles![selectedScope]
+		if scope == Filter.age.rawValue {
+			searchController.searchBar.keyboardType = .numberPad
+		}else{
+			searchController.searchBar.keyboardType = .default
+
+		}
+
+		searchController.searchBar.reloadInputViews()
+
+		
+		filterEvents(searchText: searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
+	}
+
+	func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+		picker.isHidden = false
+	}
+	
+	func numberOfComponents(in pickerView: UIPickerView) -> Int {
+		return 1
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+		return SortingCategory.all.count
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+		return SortingCategory.all[row].rawValue
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+		picker.isHidden = true
+		sortCategory = SortingCategory.all[row]
+		
+		sort()
+	}
+	
+	private func sort(){
+		allEvents.sort(by: {
+			(event1, event2) -> Bool in
+			
+			let sort1: Any
+			let sort2: Any
+			
+			switch sortCategory!{
+			case .rating:
+				//TODO
+				sort1 = (event1).name
+				sort2 = (event2).name
+
+				break
+			case .alphabetically:
+				sort1 = (event1).name
+				sort2 = (event2).name
+				
+				break
+			case .chronologically:
+				sort1 = (event1).dateStart
+				sort2 = (event2).dateStart
+				
+				break
+			case .host:
+				sort1 = (event1).host.name
+				sort2 = (event2).host.name
+				
+				break
+			}
+			
+			switch sortCategory!{
+			case .rating, .alphabetically, .host:
+				return ((sort1 as! String).compare(sort2 as! String)) == ComparisonResult.orderedAscending
+			case .chronologically:
+				return ((sort1 as! Date).compare(sort2 as! Date)) == ComparisonResult.orderedAscending
+			}
+			
+			
+		})
+		eventTable.reloadData()
+
+	}
+
 }
