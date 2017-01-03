@@ -101,7 +101,7 @@ public class CalendarDayFragment extends Fragment {
     }
 
     private void buildSponsorsContainer(LinearLayout sponsorsContainer) {
-        File imageCacheDir = new File(sponsorsContainer.getContext().getCacheDir(), "imagecache");
+        /*File imageCacheDir = new File(sponsorsContainer.getContext().getCacheDir(), "imagecache");
         imageCacheDir.mkdir();
 
         Image hostImage = new Image(event.getHost().getImagePath());
@@ -113,7 +113,7 @@ public class CalendarDayFragment extends Fragment {
 
         ImageView iconView = new ImageView(sponsorsContainer.getContext());
         iconView.setImageBitmap(hostImage.getBitmap());
-        sponsorsContainer.addView(iconView);
+        sponsorsContainer.addView(iconView);*/
     }
 
     private void buildMapView(MapView mapView) {

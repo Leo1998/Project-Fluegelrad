@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import de.projectfluegelrad.R;
 import de.psdev.licensesdialog.LicensesDialog;
+import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
@@ -30,6 +31,12 @@ public class SettingsFragment extends Fragment {
             public void onClick(View v) {
                 final Notices notices = new Notices();
                 notices.addNotice(new Notice("JSON-java", "http://www.JSON.org/", "Copyright (c) 2002 JSON.org", new MITLicense()));
+
+                notices.addNotice(new Notice("support-appcompat-v7", null, "Copyright (c) 2005 Android Open Source Project", new ApacheSoftwareLicense20()));
+                notices.addNotice(new Notice("support-v4", null, "Copyright (c) 2005 Android Open Source Project", new ApacheSoftwareLicense20()));
+                notices.addNotice(new Notice("support-design", null, "Copyright (c) 2005 Android Open Source Project", new ApacheSoftwareLicense20()));
+                notices.addNotice(new Notice("support-cardview-v7", null, "Copyright (c) 2005 Android Open Source Project", new ApacheSoftwareLicense20()));
+                notices.addNotice(new Notice("support-recyclerview-v7", null, "Copyright (c) 2005 Android Open Source Project", new ApacheSoftwareLicense20()));
 
                 new LicensesDialog.Builder(SettingsFragment.this.getContext())
                         .setNotices(notices)
