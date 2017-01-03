@@ -3,7 +3,7 @@ import MapKit
 import EventKit
 
 class CalendarDayViewController: UIViewController, MKMapViewDelegate {
-    @IBOutlet var superView: UIView!
+    //@IBOutlet var view: UIView!
     
     var event: Event!
     
@@ -22,9 +22,9 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         
         header = CalendarDayViewHeader(event: event)
         header.translatesAutoresizingMaskIntoConstraints = false
-        superView.addSubview(header)
-        header.addConstraintsXY(xView: superView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: superView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
-        header.addConstraintsXY(xView: superView, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: header.height)
+        view.addSubview(header)
+        header.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+        header.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: header.height)
         
         scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false

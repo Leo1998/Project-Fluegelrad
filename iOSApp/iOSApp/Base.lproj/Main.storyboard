@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Te-->
+        <!--Home View Controller-->
         <scene sceneID="hNz-n2-bh7">
             <objects>
-                <viewController id="9pv-A4-QxB" customClass="HomeViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="9pv-A4-QxB" customClass="HomeViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ia1-K6-d13"/>
                         <viewControllerLayoutGuide type="bottom" id="4ug-Mw-9AY"/>
@@ -20,33 +20,22 @@
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Home" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="KQZ-1w-vlD">
-                                <rect key="frame" x="139.5" y="288" width="96.5" height="42"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="36"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="KQZ-1w-vlD" secondAttribute="centerX" id="6BV-lF-sBN"/>
-                            <constraint firstAttribute="centerY" secondItem="KQZ-1w-vlD" secondAttribute="centerY" id="exm-UA-ej4"/>
-                        </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Te" id="ZsI-nG-YRW" userLabel="Ich">
-                        <barButtonItem key="backBarButtonItem" title="Back" id="LUu-n0-c1P"/>
-                    </navigationItem>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <navigationItem key="navigationItem" id="ZsI-nG-YRW" userLabel="Ich"/>
+                    <connections>
+                        <segue destination="hIc-wv-RoO" kind="show" identifier="CalendarDayViewController" id="8El-ET-mUa"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1688.8" y="-2072.1139430284861"/>
+            <point key="canvasLocation" x="1649" y="-1416"/>
         </scene>
-        <!--Calender View Controller-->
+        <!--Calendar Grid View Controller-->
         <scene sceneID="wg7-f3-ORb">
             <objects>
-                <viewController id="8rJ-Kc-sve" customClass="CalenderViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="8rJ-Kc-sve" customClass="CalendarGridViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="L7p-HK-0SC"/>
                         <viewControllerLayoutGuide type="bottom" id="Djb-ko-YwX"/>
@@ -60,27 +49,14 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="SCG-lr-1MR">
                         <nil key="title"/>
-                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="DbH-jO-TkU">
-                            <rect key="frame" x="118" y="8" width="139" height="29"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                            <segments>
-                                <segment title="Calendar"/>
-                                <segment title="List"/>
-                            </segments>
-                            <connections>
-                                <action selector="indexChanged:" destination="8rJ-Kc-sve" eventType="valueChanged" id="yjU-14-zuM"/>
-                            </connections>
-                        </segmentedControl>
                     </navigationItem>
                     <connections>
-                        <outlet property="item" destination="SCG-lr-1MR" id="1sg-4n-wBd"/>
-                        <outlet property="segmentController" destination="DbH-jO-TkU" id="fJe-Ox-Bd5"/>
                         <segue destination="hIc-wv-RoO" kind="show" identifier="CalendarDayViewController" id="cZo-ZH-jxK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1648.8" y="-1325.4872563718143"/>
+            <point key="canvasLocation" x="1689" y="-590"/>
         </scene>
         <!--Calendar Day View Controller-->
         <scene sceneID="Yu1-MK-sQU">
@@ -93,24 +69,14 @@
                     <view key="view" contentMode="scaleToFill" id="Q6g-Jm-T5D">
                         <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NYE-Y0-EAt">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="554"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="FHb-s4-25L"/>
-                    <connections>
-                        <outlet property="container" destination="NYE-Y0-EAt" id="neg-O8-APb"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TTK-xW-09u" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2584.8000000000002" y="-1325.4872563718143"/>
+            <point key="canvasLocation" x="4106" y="-591"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="yl2-sM-qoP">
@@ -125,7 +91,6 @@
                     <connections>
                         <segue destination="PIc-zn-y4N" kind="relationship" relationship="viewControllers" id="OpY-hh-dO4"/>
                         <segue destination="tgV-QH-cRe" kind="relationship" relationship="viewControllers" id="kA2-on-KBd"/>
-                        <segue destination="dGJ-Sc-ngW" kind="relationship" relationship="viewControllers" id="09R-X5-1lB"/>
                         <segue destination="bq3-R5-nsx" kind="relationship" relationship="viewControllers" id="Jqy-8q-zx4"/>
                         <segue destination="RrO-A9-lJG" kind="relationship" relationship="viewControllers" id="vJK-d3-gp1"/>
                     </connections>
@@ -134,65 +99,24 @@
             </objects>
             <point key="canvasLocation" x="-2708" y="-10"/>
         </scene>
-        <!--Title-->
-        <scene sceneID="tzq-dm-wjc">
-            <objects>
-                <viewController id="8cb-O7-wxg" customClass="SearchViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="8hd-DS-Zlr"/>
-                        <viewControllerLayoutGuide type="bottom" id="HRj-HE-jDu"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Ane-we-edx">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Search" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="hOV-jJ-EFy">
-                                <rect key="frame" x="130" y="288" width="115" height="42"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="36"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="hOV-jJ-EFy" secondAttribute="centerX" id="fXa-7m-BKN"/>
-                            <constraint firstAttribute="centerY" secondItem="hOV-jJ-EFy" secondAttribute="centerY" id="wCl-qe-Nnm"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" title="Title" id="Hsi-vO-095"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="06F-dl-hbt" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1688.8" y="-582.45877061469275"/>
-        </scene>
-        <!--About View Controller-->
+        <!--Calendar List View Controller-->
         <scene sceneID="qBH-Nn-8Cd">
             <objects>
-                <viewController id="A9y-g8-dAR" customClass="AboutViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="A9y-g8-dAR" customClass="CalendarListViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="UsY-VB-wYK"/>
                         <viewControllerLayoutGuide type="bottom" id="tfc-6I-76k"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="eXa-Ym-haV">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                        <rect key="frame" x="0.0" y="64" width="375" height="554"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="About us" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="Fh1-lI-Cvw">
-                                <rect key="frame" x="116" y="288" width="143" height="42"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="36"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="Fh1-lI-Cvw" secondAttribute="centerX" id="x3P-DJ-f0T"/>
-                            <constraint firstAttribute="centerY" secondItem="Fh1-lI-Cvw" secondAttribute="centerY" id="yAT-0w-QIk"/>
-                        </constraints>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <navigationItem key="navigationItem" id="MzS-8R-HbT"/>
+                    <connections>
+                        <segue destination="hIc-wv-RoO" kind="show" identifier="CalendarDayViewController" id="R2L-Bc-3gT"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ayi-lF-5VE" sceneMemberID="firstResponder"/>
             </objects>
@@ -209,20 +133,7 @@
                     <view key="view" contentMode="scaleToFill" id="jrS-FS-AFE">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="S27-4Z-ffo">
-                                <rect key="frame" x="122" y="288" width="131" height="42"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="36"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <constraints>
-                            <constraint firstAttribute="centerY" secondItem="S27-4Z-ffo" secondAttribute="centerY" id="QLc-yd-hJY"/>
-                            <constraint firstAttribute="centerX" secondItem="S27-4Z-ffo" secondAttribute="centerX" id="TEL-fE-5HN"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="VdY-Uy-kHz"/>
                 </viewController>
@@ -233,7 +144,8 @@
         <!--Home-->
         <scene sceneID="hmH-zW-4uE">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="PIc-zn-y4N" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="PIc-zn-y4N" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Home" image="ic_home" selectedImage="ic_home" id="acW-dT-cKf"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="TgC-2t-BZj">
@@ -247,7 +159,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="J9j-wM-5Go" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="749.60000000000002" y="-2072.1139430284861"/>
+            <point key="canvasLocation" x="790" y="-1416"/>
         </scene>
         <!--Calendar-->
         <scene sceneID="4Jt-x4-Lxy">
@@ -267,34 +179,16 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dmd-u4-b6Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="709.60000000000002" y="-1325.4872563718143"/>
+            <point key="canvasLocation" x="750" y="-590"/>
         </scene>
-        <!--Search-->
-        <scene sceneID="cvw-AQ-6Pb">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dGJ-Sc-ngW" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Search" image="ic_search" selectedImage="ic_search" id="Afo-KD-Q3f"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="k8J-qh-aIU">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="8cb-O7-wxg" kind="relationship" relationship="rootViewController" id="VJ9-Kk-Kp2"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Lza-HQ-Yd3" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="749.60000000000002" y="-582.45877061469275"/>
-        </scene>
-        <!--About us-->
+        <!--Event Liste-->
         <scene sceneID="Ob5-ZS-EOo">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="bq3-R5-nsx" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="About us" image="ic_info_outline" selectedImage="ic_info_outline" id="dlr-zU-8j6"/>
+                <navigationController id="bq3-R5-nsx" sceneMemberID="viewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <tabBarItem key="tabBarItem" title="Event Liste" image="ic_today" selectedImage="ic_today" id="dlr-zU-8j6"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="y75-Yn-wHI">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="y75-Yn-wHI">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -329,9 +223,10 @@
     </scenes>
     <resources>
         <image name="ic_home" width="24" height="24"/>
-        <image name="ic_info_outline" width="24" height="24"/>
-        <image name="ic_search" width="24" height="24"/>
         <image name="ic_settings" width="24" height="24"/>
         <image name="ic_today" width="24" height="24"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="R2L-Bc-3gT"/>
+    </inferredMetricsTieBreakers>
 </document>
