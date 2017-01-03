@@ -125,6 +125,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		eventTable.delegate = self
 		eventTable.dataSource = self
+		eventTable.backgroundColor = UIColor.clear
 
 		
 		refreshControl = UIRefreshControl()
@@ -147,12 +148,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		searchController.searchBar.delegate = self
 		searchController.searchBar.setImage(#imageLiteral(resourceName: "ic_sort"), for: .bookmark, state: .normal)
 		searchController.searchBar.showsBookmarkButton = true
+		searchController.searchBar.backgroundColor = UIColor.clear
 		
 		eventTable.tableHeaderView = searchController.searchBar
 
 		eventTable.reloadData()
 		
-		picker = SortPicker(frame: view.frame)
+		picker = SortPicker(frame: UIScreen.main.bounds)
 		picker.picker.dataSource = self
 		picker.picker.delegate = self
 		picker.isHidden = true

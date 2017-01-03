@@ -3,11 +3,20 @@ import UIKit
 class SortPicker: UIView {
  
 	private(set) var picker: UIPickerView!
+	private(set) var dimView: UIView!
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
 		
+		dimView = UIView(frame: frame)
+		dimView.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+		addSubview(dimView)
+
 		picker = UIPickerView()
+		picker.backgroundColor = UIColor.white
+		picker.layer.cornerRadius = 10
+		picker.layer.shadowOpacity = 0.8
+		picker.layer.shadowOffset = CGSize(width: 0, height: 0)
 		addSubview(picker)
 		picker.translatesAutoresizingMaskIntoConstraints = false
 		picker.addConstraintsXY(xView: self, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .centerY, yViewAttribute: .centerY, yMultiplier: 1, yConstant: 0)
