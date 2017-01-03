@@ -13,13 +13,10 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     private var imageView: UIView!
     
     private var scrollView: UIScrollView!
-    private var content: UIView!
-    
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		
-
 		navigationController?.setNavigationBarHidden(false, animated: true)
         
         header = CalendarDayViewHeader(event: event)
@@ -34,21 +31,14 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         scrollView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: header, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         scrollView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
-        content = UIView()
-        content.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(content)
-        content.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
-        content.addConstraintsXY(xView: scrollView, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: scrollView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-        
-        
         descriptionLabel = UILabel()
         descriptionLabel.text = event.descriptionEvent
         descriptionLabel.lineBreakMode = .byWordWrapping
         descriptionLabel.numberOfLines = 0
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        content.addSubview(descriptionLabel)
-        descriptionLabel.addConstraintsXY(xView: content, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: content, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
-        descriptionLabel.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: content, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+        scrollView.addSubview(descriptionLabel)
+        descriptionLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+        descriptionLabel.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
         
         imageView = UIView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -72,15 +62,15 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
             
             imageViewsTemp.append(imageTemp)
         }
-        content.addSubview(imageView)
-        imageView.addConstraintsXY(xView: content, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: descriptionLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+        scrollView.addSubview(imageView)
+        imageView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: descriptionLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         imageView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: imageViewHeight)
         
         prizeLabel = UILabel()
         prizeLabel.text = String(event.price)
         prizeLabel.translatesAutoresizingMaskIntoConstraints = false
-        content.addSubview(prizeLabel)
-        prizeLabel.addConstraintsXY(xView: content, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+        scrollView.addSubview(prizeLabel)
+        prizeLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 
 		
 		
@@ -92,8 +82,8 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         let regionRadius: CLLocationDistance = 0.01
         let region = MKCoordinateRegion(center: self.event.location.coordinate, span: MKCoordinateSpan(latitudeDelta: regionRadius * 2, longitudeDelta: regionRadius * 2))
         mapView.setRegion(region, animated: true)
-        content.addSubview(mapView)
-        mapView.addConstraintsXY(xView: content, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: prizeLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+        scrollView.addSubview(mapView)
+        mapView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: prizeLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         mapView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: view.frame.width/2)
 
         
@@ -110,19 +100,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         let shareEventButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_share"), style: .plain, target: self, action: #selector(CalendarDayViewController.share))
 
         navigationItem.setRightBarButtonItems([shareEventButton, saveEventButton], animated: false)
-		
-		
-		let gesture = UITapGestureRecognizer(target: self, action: #selector(CalendarDayViewController.tap))
-		scrollView.addGestureRecognizer(gesture)
     }
-	
-	func tap(gesture: UIGestureRecognizer){
-		let posInMap = gesture.location(in: mapView)
-		
-		if posInMap.x >= 0 && posInMap.y >= 0 {
-			mapView.send
-		}
-	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
