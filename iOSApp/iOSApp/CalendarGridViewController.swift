@@ -173,12 +173,17 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
         
         calendarGridView = CalendarGridView(frame: frame)
+		view.addSubview(calendarGridView)
+		calendarGridView.translatesAutoresizingMaskIntoConstraints = false
+		calendarGridView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		calendarGridView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+
+		
         calendarGridView.dayGrid.delegate = self
         calendarGridView.dayGrid.dataSource = self
         
         calendarGridView.refreshControl.addTarget(self, action: #selector(CalendarGridViewController.refresh), for: .valueChanged)
-        view.addSubview(calendarGridView)
-        
+		
         updateCalendar()
         
         updateViews(fromReload: false)

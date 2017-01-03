@@ -3,8 +3,6 @@ import MapKit
 import EventKit
 
 class CalendarDayViewController: UIViewController, MKMapViewDelegate {
-    //@IBOutlet var view: UIView!
-    
     var event: Event!
     
     private var header: CalendarDayViewHeader!
@@ -19,6 +17,10 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		
+
+		navigationController?.setNavigationBarHidden(false, animated: true)
         
         header = CalendarDayViewHeader(event: event)
         header.translatesAutoresizingMaskIntoConstraints = false
@@ -31,7 +33,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         view.addSubview(scrollView)
         scrollView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: header, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         scrollView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-
+		
         content = UIView()
         content.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(content)
@@ -80,9 +82,10 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         content.addSubview(prizeLabel)
         prizeLabel.addConstraintsXY(xView: content, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 
-        
+		
+		
         mapView = MKMapView()
-        mapView.translatesAutoresizingMaskIntoConstraints = false
+		mapView.translatesAutoresizingMaskIntoConstraints = false
         mapView.delegate = self
         mapView.addAnnotation(event.location)
         mapView.setCenter(event.location.coordinate, animated: true)
@@ -107,7 +110,27 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         let shareEventButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_share"), style: .plain, target: self, action: #selector(CalendarDayViewController.share))
 
         navigationItem.setRightBarButtonItems([shareEventButton, saveEventButton], animated: false)
+		
+		
+		let gesture = UITapGestureRecognizer(target: self, action: #selector(CalendarDayViewController.tap))
+		scrollView.addGestureRecognizer(gesture)
     }
+	
+	func tap(gesture: UIGestureRecognizer){
+		let posInMap = gesture.location(in: mapView)
+		
+		if posInMap.x >= 0 && posInMap.y >= 0 {
+			mapView.send
+		}
+	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		if self.isMovingFromParentViewController {
+			navigationController?.setNavigationBarHidden(true, animated: animated)
+		}
+	}
     
     func saveEvent(){
         let eventStore = EKEventStore()
