@@ -1,6 +1,6 @@
 import UIKit
 
-class CalendarListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource  {
+class CalendarListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     private var calendarListView: CalendarListView!
     
@@ -73,7 +73,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
         
         cell.locationLabel.text = event.location.title
         cell.dateLabel.text = dateFormatter.string(from: event.dateStart)
-        cell.hostLabel.text = String(event.hostId)
+        cell.hostLabel.text = event.host.name
         
         return cell
     }

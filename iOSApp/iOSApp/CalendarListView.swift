@@ -12,7 +12,6 @@ class CalendarListView: UIView {
         
         eventTable = UITableView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
         eventTable.register(CalendarListCell.self, forCellReuseIdentifier: "cell")
-        
         addSubview(eventTable)
         
         refreshControl = UIRefreshControl()

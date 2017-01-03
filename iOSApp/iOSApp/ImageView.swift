@@ -6,8 +6,8 @@ class ImageView: UIView {
     
     private(set) var height: CGFloat = 0
     
-    init(eventImage: EventImage) {
-        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+	init(frame: CGRect,eventImage: EventImage) {
+        super.init(frame: frame)
         
         if !eventImage.scaled {
             let imageTemp = eventImage.image
@@ -22,18 +22,18 @@ class ImageView: UIView {
         }
         image = UIImageView(image: eventImage.image)
         image.translatesAutoresizingMaskIntoConstraints = false
-        
+        addSubview(image)
+        image.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+
         imageDescription = UILabel()
         imageDescription.translatesAutoresizingMaskIntoConstraints = false
-        imageDescription.lineBreakMode = .byWordWrapping
+		imageDescription.text = eventImage.imageDescription
+		imageDescription.lineBreakMode = .byWordWrapping
         imageDescription.numberOfLines = 0
-        imageDescription.text = eventImage.imageDescription
-        
-        addSubview(image)
         addSubview(imageDescription)
-        
-        setupConstraints()
-        
+        imageDescription.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: image, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		imageDescription.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.size.width, yView: image, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
         layoutIfNeeded()
         height += image.frame.height
         height += imageDescription.frame.height
@@ -42,15 +42,5 @@ class ImageView: UIView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setupConstraints(){
-        let imageX = NSLayoutConstraint(item: image, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
-        let imageY = NSLayoutConstraint(item: image, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.top, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([imageX, imageY])
-        
-        let imageDescriptionX = NSLayoutConstraint(item: imageDescription, attribute: NSLayoutAttribute.leading, relatedBy: NSLayoutRelation.equal, toItem: self, attribute: NSLayoutAttribute.leading, multiplier: 1, constant: 0)
-        let imageDescriptionY = NSLayoutConstraint(item: imageDescription, attribute: NSLayoutAttribute.top, relatedBy: NSLayoutRelation.equal, toItem: image, attribute: NSLayoutAttribute.bottom, multiplier: 1, constant: 0)
-        NSLayoutConstraint.activate([imageDescriptionX, imageDescriptionY])
     }
 }

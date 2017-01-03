@@ -14,30 +14,28 @@ class CalendarDayViewHeader: UIView {
         nameLabel = UILabel()
         nameLabel.text = event.name
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+        addSubview(nameLabel)
+        nameLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
         
         dateStartLabel = UILabel()
         dateStartLabel.text = dateFormatter.string(from: event.dateStart)
         dateStartLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+        addSubview(dateStartLabel)
+        dateStartLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+
         dateEndLabel = UILabel()
         dateEndLabel.text = dateFormatter.string(from: event.dateEnd)
         dateEndLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        hostLabel = UILabel()
-        hostLabel.text = String(event.hostId)
-        hostLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        addSubview(nameLabel)
-        addSubview(dateStartLabel)
         addSubview(dateEndLabel)
-        addSubview(hostLabel)
-        
-        nameLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
-        dateStartLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
         dateEndLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: dateStartLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+
+        hostLabel = UILabel()
+        hostLabel.text = event.host.name
+        hostLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(hostLabel)
         hostLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         
         layoutIfNeeded()
