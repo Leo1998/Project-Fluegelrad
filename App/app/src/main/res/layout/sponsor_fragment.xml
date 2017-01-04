@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="30dp"
+        android:id="@+id/sponsor_name"
+        tools:text="name"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/sponsor_image"
+        android:layout_toEndOf="@+id/sponsor_image" />
+
+    <de.projectfluegelrad.fragments.calendar.ImageHolder
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sponsor_image"
+        android:layout_marginLeft="11dp"
+        android:layout_marginStart="11dp"
+        android:layout_alignTop="@+id/sponsor_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:id="@+id/sponsor_web"
+        tools:text="web"
+        android:layout_below="@+id/sponsor_image"
+        android:layout_alignLeft="@+id/sponsor_image"
+        android:layout_alignStart="@+id/sponsor_image" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sponsor_mail"
+        tools:text="mail"
+        android:linksClickable="true"
+        android:autoLink="web|email"
+        android:textColorLink="@android:color/holo_blue_light"
+        android:layout_alignTop="@+id/sponsor_web"
+        android:layout_toRightOf="@+id/sponsor_web"
+        android:layout_toEndOf="@+id/sponsor_web"
+        android:layout_marginLeft="32dp"
+        android:layout_marginStart="32dp" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:id="@+id/sponsor_phone"
+        tools:text="phone"
+        android:linksClickable="true"
+        android:autoLink="web|email"
+        android:textColorLink="@android:color/holo_blue_light"
+        android:layout_below="@+id/sponsor_web"
+        android:layout_alignLeft="@+id/sponsor_web"
+        android:layout_alignStart="@+id/sponsor_web" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/sponsor_phone"
+        android:layout_alignLeft="@+id/sponsor_phone"
+        android:layout_alignStart="@+id/sponsor_phone"
+        android:layout_marginTop="30dp"
+        android:id="@+id/sponsor_description"
+        tools:text="description"
+        android:linksClickable="true"
+        android:autoLink="web|email"
+        android:textColorLink="@android:color/holo_blue_light"/>
+</RelativeLayout>

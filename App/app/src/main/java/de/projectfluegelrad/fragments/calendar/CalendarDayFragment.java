@@ -94,26 +94,30 @@ public class CalendarDayFragment extends Fragment {
         for (int i = 0; i < images.size(); i++) {
             Image image = images.get(i);
 
-            ImageHolder imageView = new ImageHolder(this.getContext(), image);
+            ImageHolder imageView = new ImageHolder(this.getContext());
+            imageView.setImage(image);
 
-            imagesContainer.addView(imageView.getLayout(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            imagesContainer.addView(imageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 
     private void buildSponsorsContainer(LinearLayout sponsorsContainer) {
-        /*File imageCacheDir = new File(sponsorsContainer.getContext().getCacheDir(), "imagecache");
-        imageCacheDir.mkdir();
+        TextView hostTitle = new TextView(this.getContext());
+        hostTitle.setText(R.string.host_title);
+        sponsorsContainer.addView(hostTitle);
 
-        Image hostImage = new Image(event.getHost().getImagePath());
-        try {
-            hostImage.load(imageCacheDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SponsorView hostView = new SponsorView(this.getContext());
+        hostView.setSponsor(event.getHost());
+        hostView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SponsorFragment sponsorFragment = new SponsorFragment();
 
-        ImageView iconView = new ImageView(sponsorsContainer.getContext());
-        iconView.setImageBitmap(hostImage.getBitmap());
-        sponsorsContainer.addView(iconView);*/
+                CalendarDayFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
+            }
+        });
+
+        sponsorsContainer.addView(hostView);
     }
 
     private void buildMapView(MapView mapView) {
