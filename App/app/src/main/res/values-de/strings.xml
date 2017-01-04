@@ -20,4 +20,6 @@
     <string name="query_execution_failure">Fehler!</string>
     <string name="clear_cache">App-Daten löschen</string>
     <string name="host_title">Dieses Event wird veranstaltet von:</string>
+    <string name="website">Website</string>
+    <string name="phone">Telefon</string>
 </resources>

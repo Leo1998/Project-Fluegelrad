@@ -68,7 +68,10 @@
                 android:layout_height="match_parent"
                 android:id="@+id/images_container"
                 android:layout_below="@+id/description"
-                android:layout_marginTop="25dp">
+                android:layout_marginTop="25dp"
+                android:linksClickable="true"
+                android:autoLink="web|email"
+                android:textColorLink="@android:color/holo_blue_light">
             </LinearLayout>
 
             <LinearLayout

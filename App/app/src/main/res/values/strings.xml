@@ -29,5 +29,8 @@
     <string name="clear_cache">Clear App-Data</string>
     <string name="share">Share</string>
     <string name="host_title">This event is organized by:</string>
+    <string name="website">Website</string>
+    <string name="mail">Mail</string>
+    <string name="phone">Phone</string>
 
 </resources>

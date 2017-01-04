@@ -108,6 +108,14 @@ public class CalendarDayFragment extends Fragment {
 
         SponsorView hostView = new SponsorView(this.getContext());
         hostView.setSponsor(event.getHost());
+        hostView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SponsorFragment sponsorFragment = new SponsorFragment();
+
+                CalendarDayFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
+            }
+        });
 
         sponsorsContainer.addView(hostView);
     }
