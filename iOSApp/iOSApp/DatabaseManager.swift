@@ -2,6 +2,7 @@ import UIKit
 
 protocol DatabaseManagerProtocol: class {
     func itemsDownloaded(items: [Event])
+	func error()
 }
 
 class DatabaseManager: NSObject, URLSessionDataDelegate{
@@ -54,6 +55,8 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             }
             
             self.delegate.itemsDownloaded(items: self.events)
+			
+			self.delegate.error()
         }else {
             if task.currentRequest?.url?.absoluteString == DatabaseManager.url + createUser{
                 print("User created")
