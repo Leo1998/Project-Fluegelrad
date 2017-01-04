@@ -41,8 +41,8 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?){
-        if error != nil {
-            print("Failed to download data : !nil")
+        if error != nil || (String(data: data as Data, encoding: .utf8)?.contains("Error"))! {
+            print("Failed to download data : \(error?.localizedDescription))")
             
             let tempArray = UserDefaults.standard.object(forKey: "events")
             
@@ -54,13 +54,6 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             }
             
             self.delegate.itemsDownloaded(items: self.events)
-
-            
-        }else if (String(data: data as Data, encoding: .utf8)?.contains("Error"))!{
-            print("Failed to download data : Error")
-            newUser()
-            getEvents()
-            
         }else {
             if task.currentRequest?.url?.absoluteString == DatabaseManager.url + createUser{
                 print("User created")

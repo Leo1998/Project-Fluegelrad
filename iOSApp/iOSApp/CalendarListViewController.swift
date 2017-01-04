@@ -12,18 +12,61 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 	
 	private var dayEvent: Event?
 	
-	private var frame: CGRect!
-	
 	private var picker: SortPicker!
 	private var sortCategory: SortingCategory!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		frame = view.frame
+		setupEvents()
 		
-		reset()
+		eventTable = UITableView()
+		eventTable.register(CalendarListViewCell.self, forCellReuseIdentifier: "cell")
+		view.addSubview(eventTable)
+		eventTable.translatesAutoresizingMaskIntoConstraints = false
+		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		eventTable.delegate = self
+		eventTable.dataSource = self
+		eventTable.backgroundColor = UIColor.clear
 		
+		
+		refreshControl = UIRefreshControl()
+		eventTable.addSubview(refreshControl)
+		refreshControl.addTarget(self, action: #selector(CalendarListViewController.refresh), for: .valueChanged)
+		
+		searchController = UISearchController(searchResultsController: nil)
+		searchController.searchResultsUpdater = self
+		searchController.dimsBackgroundDuringPresentation = false
+		definesPresentationContext = true
+		
+		let allTempEnum = Filter.all
+		var allTempString = [String]()
+		
+		for value in allTempEnum{
+			allTempString.append(value.rawValue)
+		}
+		
+		searchController.searchBar.scopeButtonTitles = allTempString
+		searchController.searchBar.delegate = self
+		searchController.searchBar.setImage(#imageLiteral(resourceName: "ic_sort"), for: .bookmark, state: .normal)
+		searchController.searchBar.showsBookmarkButton = true
+		searchController.searchBar.backgroundColor = UIColor.clear
+		
+		eventTable.tableHeaderView = searchController.searchBar
+		
+		eventTable.reloadData()
+		
+		picker = SortPicker(frame: UIScreen.main.bounds)
+		picker.picker.dataSource = self
+		picker.picker.delegate = self
+		picker.isHidden = true
+		view.addSubview(picker)
+		
+		sortCategory = .rating
+
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(CalendarListViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -102,65 +145,15 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		
 		MainViewController.refresh()
 		
-		setupEvents()
-		eventTable.reloadData()
-		
 		refreshControl.endRefreshing()
 	}
 	
 	public func reset(){
-		if eventTable != nil {
-			eventTable.removeFromSuperview()
-		}
-		
-		
-		
 		setupEvents()
 		
-		eventTable = UITableView()
-		eventTable.register(CalendarListViewCell.self, forCellReuseIdentifier: "cell")
-		view.addSubview(eventTable)
-		eventTable.translatesAutoresizingMaskIntoConstraints = false
-		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		eventTable.delegate = self
-		eventTable.dataSource = self
-		eventTable.backgroundColor = UIColor.clear
-
-		
-		refreshControl = UIRefreshControl()
-		eventTable.addSubview(refreshControl)
-		refreshControl.addTarget(self, action: #selector(CalendarListViewController.refresh), for: .valueChanged)
-		
-		searchController = UISearchController(searchResultsController: nil)
-		searchController.searchResultsUpdater = self
-		searchController.dimsBackgroundDuringPresentation = false
-		definesPresentationContext = true
-
-		let allTempEnum = Filter.all
-		var allTempString = [String]()
-		
-		for value in allTempEnum{
-			allTempString.append(value.rawValue)
+		DispatchQueue.main.sync {
+			eventTable.reloadData()
 		}
-		
-		searchController.searchBar.scopeButtonTitles = allTempString
-		searchController.searchBar.delegate = self
-		searchController.searchBar.setImage(#imageLiteral(resourceName: "ic_sort"), for: .bookmark, state: .normal)
-		searchController.searchBar.showsBookmarkButton = true
-		searchController.searchBar.backgroundColor = UIColor.clear
-		
-		eventTable.tableHeaderView = searchController.searchBar
-
-		eventTable.reloadData()
-		
-		picker = SortPicker(frame: UIScreen.main.bounds)
-		picker.picker.dataSource = self
-		picker.picker.delegate = self
-		picker.isHidden = true
-		view.addSubview(picker)
-		
-		sortCategory = .rating
 	}
 
 	private func filterEvents(searchText: String, scope: String){

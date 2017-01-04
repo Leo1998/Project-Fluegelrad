@@ -25,6 +25,14 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
         
         UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: items), forKey: "events")
         UserDefaults.standard.synchronize()
+		
+		let alert = UIAlertController(title: "Couldn't connect to ther server", message: nil, preferredStyle: .alert)
+		let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+		alert.addAction(okAction)
+		
+		present(alert, animated: true, completion: nil)
+		
+		NotificationCenter.default.post(name: Notification.Name(Bundle.main.bundleIdentifier!), object: self)
     }
 
     override func didReceiveMemoryWarning() {

@@ -7,16 +7,26 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     private var shownEvents = [Event]()
 	
     private var dayEvent: Event?
-    
-    private var frame: CGRect!
-    
+	
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        frame = view.frame
-        
-        reset()
-        
+		
+		setupEvents()
+		
+		homeView = HomeView(frame: view.frame)
+		view.addSubview(homeView)
+		homeView.translatesAutoresizingMaskIntoConstraints = false
+		homeView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		homeView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		homeView.eventTable.delegate = self
+		homeView.eventTable.dataSource = self
+		
+		
+		homeView.refreshControl.addTarget(self, action: #selector(HomeViewController.refresh), for: .valueChanged)
+
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -25,8 +35,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     private func setupEvents(){
         let eventData = UserDefaults.standard.object(forKey: "events")
-        let events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
-        
+		
+		var events = [Event]()
+		if eventData != nil {
+			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
+		}
+		
         shownEvents = events.sorted(by: {
             (event1, event2) -> Bool in
             
@@ -82,31 +96,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         print("Refresh")
         
         MainViewController.refresh()
-        
-        setupEvents()
-        homeView.eventTable.reloadData()
-        
-        homeView.refreshControl.endRefreshing()
+		
+		homeView.refreshControl.endRefreshing()
     }
     
     public func reset(){
-        if homeView != nil {
-            homeView.removeFromSuperview()
-        }
-        
         setupEvents()
-        
-        homeView = HomeView(frame: frame)
-		view.addSubview(homeView)
-		homeView.translatesAutoresizingMaskIntoConstraints = false
-		homeView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		homeView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
-        homeView.eventTable.delegate = self
-        homeView.eventTable.dataSource = self
-
-        
-        homeView.refreshControl.addTarget(self, action: #selector(HomeViewController.refresh), for: .valueChanged)
-        
+		DispatchQueue.main.sync {
+			homeView.eventTable.reloadData()
+		}
     }
 }

@@ -12,18 +12,29 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     
     private var calendar: Calendar!
     private var date: Date!
-    
-    private var frame: CGRect!
-
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        frame = view.frame
-        
-        reset()
-    }
+		
+		setupEvents()
+		
+		calendarGridView = CalendarGridView(frame: view.frame)
+		view.addSubview(calendarGridView)
+		calendarGridView.translatesAutoresizingMaskIntoConstraints = false
+		calendarGridView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		calendarGridView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		
+		calendarGridView.dayGrid.delegate = self
+		calendarGridView.dayGrid.dataSource = self
+		
+		calendarGridView.refreshControl.addTarget(self, action: #selector(CalendarGridViewController.refresh), for: .valueChanged)
+		
+		updateViews(fromReload: false)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(CalendarGridViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -68,7 +79,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         case UICollectionElementKindSectionHeader:
             calendarGridView.headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,withReuseIdentifier: "Header",for: indexPath) as! CalendarGridHeader
             
-            updateViews(fromReload: true)
+            updateViews(fromReload: false)
             calendarGridView.headerView.right.addTarget(self, action: #selector(CalendarGridViewController.buttonNextMonthClicked), for: .touchUpInside)
             calendarGridView.headerView.left.addTarget(self, action: #selector(CalendarGridViewController.buttonPrevMonthClicked), for: .touchUpInside)
             
@@ -110,13 +121,13 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     internal func buttonPrevMonthClicked(){
         date = calendar.date(byAdding: .month, value: -1, to: date, wrappingComponents: false)
         updateCalendar()
-        updateViews(fromReload: false)
+        updateViews(fromReload: true)
     }
     
     internal func buttonNextMonthClicked(){
         date = calendar.date(byAdding: .month, value: 1, to: date, wrappingComponents: false)
         updateCalendar()
-        updateViews(fromReload: false)
+        updateViews(fromReload: true)
     }
     
     
@@ -139,7 +150,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         let monthInt = calendar.dateComponents([.month], from: date).month!
         let yearInt = calendar.dateComponents([.year], from: date).year!
         
-        if !fromReload {
+        if fromReload {
             calendarGridView.dayGrid.reloadData()
         }
         
@@ -153,39 +164,29 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         
         MainViewController.refresh()
         
-        updateCalendar()
-        updateViews(fromReload: false)
-        
         calendarGridView.refreshControl.endRefreshing()
     }
-    
+	
+	private func setupEvents(){
+		date = Date()
+		calendar = Calendar.autoupdatingCurrent
+		calendar.firstWeekday = 2
+		
+		
+		let eventData = UserDefaults.standard.object(forKey: "events")
+		events = [Event]()
+		if eventData != nil {
+			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
+		}
+		
+		updateCalendar()
+	}
+	
     public func reset(){
-        if calendarGridView != nil {
-            calendarGridView.removeFromSuperview()
-        }
-        
-        date = Date()
-        calendar = Calendar.autoupdatingCurrent
-        calendar.firstWeekday = 2
-        
-        
-        let eventData = UserDefaults.standard.object(forKey: "events")
-        events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
-        
-        calendarGridView = CalendarGridView(frame: frame)
-		view.addSubview(calendarGridView)
-		calendarGridView.translatesAutoresizingMaskIntoConstraints = false
-		calendarGridView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		calendarGridView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-
+		setupEvents()
 		
-        calendarGridView.dayGrid.delegate = self
-        calendarGridView.dayGrid.dataSource = self
-        
-        calendarGridView.refreshControl.addTarget(self, action: #selector(CalendarGridViewController.refresh), for: .valueChanged)
-		
-        updateCalendar()
-        
-        updateViews(fromReload: false)
+		DispatchQueue.main.sync {
+			updateViews(fromReload: true)
+		}
     }
 }
