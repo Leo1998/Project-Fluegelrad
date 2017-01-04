@@ -28,5 +28,6 @@
     <string name="licenses_open">Open-Source-Licences</string>
     <string name="clear_cache">Clear App-Data</string>
     <string name="share">Share</string>
+    <string name="host_title">This event is organized by:</string>
 
 </resources>

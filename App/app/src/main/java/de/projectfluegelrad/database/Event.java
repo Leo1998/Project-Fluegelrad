@@ -14,7 +14,7 @@ import java.util.Date;
 public class Event {
 
     public static Event readEvent(JSONObject obj) throws JSONException, ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
         Calendar dateStart = Calendar.getInstance();
         dateStart.setTime(simpleDateFormat.parse(obj.getString("dateStart")));

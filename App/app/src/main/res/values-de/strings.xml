@@ -19,4 +19,5 @@
     <string name="no_connction_failure">Keine Verbindung!</string>
     <string name="query_execution_failure">Fehler!</string>
     <string name="clear_cache">App-Daten löschen</string>
+    <string name="host_title">Dieses Event wird veranstaltet von:</string>
 </resources>

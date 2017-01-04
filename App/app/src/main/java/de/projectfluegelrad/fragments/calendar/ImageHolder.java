@@ -2,6 +2,7 @@ package de.projectfluegelrad.fragments.calendar;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -16,7 +17,7 @@ import java.io.IOException;
 
 import de.projectfluegelrad.database.Image;
 
-public class ImageHolder {
+public class ImageHolder extends RelativeLayout {
 
     private File imageCacheDir;
 
@@ -24,45 +25,59 @@ public class ImageHolder {
     private TextView descriptionView;
     private ProgressBar progressSpinner;
 
-    private RelativeLayout layout;
+    public ImageHolder(Context context) {
+        super(context);
 
-    public ImageHolder(Context context, Image image) {
-        this.imageCacheDir = new File(context.getCacheDir(), "imagecache");
-        this.imageCacheDir.mkdir();
+        init(context);
+    }
 
-        this.layout = new RelativeLayout(context);
+    public ImageHolder(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
+        init(context);
+    }
+
+    private void init(Context context) {
+        if (!this.isInEditMode()) {
+            this.imageCacheDir = new File(context.getCacheDir(), "imagecache");
+            this.imageCacheDir.mkdir();
+        }
+
+        this.progressSpinner = new ProgressBar(context);
+        this.progressSpinner.setId((int) System.currentTimeMillis());
+        this.progressSpinner.setIndeterminate(true);
+
+        this.imageHolder = new ImageView(context);
+        this.imageHolder.setId((int) System.currentTimeMillis() + 50);
+        this.imageHolder.setVisibility(View.INVISIBLE);
+        this.imageHolder.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        this.descriptionView = new TextView(context);
+        this.descriptionView.setId((int) System.currentTimeMillis() + 100);
+        this.descriptionView.setVisibility(View.INVISIBLE);
+        this.descriptionView.setGravity(Gravity.CENTER_HORIZONTAL);
+        this.descriptionView.setText("Description");
+
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, displayMetrics);
+
+        final LayoutParams spinnerParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        spinnerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+        final LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        imageHolderParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+        final LayoutParams descriptionViewParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        descriptionViewParams.addRule(RelativeLayout.BELOW, imageHolder.getId());
+        descriptionViewParams.bottomMargin = bottomMargin;
+
+        this.addView(progressSpinner, spinnerParams);
+        this.addView(imageHolder, imageHolderParams);
+        this.addView(descriptionView, descriptionViewParams);
+    }
+
+    public void setImage(Image image) {
         if (image != null) {
-            this.progressSpinner = new ProgressBar(context);
-            this.progressSpinner.setId((int) System.currentTimeMillis());
-            this.progressSpinner.setIndeterminate(true);
-
-            this.imageHolder = new ImageView(context);
-            this.imageHolder.setId((int) System.currentTimeMillis() + 50);
-            this.imageHolder.setVisibility(View.INVISIBLE);
-            this.imageHolder.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-            this.descriptionView = new TextView(context);
-            this.descriptionView.setId((int) System.currentTimeMillis() + 100);
-            this.descriptionView.setVisibility(View.INVISIBLE);
-            this.descriptionView.setGravity(Gravity.CENTER_HORIZONTAL);
-            this.descriptionView.setText(image.getDescription());
-
-            DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            int bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, displayMetrics);
-
-            RelativeLayout.LayoutParams spinnerParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-            final RelativeLayout.LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-            RelativeLayout.LayoutParams descriptionViewParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            descriptionViewParams.addRule(RelativeLayout.BELOW, imageHolder.getId());
-            descriptionViewParams.bottomMargin = bottomMargin;
-
-            layout.addView(progressSpinner, spinnerParams);
-            layout.addView(imageHolder, imageHolderParams);
-            layout.addView(descriptionView, descriptionViewParams);
-
             LoadImageTask task = new LoadImageTask();
 
             task.execute(image);
@@ -82,16 +97,22 @@ public class ImageHolder {
                 e.printStackTrace();
             }
 
-            ImageHolder.this.layout.post(new Runnable() {
+            ImageHolder.this.post(new Runnable() {
                 @Override
                 public void run() {
                     ImageHolder.this.imageHolder.setImageBitmap(image.getBitmap());
+                    ImageHolder.this.descriptionView.setText(image.getDescription());
 
                     ImageHolder.this.progressSpinner.setVisibility(View.INVISIBLE);
                     ImageHolder.this.imageHolder.setVisibility(View.VISIBLE);
                     ImageHolder.this.descriptionView.setVisibility(View.VISIBLE);
 
-                    layout.requestLayout();
+                    if (image.getDescription() == null) {
+                        //TODO: ganz schlechter stil
+                        ImageHolder.this.removeView(ImageHolder.this.descriptionView);
+                    }
+
+                    ImageHolder.this.requestLayout();
 
                 }
             });
@@ -104,9 +125,5 @@ public class ImageHolder {
 
         protected void onPostExecute(Long result) {
         }
-    }
-
-    public RelativeLayout getLayout() {
-        return layout;
     }
 }
