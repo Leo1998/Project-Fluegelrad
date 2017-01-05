@@ -13,8 +13,7 @@ class HostViewButton: UIButton {
 		if !event.host.scaled {
 			let imageTemp = event.host.image
 			
-			let size = CGSize(width: 50, height: 50)
-			//TODO
+			let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/5) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/5)
 			
 			UIGraphicsBeginImageContext(size)
 			imageTemp?.draw(in: CGRect(origin: .zero, size: size))

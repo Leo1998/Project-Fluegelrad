@@ -205,6 +205,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     }
     
     func share(){
+		//TODO
         let activityViewController = UIActivityViewController(activityItems: ["Test"], applicationActivities: nil)
         present(activityViewController, animated: true, completion: nil)
     }
