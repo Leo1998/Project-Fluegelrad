@@ -6,7 +6,7 @@ class ImageView: UIView {
     
     private(set) var height: CGFloat = 0
     
-	init(frame: CGRect,eventImage: EventImage) {
+	init(frame: CGRect, eventImage: EventImage) {
         super.init(frame: frame)
         
         if !eventImage.scaled {

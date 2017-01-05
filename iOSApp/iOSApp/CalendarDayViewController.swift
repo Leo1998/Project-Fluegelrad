@@ -9,6 +9,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     private var descriptionLabel: UILabel!
     private var prizeLabel: UILabel!
     private var mapView: MKMapView!
+	private var hostView: HostViewButton!
     
     private var imageView: UIView!
     
@@ -65,12 +66,19 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         scrollView.addSubview(imageView)
         imageView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: descriptionLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         imageView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: imageViewHeight)
-        
+		
+		hostView = HostViewButton(frame: view.frame, event: event)
+		hostView.addTarget(self, action: #selector(CalendarDayViewController.host), for: .touchUpInside)
+		scrollView.addSubview(hostView)
+		hostView.translatesAutoresizingMaskIntoConstraints = false
+		hostView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		hostView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: hostView.height())
+
         prizeLabel = UILabel()
         prizeLabel.text = String(event.price)
         prizeLabel.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(prizeLabel)
-        prizeLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+        prizeLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: hostView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 
 		
 		
@@ -93,6 +101,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         totalHeight += imageView.frame.height
         totalHeight += prizeLabel.frame.height
         totalHeight += mapView.frame.height
+		totalHeight += hostView.frame.height
         
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
         
@@ -101,6 +110,17 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 
         navigationItem.setRightBarButtonItems([shareEventButton, saveEventButton], animated: false)
     }
+	
+	func host(){
+		performSegue(withIdentifier: "HostViewController", sender: self)
+	}
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.identifier == "HostViewController" {
+			let vc = segue.destination as! HostViewController
+			vc.event = event
+		}
+	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
@@ -118,29 +138,29 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
             saving(eventStore: eventStore)
             break
         case .denied:
-            print("Calndar Access denied")
+            print("Calendar Access denied")
             break
         case .notDetermined:
             eventStore.requestAccess(to: .event, completion: { (granted, error) in
                 if granted {
                     self.saving(eventStore: eventStore)
                 }else{
-                    print("Calndar Access denied")
+                    print("Calendar Access denied")
                 }
             })
             break
         default:
-            print("Calndar Access default")
+            print("Calendar Access default")
         }
     }
     
     private func saving(eventStore: EKEventStore){
-        let eventCalendar = eventStore.defaultCalendarForNewEvents
-        eventCalendar.title = "Dortmunder Events"
-        eventCalendar.cgColor = UIColor.green.cgColor
-        
+		let calendarData = UserDefaults.standard.object(forKey: "calendar")
+		let eventCalendarIdentifier = NSKeyedUnarchiver.unarchiveObject(with: calendarData as! Data) as! String
+		let eventCalendar = eventStore.calendar(withIdentifier: eventCalendarIdentifier)!
+		
         var alreadySaved = false
-        
+		
         let predicate = eventStore.predicateForEvents(withStart: event.dateStart, end: event.dateEnd, calendars: [eventCalendar])
         let events = eventStore.events(matching: predicate)
         
@@ -175,7 +195,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
                 
                 present(alert, animated: true, completion: nil)
             } catch {
-                let alert = UIAlertController(title: "Event couldnot be saved", message: error.localizedDescription, preferredStyle: .alert)
+                let alert = UIAlertController(title: "Event couldn't be saved", message: error.localizedDescription, preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 
