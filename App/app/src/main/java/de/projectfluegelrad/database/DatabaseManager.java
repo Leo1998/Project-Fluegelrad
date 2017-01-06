@@ -101,46 +101,56 @@ public class DatabaseManager implements Runnable {
 
     private void login() {
         if (user == null) {
-            try {
-                File userFile = new File(filesDirectory, "user.dat");
-                String userJson = null;
-                if (userFile.exists()) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(userFile)));
+            int attempt = 0;
 
-                    StringBuilder jsonBuilder = new StringBuilder();
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null)
-                        jsonBuilder.append(inputLine);
-                    in.close();
-                    userJson = jsonBuilder.toString();
-                } else {
-                    URL url = new URL("http://fluegelrad.ddns.net/createUser.php");
-                    URLConnection c = url.openConnection();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
+            while(attempt < 2) {
+                try {
+                    File userFile = new File(filesDirectory, "user.dat");
+                    String userJson = null;
+                    if (userFile.exists()) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(userFile)));
 
-                    StringBuilder jsonBuilder = new StringBuilder();
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null)
-                        jsonBuilder.append(inputLine);
-                    in.close();
+                        StringBuilder jsonBuilder = new StringBuilder();
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null)
+                            jsonBuilder.append(inputLine);
+                        in.close();
+                        userJson = jsonBuilder.toString();
+                    } else {
+                        URL url = new URL("http://fluegelrad.ddns.net/createUser.php");
+                        URLConnection c = url.openConnection();
+                        BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
 
-                    userJson = jsonBuilder.toString();
+                        StringBuilder jsonBuilder = new StringBuilder();
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null)
+                            jsonBuilder.append(inputLine);
+                        in.close();
 
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userFile)));
-                    writer.write(userJson);
-                    writer.close();
+                        userJson = jsonBuilder.toString();
+
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userFile)));
+                        writer.write(userJson);
+                        writer.close();
+                    }
+
+                    if (userJson.startsWith("Error:"))
+                        throw new DatabaseException(userJson);
+
+                    JSONArray array = new JSONArray(new JSONTokener(userJson));
+                    int id = array.getInt(0);
+                    String token = array.getString(1);
+
+                    this.user = new User(id, token);
+                    attempt = Integer.MAX_VALUE;
+                } catch(Exception e) {
+                    e.printStackTrace();
+
+                    this.user = null;
+                    new File(filesDirectory, "user.dat").delete();
+
+                    attempt++;
                 }
-
-                if (userJson.startsWith("Error:"))
-                    throw new DatabaseException(userJson);
-
-                JSONArray array = new JSONArray(new JSONTokener(userJson));
-                int id = array.getInt(0);
-                String token = array.getString(1);
-
-                this.user = new User(id, token);
-            } catch(Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -212,8 +222,18 @@ public class DatabaseManager implements Runnable {
         in.close();
 
         String raw = jsonBuilder.toString();
-        if (raw.startsWith("Error:"))
-            throw new DatabaseException(raw);
+        if (raw.startsWith("Error:")) {
+            if (raw.equals("Error: Invalid Token") || raw.equals("Error: Unknown ID")) {
+                // fix wrong user
+                this.user = null;
+                new File(filesDirectory, "user.dat").delete();
+                login();
+                logger.log("Invalid login(retrying)");
+                return executeScript(scriptAddress);
+            } else {
+                throw new DatabaseException(raw);
+            }
+        }
 
         String header = raw.split(",")[0];
         String json = raw.substring(header.length() + 1);

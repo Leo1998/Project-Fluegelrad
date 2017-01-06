@@ -50,6 +50,7 @@ public class ImageHolder extends RelativeLayout {
         this.imageHolder = new ImageView(context);
         this.imageHolder.setId((int) System.currentTimeMillis() + 50);
         this.imageHolder.setVisibility(View.INVISIBLE);
+        this.imageHolder.setAdjustViewBounds(true);
         this.imageHolder.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         this.descriptionView = new TextView(context);
