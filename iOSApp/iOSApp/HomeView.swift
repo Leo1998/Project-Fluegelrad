@@ -13,6 +13,8 @@ class HomeView: UIView {
         eventTable = UITableView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
         eventTable.register(HomeViewCell.self, forCellReuseIdentifier: "cell")
         addSubview(eventTable)
+		
+		eventTable.estimatedRowHeight = UIScreen.main.bounds.height/10 * 2
         
         refreshControl = UIRefreshControl()
         eventTable.addSubview(refreshControl)

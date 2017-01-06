@@ -29,6 +29,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
     }
+	
+	override func viewDidAppear(_ animated: Bool) {
+		homeView.eventTable.reloadData()
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -88,18 +92,47 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:HomeViewCell = homeView.eventTable.dequeueReusableCell(withIdentifier: "cell")! as! HomeViewCell
-        
-        let event:Event = (shownEvents[indexPath.row] )
-        
+		let event:Event = (shownEvents[indexPath.row] )
+
+		cell.titleLabel.text = "Placeholder"
+		
+		var imageTemp = sponsors[event.hostId]?.image
+		
+		let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/10) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/10)
+		
+		UIGraphicsBeginImageContext(size)
+		imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+		
+		imageTemp = UIGraphicsGetImageFromCurrentImageContext()!
+		UIGraphicsEndImageContext()
+		
+		cell.imageV.image = imageTemp
+		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
+		cell.hostNameLabel.text = sponsors[event.hostId]?.name
+		cell.hostNameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.imageV, ySelfAttribute: .centerY, yViewAttribute: .centerY, yMultiplier: 1, yConstant: 0)
+		
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
+        dateFormatter.dateFormat = "EEE dd.MM.YYYY 'um' HH:mm"
         
-        cell.locationLabel.text = event.location.title
-        cell.dateLabel.text = dateFormatter.string(from: event.dateStart)
-        cell.hostLabel.text = sponsors[event.hostId]?.name
-        
+        cell.dateLabel.text = "Das Event startet am \(dateFormatter.string(from: event.dateStart!))"
+		cell.dateLabel.addConstraintsXY(xView: cell, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.imageV, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		cell.ageLabel.text = "Es sind alle eingeladen von \(event.ageMin!) Jahren bis \(event.ageMax!) Jahren"
+		cell.ageLabel.addConstraintsXY(xView: cell, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.dateLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		cell.priceLabel.text = "Der Eintritt kostet \(event.price!)€"
+		cell.priceLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.ageLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.priceLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		cell.layoutIfNeeded()
+		
         return cell
     }
+	
+	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return UITableViewAutomaticDimension
+	}
+	
     
     internal func refresh(){
         print("Refresh")
