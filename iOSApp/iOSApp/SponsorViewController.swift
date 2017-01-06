@@ -1,9 +1,8 @@
 import UIKit
 
-class HostViewController: UIViewController {
+class SponsorViewController: UIViewController {
 	
-	public var event:Event!
-	public var sponsors : [Int: Sponsor]!
+	public var sponsor: Sponsor!
 	
 	private var imageView: UIImageView!
 	private var name: UILabel!
@@ -15,43 +14,54 @@ class HostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		imageView = UIImageView(image: sponsors[event.hostId]?.image)
+		var imageTemp = sponsor.image
+		
+		let size = CGSize(width: UIScreen.main.bounds.width, height: (imageTemp?.size.height)! / ((imageTemp?.size.width)! / UIScreen.main.bounds.width))
+		
+		UIGraphicsBeginImageContext(size)
+		imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+		
+		imageTemp = UIGraphicsGetImageFromCurrentImageContext()
+		UIGraphicsEndImageContext()
+		
+		
+		imageView = UIImageView(image: imageTemp)
 		view.addSubview(imageView)
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		name = UILabel()
-		name.text = sponsors[event.hostId]?.name
+		name.text = sponsor.name
 		name.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(name)
-		name.addConstraintsXY(xView: imageView, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .centerY, yViewAttribute: .centerY, yMultiplier: 1, yConstant: 0)
+		name.addConstraintsXY(xView: view, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		web = UILabel()
-		web.text = sponsors[event.hostId]?.web
+		web.text = sponsor.web
 		web.isUserInteractionEnabled = true
-		web.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(HostViewController.webTap)))
+		web.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SponsorViewController.webTap)))
 		web.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(web)
-		web.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		web.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: name, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		mail = UILabel()
-		mail.text = sponsors[event.hostId]?.mail
+		mail.text = sponsor.mail
 		mail.isUserInteractionEnabled = true
-		mail.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(HostViewController.mailTap)))
+		mail.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SponsorViewController.mailTap)))
 		mail.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(mail)
 		mail.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: web, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		phone = UILabel()
-		phone.text = sponsors[event.hostId]?.phone
+		phone.text = sponsor.phone
 		phone.isUserInteractionEnabled = true
-		phone.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(HostViewController.phoneTap)))
+		phone.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SponsorViewController.phoneTap)))
 		phone.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(phone)
 		phone.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: mail, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		sponsorDescription = UILabel()
-		sponsorDescription.text = sponsors[event.hostId]?.sponsorDescription
+		sponsorDescription.text = sponsor.sponsorDescription
 		sponsorDescription.lineBreakMode = .byWordWrapping
 		sponsorDescription.numberOfLines = 0
 		sponsorDescription.translatesAutoresizingMaskIntoConstraints = false
@@ -65,7 +75,7 @@ class HostViewController: UIViewController {
     }
 	
 	func webTap(){
-		let url = URL(string: (sponsors[event.hostId]?.web!)!)!
+		let url = URL(string: (sponsor.web!))!
 
 		if UIApplication.shared.canOpenURL(url){
 			if #available(iOS 10, *){
@@ -77,7 +87,7 @@ class HostViewController: UIViewController {
 	}
 	
 	func mailTap(){
-		let url = URL(string: "mailto://\(sponsors[event.hostId]?.mail!)")!
+		let url = URL(string: "mailto://\(sponsor.mail!)")!
 		
 		if UIApplication.shared.canOpenURL(url){
 			if #available(iOS 10, *){
@@ -89,7 +99,7 @@ class HostViewController: UIViewController {
 	}
 	
 	func phoneTap(){
-		var realPhoneNumber = sponsors[event.hostId]?.phone?.replacingOccurrences(of: "-", with: "")
+		var realPhoneNumber = sponsor.phone?.replacingOccurrences(of: "-", with: "")
 		realPhoneNumber = realPhoneNumber?.replacingOccurrences(of: " ", with: "")
 		
 		let url = URL(string: "tel://\(realPhoneNumber!)")!

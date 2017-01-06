@@ -10,13 +10,16 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     private var descriptionLabel: UILabel!
     private var prizeLabel: UILabel!
     private var mapView: MKMapView!
-	private var hostView: HostViewButton!
+	private var hostView: SponsorViewButton!
+	private var sponsorView: UIView!
 	
 	private var participationView: ParticipationView!
     
     private var imageView: UIView!
     
     private var scrollView: UIScrollView!
+	
+	private var segueSponsor: Sponsor?
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -78,18 +81,47 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         imageView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: participationView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         imageView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: imageViewHeight)
 		
-		hostView = HostViewButton(frame: view.frame, event: event, sponsors: sponsors)
+		hostView = SponsorViewButton(frame: view.frame, sponsor: sponsors[event.hostId]!)
 		hostView.addTarget(self, action: #selector(CalendarDayViewController.host), for: .touchUpInside)
 		scrollView.addSubview(hostView)
 		hostView.translatesAutoresizingMaskIntoConstraints = false
 		hostView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		hostView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: hostView.height())
 
+		sponsorView = UIView()
+		sponsorView.translatesAutoresizingMaskIntoConstraints = false
+		var sponsorViews = [SponsorViewButton]()
+		var sponsorViewsHeight: CGFloat = 0
+		for (index, item) in event.sponsorIds.enumerated() {
+			let sponsorTemp = SponsorViewButton(frame: view.frame, sponsor: sponsors[item]!)
+			sponsorTemp.tag = item
+			sponsorTemp.addTarget(self, action: #selector(CalendarDayViewController.sponsorTap), for: .touchUpInside)
+			
+			sponsorTemp.translatesAutoresizingMaskIntoConstraints = false
+			sponsorView.addSubview(sponsorTemp)
+			
+			if index == 0 {
+				sponsorTemp.addConstraintsXY(xView: sponsorView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+			}else{
+				sponsorTemp.addConstraintsXY(xView: sponsorView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorViews[index-1], ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+				
+			}
+			
+			sponsorTemp.addConstraintsXY(xView: sponsorView, xSelfAttribute: .width, xViewAttribute: .width, xMultiplier: 1, xConstant: 0, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: sponsorTemp.height())
+			
+			sponsorViewsHeight += sponsorTemp.height()
+			
+			sponsorViews.append(sponsorTemp)
+		}
+		scrollView.addSubview(sponsorView)
+		sponsorView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: hostView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		sponsorView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: sponsorViewsHeight)
+		
         prizeLabel = UILabel()
         prizeLabel.text = String(event.price)
         prizeLabel.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(prizeLabel)
-        prizeLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: hostView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+        prizeLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 
 		
 		
@@ -114,6 +146,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         totalHeight += mapView.frame.height
 		totalHeight += hostView.frame.height
 		totalHeight += participationView.frame.height
+		totalHeight += sponsorView.frame.height
         
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
         
@@ -123,19 +156,24 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         navigationItem.setRightBarButtonItems([shareEventButton, saveEventButton], animated: false)
     }
 	
+	func sponsorTap(sender: UIButton){
+		segueSponsor = sponsors[sender.tag]
+		performSegue(withIdentifier: "SponsorViewController", sender: self)
+	}
+	
 	func participate(){
 		MainViewController.participate(event: event)
 	}
 	
 	func host(){
-		performSegue(withIdentifier: "HostViewController", sender: self)
+		segueSponsor = sponsors[event.hostId]
+		performSegue(withIdentifier: "SponsorViewController", sender: self)
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if segue.identifier == "HostViewController" {
-			let vc = segue.destination as! HostViewController
-			vc.event = event
-			vc.sponsors = sponsors
+		if segue.identifier == "SponsorViewController" {
+			let vc = segue.destination as! SponsorViewController
+			vc.sponsor = segueSponsor
 		}
 	}
 	

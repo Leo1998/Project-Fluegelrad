@@ -13,6 +13,8 @@ class Event: NSObject, NSCoding {
 	private(set) var ageMin:Int!
 	private(set) var ageMax:Int!
 	
+	private(set) var sponsorIds = [Int]()
+	
 	
 	
 	private(set) var hostId:Int!
@@ -43,6 +45,11 @@ class Event: NSObject, NSCoding {
 		self.location = Location(dict: dict)
 		
 		self.hostId = Int(dict.object(forKey: "hostId") as! String)
+		
+		let sponsors = (dict.object(forKey: "sponsors") as! NSArray)
+		for value in sponsors{
+			self.sponsorIds.append(Int((value as! NSString) as String)!)
+		}
 	}
 	
 	public func addImage(dict: NSDictionary){
@@ -69,6 +76,8 @@ class Event: NSObject, NSCoding {
 		
 		hostId = aDecoder.decodeObject(forKey: "hostId") as! Int
 		
+		sponsorIds = aDecoder.decodeObject(forKey: "sponsors") as! [Int]
+		
 		//let formId = aDecoder.decodeObject(forKey: "formId") as! Int
 		
 	}
@@ -93,5 +102,7 @@ class Event: NSObject, NSCoding {
 		aCoder.encode(images, forKey: "images")
 		
 		aCoder.encode(hostId, forKey: "hostId")
+		
+		aCoder.encode(sponsorIds, forKey: "sponsors")
 	}
 }

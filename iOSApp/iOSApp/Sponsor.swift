@@ -9,7 +9,6 @@ class Sponsor: NSObject, NSCoding{
 	private(set) var name: String!
 	private(set) var sponsorDescription: String?
 
-	private(set) var scaled = false
 	private var imageSave: UIImage?
 	public var image: UIImage? {
 		get {
@@ -22,39 +21,10 @@ class Sponsor: NSObject, NSCoding{
 			
 			return imageSave
 		}
-		
-		set(image) {
-			if !scaled {
-				imageSave = image
-				scaled = true
-			}
-		}
-	}
-	private var iconSave: UIImage?
-	public var icon: UIImage? {
-		get {
-			if self.imageSave == nil {
-				
-				return nil
-			}
-			if iconSave == nil {
-				let imageTemp = imageSave
-				
-				let size = CGSize(width: (imageTemp?.size.width)! / 2, height: (imageTemp?.size.height)! / 2)
-				
-				UIGraphicsBeginImageContext(size)
-				imageTemp?.draw(in: CGRect(origin: .zero, size: size))
-				
-				self.iconSave = UIGraphicsGetImageFromCurrentImageContext()
-				UIGraphicsEndImageContext()
-			}
-			
-			return iconSave
-		}
 	}
 	
 	init(dict: NSDictionary) {
-		imagePath = (dict.object(forKey: "image") as? String)
+		imagePath = (dict.object(forKey: "imagePath") as? String)
 		id = Int(dict.object(forKey: "id") as! String)
 		phone = (dict.object(forKey: "phone") as? String)
 		mail = (dict.object(forKey: "mail") as? String)

@@ -144,19 +144,18 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 			event = (allEvents[indexPath.row] )
 		}
 		
-		if !(sponsors[event.hostId]!.scaled) {
-			let imageTemp = sponsors[event.hostId]?.image
+		var imageTemp = sponsors[event.hostId]?.image
 			
-			let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/5) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/5)
+		let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/10) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/10)
+		
+		UIGraphicsBeginImageContext(size)
+		imageTemp?.draw(in: CGRect(origin: .zero, size: size))
 			
-			UIGraphicsBeginImageContext(size)
-			imageTemp?.draw(in: CGRect(origin: .zero, size: size))
-			
-			sponsors[event.hostId]?.image = UIGraphicsGetImageFromCurrentImageContext()
-			UIGraphicsEndImageContext()
-		}
-		cell.imageV.image = sponsors[event.hostId]?.icon
-		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (sponsors[event.hostId]?.icon?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (sponsors[event.hostId]?.icon?.size.height)!)
+		imageTemp = UIGraphicsGetImageFromCurrentImageContext()!
+		UIGraphicsEndImageContext()
+		
+		cell.imageV.image = imageTemp
+		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
 		
 		cell.nameLabel.text = event.name
 		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
