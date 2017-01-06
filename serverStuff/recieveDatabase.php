@@ -2,6 +2,29 @@
 	//check token & id
 	require('checker.php');
 	
+	function getSponsors($id,$sponsoringArray){
+		$res = array();
+		for($i=0; $i<count($sponsoringArray); $i++) {
+			if($sponsoringArray[$i]){
+				if($sponsoringArray[$i]['eventId'] == $id){
+					$res[] = $sponsoringArray[$i]['sponsorId'];
+				}
+			}
+		}
+		return $res;
+	}
+	
+	//SQL Statement
+	$sponsoringGet = $pdo->prepare("SELECT * from `sponsoring`");
+	$sponsoringGet->execute();
+	
+	$sponsoringArray = array();
+	
+	//Iterate, put rows in emparray
+	while($row = $sponsoringGet->fetch()) {
+		$sponsoringArray[] = $row;
+	}
+	
 	//Initalize Array
 	$emparray = array();
 	
@@ -19,6 +42,8 @@
 	
 	//Iterate, put rows in emparray
 	while($row = $eventsGet->fetch()) {
+		$id = $row['id'];
+		$row['sponsors'] = getSponsors($id,$sponsoringArray);
 		$eventArray[] = $row;
 	}
 	
@@ -49,19 +74,6 @@
 	}
 	
 	$emparray['sponsors'] = $sponsorArray;
-	
-	//SQL Statement
-	$sponsoringGet = $pdo->prepare("SELECT * from `sponsoring`");
-	$sponsoringGet->execute();
-	
-	$sponsoringArray = array();
-	
-	//Iterate, put rows in emparray
-	while($row = $sponsoringGet->fetch()) {
-		$sponsoringArray[] = $row;
-	}
-	
-	$emparray['sponsoring'] = $sponsoringArray;
 	
 	//Echo json with rows
 	echo json_encode($emparray);
