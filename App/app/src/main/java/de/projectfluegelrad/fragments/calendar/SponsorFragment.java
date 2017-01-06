@@ -23,23 +23,25 @@ public class SponsorFragment extends Fragment {
 
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.sponsor_fragment, container, false);
 
-        ImageHolder sponsorImage = (ImageHolder) layout.findViewById(R.id.sponsor_image);
-        sponsorImage.setImage(new Image(sponsor.getImage()));
+        if (sponsor != null) {
+            ImageHolder sponsorImage = (ImageHolder) layout.findViewById(R.id.sponsor_image);
+            sponsorImage.setImage(new Image(sponsor.getImage()));
 
-        TextView sponsorName = (TextView) layout.findViewById(R.id.sponsor_name);
-        sponsorName.setText(sponsor.getName());
+            TextView sponsorName = (TextView) layout.findViewById(R.id.sponsor_name);
+            sponsorName.setText(sponsor.getName());
 
-        TextView sponsorWeb = (TextView) layout.findViewById(R.id.sponsor_web);
-        sponsorWeb.setText(this.getResources().getString(R.string.website) + ": " + sponsor.getWeb());
+            TextView sponsorWeb = (TextView) layout.findViewById(R.id.sponsor_web);
+            sponsorWeb.setText(this.getResources().getString(R.string.website) + ": " + sponsor.getWeb());
 
-        TextView sponsorMail = (TextView) layout.findViewById(R.id.sponsor_mail);
-        sponsorMail.setText(this.getResources().getString(R.string.mail) + ": " + sponsor.getMail());
+            TextView sponsorMail = (TextView) layout.findViewById(R.id.sponsor_mail);
+            sponsorMail.setText(this.getResources().getString(R.string.mail) + ": " + sponsor.getMail());
 
-        TextView sponsorPhone = (TextView) layout.findViewById(R.id.sponsor_phone);
-        sponsorPhone.setText(this.getResources().getString(R.string.phone) + ": " + sponsor.getPhone());
+            TextView sponsorPhone = (TextView) layout.findViewById(R.id.sponsor_phone);
+            sponsorPhone.setText(this.getResources().getString(R.string.phone) + ": " + sponsor.getPhone());
 
-        TextView sponsorDescription = (TextView) layout.findViewById(R.id.sponsor_description);
-        sponsorDescription.setText(sponsor.getDescription());
+            TextView sponsorDescription = (TextView) layout.findViewById(R.id.sponsor_description);
+            sponsorDescription.setText(sponsor.getDescription());
+        }
 
         return layout;
     }
