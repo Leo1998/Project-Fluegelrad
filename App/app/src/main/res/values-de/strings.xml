@@ -27,4 +27,6 @@
     <string name="mail">E_Mail</string>
     <string name="database_connction_failure">Fehler bei der Verbindung!</string>
     <string name="navigation_drawer_open">n/a</string>
+    <string name="participate">Teilnehmen</string>
+    <string name="sponsors_title">Weitere Sponsoren sind:</string>
 </resources>

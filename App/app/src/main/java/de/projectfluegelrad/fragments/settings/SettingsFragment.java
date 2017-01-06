@@ -37,6 +37,7 @@ public class SettingsFragment extends Fragment {
                 notices.addNotice(new Notice("support-design", null, "Copyright (c) 2005 Android Open Source Project", new ApacheSoftwareLicense20()));
                 notices.addNotice(new Notice("support-cardview-v7", null, "Copyright (c) 2005 Android Open Source Project", new ApacheSoftwareLicense20()));
                 notices.addNotice(new Notice("support-recyclerview-v7", null, "Copyright (c) 2005 Android Open Source Project", new ApacheSoftwareLicense20()));
+                notices.addNotice(new Notice("osmdroid", "https://github.com/osmdroid/osmdroid", "", new ApacheSoftwareLicense20())); // wer ist der owner???
 
                 new LicensesDialog.Builder(SettingsFragment.this.getContext())
                         .setNotices(notices)
