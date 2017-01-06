@@ -209,7 +209,7 @@
 			var feature = new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.Point( lonlat.lon,  lonlat.lat ).transform(fromProjection, toProjection),
 				{description:popuptext , value:v} ,
-				{externalGraphic: 'img/marker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
+				{externalGraphic: 'img/newerMarker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25, fillOpacity:1  }
 				);    
 			vectorLayer.addFeatures(feature);
 			return feature;

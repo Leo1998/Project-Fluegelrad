@@ -7,15 +7,12 @@ import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,7 +27,6 @@ import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +36,6 @@ import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
 import de.projectfluegelrad.database.Image;
-import de.projectfluegelrad.database.ImageAtlas;
 
 public class CalendarDayFragment extends Fragment {
 
@@ -53,12 +48,7 @@ public class CalendarDayFragment extends Fragment {
         Configuration.getInstance().setOsmdroidBasePath(new File(getContext().getCacheDir(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(Configuration.getInstance().getOsmdroidBasePath(), "tiles"));
 
-        List<Event> events = DatabaseManager.INSTANCE.getEventList();
-        for (Event e : events) {
-            if (e.getId() == getArguments().getInt("eventId")) {
-                this.event = e;
-            }
-        }
+        this.event = DatabaseManager.INSTANCE.getEvent(getArguments().getInt("eventId"));
 
         this.setHasOptionsMenu(true);
 
@@ -88,9 +78,7 @@ public class CalendarDayFragment extends Fragment {
     }
 
     private void buildImageContainer(LinearLayout imagesContainer) {
-        ImageAtlas imageAtlas = DatabaseManager.INSTANCE.getImageAtlas();
-
-        List<Image> images = imageAtlas.getImages(this.event);
+        List<Image> images = DatabaseManager.INSTANCE.getImages(this.event);
         for (int i = 0; i < images.size(); i++) {
             Image image = images.get(i);
 
@@ -107,11 +95,15 @@ public class CalendarDayFragment extends Fragment {
         sponsorsContainer.addView(hostTitle);
 
         SponsorView hostView = new SponsorView(this.getContext());
-        hostView.setSponsor(event.getHost());
+        hostView.setSponsor(DatabaseManager.INSTANCE.getSponsor(event.getHostId()));
         hostView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("sponsorId", event.getHostId());
+
                 SponsorFragment sponsorFragment = new SponsorFragment();
+                sponsorFragment.setArguments(bundle);
 
                 CalendarDayFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
             }

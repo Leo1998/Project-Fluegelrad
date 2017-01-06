@@ -40,7 +40,8 @@ public class DatabaseManager implements Runnable {
     private final File filesDirectory;
 
     private final List<Event> eventList = new ArrayList<Event>();
-    private final ImageAtlas imageAtlas = new ImageAtlas();
+    private final List<Image> images = new ArrayList<>();
+    private final List<Sponsor> sponsorList = new ArrayList<Sponsor>();
     private User user;
 
     private Logger logger;
@@ -100,46 +101,56 @@ public class DatabaseManager implements Runnable {
 
     private void login() {
         if (user == null) {
-            try {
-                File userFile = new File(filesDirectory, "user.dat");
-                String userJson = null;
-                if (userFile.exists()) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(userFile)));
+            int attempt = 0;
 
-                    StringBuilder jsonBuilder = new StringBuilder();
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null)
-                        jsonBuilder.append(inputLine);
-                    in.close();
-                    userJson = jsonBuilder.toString();
-                } else {
-                    URL url = new URL("http://fluegelrad.ddns.net/createUser.php");
-                    URLConnection c = url.openConnection();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
+            while(attempt < 2) {
+                try {
+                    File userFile = new File(filesDirectory, "user.dat");
+                    String userJson = null;
+                    if (userFile.exists()) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(userFile)));
 
-                    StringBuilder jsonBuilder = new StringBuilder();
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null)
-                        jsonBuilder.append(inputLine);
-                    in.close();
+                        StringBuilder jsonBuilder = new StringBuilder();
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null)
+                            jsonBuilder.append(inputLine);
+                        in.close();
+                        userJson = jsonBuilder.toString();
+                    } else {
+                        URL url = new URL("http://fluegelrad.ddns.net/createUser.php");
+                        URLConnection c = url.openConnection();
+                        BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
 
-                    userJson = jsonBuilder.toString();
+                        StringBuilder jsonBuilder = new StringBuilder();
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null)
+                            jsonBuilder.append(inputLine);
+                        in.close();
 
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userFile)));
-                    writer.write(userJson);
-                    writer.close();
+                        userJson = jsonBuilder.toString();
+
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userFile)));
+                        writer.write(userJson);
+                        writer.close();
+                    }
+
+                    if (userJson.startsWith("Error:"))
+                        throw new DatabaseException(userJson);
+
+                    JSONArray array = new JSONArray(new JSONTokener(userJson));
+                    int id = array.getInt(0);
+                    String token = array.getString(1);
+
+                    this.user = new User(id, token);
+                    attempt = Integer.MAX_VALUE;
+                } catch(Exception e) {
+                    e.printStackTrace();
+
+                    this.user = null;
+                    new File(filesDirectory, "user.dat").delete();
+
+                    attempt++;
                 }
-
-                if (userJson.startsWith("Error:"))
-                    throw new DatabaseException(userJson);
-
-                JSONArray array = new JSONArray(new JSONTokener(userJson));
-                int id = array.getInt(0);
-                String token = array.getString(1);
-
-                this.user = new User(id, token);
-            } catch(Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -211,8 +222,18 @@ public class DatabaseManager implements Runnable {
         in.close();
 
         String raw = jsonBuilder.toString();
-        if (raw.startsWith("Error:"))
-            throw new DatabaseException(raw);
+        if (raw.startsWith("Error:")) {
+            if (raw.equals("Error: Invalid Token") || raw.equals("Error: Unknown ID")) {
+                // fix wrong user
+                this.user = null;
+                new File(filesDirectory, "user.dat").delete();
+                login();
+                logger.log("Invalid login(retrying)");
+                return executeScript(scriptAddress);
+            } else {
+                throw new DatabaseException(raw);
+            }
+        }
 
         String header = raw.split(",")[0];
         String json = raw.substring(header.length() + 1);
@@ -262,6 +283,7 @@ public class DatabaseManager implements Runnable {
 
         JSONArray eventDataArray = root.getJSONArray("events");
         JSONArray imageAtlasArray = root.getJSONArray("images");
+        JSONArray sponsorDataArray = root.getJSONArray("sponsors");
 
         for (int i = 0; i < eventDataArray.length(); i++) {
             JSONObject obj = eventDataArray.getJSONObject(i);
@@ -273,16 +295,25 @@ public class DatabaseManager implements Runnable {
             registerEvent(event);
         }
 
-        imageAtlas.clearImages();
-
+        images.clear();
         for (int i = 0; i < imageAtlasArray.length(); i++) {
             JSONObject obj = imageAtlasArray.getJSONObject(i);
 
             Image image = Image.readImage(obj);
 
-            Log.i("DatabaseManager", "Image: " + image.toString());
+            //Log.i("DatabaseManager", "Image: " + image.toString());
 
-            imageAtlas.addImage(image);
+            images.add(image);
+        }
+
+        for (int i = 0; i < sponsorDataArray.length(); i++) {
+            JSONObject obj = sponsorDataArray.getJSONObject(i);
+
+            Sponsor sponsor = Sponsor.readSponsor(obj);
+
+            Log.i("DatabaseManager", "Sponsor: " + sponsor.toString());
+
+            registerSponsor(sponsor);
         }
 
         sortEvents();
@@ -306,7 +337,6 @@ public class DatabaseManager implements Runnable {
             }
 
             JSONArray imageAtlasArray = new JSONArray();
-            List<Image> images = imageAtlas.getAllImages();
             for (int i = 0; i < images.size(); i++) {
                 Image image = images.get(i);
 
@@ -315,9 +345,19 @@ public class DatabaseManager implements Runnable {
                 imageAtlasArray.put(obj);
             }
 
+            JSONArray sponsorDataArray = new JSONArray();
+            for (int i = 0; i < sponsorList.size(); i++) {
+                Sponsor sponsor = sponsorList.get(i);
+
+                JSONObject obj = Sponsor.writeSponsor(sponsor);
+
+                sponsorDataArray.put(obj);
+            }
+
             JSONObject root = new JSONObject();
             root.put("events", eventDataArray);
             root.put("images", imageAtlasArray);
+            root.put("sponsors", sponsorDataArray);
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(eventFile)));
 
@@ -347,6 +387,25 @@ public class DatabaseManager implements Runnable {
         eventList.add(event);
     }
 
+    private void registerSponsor(Sponsor sponsor) {
+        for (int i = 0; i < sponsorList.size(); i++) {
+            Sponsor currentSponsor= sponsorList.get(i);
+
+            if (currentSponsor.equalsId(sponsor)) {
+                if (currentSponsor.equals(sponsor)) {
+                    // already exists
+                    return;
+                } else {
+                    // update
+                    sponsorList.remove(currentSponsor);
+                    break;
+                }
+            }
+        }
+
+        sponsorList.add(sponsor);
+    }
+
     private void sortEvents() {
         Collections.sort(eventList, new Comparator<Event>() {
             @Override
@@ -354,14 +413,6 @@ public class DatabaseManager implements Runnable {
                 return e1.getDateStart().compareTo(e2.getDateStart());
             }
         });
-    }
-
-    public List<Event> getEventList() {
-        return eventList;
-    }
-
-    public ImageAtlas getImageAtlas() {
-        return imageAtlas;
     }
 
     public void stopDatabaseService() {
@@ -372,5 +423,67 @@ public class DatabaseManager implements Runnable {
         saveDatabaseToStorage();
 
         running = false;
+    }
+
+    public List<Event> getEventList() {
+        return eventList;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public List<Sponsor> getSponsorList() {
+        return sponsorList;
+    }
+
+    public ArrayList<Image> getImages(Event event) {
+        ArrayList<Image> list = new ArrayList<>();
+
+        for (int i = 0; i < images.size(); i++) {
+            Image image = images.get(i);
+
+            if (image.getEventId() == event.getId()) {
+                list.add(image);
+            }
+        }
+
+        return list;
+    }
+
+    public Event getEvent(int eventId) {
+        for (int i = 0; i < eventList.size(); i++) {
+            Event event = eventList.get(i);
+
+            if (event.getId() == eventId) {
+                return event;
+            }
+        }
+
+        return null;
+    }
+
+    public Image getImage(String imagePath) {
+        for (int i = 0; i < images.size(); i++) {
+            Image image = images.get(i);
+
+            if (image.getPath().equals(imagePath)) {
+                return image;
+            }
+        }
+
+        return null;
+    }
+
+    public Sponsor getSponsor(int sponsorId) {
+        for (int i = 0; i < sponsorList.size(); i++) {
+            Sponsor sponsor = sponsorList.get(i);
+
+            if (sponsor.getId() == sponsorId) {
+                return sponsor;
+            }
+        }
+
+        return null;
     }
 }

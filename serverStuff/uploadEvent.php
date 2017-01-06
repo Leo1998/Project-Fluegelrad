@@ -1,70 +1,16 @@
 <?php
-	//Get values from form, exit if values not set
-	if(isset($_POST['eventName'])){
-		$eventName = $_POST['eventName'];
-	} else {
-		exit("Error: eventName could not be found");
+
+	function getPost(id){
+		if(isset($_POST[id])){
+			return $_POST[id];
+		} else {
+			exit("Error: ".id." could not be found");
+		}
 	}
 	
-	if(isset($_POST['price'])){
-		$price = $_POST['price'];
-	} else {
-		exit("Error: price could not be found");
-	}
+	$newLocation = false;
 	
-	if(isset($_POST['participants'])){
-		$participants = $_POST['participants'];
-	} else {
-		exit("Error: participants could not be found");
-	}
 	
-	if(isset($_POST['dateStart'])){
-		$dateStart = $_POST['dateStart'];
-	} else {
-		exit("Error: dateStart could not be found");
-	}
-	
-	if(isset($_POST['dateEnd'])){
-		$dateEnd = $_POST['dateEnd'];
-	} else {
-		exit("Error: dateEnd could not be found");
-	}
-	
-	if(isset($_POST['description'])){
-		$description = $_POST['description'];
-	} else {
-		exit("Error: description could not be found");
-	}
-	
-	if(isset($_POST['ageMin'])){
-		$ageMin = $_POST['ageMin'];
-	} else {
-		exit("Error: ageMin could not be found");
-	}
-	
-	if(isset($_POST['ageMax'])){
-		$ageMax = $_POST['ageMax'];
-	} else {
-		exit("Error: ageMax could not be found");
-	}
-	
-	if(isset($_POST['address'])){
-		$address = $_POST['address'];
-	} else {
-		exit("Error: address could not be found");
-	}
-	
-	if(isset($_POST['latitude'])){
-		$latitude = $_POST['latitude'];
-	} else {
-		exit("Error: latitude could not be found");
-	}
-	
-	if(isset($_POST['longitude'])){
-		$longitude = $_POST['longitude'];
-	} else {
-		exit("Error: longitude could not be found");
-	}
 	
 	//load spamprotector & pdo
 	$type=1;
