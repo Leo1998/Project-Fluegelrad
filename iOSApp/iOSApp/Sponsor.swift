@@ -54,22 +54,22 @@ class Sponsor: NSObject, NSCoding{
 	}
 	
 	init(dict: NSDictionary) {
-		imagePath = (dict.object(forKey: "image") as! String)
+		imagePath = (dict.object(forKey: "image") as? String)
 		id = Int(dict.object(forKey: "id") as! String)
-		phone = (dict.object(forKey: "phone") as! String)
-		mail = (dict.object(forKey: "mail") as! String)
-		web = (dict.object(forKey: "web") as! String)
+		phone = (dict.object(forKey: "phone") as? String)
+		mail = (dict.object(forKey: "mail") as? String)
+		web = (dict.object(forKey: "web") as? String)
 		name = (dict.object(forKey: "name") as! String)
 		sponsorDescription = (dict.object(forKey: "description") as! String)
 	}
 	
 	
 	required init(coder aDecoder: NSCoder) {
-		imagePath = (aDecoder.decodeObject(forKey: "path") as! String)
+		imagePath = (aDecoder.decodeObject(forKey: "path") as? String)
 		id = (aDecoder.decodeObject(forKey: "id") as! Int)
-		phone = (aDecoder.decodeObject(forKey: "phone") as! String)
-		mail = (aDecoder.decodeObject(forKey: "mail") as! String)
-		web = (aDecoder.decodeObject(forKey: "web") as! String)
+		phone = (aDecoder.decodeObject(forKey: "phone") as? String)
+		mail = (aDecoder.decodeObject(forKey: "mail") as? String)
+		web = (aDecoder.decodeObject(forKey: "web") as? String)
 		name = (aDecoder.decodeObject(forKey: "name") as! String)
 		sponsorDescription = (aDecoder.decodeObject(forKey: "sponsorDescription") as! String)
 		

@@ -11,6 +11,8 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     private var prizeLabel: UILabel!
     private var mapView: MKMapView!
 	private var hostView: HostViewButton!
+	
+	private var participationView: ParticipationView!
     
     private var imageView: UIView!
     
@@ -41,7 +43,15 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         scrollView.addSubview(descriptionLabel)
         descriptionLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
         descriptionLabel.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
-        
+		
+		participationView = ParticipationView(frame: view.frame, event: event)
+		participationView.participationButton.addTarget(self, action: #selector(CalendarDayViewController.participate), for: .touchUpInside)
+		scrollView.addSubview(participationView)
+		participationView.translatesAutoresizingMaskIntoConstraints = false
+		participationView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: descriptionLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		participationView.addConstraintsXY(xView: scrollView, xSelfAttribute: .width, xViewAttribute: .width, xMultiplier: 1, xConstant: 0, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: participationView.height)
+
+
         imageView = UIView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         var imageViewsTemp = [ImageView]()
@@ -65,7 +75,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
             imageViewsTemp.append(imageTemp)
         }
         scrollView.addSubview(imageView)
-        imageView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: descriptionLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+        imageView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: participationView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         imageView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: imageViewHeight)
 		
 		hostView = HostViewButton(frame: view.frame, event: event, sponsors: sponsors)
@@ -103,6 +113,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         totalHeight += prizeLabel.frame.height
         totalHeight += mapView.frame.height
 		totalHeight += hostView.frame.height
+		totalHeight += participationView.frame.height
         
         scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
         
@@ -111,6 +122,10 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 
         navigationItem.setRightBarButtonItems([shareEventButton, saveEventButton], animated: false)
     }
+	
+	func participate(){
+		MainViewController.participate(event: event)
+	}
 	
 	func host(){
 		performSegue(withIdentifier: "HostViewController", sender: self)

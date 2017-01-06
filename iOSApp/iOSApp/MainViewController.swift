@@ -110,10 +110,34 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 		
 		present(alert, animated: true, completion: nil)
 	}
+	
+	internal func participation(status: ParticipationStatus){
+		var alert = UIAlertController(title: "Du hast dich erfolgreich bei dem Event angemeldet", message: nil, preferredStyle: .alert)
+		
+		switch status {
+		case .alreadyParticipating:
+			alert = UIAlertController(title: "Du bist bereits zu diesem Event angelmeldet", message: nil, preferredStyle: .alert)
+			break
+		case .maxReached:
+			alert = UIAlertController(title: "Es gibt keinen freien Platz mehr für dich", message: nil, preferredStyle: .alert)
+			break
+		default:
+			break
+		}
+		
+		let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+		alert.addAction(okAction)
+		
+		present(alert, animated: true, completion: nil)
+	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+	
+	public static func participate(event: Event){
+		databaseManager.participate(event: event)
+	}
 
     public static func refresh(){
         databaseManager.downloadItems()
