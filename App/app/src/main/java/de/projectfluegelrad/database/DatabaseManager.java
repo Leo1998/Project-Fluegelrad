@@ -40,7 +40,8 @@ public class DatabaseManager implements Runnable {
     private final File filesDirectory;
 
     private final List<Event> eventList = new ArrayList<Event>();
-    private final ImageAtlas imageAtlas = new ImageAtlas();
+    private final List<Image> images = new ArrayList<>();
+    private final List<Sponsor> sponsorList = new ArrayList<Sponsor>();
     private User user;
 
     private Logger logger;
@@ -262,6 +263,7 @@ public class DatabaseManager implements Runnable {
 
         JSONArray eventDataArray = root.getJSONArray("events");
         JSONArray imageAtlasArray = root.getJSONArray("images");
+        JSONArray sponsorDataArray = root.getJSONArray("sponsors");
 
         for (int i = 0; i < eventDataArray.length(); i++) {
             JSONObject obj = eventDataArray.getJSONObject(i);
@@ -273,16 +275,25 @@ public class DatabaseManager implements Runnable {
             registerEvent(event);
         }
 
-        imageAtlas.clearImages();
-
+        images.clear();
         for (int i = 0; i < imageAtlasArray.length(); i++) {
             JSONObject obj = imageAtlasArray.getJSONObject(i);
 
             Image image = Image.readImage(obj);
 
-            Log.i("DatabaseManager", "Image: " + image.toString());
+            //Log.i("DatabaseManager", "Image: " + image.toString());
 
-            imageAtlas.addImage(image);
+            images.add(image);
+        }
+
+        for (int i = 0; i < sponsorDataArray.length(); i++) {
+            JSONObject obj = sponsorDataArray.getJSONObject(i);
+
+            Sponsor sponsor = Sponsor.readSponsor(obj);
+
+            Log.i("DatabaseManager", "Sponsor: " + sponsor.toString());
+
+            registerSponsor(sponsor);
         }
 
         sortEvents();
@@ -306,7 +317,6 @@ public class DatabaseManager implements Runnable {
             }
 
             JSONArray imageAtlasArray = new JSONArray();
-            List<Image> images = imageAtlas.getAllImages();
             for (int i = 0; i < images.size(); i++) {
                 Image image = images.get(i);
 
@@ -315,9 +325,19 @@ public class DatabaseManager implements Runnable {
                 imageAtlasArray.put(obj);
             }
 
+            JSONArray sponsorDataArray = new JSONArray();
+            for (int i = 0; i < sponsorList.size(); i++) {
+                Sponsor sponsor = sponsorList.get(i);
+
+                JSONObject obj = Sponsor.writeSponsor(sponsor);
+
+                sponsorDataArray.put(obj);
+            }
+
             JSONObject root = new JSONObject();
             root.put("events", eventDataArray);
             root.put("images", imageAtlasArray);
+            root.put("sponsors", sponsorDataArray);
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(eventFile)));
 
@@ -347,6 +367,25 @@ public class DatabaseManager implements Runnable {
         eventList.add(event);
     }
 
+    private void registerSponsor(Sponsor sponsor) {
+        for (int i = 0; i < sponsorList.size(); i++) {
+            Sponsor currentSponsor= sponsorList.get(i);
+
+            if (currentSponsor.equalsId(sponsor)) {
+                if (currentSponsor.equals(sponsor)) {
+                    // already exists
+                    return;
+                } else {
+                    // update
+                    sponsorList.remove(currentSponsor);
+                    break;
+                }
+            }
+        }
+
+        sponsorList.add(sponsor);
+    }
+
     private void sortEvents() {
         Collections.sort(eventList, new Comparator<Event>() {
             @Override
@@ -354,14 +393,6 @@ public class DatabaseManager implements Runnable {
                 return e1.getDateStart().compareTo(e2.getDateStart());
             }
         });
-    }
-
-    public List<Event> getEventList() {
-        return eventList;
-    }
-
-    public ImageAtlas getImageAtlas() {
-        return imageAtlas;
     }
 
     public void stopDatabaseService() {
@@ -372,5 +403,67 @@ public class DatabaseManager implements Runnable {
         saveDatabaseToStorage();
 
         running = false;
+    }
+
+    public List<Event> getEventList() {
+        return eventList;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public List<Sponsor> getSponsorList() {
+        return sponsorList;
+    }
+
+    public ArrayList<Image> getImages(Event event) {
+        ArrayList<Image> list = new ArrayList<>();
+
+        for (int i = 0; i < images.size(); i++) {
+            Image image = images.get(i);
+
+            if (image.getEventId() == event.getId()) {
+                list.add(image);
+            }
+        }
+
+        return list;
+    }
+
+    public Event getEvent(int eventId) {
+        for (int i = 0; i < eventList.size(); i++) {
+            Event event = eventList.get(i);
+
+            if (event.getId() == eventId) {
+                return event;
+            }
+        }
+
+        return null;
+    }
+
+    public Image getImage(String imagePath) {
+        for (int i = 0; i < images.size(); i++) {
+            Image image = images.get(i);
+
+            if (image.getPath().equals(imagePath)) {
+                return image;
+            }
+        }
+
+        return null;
+    }
+
+    public Sponsor getSponsor(int sponsorId) {
+        for (int i = 0; i < sponsorList.size(); i++) {
+            Sponsor sponsor = sponsorList.get(i);
+
+            if (sponsor.getId() == sponsorId) {
+                return sponsor;
+            }
+        }
+
+        return null;
     }
 }

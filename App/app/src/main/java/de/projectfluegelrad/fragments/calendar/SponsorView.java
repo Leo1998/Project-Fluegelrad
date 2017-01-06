@@ -42,7 +42,9 @@ public class SponsorView extends RelativeLayout {
     }
 
     public void setSponsor(Sponsor sponsor) {
-        sponsorImage.setImage(new Image(sponsor.getImagePath()));
-        sponsorName.setText(sponsor.getName());
+        if (sponsor != null) {
+            sponsorImage.setImage(new Image(sponsor.getImage()));
+            sponsorName.setText(sponsor.getName());
+        }
     }
 }

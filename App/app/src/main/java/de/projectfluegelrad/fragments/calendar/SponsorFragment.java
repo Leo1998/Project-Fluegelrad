@@ -15,14 +15,16 @@ import de.projectfluegelrad.database.Sponsor;
 
 public class SponsorFragment extends Fragment {
 
-    public Sponsor sponsor = DatabaseManager.INSTANCE.getEventList().get(0).getHost();//TODO
+    private Sponsor sponsor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        this.sponsor = DatabaseManager.INSTANCE.getSponsor(getArguments().getInt("sponsorId"));
+
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.sponsor_fragment, container, false);
 
         ImageHolder sponsorImage = (ImageHolder) layout.findViewById(R.id.sponsor_image);
-        sponsorImage.setImage(new Image(sponsor.getImagePath()));
+        sponsorImage.setImage(new Image(sponsor.getImage()));
 
         TextView sponsorName = (TextView) layout.findViewById(R.id.sponsor_name);
         sponsorName.setText(sponsor.getName());

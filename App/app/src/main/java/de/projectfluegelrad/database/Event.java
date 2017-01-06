@@ -24,9 +24,7 @@ public class Event {
 
         Location location = new Location(obj.getString("location.address"), obj.getDouble("location.longitude"), obj.getDouble("location.latitude"));
 
-        Sponsor host = new Sponsor(obj.getInt("host.id"), obj.getString("host.name"), obj.getString("host.description"), obj.getString("host.image"), obj.getString("host.mail"), obj.getString("host.phone"), obj.getString("host.web"));
-
-        Event event = new Event(obj.getInt("id"), obj.getString("name"), obj.getInt("price"), dateStart, dateEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"), location,  host);
+        Event event = new Event(obj.getInt("id"), obj.getString("name"), obj.getInt("price"), dateStart, dateEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"), location, obj.getInt("hostId"));
 
         return event;
     }
@@ -49,13 +47,6 @@ public class Event {
         obj.put("location.longitude", event.getLocation().getLongitude());
         obj.put("location.latitude", event.getLocation().getLatitude());
 
-        obj.put("host.id", event.getHost().getId());
-        obj.put("host.name", event.getHost().getName());
-        obj.put("host.description", event.getHost().getDescription());
-        obj.put("host.image", event.getHost().getImagePath());
-        obj.put("host.mail", event.getHost().getMail());
-        obj.put("host.phone", event.getHost().getPhone());
-        obj.put("host.web", event.getHost().getWeb());
 
         return obj;
     }
@@ -71,9 +62,9 @@ public class Event {
     private int ageMin;
     private int ageMax;
     private Location location;
-    private Sponsor host;
+    private int hostId;
 
-    public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, Sponsor host) {
+    public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, int hostId) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -85,7 +76,7 @@ public class Event {
         this.ageMin = ageMin;
         this.ageMax = ageMax;
         this.location = location;
-        this.host = host;
+        this.hostId = hostId;
     }
 
     public int getId() {
@@ -142,8 +133,8 @@ public class Event {
         return location;
     }
 
-    public Sponsor getHost() {
-        return host;
+    public int getHostId() {
+        return hostId;
     }
 
     @Override
@@ -160,7 +151,7 @@ public class Event {
                 ", ageMin=" + ageMin +
                 ", ageMax=" + ageMax +
                 ", location=" + location +
-                ", host=" + host +
+                ", hostId=" + hostId +
                 '}';
     }
 
