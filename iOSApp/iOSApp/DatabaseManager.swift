@@ -3,6 +3,7 @@ import UIKit
 protocol DatabaseManagerProtocol: class {
 	func itemsDownloaded(events: [Event], sponsors: [Int: Sponsor])
 	func error()
+	func participation(status: ParticipationStatus)
 }
 
 class DatabaseManager: NSObject, URLSessionDataDelegate{
@@ -13,6 +14,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     static var url: String = "http://fluegelrad.ddns.net/"
     private let getDatabase = "recieveDatabase.php"
     private let createUser = "createUser.php"
+	private let participate = "sendDatabase.php"
     
     private var events = [Event]()
 	private var sponsors = [Int: Sponsor]()
@@ -45,8 +47,12 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?){
-        if error != nil || (tries == 3 && (String(data: data as Data, encoding: .utf8)?.contains("Error"))!) {
+		let jsonString = String(data: data as Data, encoding: .utf8)
+
+        if (error != nil || (tries == 3 && (jsonString!.contains("Error")))) && !(jsonString!.contains("Error: User is already participating"))  && !(jsonString!.contains("Error: max participants already reached")) {
             print("Failed to download data : \(error?.localizedDescription))")
+			
+			tries = 0
 			
 			let sponsorData = UserDefaults.standard.object(forKey: "sponosrs")
 			
@@ -67,13 +73,15 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 			self.delegate.itemsDownloaded(events: self.events, sponsors: self.sponsors)
 			
 			self.delegate.error()
-		}else if (String(data: data as Data, encoding: .utf8)?.contains("Error"))! {
+		}else if (String(data: data as Data, encoding: .utf8)?.contains("Error"))! && !(jsonString!.contains("Error: User is already participating"))  && !(jsonString!.contains("Error: max participants already reached")) {
 			tries += 1
 			print("Failed \(tries) times")
 			
 			newUser()
 			
         }else {
+			tries = 0
+			
             if task.currentRequest?.url?.absoluteString == DatabaseManager.url + createUser{
                 print("User created")
 
@@ -88,7 +96,12 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
                 user = User(id: jsonResult[0] as! Int, token: jsonResult[1] as! String)
                 
                 getEvents()
-            }else{
+			}else if (task.currentRequest?.url?.absoluteString.contains(DatabaseManager.url + participate))!{
+				print("Participate")
+
+				self.delegate.participation(status: participationToken(jsonString: jsonString!))
+
+            }else if (task.currentRequest?.url?.absoluteString.contains(DatabaseManager.url + getDatabase))!{
                 print("Data downloaded")
                 self.parseJSON()
             }
@@ -198,4 +211,39 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
         
         task.resume()
     }
+	
+	public func participate(event: Event){
+		let url1 = DatabaseManager.url + participate
+		let url2 = "?k=" + String(event.id) + "&u=" + String(user.id) + "&t=" + user.token
+		let url = URL(string: url1 + url2)!
+		
+		let task = session.dataTask(with: url)
+		task.resume()
+
+	}
+	
+	private func participationToken(jsonString: String) -> ParticipationStatus{
+		let jsonDataToken = jsonString.substring(to: (jsonString.characters.index(of: ","))!)
+		
+		var jsonResultToken: NSArray = NSArray()
+		
+		do{
+			jsonResultToken = try JSONSerialization.jsonObject(with: (jsonDataToken.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSArray
+		} catch let error as NSError {
+			print(error)
+		}
+		
+		user.token = jsonResultToken[0] as! String
+		
+		UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: user), forKey: "user")
+		UserDefaults.standard.synchronize()
+		
+		if (jsonString.contains("Error: User is already participating")) {
+			return .alreadyParticipating
+		}else if (jsonString.contains("Error: max participants already reached")) {
+			return .maxReached
+		}else{
+			return .success
+		}
+	}
 }

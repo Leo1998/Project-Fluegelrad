@@ -41,6 +41,8 @@
 		ABF788541E1F97E00086E114 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABF788501E1F97E00086E114 /* LaunchScreen.storyboard */; };
 		ABF788551E1F97E00086E114 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ABF788521E1F97E00086E114 /* Main.storyboard */; };
 		ABF788591E1FCE290086E114 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF788581E1FCE290086E114 /* UIColorExtension.swift */; };
+		ABF7885B1E1FE9FF0086E114 /* ParticipationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF7885A1E1FE9FF0086E114 /* ParticipationView.swift */; };
+		ABF7885D1E1FFAF90086E114 /* ParticipationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABF7885C1E1FFAF90086E114 /* ParticipationStatus.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +103,8 @@
 		ABF788511E1F97E00086E114 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		ABF788531E1F97E00086E114 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		ABF788581E1FCE290086E114 /* UIColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
+		ABF7885A1E1FE9FF0086E114 /* ParticipationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticipationView.swift; sourceTree = "<group>"; };
+		ABF7885C1E1FFAF90086E114 /* ParticipationStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticipationStatus.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +147,7 @@
 			children = (
 				AB35C5081DEF2FFB006D7A6D /* CalendarDayViewController.swift */,
 				ABEB16BF1E0D72D7006E666B /* CalendarDayViewHeader.swift */,
+				ABF7885A1E1FE9FF0086E114 /* ParticipationView.swift */,
 				ABEB16CD1E0DEECC006E666B /* ImageView.swift */,
 				AB16B6061E1D50E3001B2C99 /* host */,
 			);
@@ -185,6 +190,7 @@
 			children = (
 				AB7913731DD4B99500EF8B97 /* DatabaseManager.swift */,
 				AB4CB52A1DF4904C003F4E18 /* User.swift */,
+				ABF7885C1E1FFAF90086E114 /* ParticipationStatus.swift */,
 			);
 			name = database;
 			sourceTree = "<group>";
@@ -427,6 +433,7 @@
 				AB7913761DD4C68900EF8B97 /* MainViewController.swift in Sources */,
 				AB623D8D1DCBECEF0048886F /* CalendarGridCell.swift in Sources */,
 				AB4CB52D1DF88FED003F4E18 /* CalendarGridViewController.swift in Sources */,
+				ABF7885B1E1FE9FF0086E114 /* ParticipationView.swift in Sources */,
 				ABEB16CE1E0DEECC006E666B /* ImageView.swift in Sources */,
 				AB9C32131DCA6F940091C55F /* CalendarGridView.swift in Sources */,
 				ABB960B01E1AF17F00A10A70 /* SortPicker.swift in Sources */,
@@ -434,6 +441,7 @@
 				ABF788591E1FCE290086E114 /* UIColorExtension.swift in Sources */,
 				AB037A951DDA452F004D4AAC /* HomeViewCell.swift in Sources */,
 				ABEB16E01E1800C6006E666B /* Sponsor.swift in Sources */,
+				ABF7885D1E1FFAF90086E114 /* ParticipationStatus.swift in Sources */,
 				AB9C31D91DCA2D4C0091C55F /* AppDelegate.swift in Sources */,
 				ABEB16E51E199783006E666B /* CalendarListViewCell.swift in Sources */,
 				AB037A931DD9CA96004D4AAC /* HomeView.swift in Sources */,

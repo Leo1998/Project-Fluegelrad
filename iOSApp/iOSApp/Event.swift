@@ -9,6 +9,7 @@ class Event: NSObject, NSCoding {
 	private(set) var dateEnd:Date!
 	private(set) var descriptionEvent:String!
 	private(set) var maxParticipants:Int!
+	private(set) var participants: Int!
 	private(set) var ageMin:Int!
 	private(set) var ageMax:Int!
 	
@@ -34,6 +35,8 @@ class Event: NSObject, NSCoding {
 		descriptionEvent = descriptionEvent.replacingOccurrences(of: "\\n", with: "\n")
 		
 		self.maxParticipants = Int(dict.object(forKey: "maxParticipants") as! String)
+		self.participants = Int(dict.object(forKey: "participants") as! String)
+		
 		self.ageMin = Int(dict.object(forKey: "ageMin") as! String)
 		self.ageMax = Int(dict.object(forKey: "ageMax") as! String)
 		
@@ -53,7 +56,10 @@ class Event: NSObject, NSCoding {
 		dateStart = aDecoder.decodeObject(forKey: "dateStart") as! Date
 		dateEnd = aDecoder.decodeObject(forKey: "dateEnd") as! Date
 		descriptionEvent = aDecoder.decodeObject(forKey: "description") as! String
+		
 		maxParticipants = aDecoder.decodeObject(forKey: "maxParticipants") as! Int
+		participants = aDecoder.decodeObject(forKey: "participants") as! Int
+
 		ageMin = aDecoder.decodeObject(forKey: "ageMin") as! Int
 		ageMax = aDecoder.decodeObject(forKey: "ageMax") as! Int
 		
@@ -75,7 +81,10 @@ class Event: NSObject, NSCoding {
 		aCoder.encode(dateStart, forKey: "dateStart")
 		aCoder.encode(dateEnd, forKey: "dateEnd")
 		aCoder.encode(descriptionEvent, forKey: "description")
+		
 		aCoder.encode(maxParticipants, forKey: "maxParticipants")
+		aCoder.encode(participants, forKey: "participants")
+		
 		aCoder.encode(ageMin, forKey: "ageMin")
 		aCoder.encode(ageMax, forKey: "ageMax")
 		
