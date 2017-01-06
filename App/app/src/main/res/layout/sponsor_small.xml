@@ -8,17 +8,6 @@
     android:background="@drawable/border"
     android:weightSum="1">
 
-    <TextView
-        android:text="TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sponsor_name"
-        android:layout_weight="0.02"
-        tools:text="name"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/sponsor_image"
-        android:layout_toEndOf="@+id/sponsor_image" />
-
     <de.projectfluegelrad.fragments.calendar.ImageHolder
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,5 +15,15 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sponsor_name"
+        android:layout_weight="0.02"
+        tools:text="name"
+        android:layout_below="@id/sponsor_image"
+        android:layout_marginTop="8dp" />
 
 </RelativeLayout>

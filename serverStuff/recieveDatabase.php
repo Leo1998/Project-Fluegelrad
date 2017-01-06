@@ -8,7 +8,7 @@
 	//SQL Statement
 	$eventsGet = $pdo->prepare("SELECT 
 		`events`.`id` , `events`.`name` , `events`.`price` , `events`.`maxParticipants` , `events`.`participants` , `events`.`dateStart` , `events`.`dateEnd` , `events`.`description` , `events`.`ageMin` , `events`.`ageMax` ,`events`.`formId` ,  
-		`locations`.`address`,`locations`.`longitude`,`locations`.`latitude` ,
+		`locations`.`address` AS `location.address` , `locations`.`longitude` AS `location.longitude` , `locations`.`latitude` AS `location.latitude` ,
 		`hosts`.`sponsorId` AS `hostId`
 		FROM `events` 
 		JOIN `locations` ON `events`.`locationId` = `locations`.`id`
