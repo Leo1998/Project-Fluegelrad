@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
 import de.projectfluegelrad.database.Image;
+import de.projectfluegelrad.database.Sponsor;
 
 public class CalendarDayFragment extends Fragment {
 
@@ -69,6 +71,14 @@ public class CalendarDayFragment extends Fragment {
         LinearLayout sponsorsContainer = (LinearLayout) layout.findViewById(R.id.sponsors_container);
         buildSponsorsContainer(sponsorsContainer);
 
+        Button participateButton = (Button) layout.findViewById(R.id.participate_button);
+        participateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO
+            }
+        });
+
         ((TextView) layout.findViewById(R.id.location)).setText(event.getLocation().getAddress());
 
         MapView mapView = (MapView) layout.findViewById(R.id.mapView);
@@ -85,31 +95,35 @@ public class CalendarDayFragment extends Fragment {
             ImageHolder imageView = new ImageHolder(this.getContext());
             imageView.setImage(image);
 
-            imagesContainer.addView(imageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            imagesContainer.addView(imageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 
     private void buildSponsorsContainer(LinearLayout sponsorsContainer) {
+        //build host
         TextView hostTitle = new TextView(this.getContext());
         hostTitle.setText(R.string.host_title);
         sponsorsContainer.addView(hostTitle);
 
-        SponsorView hostView = new SponsorView(this.getContext());
+        SponsorView hostView = new SponsorView(this.getContext(), this.getActivity());
         hostView.setSponsor(DatabaseManager.INSTANCE.getSponsor(event.getHostId()));
-        hostView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("sponsorId", event.getHostId());
-
-                SponsorFragment sponsorFragment = new SponsorFragment();
-                sponsorFragment.setArguments(bundle);
-
-                CalendarDayFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
-            }
-        });
 
         sponsorsContainer.addView(hostView);
+
+        //build other sponsors
+        List<Sponsor> sponsors = DatabaseManager.INSTANCE.getSponsors(event);
+        if (!sponsors.isEmpty()) {
+            TextView sponsorsTitle = new TextView(this.getContext());
+            sponsorsTitle.setText(R.string.sponsors_title);
+            sponsorsContainer.addView(sponsorsTitle);
+
+            for (Sponsor sponsor : sponsors) {
+                SponsorView sponsorView = new SponsorView(this.getContext(), this.getActivity());
+                sponsorView.setSponsor(sponsor);
+
+                sponsorsContainer.addView(sponsorView);
+            }
+        }
     }
 
     private void buildMapView(MapView mapView) {
@@ -189,7 +203,7 @@ public class CalendarDayFragment extends Fragment {
         intent.putExtra(CalendarContract.Events.TITLE, event.getName());
         intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateStart().getTimeInMillis());
         intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDateEnd().getTimeInMillis());
-        intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + "N/A");//TODO
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + DatabaseManager.INSTANCE.getSponsor(event.getHostId()).getName());//TODO
         intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
 
         CalendarDayFragment.this.startActivity(intent);

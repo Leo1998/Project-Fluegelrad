@@ -65,10 +65,10 @@ public class ImageHolder extends RelativeLayout {
         final LayoutParams spinnerParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         spinnerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
-        final LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        final LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         imageHolderParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
-        final LayoutParams descriptionViewParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        final LayoutParams descriptionViewParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         descriptionViewParams.addRule(RelativeLayout.BELOW, imageHolder.getId());
         descriptionViewParams.bottomMargin = bottomMargin;
 

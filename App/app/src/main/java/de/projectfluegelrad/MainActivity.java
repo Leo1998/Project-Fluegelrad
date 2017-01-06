@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CalendarListFragment calendarListFragment;
     private CalendarGridViewFragment calendarFragment;
     private SettingsFragment settingsFragment;
-    private SearchFragment searchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         homeFragment = new HomeFragment();
         settingsFragment = new SettingsFragment();
-        searchFragment = new SearchFragment();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
         navigationView.getMenu().getItem(0).setChecked(true);

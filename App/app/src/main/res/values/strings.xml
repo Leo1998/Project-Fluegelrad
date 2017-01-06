@@ -32,5 +32,7 @@
     <string name="website">Website</string>
     <string name="mail">Mail</string>
     <string name="phone">Phone</string>
+    <string name="participate">Participate</string>
+    <string name="sponsors_title">Other Sponsors are:</string>
 
 </resources>

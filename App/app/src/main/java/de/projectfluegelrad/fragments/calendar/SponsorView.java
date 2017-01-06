@@ -1,8 +1,11 @@
 package de.projectfluegelrad.fragments.calendar;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -15,25 +18,36 @@ public class SponsorView extends RelativeLayout {
     private ImageHolder sponsorImage;
     private TextView sponsorName;
 
-    public SponsorView(Context context) {
+    private Sponsor sponsor;
+
+    public SponsorView(Context context, FragmentActivity activity) {
         super(context);
 
-        init(context);
+        init(context, activity);
     }
 
-    public SponsorView(Context context, AttributeSet attrs) {
+    public SponsorView(Context context, AttributeSet attrs, FragmentActivity activity) {
         super(context, attrs);
 
-        init(context);
+        init(context, activity);
     }
 
-    public SponsorView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    private void init(Context context, final FragmentActivity activity) {
+        this.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sponsor != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("sponsorId", sponsor.getId());
 
-        init(context);
-    }
+                    SponsorFragment sponsorFragment = new SponsorFragment();
+                    sponsorFragment.setArguments(bundle);
 
-    private void init(Context context) {
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
+                }
+            }
+        });
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.sponsor_small, this);
 
@@ -43,6 +57,8 @@ public class SponsorView extends RelativeLayout {
 
     public void setSponsor(Sponsor sponsor) {
         if (sponsor != null) {
+            this.sponsor = sponsor;
+
             sponsorImage.setImage(new Image(sponsor.getImage()));
             sponsorName.setText(sponsor.getName());
         }

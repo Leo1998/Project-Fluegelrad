@@ -25,7 +25,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.logging.Logger;
@@ -201,7 +203,7 @@ public class DatabaseManager implements Runnable {
      * @return the json text
      * @throws DatabaseException
      */
-    private String executeScript(String scriptAddress) throws Exception {
+    private String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
         ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
@@ -211,6 +213,15 @@ public class DatabaseManager implements Runnable {
         }
 
         String address = scriptAddress + "?u=" + user.getId() + "&t=" + user.getHashedToken();
+        if (args != null) {
+            for (String key : args.keySet()) {
+                if (key.equals("u") || key.equals("t"))
+                    continue;
+
+                address += "&" + key + "=" + args.get(key);
+            }
+        }
+
         URL url = new URL(address);
         URLConnection c = url.openConnection();
         BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
@@ -229,7 +240,7 @@ public class DatabaseManager implements Runnable {
                 new File(filesDirectory, "user.dat").delete();
                 login();
                 logger.log("Invalid login(retrying)");
-                return executeScript(scriptAddress);
+                return executeScript(scriptAddress, args);
             } else {
                 throw new DatabaseException(raw);
             }
@@ -267,7 +278,7 @@ public class DatabaseManager implements Runnable {
 
     private void readDatabaseFromServer() {
         try {
-            String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php");
+            String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php", null);
 
             readDatabase(json, true);
 
@@ -290,7 +301,7 @@ public class DatabaseManager implements Runnable {
 
             Event event = Event.readEvent(obj);
 
-            Log.i("DatabaseManager", "Event: " + event.toString());
+            //Log.i("DatabaseManager", "Event: " + event.toString());
 
             registerEvent(event);
         }
@@ -311,7 +322,7 @@ public class DatabaseManager implements Runnable {
 
             Sponsor sponsor = Sponsor.readSponsor(obj);
 
-            Log.i("DatabaseManager", "Sponsor: " + sponsor.toString());
+            //Log.i("DatabaseManager", "Sponsor: " + sponsor.toString());
 
             registerSponsor(sponsor);
         }
@@ -406,6 +417,20 @@ public class DatabaseManager implements Runnable {
         sponsorList.add(sponsor);
     }
 
+    public boolean signInForEvent(Event event) {
+        try {
+            Map<String, String> args = new HashMap<>();
+            args.put("k", Integer.toString(event.getId()));
+
+            String result = executeScript("http://fluegelrad.ddns.net/sendDatabase.php", args);
+
+            return true;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private void sortEvents() {
         Collections.sort(eventList, new Comparator<Event>() {
             @Override
@@ -451,6 +476,23 @@ public class DatabaseManager implements Runnable {
         return list;
     }
 
+    public List<Sponsor> getSponsors(Event event) {
+        int[] sponsorIds = event.getSponsors();
+        List<Sponsor> sponsors = new ArrayList<>();
+
+        for (int i = 0; i < sponsorList.size(); i++) {
+            Sponsor sponsor = sponsorList.get(i);
+
+            for (int j = 0; j < sponsorIds.length; j++) {
+                if (sponsor.getId() == sponsorIds[j]) {
+                    sponsors.add(sponsor);
+                }
+            }
+        }
+
+        return sponsors;
+    }
+
     public Event getEvent(int eventId) {
         for (int i = 0; i < eventList.size(); i++) {
             Event event = eventList.get(i);
@@ -486,4 +528,5 @@ public class DatabaseManager implements Runnable {
 
         return null;
     }
+
 }

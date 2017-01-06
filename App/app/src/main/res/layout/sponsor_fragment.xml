@@ -44,6 +44,9 @@
                 android:layout_marginTop="22dp"
                 android:id="@+id/sponsor_web"
                 tools:text="web"
+                android:linksClickable="true"
+                android:autoLink="web|email"
+                android:textColorLink="@android:color/holo_blue_light"
                 android:layout_below="@+id/sponsor_image"
                 android:layout_alignLeft="@+id/sponsor_image"
                 android:layout_alignStart="@+id/sponsor_image" />
@@ -70,8 +73,6 @@
                 android:layout_marginTop="12dp"
                 android:id="@+id/sponsor_phone"
                 tools:text="phone"
-                android:linksClickable="true"
-                android:autoLink="web|email"
                 android:textColorLink="@android:color/holo_blue_light"
                 android:layout_below="@+id/sponsor_web"
                 android:layout_alignLeft="@+id/sponsor_web"
