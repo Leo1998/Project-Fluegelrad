@@ -1,7 +1,7 @@
 import UIKit
 
 protocol DatabaseManagerProtocol: class {
-    func itemsDownloaded(items: [Event])
+	func itemsDownloaded(events: [Event], sponsors: [Int: Sponsor])
 	func error()
 }
 
@@ -15,6 +15,9 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     private let createUser = "createUser.php"
     
     private var events = [Event]()
+	private var sponsors = [Int: Sponsor]()
+	
+	private var tries = 0
     
     private var user: User!
     
@@ -42,9 +45,16 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
     }
     
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?){
-        if error != nil || (String(data: data as Data, encoding: .utf8)?.contains("Error"))! {
+        if error != nil || (tries == 3 && (String(data: data as Data, encoding: .utf8)?.contains("Error"))!) {
             print("Failed to download data : \(error?.localizedDescription))")
-            
+			
+			let sponsorData = UserDefaults.standard.object(forKey: "sponosrs")
+			
+			if sponsorData != nil {
+				sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
+			}
+			
+			
             let tempArray = UserDefaults.standard.object(forKey: "events")
             
             if tempArray != nil {
@@ -54,9 +64,15 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
                 events = [Event]()
             }
             
-            self.delegate.itemsDownloaded(items: self.events)
+			self.delegate.itemsDownloaded(events: self.events, sponsors: self.sponsors)
 			
 			self.delegate.error()
+		}else if (String(data: data as Data, encoding: .utf8)?.contains("Error"))! {
+			tries += 1
+			print("Failed \(tries) times")
+			
+			newUser()
+			
         }else {
             if task.currentRequest?.url?.absoluteString == DatabaseManager.url + createUser{
                 print("User created")
@@ -102,11 +118,14 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
         let jsonDataAll = String(data: data as Data, encoding: .utf8)
         let jsonResult: NSDictionary = stringToJSonArray(jsonString: jsonDataAll!)
         let events: NSMutableArray = NSMutableArray()
-        
+		let sponsors: NSMutableArray = NSMutableArray()
+
+		
         let jsonResultEvent: NSArray = jsonResult.object(forKey: "events") as! NSArray
         let jsonResultImages: NSArray = jsonResult.object(forKey: "images") as! NSArray
+		let jsonResultSponsors: NSArray = jsonResult.object(forKey: "sponsors") as! NSArray
 
-        
+		
         var jsonElement: NSMutableDictionary = NSMutableDictionary()
         for i in 0 ..< jsonResultEvent.count{
             jsonElement = (jsonResultEvent[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
@@ -114,8 +133,10 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             let event = Event(dict: jsonElement)
             events.add(event)
         }
+		self.events = events as NSArray as! [Event]
 
-        
+
+		
         for i in 0 ..< jsonResultImages.count{
             jsonElement = (jsonResultImages[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
             
@@ -125,10 +146,21 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
                 }
             }
         }
-        
-        self.events = events as NSArray as! [Event]
-            
-        self.delegate.itemsDownloaded(items: self.events)
+		
+		
+		for i in 0 ..< jsonResultSponsors.count{
+			jsonElement = (jsonResultSponsors[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
+			
+			let sponsor = Sponsor(dict: jsonElement)
+			sponsors.add(sponsor)
+		}
+		for value in sponsors{
+			let sponsorTemp = (value as! Sponsor)
+			self.sponsors[sponsorTemp.id] = sponsorTemp
+		}
+
+		
+        self.delegate.itemsDownloaded(events: self.events, sponsors: self.sponsors)
     }
     
     private func stringToJSonArray(jsonString: String) -> NSDictionary{

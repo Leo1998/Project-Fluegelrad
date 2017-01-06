@@ -5,15 +5,22 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
     
     private static var databaseManager:DatabaseManager!
 	private static var selfish: MainViewController!
-    
-    private var events = [Event]()
-    
+	
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder);
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.black], for: .normal)
+		UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.primary()], for: .selected)
+
+		for item in tabBar.items!{
+			if let image = item.image {
+				item.image = image.withRenderingMode(.alwaysOriginal)
+			}
+		}
 		
 		MainViewController.selfish = self
 		
@@ -62,7 +69,7 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 		if !created {
 			let eventCalendar = EKCalendar(for: .event, eventStore: eventStore)
 			eventCalendar.title = "Dortmunder Events"
-			eventCalendar.cgColor = UIColor.green.cgColor
+			eventCalendar.cgColor = UIColor.primary().cgColor
 			
 			for value in eventStore.sources {
 				if value.sourceType == .local {
@@ -74,7 +81,7 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 			do {
 				try eventStore.saveCalendar(eventCalendar, commit: true)
 			} catch {
-				let alert = UIAlertController(title: "Calendar couldn't be saved", message: error.localizedDescription, preferredStyle: .alert)
+				let alert = UIAlertController(title: "Fehler im Kalendar", message: error.localizedDescription, preferredStyle: .alert)
 				let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
 				alert.addAction(okAction)
 				
@@ -84,20 +91,20 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 			UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: eventCalendar.calendarIdentifier), forKey: "calendar")
 			UserDefaults.standard.synchronize()
 		}
+
 	}
 	
-    internal func itemsDownloaded(items: [Event]) {
-        
-        events = items
-        
-        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: items), forKey: "events")
+	internal func itemsDownloaded(events: [Event], sponsors: [Int: Sponsor]) {
+		
+		UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: sponsors), forKey: "sponsors")
+        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: events), forKey: "events")
         UserDefaults.standard.synchronize()
 		
 		NotificationCenter.default.post(name: Notification.Name(Bundle.main.bundleIdentifier!), object: self)
     }
 	
 	internal func error(){
-		let alert = UIAlertController(title: "Couldn't connect to the server", message: nil, preferredStyle: .alert)
+		let alert = UIAlertController(title: "Keine Verbindung zum Server", message: nil, preferredStyle: .alert)
 		let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
 		alert.addAction(okAction)
 		

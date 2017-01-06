@@ -5,6 +5,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     private var homeView: HomeView!
     
     private var shownEvents = [Event]()
+	private var sponsors = [Int: Sponsor]()
 	
     private var dayEvent: Event?
 	
@@ -34,6 +35,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 
     private func setupEvents(){
+		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
+		
+		if sponsorData != nil {
+			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
+		}
+		
+		
         let eventData = UserDefaults.standard.object(forKey: "events")
 		
 		var events = [Event]()
@@ -70,6 +78,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             let vc = segue.destination as! CalendarDayViewController
             vc.event = dayEvent
             dayEvent = nil
+			vc.sponsors = sponsors
         }
     }
     
@@ -87,7 +96,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         cell.locationLabel.text = event.location.title
         cell.dateLabel.text = dateFormatter.string(from: event.dateStart)
-        cell.hostLabel.text = event.host.name
+        cell.hostLabel.text = sponsors[event.hostId]?.name
         
         return cell
     }

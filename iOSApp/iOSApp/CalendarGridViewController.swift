@@ -9,6 +9,8 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     private var daysShown = [Date]()
     
     private var dayEvent: Event?
+	
+	private var sponsors = [Int: Sponsor]()
     
     private var calendar: Calendar!
     private var date: Date!
@@ -143,6 +145,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
             let vc = segue.destination as! CalendarDayViewController
             vc.event = dayEvent
             dayEvent = nil
+			vc.sponsors = sponsors
         }
     }
     
@@ -168,6 +171,12 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     }
 	
 	private func setupEvents(){
+		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
+		
+		if sponsorData != nil {
+			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
+		}
+		
 		date = Date()
 		calendar = Calendar.autoupdatingCurrent
 		calendar.firstWeekday = 2
@@ -189,4 +198,5 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 			updateViews(fromReload: true)
 		}
     }
+
 }

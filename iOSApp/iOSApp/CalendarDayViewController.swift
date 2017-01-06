@@ -4,6 +4,7 @@ import EventKit
 
 class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     var event: Event!
+	var sponsors: [Int: Sponsor]!
     
     private var header: CalendarDayViewHeader!
     private var descriptionLabel: UILabel!
@@ -20,7 +21,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 		
 		navigationController?.setNavigationBarHidden(false, animated: true)
         
-        header = CalendarDayViewHeader(event: event)
+        header = CalendarDayViewHeader(event: event, sponsor: sponsors)
         header.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(header)
         header.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
@@ -67,7 +68,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         imageView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: descriptionLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         imageView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: imageViewHeight)
 		
-		hostView = HostViewButton(frame: view.frame, event: event)
+		hostView = HostViewButton(frame: view.frame, event: event, sponsors: sponsors)
 		hostView.addTarget(self, action: #selector(CalendarDayViewController.host), for: .touchUpInside)
 		scrollView.addSubview(hostView)
 		hostView.translatesAutoresizingMaskIntoConstraints = false
@@ -119,6 +120,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 		if segue.identifier == "HostViewController" {
 			let vc = segue.destination as! HostViewController
 			vc.event = event
+			vc.sponsors = sponsors
 		}
 	}
 	
@@ -168,7 +170,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
             if value.title == event.name && value.location == event.location.title && value.notes == event.descriptionEvent {
                 alreadySaved = true
                 
-                let alert = UIAlertController(title: "Event already saved", message: nil, preferredStyle: .alert)
+                let alert = UIAlertController(title: "Event im Kalendar schon vorhanden", message: nil, preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 
@@ -189,13 +191,13 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
             do {
                 try eventStore.save(newEvent, span: .thisEvent, commit: true)
                 
-                let alert = UIAlertController(title: "Event saved", message: nil, preferredStyle: .alert)
+                let alert = UIAlertController(title: "Event gespeichert", message: nil, preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 
                 present(alert, animated: true, completion: nil)
             } catch {
-                let alert = UIAlertController(title: "Event couldn't be saved", message: error.localizedDescription, preferredStyle: .alert)
+                let alert = UIAlertController(title: "Event konnte nicht gespeichert werden", message: error.localizedDescription, preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
                 alert.addAction(okAction)
                 

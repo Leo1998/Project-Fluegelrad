@@ -10,6 +10,9 @@ class CalendarGridHeader: UICollectionReusableView {
     
     override init(frame: CGRect){
         super.init(frame: frame)
+		
+		backgroundColor = UIColor.primary()
+		tintColor = UIColor.accent()
         
         setupMonthChanger()
         setupWeekView()
@@ -55,6 +58,7 @@ class CalendarGridHeader: UICollectionReusableView {
         right.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 
         month = UILabel()
+		month.textColor = UIColor.accent()
         month.translatesAutoresizingMaskIntoConstraints = false
         addSubview(month)
         month.addConstraintsXY(xView: self, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)

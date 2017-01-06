@@ -1,33 +1,26 @@
 import UIKit
 
 class CalendarListViewCell: UITableViewCell {
-	private(set) var categoryLabel: UILabel!
-	private(set) var locationLabel: UILabel!
+	private(set) var imageV: UIImageView!
+	private(set) var nameLabel: UILabel!
 	private(set) var dateLabel: UILabel!
-	private(set) var hostLabel: UILabel!
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
-		categoryLabel = UILabel()
-		categoryLabel.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(categoryLabel)
-		categoryLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
-		locationLabel = UILabel()
-		locationLabel.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(locationLabel)
-		locationLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		imageV = UIImageView()
+		addSubview(imageV)
+		imageV.translatesAutoresizingMaskIntoConstraints = false
+		imageV.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		
+		nameLabel = UILabel()
+		nameLabel.translatesAutoresizingMaskIntoConstraints = false
+		addSubview(nameLabel)
 		
 		dateLabel = UILabel()
 		dateLabel.translatesAutoresizingMaskIntoConstraints = false
 		addSubview(dateLabel)
-		dateLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
-		
-		hostLabel = UILabel()
-		hostLabel.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(hostLabel)
-		hostLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
