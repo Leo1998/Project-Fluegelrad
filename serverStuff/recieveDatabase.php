@@ -50,6 +50,19 @@
 	
 	$emparray['sponsors'] = $sponsorArray;
 	
+	//SQL Statement
+	$sponsoringGet = $pdo->prepare("SELECT * from `sponsoring`");
+	$sponsoringGet->execute();
+	
+	$sponsoringArray = array();
+	
+	//Iterate, put rows in emparray
+	while($row = $sponsoringGet->fetch()) {
+		$sponsoringArray[] = $row;
+	}
+	
+	$emparray['sponsoring'] = $sponsoringArray;
+	
 	//Echo json with rows
 	echo json_encode($emparray);
 ?>
