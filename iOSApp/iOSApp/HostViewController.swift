@@ -3,6 +3,7 @@ import UIKit
 class HostViewController: UIViewController {
 	
 	public var event:Event!
+	public var sponsors : [Int: Sponsor]!
 	
 	private var imageView: UIImageView!
 	private var name: UILabel!
@@ -14,19 +15,19 @@ class HostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		imageView = UIImageView(image: event.host.image)
+		imageView = UIImageView(image: sponsors[event.hostId]?.image)
 		view.addSubview(imageView)
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		name = UILabel()
-		name.text = event.host.name
+		name.text = sponsors[event.hostId]?.name
 		name.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(name)
 		name.addConstraintsXY(xView: imageView, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .centerY, yViewAttribute: .centerY, yMultiplier: 1, yConstant: 0)
 		
 		web = UILabel()
-		web.text = event.host.web
+		web.text = sponsors[event.hostId]?.web
 		web.isUserInteractionEnabled = true
 		web.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(HostViewController.webTap)))
 		web.translatesAutoresizingMaskIntoConstraints = false
@@ -34,7 +35,7 @@ class HostViewController: UIViewController {
 		web.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		mail = UILabel()
-		mail.text = event.host.mail
+		mail.text = sponsors[event.hostId]?.mail
 		mail.isUserInteractionEnabled = true
 		mail.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(HostViewController.mailTap)))
 		mail.translatesAutoresizingMaskIntoConstraints = false
@@ -42,7 +43,7 @@ class HostViewController: UIViewController {
 		mail.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: web, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		phone = UILabel()
-		phone.text = event.host.phone
+		phone.text = sponsors[event.hostId]?.phone
 		phone.isUserInteractionEnabled = true
 		phone.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(HostViewController.phoneTap)))
 		phone.translatesAutoresizingMaskIntoConstraints = false
@@ -50,7 +51,7 @@ class HostViewController: UIViewController {
 		phone.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: mail, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		sponsorDescription = UILabel()
-		sponsorDescription.text = event.host.sponsorDescription
+		sponsorDescription.text = sponsors[event.hostId]?.sponsorDescription
 		sponsorDescription.lineBreakMode = .byWordWrapping
 		sponsorDescription.numberOfLines = 0
 		sponsorDescription.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +65,7 @@ class HostViewController: UIViewController {
     }
 	
 	func webTap(){
-		let url = URL(string: event.host.web!)!
+		let url = URL(string: (sponsors[event.hostId]?.web!)!)!
 
 		if UIApplication.shared.canOpenURL(url){
 			if #available(iOS 10, *){
@@ -76,7 +77,7 @@ class HostViewController: UIViewController {
 	}
 	
 	func mailTap(){
-		let url = URL(string: "mailto://\(event.host.mail!)")!
+		let url = URL(string: "mailto://\(sponsors[event.hostId]?.mail!)")!
 		
 		if UIApplication.shared.canOpenURL(url){
 			if #available(iOS 10, *){
@@ -88,7 +89,7 @@ class HostViewController: UIViewController {
 	}
 	
 	func phoneTap(){
-		var realPhoneNumber = event.host.phone?.replacingOccurrences(of: "-", with: "")
+		var realPhoneNumber = sponsors[event.hostId]?.phone?.replacingOccurrences(of: "-", with: "")
 		realPhoneNumber = realPhoneNumber?.replacingOccurrences(of: " ", with: "")
 		
 		let url = URL(string: "tel://\(realPhoneNumber!)")!

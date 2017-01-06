@@ -8,7 +8,7 @@ class CalendarDayViewHeader: UIView {
     
     private(set) var height: CGFloat = 0
 
-    init(event: Event) {
+	init(event: Event, sponsor: [Int: Sponsor]) {
         super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
         
         nameLabel = UILabel()
@@ -33,7 +33,7 @@ class CalendarDayViewHeader: UIView {
         dateEndLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: dateStartLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 
         hostLabel = UILabel()
-        hostLabel.text = event.host.name
+        hostLabel.text = sponsor[event.hostId]?.name
         hostLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(hostLabel)
         hostLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)

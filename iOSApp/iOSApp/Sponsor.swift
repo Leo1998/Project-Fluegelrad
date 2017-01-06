@@ -30,15 +30,37 @@ class Sponsor: NSObject, NSCoding{
 			}
 		}
 	}
+	private var iconSave: UIImage?
+	public var icon: UIImage? {
+		get {
+			if self.imageSave == nil {
+				
+				return nil
+			}
+			if iconSave == nil {
+				let imageTemp = imageSave
+				
+				let size = CGSize(width: (imageTemp?.size.width)! / 2, height: (imageTemp?.size.height)! / 2)
+				
+				UIGraphicsBeginImageContext(size)
+				imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+				
+				self.iconSave = UIGraphicsGetImageFromCurrentImageContext()
+				UIGraphicsEndImageContext()
+			}
+			
+			return iconSave
+		}
+	}
 	
 	init(dict: NSDictionary) {
-		imagePath = (dict.object(forKey: "host.image") as! String)
-		id = Int(dict.object(forKey: "host.id") as! String)
-		phone = (dict.object(forKey: "host.phone") as! String)
-		mail = (dict.object(forKey: "host.mail") as! String)
-		web = (dict.object(forKey: "host.web") as! String)
-		name = (dict.object(forKey: "host.name") as! String)
-		sponsorDescription = (dict.object(forKey: "host.description") as! String)
+		imagePath = (dict.object(forKey: "image") as! String)
+		id = Int(dict.object(forKey: "id") as! String)
+		phone = (dict.object(forKey: "phone") as! String)
+		mail = (dict.object(forKey: "mail") as! String)
+		web = (dict.object(forKey: "web") as! String)
+		name = (dict.object(forKey: "name") as! String)
+		sponsorDescription = (dict.object(forKey: "description") as! String)
 	}
 	
 	

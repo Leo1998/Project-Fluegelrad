@@ -13,7 +13,7 @@ class SortPicker: UIView {
 		addSubview(dimView)
 
 		picker = UIPickerView()
-		picker.backgroundColor = UIColor.white
+		picker.backgroundColor = UIColor.accent()
 		picker.layer.cornerRadius = 10
 		picker.layer.shadowOpacity = 0.8
 		picker.layer.shadowOffset = CGSize(width: 0, height: 0)

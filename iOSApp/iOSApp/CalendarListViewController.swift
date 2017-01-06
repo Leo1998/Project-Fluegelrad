@@ -10,6 +10,8 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 	private var filteredEvents = [Event]()
 	private var allEvents = [Event]()
 	
+	private var sponsors = [Int: Sponsor]()
+	
 	private var dayEvent: Event?
 	
 	private var picker: SortPicker!
@@ -22,6 +24,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		
 		eventTable = UITableView()
 		eventTable.register(CalendarListViewCell.self, forCellReuseIdentifier: "cell")
+		eventTable.rowHeight = UIScreen.main.bounds.height / 10
 		view.addSubview(eventTable)
 		eventTable.translatesAutoresizingMaskIntoConstraints = false
 		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
@@ -51,7 +54,8 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		searchController.searchBar.delegate = self
 		searchController.searchBar.setImage(#imageLiteral(resourceName: "ic_sort"), for: .bookmark, state: .normal)
 		searchController.searchBar.showsBookmarkButton = true
-		searchController.searchBar.backgroundColor = UIColor.clear
+		searchController.searchBar.barTintColor = UIColor.primary()
+		searchController.searchBar.tintColor = UIColor.accent()
 		
 		eventTable.tableHeaderView = searchController.searchBar
 		
@@ -62,6 +66,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		picker.picker.delegate = self
 		picker.isHidden = true
 		view.addSubview(picker)
+		
+		let gesture = UITapGestureRecognizer(target: self, action: #selector(CalendarListViewController.exitSort))
+		picker.dimView.addGestureRecognizer(gesture)
 		
 		sortCategory = .rating
 
@@ -74,6 +81,12 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 	}
 	
 	private func setupEvents(){
+		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
+		
+		if sponsorData != nil {
+			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
+		}
+		
 		let eventData = UserDefaults.standard.object(forKey: "events")
 		let events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
 		
@@ -110,6 +123,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 			let vc = segue.destination as! CalendarDayViewController
 			vc.event = dayEvent
 			dayEvent = nil
+			vc.sponsors = sponsors
 		}
 	}
 	
@@ -130,12 +144,30 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 			event = (allEvents[indexPath.row] )
 		}
 		
+		if !(sponsors[event.hostId]!.scaled) {
+			let imageTemp = sponsors[event.hostId]?.image
+			
+			let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/5) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/5)
+			
+			UIGraphicsBeginImageContext(size)
+			imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+			
+			sponsors[event.hostId]?.image = UIGraphicsGetImageFromCurrentImageContext()
+			UIGraphicsEndImageContext()
+		}
+		cell.imageV.image = sponsors[event.hostId]?.icon
+		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (sponsors[event.hostId]?.icon?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (sponsors[event.hostId]?.icon?.size.height)!)
+		
+		cell.nameLabel.text = event.name
+		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+
+		
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
 		
-		cell.locationLabel.text = event.location.title
 		cell.dateLabel.text = dateFormatter.string(from: event.dateStart)
-		cell.hostLabel.text = event.host.name
+		cell.dateLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+	
 		
 		return cell
 	}
@@ -162,9 +194,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 			case Filter.name.rawValue:
 				return event.name.lowercased().contains(searchText.lowercased())
 			case Filter.host.rawValue:
-				return event.host.name.lowercased().contains(searchText.lowercased())
+				return sponsors[event.hostId]!.name.lowercased().contains(searchText.lowercased())
 			case Filter.age.rawValue:
-				return event.ageMin <= (Int(searchText) == nil ? Int.max : Int(searchText)!)
+				return event.ageMin <= (Int(searchText) == nil ? Int.max : Int(searchText)!) && event.ageMax >= (Int(searchText) == nil ? Int.min : Int(searchText)!)
 			case Filter.free.rawValue:
 				return event.price == 0 && event.name.lowercased().contains(searchText.lowercased())
 			default:
@@ -245,8 +277,8 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 				
 				break
 			case .host:
-				sort1 = (event1).host.name
-				sort2 = (event2).host.name
+				sort1 = sponsors[event1.hostId]!.name
+				sort2 = sponsors[event2.hostId]!.name
 				
 				break
 			}
@@ -264,4 +296,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 
 	}
 
+	func exitSort(){
+		picker.isHidden = true
+	}
 }
