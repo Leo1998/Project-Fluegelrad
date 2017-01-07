@@ -25,7 +25,7 @@ public class SponsorFragment extends Fragment {
 
         if (sponsor != null) {
             ImageHolder sponsorImage = (ImageHolder) layout.findViewById(R.id.sponsor_image);
-            sponsorImage.setImage(new Image(sponsor.getImage()));
+            sponsorImage.setImage(new Image(sponsor.getImagePath()));
 
             TextView sponsorName = (TextView) layout.findViewById(R.id.sponsor_name);
             sponsorName.setText(sponsor.getName());

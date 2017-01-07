@@ -8,7 +8,7 @@ import java.text.ParseException;
 public class Sponsor {
 
     public static Sponsor readSponsor(JSONObject obj) throws JSONException, ParseException {
-        Sponsor sponsor = new Sponsor(obj.getInt("id"), obj.getString("name"), obj.getString("description"), obj.getString("image"), obj.getString("mail"), obj.getString("phone"), obj.getString("web"));
+        Sponsor sponsor = new Sponsor(obj.getInt("id"), obj.getString("name"), obj.getString("description"), obj.getString("imagePath"), obj.getString("mail"), obj.getString("phone"), obj.getString("web"));
 
         return sponsor;
     }
@@ -19,7 +19,7 @@ public class Sponsor {
         obj.put("id", sponsor.getId());
         obj.put("name", sponsor.getName());
         obj.put("description", sponsor.getDescription());
-        obj.put("image", sponsor.getImage());
+        obj.put("imagePath", sponsor.getImagePath());
         obj.put("mail", sponsor.getMail());
         obj.put("phone", sponsor.getPhone());
         obj.put("web", sponsor.getWeb());
@@ -30,16 +30,16 @@ public class Sponsor {
     private int id;
     private String name;
     private String description;
-    private String image;
+    private String imagePath;
     private String mail;
     private String phone;
     private String web;
 
-    public Sponsor(int id, String name, String description, String image, String mail, String phone, String web) {
+    public Sponsor(int id, String name, String description, String imagePath, String mail, String phone, String web) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.image = image;
+        this.imagePath = imagePath;
         this.mail = mail;
         this.phone = phone;
         this.web = web;
@@ -57,8 +57,8 @@ public class Sponsor {
         return description;
     }
 
-    public String getImage() {
-        return image;
+    public String getImagePath() {
+        return imagePath;
     }
 
     public String getMail() {
@@ -79,7 +79,7 @@ public class Sponsor {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", image='" + image + '\'' +
+                ", imagePath='" + imagePath + '\'' +
                 ", mail='" + mail + '\'' +
                 ", phone='" + phone + '\'' +
                 ", web='" + web + '\'' +
