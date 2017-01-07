@@ -26,6 +26,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		eventTable.register(CalendarListViewCell.self, forCellReuseIdentifier: "cell")
 		eventTable.rowHeight = UIScreen.main.bounds.height / 10
 		view.addSubview(eventTable)
+		eventTable.separatorColor = UIColor.primary()
 		eventTable.translatesAutoresizingMaskIntoConstraints = false
 		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)

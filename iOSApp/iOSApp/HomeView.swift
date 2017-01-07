@@ -12,6 +12,7 @@ class HomeView: UIView {
         
         eventTable = UITableView(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height))
         eventTable.register(HomeViewCell.self, forCellReuseIdentifier: "cell")
+		eventTable.separatorColor = UIColor.primary()
         addSubview(eventTable)
 		
 		eventTable.estimatedRowHeight = UIScreen.main.bounds.height/10 * 2

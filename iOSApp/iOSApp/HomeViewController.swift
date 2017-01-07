@@ -5,6 +5,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     private var homeView: HomeView!
     
     private var shownEvents = [Event]()
+	private var titleEvents = [Event: String]()
 	private var sponsors = [Int: Sponsor]()
 	
     private var dayEvent: Event?
@@ -30,9 +31,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
     }
 	
-	override func viewDidAppear(_ animated: Bool) {
-		homeView.eventTable.reloadData()
-	}
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -69,6 +67,22 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 shownEvents.remove(at: index)
             }
         }
+		
+		var newShownEvents = [Event]()
+		
+		newShownEvents.append(shownEvents[0])
+		titleEvents[shownEvents[0]] = "Das nächste Event"
+		
+		var eventTemp = shownEvents[1]
+		for value in shownEvents {
+			if value.participants > eventTemp.participants && value != shownEvents[0] {
+				eventTemp = value
+			}
+		}
+		newShownEvents.append(eventTemp)
+		titleEvents[eventTemp] = "Das beliebteste Event"
+		
+		shownEvents = newShownEvents
     }
 
     
@@ -94,7 +108,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         let cell:HomeViewCell = homeView.eventTable.dequeueReusableCell(withIdentifier: "cell")! as! HomeViewCell
 		let event:Event = (shownEvents[indexPath.row] )
 
-		cell.titleLabel.text = "Placeholder"
+		cell.titleLabel.text = titleEvents[event]
 		
 		var imageTemp = sponsors[event.hostId]?.image
 		
@@ -117,10 +131,23 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.dateLabel.text = "Das Event startet am \(dateFormatter.string(from: event.dateStart!))"
 		cell.dateLabel.addConstraintsXY(xView: cell, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.imageV, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
-		cell.ageLabel.text = "Es sind alle eingeladen von \(event.ageMin!) Jahren bis \(event.ageMax!) Jahren"
+		if event.ageMin == 0 && event.ageMax < 99 {
+			cell.ageLabel.text = "Für jeden bis zu \(event.ageMax!) Jahren"
+		}else if event.ageMin > 0 && event.ageMax == 99 {
+			cell.ageLabel.text = "Für jeden ab \(event.ageMin!) Jahren"
+		}else if event.ageMin == 0 && event.ageMax >= 99 {
+			cell.ageLabel.text = "Es gibt keine Alterbeschränkung"
+		}else{
+			cell.ageLabel.text = "Für jeden ab \(event.ageMin!) Jahren und bis zu \(event.ageMax!) Jahren"
+		}
 		cell.ageLabel.addConstraintsXY(xView: cell, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.dateLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
-		cell.priceLabel.text = "Der Eintritt kostet \(event.price!)€"
+		if event.price == 0 {
+			cell.priceLabel.text = "Der Eintritt ist kostenlos"
+
+		}else {
+			cell.priceLabel.text = "Der Eintritt kostet \(event.price!)€"
+		}
 		cell.priceLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.ageLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		cell.priceLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
