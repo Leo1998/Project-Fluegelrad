@@ -75,14 +75,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"), new DatabaseUpdateListener() {
             @Override
             public void onDatabaseChanged() {
-                relayoutAllFragments();
+                refreshActiveFragment();
             }
         });
 
         calendarFragment = new CalendarGridViewFragment();
-
         calendarListFragment = new CalendarListFragment();
-
         homeFragment = new HomeFragment();
         settingsFragment = new SettingsFragment();
 
@@ -155,24 +153,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         databaseManager.request(DatabaseRequest.SaveEventList, false);
     }
 
-    private void relayoutAllFragments() {
-        Fragment fragment = findVisibleFragment();
-
-        if (fragment != null) {
-            getSupportFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
+    private void refreshActiveFragment() {
+        if (homeFragment != null) {
+            homeFragment.refreshData();
         }
-    }
-
-    public Fragment findVisibleFragment(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        if(fragments != null){
-            for(Fragment fragment : fragments){
-                if(fragment != null && fragment.isVisible())
-                    return fragment;
-            }
+        if (calendarListFragment != null) {
+            calendarListFragment.refreshData();
         }
-        return null;
     }
 
     public DatabaseManager getDatabaseManager() {

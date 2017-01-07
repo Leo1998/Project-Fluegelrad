@@ -23,6 +23,8 @@ import de.projectfluegelrad.database.Event;
 
 public class CalendarListFragment extends Fragment {
 
+    private CalendarRecyclerViewAdapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.calender_list_fragment, container, false);
@@ -31,20 +33,7 @@ public class CalendarListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        List<Event> events = new ArrayList<>();
-        List<Event> original = DatabaseManager.INSTANCE.getEventList();
-
-        for (int i = original.size()-1; i >= 0; i--){
-            if (original.get(i).getDateStart().compareTo(Calendar.getInstance()) > 0){
-                events.add(original.get(i));
-            }else {
-                break;
-            }
-        }
-
-        Collections.reverse(events);
-
-        CalendarRecyclerViewAdapter adapter = new CalendarRecyclerViewAdapter(events);
+        this.adapter = new CalendarRecyclerViewAdapter();
         adapter.setActivity(getActivity());
         recyclerView.setAdapter(adapter);
 
@@ -54,12 +43,28 @@ public class CalendarListFragment extends Fragment {
                 ((MainActivity) CalendarListFragment.this.getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, false, new DatabaseRequestListener() {
                     @Override
                     public void onFinish() {
-                        swipeRefreshLayout.setRefreshing(false);
+                        swipeRefreshLayout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
                     }
                 });
             }
         });
 
         return swipeRefreshLayout;
+    }
+
+    public void refreshData() {
+        if (this.adapter != null && this.getView() != null) {
+            this.getView().post(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 }

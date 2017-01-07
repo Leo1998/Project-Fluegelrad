@@ -77,7 +77,12 @@ public class CalendarGridViewFragment extends Fragment {
                 ((MainActivity) CalendarGridViewFragment.this.getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, false, new DatabaseRequestListener() {
                     @Override
                     public void onFinish() {
-                        swipeRefreshLayout.setRefreshing(false);
+                        swipeRefreshLayout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
                     }
                 });
             }
