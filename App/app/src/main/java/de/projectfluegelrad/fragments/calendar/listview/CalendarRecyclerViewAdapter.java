@@ -10,22 +10,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import de.projectfluegelrad.R;
+import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.Event;
 
 public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRecyclerViewAdapter.ViewHolder>{
 
-    private List<Event> eventList;
-
     private FragmentActivity activity;
-
-    CalendarRecyclerViewAdapter(List<Event> events){
-        this.eventList = events;
-    }
 
     public void setActivity(FragmentActivity activity) {
         this.activity = activity;
@@ -41,23 +38,24 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        Calendar i = eventList.get(position).getDateStart();
+        final Event event = DatabaseManager.INSTANCE.getRecentEventList().get(position);
+        Calendar i = event.getDateStart();
 
-        holder.getNameTextView().setText(eventList.get(position).getName());
+        holder.getNameTextView().setText(event.getName());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
-        holder.getDateTextView().setText(simpleDateFormat.format(eventList.get(position).getDateStart().getTime()));
+        holder.getDateTextView().setText(simpleDateFormat.format(event.getDateStart().getTime()));
 
         //TODO
-        holder.getLocationTextView().setText(eventList.get(position).getLocation().getAddress());
+        holder.getLocationTextView().setText(event.getLocation().getAddress());
         holder.getHostTextView().setText("N/A");
 
         holder.getCardView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putInt("eventId", eventList.get(position).getId());
+                bundle.putInt("eventId", event.getId());
 
                 CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                 calendarDayFragment.setArguments(bundle);
@@ -71,7 +69,7 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
 
     @Override
     public int getItemCount() {
-        return eventList.size();
+        return DatabaseManager.INSTANCE.getRecentEventList().size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

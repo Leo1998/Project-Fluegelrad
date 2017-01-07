@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ public class DatabaseManager implements Runnable {
     private boolean running = false;
     private Object waitLock = new Object();
     private DatabaseRequest currentRequest = null;
+    private DatabaseRequestListener currentListener = null;
 
     public DatabaseManager(View attachedView, File filesDirectory, DatabaseUpdateListener updateListener) {
         if (INSTANCE != null)
@@ -67,6 +69,10 @@ public class DatabaseManager implements Runnable {
         this.logger = new SnackbarLogger(attachedView);
 
         new Thread(this, "Database Service").start();
+
+        try {
+            Thread.sleep(100);
+        } catch(InterruptedException e) {}
     }
 
     @Override
@@ -83,21 +89,25 @@ public class DatabaseManager implements Runnable {
                 try {
                     waitLock.wait();
                 } catch (InterruptedException e) {
+                }
             }
-        }
 
-        switch (currentRequest) {
-            case RefreshEventList:
-                readDatabaseFromServer();
-                break;
-            case SaveEventList:
-                saveDatabaseToStorage();
-                break;
-            default:
-                break;
+            switch (currentRequest) {
+                case RefreshEventList:
+                    readDatabaseFromServer();
+                    break;
+                case SaveEventList:
+                    saveDatabaseToStorage();
+                    break;
+                default:
+                    break;
             }
+
+            if (currentListener != null)
+                currentListener.onFinish();
 
             currentRequest = null;
+            currentListener = null;
         }
     }
 
@@ -181,6 +191,7 @@ public class DatabaseManager implements Runnable {
 
     public synchronized void request(DatabaseRequest request, boolean wait, DatabaseRequestListener listener) {
         this.currentRequest = request;
+        this.currentListener = listener;
 
         synchronized (waitLock) {
             waitLock.notify();
@@ -192,9 +203,6 @@ public class DatabaseManager implements Runnable {
             } catch (InterruptedException e) {
             }
         }
-
-        if (listener != null)
-            listener.onFinish();
     }
 
     /**
@@ -281,8 +289,6 @@ public class DatabaseManager implements Runnable {
             String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php", null);
 
             readDatabase(json, true);
-
-            updateListener.onDatabaseChanged();
         } catch(Exception e) {
             logger.log(e.getMessage());
             e.printStackTrace();
@@ -332,6 +338,8 @@ public class DatabaseManager implements Runnable {
 
         if (save)
             saveDatabaseToStorage();
+
+        updateListener.onDatabaseChanged();
     }
 
     private void saveDatabaseToStorage() {
@@ -460,6 +468,22 @@ public class DatabaseManager implements Runnable {
 
     public List<Sponsor> getSponsorList() {
         return sponsorList;
+    }
+
+    public List<Event> getRecentEventList() {
+        List<Event> list = new ArrayList<>();
+
+        for (int i = eventList.size()-1; i >= 0; i--){
+            if (eventList.get(i).getDateStart().compareTo(Calendar.getInstance()) > 0){
+                list.add(eventList.get(i));
+            } else {
+                break;
+            }
+        }
+
+        Collections.reverse(list);
+
+        return list;
     }
 
     public ArrayList<Image> getImages(Event event) {
