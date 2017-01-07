@@ -20,8 +20,6 @@ class Licenses: NSObject{
 		case .obdl10:
 			path = Bundle(for: Licenses.self).path(forResource: "ODbL10", ofType: "txt")!
 			break
-		default:
-			break
 		}
 		
 		do {

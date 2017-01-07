@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		let statusBar: UIView = UIApplication.shared.value(forKey: "statusBar") as! UIView
 		if statusBar.responds(to: #selector(setter: UIView.backgroundColor)) {
-			statusBar.backgroundColor = UIColor.primaryDark()
+			statusBar.backgroundColor = UIColor.secondary()
 		}
 		
         return true

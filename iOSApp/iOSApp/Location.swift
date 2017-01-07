@@ -3,7 +3,15 @@ import MapKit
 import Contacts
 
 class Location: NSObject, MKAnnotation, NSCoding {
+	
+	/**
+	Address of the location
+	*/
     private(set) var title: String?
+	
+	/**
+	Coordinates of the location
+	*/
     private(set) var coordinate: CLLocationCoordinate2D
     
     init(dict: NSDictionary) {
@@ -27,7 +35,10 @@ class Location: NSObject, MKAnnotation, NSCoding {
         aCoder.encode(coordinate.longitude, forKey: "longitude")
         aCoder.encode(coordinate.latitude, forKey: "latitude")
     }
-    
+	
+	/**
+	Retrieve a Pin of the location
+	*/
     func mapItem() -> MKMapItem {
         let addressDictionary = [String(CNPostalAddressStreetKey): title]
         let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: addressDictionary)

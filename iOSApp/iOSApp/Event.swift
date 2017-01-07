@@ -1,26 +1,75 @@
 import Foundation
 
 class Event: NSObject, NSCoding {
+	
+	/**
+	id of the Event
+	*/
 	private(set) var id:Int!
+	
+	/**
+	name of the Event
+	*/
 	private(set) var name:String!
-	//private(set) var category:String!
+	
+	/**
+	price of the Event
+	*/
 	private(set) var price:Int!
+	
+	/**
+	starting date of the Event
+	*/
 	private(set) var dateStart:Date!
+	
+	/**
+	ending date of the Event
+	*/
 	private(set) var dateEnd:Date!
+	
+	/**
+	description of the Event
+	*/
 	private(set) var descriptionEvent:String!
+	
+	/**
+	maximum count of participants of the Event
+	*/
 	private(set) var maxParticipants:Int!
+	
+	/**
+	count of participating people of the Event
+	*/
 	private(set) var participants: Int!
+	
+	/**
+	minmum age for the Event
+	*/
 	private(set) var ageMin:Int!
+	
+	/**
+	maximum age for the Event
+	*/
 	private(set) var ageMax:Int!
 	
+	/**
+	an array of all sponsor Ids from the Event
+	*/
 	private(set) var sponsorIds = [Int]()
 	
-	
-	
+	/**
+	id of the host from the Event
+	*/
 	private(set) var hostId:Int!
 	
+	/**
+	Location object of the Event
+	*/
 	private(set) var location:Location!
 	
+	/**
+	all Image objects associated with the Event
+	*/
 	private(set) var images = [EventImage]()
 	
 	init(dict: NSDictionary) {
@@ -77,8 +126,6 @@ class Event: NSObject, NSCoding {
 		hostId = aDecoder.decodeObject(forKey: "hostId") as! Int
 		
 		sponsorIds = aDecoder.decodeObject(forKey: "sponsors") as! [Int]
-		
-		//let formId = aDecoder.decodeObject(forKey: "formId") as! Int
 		
 	}
 	

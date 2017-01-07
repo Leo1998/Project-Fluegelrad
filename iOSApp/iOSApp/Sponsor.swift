@@ -1,15 +1,49 @@
 import UIKit
 
 class Sponsor: NSObject, NSCoding{
+	
+	/**
+	image path from where to download the image from
+	*/
 	private var imagePath: String?
+	
+	/**
+	id of the Sponsor
+	*/
 	private(set) var id: Int!
+	
+	/**
+	telephone number of the Sponsor
+	*/
 	private(set) var phone: String?
+	
+	/**
+	E-Mail of the Sponsor
+	*/
 	private(set) var mail: String?
+	
+	/**
+	website of the Sponsor
+	*/
 	private(set) var web: String?
+	
+	/**
+	name of the Sponsor
+	*/
 	private(set) var name: String!
+	
+	/**
+	description of the Sponsor
+	*/
 	private(set) var sponsorDescription: String?
 
+	/**
+	The image itself
+	*/
 	private var imageSave: UIImage?
+	/**
+	The reference to the image so it can download itself
+	*/
 	public var image: UIImage? {
 		get {
 			if self.imageSave == nil {
