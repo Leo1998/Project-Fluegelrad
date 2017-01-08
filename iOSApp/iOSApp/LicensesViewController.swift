@@ -2,9 +2,19 @@ import UIKit
 
 class LicensesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+	/**
+	list with all the licenses
+	*/
 	private var licensesTable: UITableView!
 	
+	/**
+	array with all the licenses
+	*/
 	private var licenses = [Licenses]()
+	
+	/**
+	dictionary with all the gesturerecognizers to licenses
+	*/
 	private var gestures = [UITapGestureRecognizer: Licenses]()
 
     override func viewDidLoad() {
@@ -54,6 +64,9 @@ class LicensesViewController: UIViewController, UITableViewDelegate, UITableView
 		return cell
 	}
 	
+	/**
+	called when the website is tapped shows the website
+	*/
 	func webTap(sender: AnyObject){
 		
 		let url = URL(string: (gestures[sender as! UITapGestureRecognizer]?.url!)!)!

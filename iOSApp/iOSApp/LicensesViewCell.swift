@@ -1,11 +1,30 @@
 import UIKit
 
 class LicensesViewCell: UITableViewCell {
+	
+	/**
+	name of the licensed product
+	*/
 	private(set) var nameLabel: UILabel!
+	
+	/**
+	url of the licensed product
+	*/
 	private(set) var urlLabel: UILabel!
 	
+	/**
+	a view where the license itself is shown
+	*/
 	private(set) var licenseView: UIView!
+	
+	/**
+	copyright of the licensed product
+	*/
 	private(set) var copyright: UILabel!
+	
+	/**
+	license of the licensed product
+	*/
 	private(set) var license: UILabel!
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

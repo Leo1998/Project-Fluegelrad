@@ -88,7 +88,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 	*/
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?){
 		if error != nil {
-			print(error?.localizedDescription)
+			print((error as! NSError).localizedDescription)
 			retry(task: task)
 		} else {
 			let jsonString = String(data: data as Data, encoding: .utf8)!
@@ -154,6 +154,8 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 					print("Participate")
 					
 					self.delegate.participation(status: participationToken(jsonString: jsonString))
+					
+					getEvents()
 					
 				}else if (task.currentRequest?.url?.absoluteString.contains(DatabaseManager.url + getDatabase))!{
 					print("Data downloaded")

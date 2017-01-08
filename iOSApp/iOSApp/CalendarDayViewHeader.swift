@@ -8,19 +8,9 @@ class CalendarDayViewHeader: UIView {
     private var nameLabel: UILabel!
 	
 	/**
-	starting date of the event
+	date of the event
 	*/
-    private var dateStartLabel: UILabel!
-	
-	/**
-	ending date of the event
-	*/
-    private var dateEndLabel: UILabel!
-	
-	/**
-	host name of the event
-	*/
-    private var hostLabel: UILabel!
+    private var dateLabel: UILabel!
 	
 	/**
 	total height of the view
@@ -39,27 +29,15 @@ class CalendarDayViewHeader: UIView {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
         
-        dateStartLabel = UILabel()
-        dateStartLabel.text = dateFormatter.string(from: event.dateStart)
-        dateStartLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(dateStartLabel)
-        dateStartLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
-
-        dateEndLabel = UILabel()
-        dateEndLabel.text = dateFormatter.string(from: event.dateEnd)
-        dateEndLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(dateEndLabel)
-        dateEndLabel.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: dateStartLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-
-        hostLabel = UILabel()
-        hostLabel.text = sponsor[event.hostId]?.name
-        hostLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(hostLabel)
-        hostLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-        
+        dateLabel = UILabel()
+        dateLabel.text = "von \(dateFormatter.string(from: event.dateStart)) bis \(dateFormatter.string(from: event.dateEnd))"
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(dateLabel)
+        dateLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
         layoutIfNeeded()
         height += nameLabel.frame.height
-        height += hostLabel.frame.height
+        height += dateLabel.frame.height
     }
     
     required init?(coder aDecoder: NSCoder) {

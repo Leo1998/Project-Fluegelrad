@@ -2,9 +2,24 @@ import Foundation
 
 class Licenses: NSObject{
 	
+	/**
+	name of the licensed product
+	*/
 	private(set) var name: String!
+	
+	/**
+	url of the licensed product
+	*/
 	private(set) var url: String!
+	
+	/**
+	copyright of the licensed product
+	*/
 	private(set) var copyright: String!
+	
+	/**
+	license of the licensed product
+	*/
 	private(set) var license: String!
 	
 	init(name: String, url: String, copyright: String, license: LicensesEnum) {
