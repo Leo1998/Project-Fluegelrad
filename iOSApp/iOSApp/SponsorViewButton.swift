@@ -14,8 +14,10 @@ class SponsorViewButton: UIButton {
 
 	init(frame: CGRect, sponsor: Sponsor){
 		super.init(frame: frame)
+
 		
-		backgroundColor = UIColor.lightGray
+		layer.borderWidth = 1
+		layer.borderColor = UIColor.primary().cgColor
 		
 		name = UILabel()
 		name.text = sponsor.name
@@ -25,7 +27,7 @@ class SponsorViewButton: UIButton {
 		
 		var imageTemp = sponsor.image
 			
-		let size = CGSize(width: UIScreen.main.bounds.width, height: (imageTemp?.size.height)! / ((imageTemp?.size.width)! / UIScreen.main.bounds.width))
+		let size = CGSize(width: frame.width, height: (imageTemp?.size.height)! / ((imageTemp?.size.width)! / frame.width))
 			
 		UIGraphicsBeginImageContext(size)
 		imageTemp?.draw(in: CGRect(origin: .zero, size: size))

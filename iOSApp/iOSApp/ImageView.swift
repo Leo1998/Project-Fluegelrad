@@ -23,7 +23,7 @@ class ImageView: UIView {
         if !eventImage.scaled {
             let imageTemp = eventImage.image
             
-            let size = CGSize(width: UIScreen.main.bounds.width, height: (imageTemp?.size.height)! / ((imageTemp?.size.width)! / UIScreen.main.bounds.width))
+            let size = CGSize(width: frame.width, height: (imageTemp?.size.height)! / ((imageTemp?.size.width)! / frame.width))
             
             UIGraphicsBeginImageContext(size)
             imageTemp?.draw(in: CGRect(origin: .zero, size: size))
