@@ -11,15 +11,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
 
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
-import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.fragments.calendar.CalendarDayFragment2;
 
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.ViewHolder>{
 
@@ -62,7 +59,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
                 Bundle bundle = new Bundle();
                 bundle.putInt("eventId", event.getId());
 
-                CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
+                CalendarDayFragment2 calendarDayFragment = new CalendarDayFragment2();
                 calendarDayFragment.setArguments(bundle);
 
                 if (activity != null) {

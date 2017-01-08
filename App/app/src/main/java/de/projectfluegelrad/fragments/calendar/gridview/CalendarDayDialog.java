@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.fragments.calendar.CalendarDayFragment2;
 
 public class CalendarDayDialog extends DialogFragment {
 
@@ -52,7 +52,7 @@ public class CalendarDayDialog extends DialogFragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt("eventId", events.get(i).getId());
 
-                CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
+                CalendarDayFragment2 calendarDayFragment = new CalendarDayFragment2();
                 calendarDayFragment.setArguments(bundle);
 
                 CalendarDayDialog.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
