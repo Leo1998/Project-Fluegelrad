@@ -2,17 +2,53 @@ import UIKit
 
 class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
 
-    private var calendarGridView: CalendarGridView!
-    
+	/**
+	GridView ehere the calendar is shown
+	*/
+	private var dayGrid: UICollectionView!
+	
+	/**
+	Pull to refresh control
+	*/
+	private var refreshControl: UIRefreshControl!
+	
+	/**
+	Header of the grid where the weekdays are ahown
+	*/
+	private var headerView: CalendarGridHeader!
+	
+	/**
+	All events
+	*/
     private var events = [Event]()
+	
+	/**
+	Shown events from the current shown month and some of the month before and after
+	*/
     private var shownEvents = [Int: Event]()
+	/**
+	Shown days from the current shown month and some of the month before and after
+	*/
     private var daysShown = [Date]()
-    
+	
+	/**
+	temporal reference to an evnet to pass it to the CalendarDayViewController on tap
+	*/
     private var dayEvent: Event?
 	
+	/**
+	All the sponosrs
+	*/
 	private var sponsors = [Int: Sponsor]()
-    
+	
+	/**
+	Calendar object
+	*/
     private var calendar: Calendar!
+	
+	/**
+	a date of the shown month
+	*/
     private var date: Date!
 
     
@@ -21,17 +57,32 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		
 		setupEvents()
 		
-		calendarGridView = CalendarGridView(frame: view.frame)
-		view.addSubview(calendarGridView)
-		calendarGridView.translatesAutoresizingMaskIntoConstraints = false
-		calendarGridView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		calendarGridView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+		layout.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+		let dia = (view.frame.size.width-5-5 - (7-1))/7
+		layout.itemSize = CGSize(width: dia, height: dia)
+		layout.minimumInteritemSpacing = 1
+		layout.minimumLineSpacing = layout.minimumInteritemSpacing
+		layout.headerReferenceSize = CGSize(width: view.frame.size.width, height: (view.frame.size.width-5-5 - (7-1))/7)
+		
+		dayGrid = UICollectionView(frame: CGRect(), collectionViewLayout: layout)
+		dayGrid.translatesAutoresizingMaskIntoConstraints = false
+		dayGrid.register(CalendarGridHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "Header")
+		dayGrid.register(CalendarGridCell.self, forCellWithReuseIdentifier: "Cell")
+		dayGrid.backgroundColor = UIColor.clear
+		view.addSubview(dayGrid)
+		dayGrid.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		dayGrid.addConstraintsXY(xView: view, xSelfAttribute: .width, xViewAttribute: .width, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .height, yViewAttribute: .height, yMultiplier: 1, yConstant: 0)
+		
+		refreshControl = UIRefreshControl()
+		dayGrid.addSubview(refreshControl)
+		dayGrid.alwaysBounceVertical = true
 		
 		
-		calendarGridView.dayGrid.delegate = self
-		calendarGridView.dayGrid.dataSource = self
+		dayGrid.delegate = self
+		dayGrid.dataSource = self
 		
-		calendarGridView.refreshControl.addTarget(self, action: #selector(CalendarGridViewController.refresh), for: .valueChanged)
+		refreshControl.addTarget(self, action: #selector(CalendarGridViewController.refresh), for: .valueChanged)
 		
 		updateViews(fromReload: false)
 		
@@ -79,14 +130,14 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView,viewForSupplementaryElementOfKind kind: String,at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionElementKindSectionHeader:
-            calendarGridView.headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,withReuseIdentifier: "Header",for: indexPath) as! CalendarGridHeader
+            headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,withReuseIdentifier: "Header",for: indexPath) as! CalendarGridHeader
             
             updateViews(fromReload: false)
-            calendarGridView.headerView.right.addTarget(self, action: #selector(CalendarGridViewController.buttonNextMonthClicked), for: .touchUpInside)
-            calendarGridView.headerView.left.addTarget(self, action: #selector(CalendarGridViewController.buttonPrevMonthClicked), for: .touchUpInside)
+            headerView.right.addTarget(self, action: #selector(CalendarGridViewController.buttonNextMonthClicked), for: .touchUpInside)
+            headerView.left.addTarget(self, action: #selector(CalendarGridViewController.buttonPrevMonthClicked), for: .touchUpInside)
             
             
-            return calendarGridView.headerView
+            return headerView
         default:
             assert(false, "Unexpected element kind")
         }
@@ -95,8 +146,11 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 42
     }
-    
-    private func updateCalendar() -> Void {
+	
+	/**
+	updates the calendar to show the correct month dates and events
+	*/
+    private func updateCalendar() {
         daysShown.removeAll()
         
         var dateTemp = Date(timeIntervalSince1970: date.timeIntervalSince1970)
@@ -119,13 +173,19 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         }
         
     }
-    
+	
+	/**
+	shows the previous month
+	*/
     internal func buttonPrevMonthClicked(){
         date = calendar.date(byAdding: .month, value: -1, to: date, wrappingComponents: false)
         updateCalendar()
         updateViews(fromReload: true)
     }
-    
+	
+	/**
+	shows the next month
+	*/
     internal func buttonNextMonthClicked(){
         date = calendar.date(byAdding: .month, value: 1, to: date, wrappingComponents: false)
         updateCalendar()
@@ -140,6 +200,9 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         }
     }
 
+	/**
+	sets the events and the sponsors of the CalendarDayViewController
+	*/
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CalendarDayViewController" {
             let vc = segue.destination as! CalendarDayViewController
@@ -148,28 +211,37 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 			vc.sponsors = sponsors
         }
     }
-    
+	
+	/**
+	updates the views to show the correct dates, moth and events
+	*/
     private func updateViews(fromReload: Bool){
         let monthInt = calendar.dateComponents([.month], from: date).month!
         let yearInt = calendar.dateComponents([.year], from: date).year!
         
         if fromReload {
-            calendarGridView.dayGrid.reloadData()
+            dayGrid.reloadData()
         }
         
-        if calendarGridView.headerView != nil {
-            calendarGridView.headerView.month.text = calendar.monthSymbols[monthInt - 1] + " \(yearInt)"
+        if headerView != nil {
+            headerView.month.text = calendar.monthSymbols[monthInt - 1] + " \(yearInt)"
         }
     }
 
+	/**
+	Forwarding the refresh to the MainViewController
+	*/
     internal func refresh(){
         print("Refresh")
         
         MainViewController.refresh()
         
-        calendarGridView.refreshControl.endRefreshing()
+        refreshControl.endRefreshing()
     }
 	
+	/**
+	Gets all events and sponsors
+	*/
 	private func setupEvents(){
 		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
 		
@@ -191,6 +263,9 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		updateCalendar()
 	}
 	
+	/**
+	(Re)loads all the events and sponsors
+	*/
     public func reset(){
 		setupEvents()
 		

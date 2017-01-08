@@ -1,9 +1,20 @@
 import UIKit
 
 class ImageView: UIView {
+	
+	/**
+	the event image which is shown
+	*/
     private var image: UIImageView!
+	
+	/**
+	a description to the image
+	*/
     private var imageDescription: UILabel!
-    
+	
+	/**
+	total height of the view
+	*/
     private(set) var height: CGFloat = 0
     
 	init(frame: CGRect, eventImage: EventImage) {

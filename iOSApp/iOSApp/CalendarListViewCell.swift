@@ -1,8 +1,20 @@
 import UIKit
 
 class CalendarListViewCell: UITableViewCell {
+	
+	/**
+	Showing the image of the event
+	*/
 	private(set) var imageV: UIImageView!
+	
+	/**
+	Showing the name of the event
+	*/
 	private(set) var nameLabel: UILabel!
+	
+	/**
+	Showing the starting of the event
+	*/
 	private(set) var dateLabel: UILabel!
 	
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

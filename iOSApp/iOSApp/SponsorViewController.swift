@@ -2,13 +2,39 @@ import UIKit
 
 class SponsorViewController: UIViewController {
 	
+	/**
+	sponsor object which is shown
+	*/
 	public var sponsor: Sponsor!
 	
+	/**
+	image of the sponsor
+	*/
 	private var imageView: UIImageView!
+	
+	/**
+	name of the sponsor
+	*/
 	private var name: UILabel!
+	
+	/**
+	website of the sponsor
+	*/
 	private var web: UILabel!
+	
+	/**
+	E-Mail of the sponsor
+	*/
 	private var mail: UILabel!
+	
+	/**
+	phone number of the sponsor
+	*/
 	private var phone: UILabel!
+	
+	/**
+	description of the sponsor
+	*/
 	private var sponsorDescription: UILabel!
 
     override func viewDidLoad() {
@@ -74,6 +100,9 @@ class SponsorViewController: UIViewController {
         super.didReceiveMemoryWarning()
     }
 	
+	/**
+	called when the website is tapped shows the website
+	*/
 	func webTap(){
 		let url = URL(string: (sponsor.web!))!
 
@@ -86,6 +115,9 @@ class SponsorViewController: UIViewController {
 		}
 	}
 	
+	/**
+	called when the mail is tapped forwards to an e-mail program
+	*/
 	func mailTap(){
 		let url = URL(string: "mailto://\(sponsor.mail!)")!
 		
@@ -98,6 +130,9 @@ class SponsorViewController: UIViewController {
 		}
 	}
 	
+	/**
+	called when the phone number is tapped forwards to the call
+	*/
 	func phoneTap(){
 		var realPhoneNumber = sponsor.phone?.replacingOccurrences(of: "-", with: "")
 		realPhoneNumber = realPhoneNumber?.replacingOccurrences(of: " ", with: "")

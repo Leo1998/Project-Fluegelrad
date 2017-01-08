@@ -2,6 +2,10 @@ import UIKit
 import QuartzCore
 
 class CalendarGridCell: UICollectionViewCell {
+	
+	/**
+	the number of the day
+	*/
     private(set) var numberLabel: UILabel!
     
     override init(frame: CGRect){

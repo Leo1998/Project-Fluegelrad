@@ -2,7 +2,14 @@ import UIKit
 
 class SponsorViewButton: UIButton {
 	
+	/**
+	image of the sponsor
+	*/
 	private var image: UIImageView!
+	
+	/**
+	name of the sponsor
+	*/
 	private var name: UILabel!
 
 	init(frame: CGRect, sponsor: Sponsor){
@@ -35,6 +42,9 @@ class SponsorViewButton: UIButton {
 		
 	}
 	
+	/**
+	total height of the view
+	*/
 	public func height() -> CGFloat {
 		layoutIfNeeded()
 		

@@ -2,10 +2,25 @@ import UIKit
 import QuartzCore
 
 class CalendarGridHeader: UICollectionReusableView {
+	
+	/**
+	the view where the week days are shown
+	*/
     private var weekView: UIView!
-    
+	
+	/**
+	button to get the previous month
+	*/
     private(set) var left: UIButton!
+	
+	/**
+	button to get the next month
+	*/
     private(set) var right: UIButton!
+	
+	/**
+	label which shows the current month
+	*/
     private(set) var month: UILabel!
     
     override init(frame: CGRect){
@@ -18,7 +33,10 @@ class CalendarGridHeader: UICollectionReusableView {
         setupWeekView()
 
     }
-    
+	
+	/**
+	setups the week day view
+	*/
     private func setupWeekView(){
         let calendar = NSCalendar.autoupdatingCurrent
         let weekString = calendar.shortWeekdaySymbols
@@ -43,7 +61,10 @@ class CalendarGridHeader: UICollectionReusableView {
         addSubview(weekView)
         weekView.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: left, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
     }
-    
+	
+	/**
+	setups the views to change through the months
+	*/
     private func setupMonthChanger(){
         left = UIButton()
         left.translatesAutoresizingMaskIntoConstraints = false
