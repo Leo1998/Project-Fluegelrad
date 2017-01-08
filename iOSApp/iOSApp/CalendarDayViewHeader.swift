@@ -1,11 +1,30 @@
 import UIKit
 
 class CalendarDayViewHeader: UIView {
+	
+	/**
+	the name of the evnet
+	*/
     private var nameLabel: UILabel!
+	
+	/**
+	starting date of the event
+	*/
     private var dateStartLabel: UILabel!
+	
+	/**
+	ending date of the event
+	*/
     private var dateEndLabel: UILabel!
+	
+	/**
+	host name of the event
+	*/
     private var hostLabel: UILabel!
-    
+	
+	/**
+	total height of the view
+	*/
     private(set) var height: CGFloat = 0
 
 	init(event: Event, sponsor: [Int: Sponsor]) {

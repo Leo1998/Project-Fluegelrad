@@ -1,7 +1,14 @@
 import Foundation
 
 class User: NSObject, NSCoding{
+	/**
+	id of the user
+	*/
     let id: Int!
+	
+	/**
+	token of the user
+	*/
     var token: String!
     
     init(id: Int, token: String) {

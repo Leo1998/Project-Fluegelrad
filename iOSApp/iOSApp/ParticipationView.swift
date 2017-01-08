@@ -1,9 +1,20 @@
 import UIKit
 
 class ParticipationView: UIView {
+	
+	/**
+	shows the current count of the people which still can join
+	*/
 	private var currentParticipants: UILabel!
+	
+	/**
+	button to join the event
+	*/
 	private(set) var participationButton: UIButton!
 	
+	/**
+	total height of the view
+	*/
 	public var height: CGFloat {
 		get {
 			layoutIfNeeded()
@@ -34,6 +45,9 @@ class ParticipationView: UIView {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
+	/**
+	updates the label for the participants which can still join
+	*/
 	public func updateCurrentParticipants(event: Event){
 		currentParticipants.text = "Es sind noch \(event.maxParticipants - event.participants) Plätze frei."
 	}

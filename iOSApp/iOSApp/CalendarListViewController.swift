@@ -2,20 +2,49 @@ import UIKit
 
 class CalendarListViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating, UISearchBarDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
 	
+	/**
+	handles all the search results
+	*/
 	private var searchController: UISearchController!
 	
+	/**
+	Sorting view
+	*/
+	private var picker: SortPicker!
+	/**
+	Current sorting method
+	*/
+	private var sortCategory: SortingCategory!
+	
+	/**
+	Table View for the events
+	*/
 	private var eventTable: UITableView!
+	
+	/**
+	Pull to refresh control
+	*/
 	private var refreshControl: UIRefreshControl!
 
+	/**
+	Events which are shown if a filter is aplied
+	*/
 	private var filteredEvents = [Event]()
+	
+	/**
+	All events
+	*/
 	private var allEvents = [Event]()
 	
+	/**
+	All the sponosrs
+	*/
 	private var sponsors = [Int: Sponsor]()
 	
+	/**
+	temporal reference to an evnet to pass it to the CalendarDayViewController on tap
+	*/
 	private var dayEvent: Event?
-	
-	private var picker: SortPicker!
-	private var sortCategory: SortingCategory!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -24,6 +53,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		
 		eventTable = UITableView()
 		eventTable.register(CalendarListViewCell.self, forCellReuseIdentifier: "cell")
+		// size because the host pictures height inside the cell is UIScreen.main.bounds.height/10
 		eventTable.rowHeight = UIScreen.main.bounds.height / 10
 		view.addSubview(eventTable)
 		eventTable.separatorColor = UIColor.primary()
@@ -71,6 +101,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		let gesture = UITapGestureRecognizer(target: self, action: #selector(CalendarListViewController.exitSort))
 		picker.dimView.addGestureRecognizer(gesture)
 		
+		// default sorting method
 		sortCategory = .rating
 
 		
@@ -81,6 +112,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		super.didReceiveMemoryWarning()
 	}
 	
+	/**
+	Gets all events and sponsors
+	*/
 	private func setupEvents(){
 		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
 		
@@ -119,6 +153,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		performSegue(withIdentifier: "CalendarDayViewController", sender: self)
 	}
 	
+	/**
+	sets the events and the sponsors of the CalendarDayViewController
+	*/
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.identifier == "CalendarDayViewController" {
 			let vc = segue.destination as! CalendarDayViewController
@@ -172,6 +209,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		return cell
 	}
 	
+	/**
+	Forwarding the refresh to the MainViewController
+	*/
 	internal func refresh(){
 		print("Refresh")
 		
@@ -180,6 +220,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		refreshControl.endRefreshing()
 	}
 	
+	/**
+	(Re)loads all the events and sponsors
+	*/
 	public func reset(){
 		setupEvents()
 		
@@ -188,6 +231,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		}
 	}
 
+	/**
+	Filters out all events
+	*/
 	private func filterEvents(searchText: String, scope: String){
 		filteredEvents = allEvents.filter({ event in
 			switch scope{
@@ -229,6 +275,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		filterEvents(searchText: searchBar.text!, scope: searchBar.scopeButtonTitles![selectedScope])
 	}
 
+	/**
+	Used for sorting
+	*/
 	func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
 		picker.isHidden = false
 	}
@@ -252,6 +301,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		sort()
 	}
 	
+	/**
+	Sorts the events
+	*/
 	private func sort(){
 		allEvents.sort(by: {
 			(event1, event2) -> Bool in
@@ -296,6 +348,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 
 	}
 
+	/**
+	Exits the sort screen
+	*/
 	func exitSort(){
 		picker.isHidden = true
 	}

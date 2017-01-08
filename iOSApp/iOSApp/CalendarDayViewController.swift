@@ -3,22 +3,65 @@ import MapKit
 import EventKit
 
 class CalendarDayViewController: UIViewController, MKMapViewDelegate {
+	
+	/**
+	the event which is shown
+	*/
     var event: Event!
+	
+	/**
+	All the sponosrs
+	*/
 	var sponsors: [Int: Sponsor]!
-    
+	
+	/**
+	a header where some of the event information is always shown
+	*/
     private var header: CalendarDayViewHeader!
+	
+	/**
+	label with the description of the event
+	*/
     private var descriptionLabel: UILabel!
+	
+	/**
+	label with the prize of the event
+	*/
     private var prizeLabel: UILabel!
+	
+	/**
+	map of the position where the event is held
+	*/
     private var mapView: MKMapView!
+	
+	/**
+	button which is forwarding to the host of the event
+	*/
 	private var hostView: SponsorViewButton!
+	
+	/**
+	buttons which is forwarding to the sponsors of the event
+	*/
 	private var sponsorView: UIView!
 	
+	/**
+	button with wich you can participate to the event
+	*/
 	private var participationView: ParticipationView!
-    
+	
+	/**
+	All the images of the event
+	*/
     private var imageView: UIView!
-    
+	
+	/**
+	view to scoll through all the event data
+	*/
     private var scrollView: UIScrollView!
 	
+	/**
+	the sponsor which was pressed to segue there
+	*/
 	private var segueSponsor: Sponsor?
 	
     override func viewDidLoad() {
@@ -156,15 +199,24 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         navigationItem.setRightBarButtonItems([shareEventButton, saveEventButton], animated: false)
     }
 	
+	/**
+	called when a sponsor button is pressed
+	*/
 	func sponsorTap(sender: UIButton){
 		segueSponsor = sponsors[sender.tag]
 		performSegue(withIdentifier: "SponsorViewController", sender: self)
 	}
 	
+	/**
+	called when the participation button is pressed
+	*/
 	func participate(){
 		MainViewController.participate(event: event)
 	}
 	
+	/**
+	called when the host button is pressed
+	*/
 	func host(){
 		segueSponsor = sponsors[event.hostId]
 		performSegue(withIdentifier: "SponsorViewController", sender: self)
@@ -184,7 +236,10 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 			navigationController?.setNavigationBarHidden(true, animated: animated)
 		}
 	}
-    
+	
+	/**
+	checks if event can be localy saved
+	*/
     func saveEvent(){
         let eventStore = EKEventStore()
         
@@ -208,7 +263,10 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
             print("Calendar Access default")
         }
     }
-    
+	
+	/**
+	saves the event to the local calendar
+	*/
     private func saving(eventStore: EKEventStore){
 		let calendarData = UserDefaults.standard.object(forKey: "calendar")
 		let eventCalendarIdentifier = NSKeyedUnarchiver.unarchiveObject(with: calendarData as! Data) as! String
@@ -258,7 +316,10 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
             }
         }
     }
-    
+	
+	/**
+	shares the event if share is pressed
+	*/
     func share(){
 		//TODO
         let activityViewController = UIActivityViewController(activityItems: ["Test"], applicationActivities: nil)

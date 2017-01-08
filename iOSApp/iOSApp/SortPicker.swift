@@ -2,7 +2,14 @@ import UIKit
 
 class SortPicker: UIView {
  
+	/**
+	Picker view from where to pick the sorting method
+	*/
 	private(set) var picker: UIPickerView!
+	
+	/**
+	View which dims the whole screen
+	*/
 	private(set) var dimView: UIView!
 	
 	override init(frame: CGRect) {

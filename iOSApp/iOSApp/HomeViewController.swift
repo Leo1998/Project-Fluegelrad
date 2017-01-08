@@ -2,30 +2,57 @@ import UIKit
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    private var homeView: HomeView!
-    
+	/**
+	Table View for the events
+	*/
+	private var eventTable: UITableView!
+	
+	/**
+	Pull to refresh control
+	*/
+	private var refreshControl: UIRefreshControl!
+	
+	/**
+	events which are shown to the user
+	*/
     private var shownEvents = [Event]()
+	
+	/**
+	titles to the events which are shown
+	*/
 	private var titleEvents = [Event: String]()
+	
+	/**
+	all sponsors
+	*/
 	private var sponsors = [Int: Sponsor]()
 	
+	/**
+	temporal reference to an evnet to pass it to the CalendarDayViewController on tap
+	*/
     private var dayEvent: Event?
 	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
 		setupEvents()
+				
+		eventTable = UITableView()
+		eventTable.register(HomeViewCell.self, forCellReuseIdentifier: "cell")
+		eventTable.separatorColor = UIColor.primary()
+		view.addSubview(eventTable)
+		eventTable.translatesAutoresizingMaskIntoConstraints = false
+		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		eventTable.delegate = self
+		eventTable.dataSource = self
 		
-		homeView = HomeView(frame: view.frame)
-		view.addSubview(homeView)
-		homeView.translatesAutoresizingMaskIntoConstraints = false
-		homeView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		homeView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		// estimated size because the host pictures height inside the cell is UIScreen.main.bounds.height/10
+		eventTable.estimatedRowHeight = UIScreen.main.bounds.height/10 * 2
 		
-		homeView.eventTable.delegate = self
-		homeView.eventTable.dataSource = self
-		
-		
-		homeView.refreshControl.addTarget(self, action: #selector(HomeViewController.refresh), for: .valueChanged)
+		refreshControl = UIRefreshControl()
+		eventTable.addSubview(refreshControl)
+		refreshControl.addTarget(self, action: #selector(HomeViewController.refresh), for: .valueChanged)
 
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
@@ -36,6 +63,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.didReceiveMemoryWarning()
     }
 
+	/**
+	Gets all events and sponsors
+	decides which events to show and which title they have
+	*/
     private func setupEvents(){
 		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
 		
@@ -51,46 +82,51 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
 		}
 		
-        shownEvents = events.sorted(by: {
-            (event1, event2) -> Bool in
+		if events.count > 0 && sponsors.count > 0 {
+			shownEvents = events.sorted(by: {
+				(event1, event2) -> Bool in
             
-            let date1 = (event1 ).dateStart
-            let date2 = (event2 ).dateStart
+				let date1 = (event1 ).dateStart
+				let date2 = (event2 ).dateStart
             
-            return (date1!.compare(date2!)) == ComparisonResult.orderedAscending
+				return (date1!.compare(date2!)) == ComparisonResult.orderedAscending
             
-        })
-        
-        let today = Date()
-        for (index, value) in events.enumerated(){
-            if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
-                shownEvents.remove(at: index)
-            }
-        }
+			})
 		
-		var newShownEvents = [Event]()
-		
-		newShownEvents.append(shownEvents[0])
-		titleEvents[shownEvents[0]] = "Das nächste Event"
-		
-		var eventTemp = shownEvents[1]
-		for value in shownEvents {
-			if value.participants > eventTemp.participants && value != shownEvents[0] {
-				eventTemp = value
+			// deltes all outdated events
+			let today = Date()
+			for (index, value) in events.enumerated(){
+				if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
+					shownEvents.remove(at: index)
+				}
 			}
-		}
-		newShownEvents.append(eventTemp)
-		titleEvents[eventTemp] = "Das beliebteste Event"
 		
-		shownEvents = newShownEvents
+			var newShownEvents = [Event]()
+		
+			newShownEvents.append(shownEvents[0])
+			titleEvents[shownEvents[0]] = "Das nächste Event"
+		
+			var eventTemp = shownEvents[1]
+			for value in shownEvents {
+				if value.participants > eventTemp.participants && value != shownEvents[0] {
+					eventTemp = value
+				}
+			}
+			newShownEvents.append(eventTemp)
+			titleEvents[eventTemp] = "Das beliebteste Event"
+		
+			shownEvents = newShownEvents
+		}
     }
 
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         dayEvent = shownEvents[indexPath.item]
         performSegue(withIdentifier: "CalendarDayViewController", sender: self)
     }
-    
+	
+	/**
+	sets the events and the sponsors of the CalendarDayViewController
+	*/
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CalendarDayViewController" {
             let vc = segue.destination as! CalendarDayViewController
@@ -99,13 +135,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 			vc.sponsors = sponsors
         }
     }
-    
+	
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return shownEvents.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell:HomeViewCell = homeView.eventTable.dequeueReusableCell(withIdentifier: "cell")! as! HomeViewCell
+        let cell:HomeViewCell = eventTable.dequeueReusableCell(withIdentifier: "cell")! as! HomeViewCell
 		let event:Event = (shownEvents[indexPath.row] )
 
 		cell.titleLabel.text = titleEvents[event]
@@ -160,20 +196,25 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		return UITableViewAutomaticDimension
 	}
 	
-    
+	/**
+	Forwarding the refresh to the MainViewController
+	*/
     internal func refresh(){
         print("Refresh")
         
         MainViewController.refresh()
 		
-		homeView.refreshControl.endRefreshing()
+		refreshControl.endRefreshing()
     }
-    
+	
+	/**
+	(Re)loads all the events and sponsors
+	*/
     public func reset(){
         setupEvents()
 		
 		DispatchQueue.main.sync {
-			homeView.eventTable.reloadData()
+			eventTable.reloadData()
 		}
     }
 }

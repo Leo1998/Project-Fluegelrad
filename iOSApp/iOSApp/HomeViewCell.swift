@@ -2,12 +2,39 @@ import UIKit
 
 class HomeViewCell: UITableViewCell {
 	
+	/**
+	Showing the title of the event
+	*/
 	private(set) var titleLabel: UILabel!
+	
+	/**
+	Showing the image of the event
+	*/
 	private(set) var imageV: UIImageView!
+	
+	/**
+	Showing the hosts name of the event
+	*/
     private(set) var hostNameLabel: UILabel!
+	
+	/**
+	Showing the name of the event
+	*/
     private(set) var nameLabel: UILabel!
+	
+	/**
+	Showing the starting and ending date of the event
+	*/
     private(set) var dateLabel: UILabel!
+	
+	/**
+	Showing the minimum and maximum age of the event
+	*/
     private(set) var ageLabel: UILabel!
+	
+	/**
+	Showing the price of the event
+	*/
 	private(set) var priceLabel: UILabel!
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
