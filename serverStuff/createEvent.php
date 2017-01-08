@@ -137,6 +137,8 @@
 			var sponsorsSelect = document.getElementById('sponsors');
 			
 			for(var i = 0 ; i < sponsors.length ; i++){
+				var li = document.createElement('li');
+				
 				var checkbox = document.createElement('input');
 				checkbox.type = "checkbox";
 				checkbox.name = "sponsor "+sponsorIds[i];
@@ -154,9 +156,11 @@
 				label.htmlFor = "sponsor "+sponsorIds[i];
 				label.appendChild(document.createTextNode(sponsors[i]));
 				
-				sponsorsSelect.appendChild(checkbox);
-				sponsorsSelect.appendChild(img);
-				sponsorsSelect.appendChild(label);
+				li.appendChild(checkbox);
+				li.appendChild(img);
+				li.appendChild(label);
+				
+				sponsorsSelect.appendChild(li);
 			}
 			
 			document.getElementById('maxSponsorId').value = maxSponsorId;
@@ -415,7 +419,7 @@
 					<li>
 						<label for="participants">Maximale Teilnehmerzahl</label>
 						<input type="number" name="participants" id="participants" min="1" placeholder = "Keine">
-						<input type="checkbox" name="countParticipants" name="countParticipants" checked>
+						<input type="checkbox" name="countParticipants" id="countParticipants" checked>
 						<label for="countParticipants">Teilnehmer z&#xe4;hlen</label>
 					</li>
 					<br>
@@ -440,15 +444,18 @@
 					<li>
 						<label>Position</label>
 						<br>
-						<input type = "radio" name = "knowLoc" id = "oldLoc" value = "1" checked>Bekannte Location</input>
+						<input type = "radio" name = "knowLoc" id = "oldLoc" value = "1" checked></input>
+						<label for="oldLoc">Bekannte Location</label>
 						<br>
 						<select name = "location" id = "location">
 						</select>
 						<br>
-						<input type = "radio" name = "knowLoc" id = "newLoc" value = "2">Neue Location</input>
+						<input type = "radio" name = "knowLoc" id = "newLoc" value = "2"></input>
+						<label for="newLoc">Neue Location</label>
 						<br>
 						<input type = "text" name = "newAddress" id = "newAddress" max = 30 placeholder = "Addresse"></input>
-						<input type = "checkbox" name = "setMarker" id = "setMarker">Marker platzieren</input>
+						<input type = "checkbox" name = "setMarker" id = "setMarker"></input>
+						<label for="setMarker">Marker platzieren</label>
 						<br>
 						<input type="number" name="latitude" id="latitude" min="-180" max = "180" step="any" value = 51.514>
 						<input type="number" name="longitude" id="longitude" min="-180" max = "180" step="any" value = 7.463>
@@ -465,8 +472,8 @@
 					<li>
 						<label>Sponsoren</label>
 						<input type = "number" id = "maxSponsorId" name = "maxSponsorId" style = "position : absolute ; display : none ;" value = "0">
-						<div name = "sponsors" id = "sponsors" multiple>
-						</div>
+						<oul name = "sponsors" id = "sponsors" multiple>
+						</oul>
 						<input type = "number" id = "sponsorCount" name = "sponsorCount" style = "position : absolute ; display : none ;" value = "0">
 						<button type="button" onClick="createSponsor();">Neuer Sponsor</button>
 						<oul name = "newSponsors" id = "newSponsors">
