@@ -163,8 +163,8 @@ public class Event {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", dateStart=" + dateStart +
-                ", dateEnd=" + dateEnd +
+                ", dateStart=" + getDateStartFormatted() +
+                ", dateEnd=" + getDateEndFormatted() +
                 ", description='" + description + '\'' +
                 ", maxParticipants=" + maxParticipants +
                 ", participants=" + participants +

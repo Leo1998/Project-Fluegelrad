@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
-import java.util.List;
 
 import de.projectfluegelrad.fragments.calendar.gridview.CalendarGridViewFragment;
 import de.projectfluegelrad.fragments.calendar.listview.CalendarListFragment;
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"), new DatabaseUpdateListener() {
             @Override
             public void onDatabaseChanged() {
-                refreshActiveFragment();
+                refreshFragments();
             }
         });
 
@@ -153,7 +152,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         databaseManager.request(DatabaseRequest.SaveEventList, false);
     }
 
-    private void refreshActiveFragment() {
+    /**
+     * notifies fragment that the Database has changed
+     */
+    private void refreshFragments() {
         if (homeFragment != null) {
             homeFragment.refreshData();
         }

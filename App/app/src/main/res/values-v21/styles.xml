@@ -6,6 +6,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="android:navigationBarColor">@android:color/black</item>
     </style>
 

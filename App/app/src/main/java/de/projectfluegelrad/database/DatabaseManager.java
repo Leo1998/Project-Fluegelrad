@@ -36,24 +36,70 @@ import de.projectfluegelrad.database.logging.SnackbarLogger;
 
 public class DatabaseManager implements Runnable {
 
+    /**
+     * static reference on the DatabaseManager
+     */
     public static DatabaseManager INSTANCE;
 
+    /**
+     * listener for changes in the database
+     */
     private final DatabaseUpdateListener updateListener;
+    /**
+     * a view the DatabaseManager is attached to (for snackbar logger)
+     */
     private final View attachedView;
+    /**
+     * the directory to store the Database files
+     */
     private final File filesDirectory;
 
+    /**
+     * list of all events
+     */
     private final List<Event> eventList = new ArrayList<Event>();
+    /**
+     * list of all images
+     */
     private final List<Image> images = new ArrayList<>();
+    /**
+     * list of all sponsors
+     */
     private final List<Sponsor> sponsorList = new ArrayList<Sponsor>();
+    /**
+     * the Database user account
+     */
     private User user;
 
+    /**
+     * an abstract logger for example @{@link SnackbarLogger}
+     */
     private Logger logger;
 
+    /**
+     * whether the DatabaseService loop should be running (used for stopping the service clean)
+     */
     private boolean running = false;
+    /**
+     * a waitLock where the Database Service waits for upcoming requests
+     */
     private Object waitLock = new Object();
+    /**
+     * the request which the DatabaseService is currently operating on
+     */
     private DatabaseRequest currentRequest = null;
+    /**
+     * a listener to listen for events while the request is handled
+     */
     private DatabaseRequestListener currentListener = null;
 
+    /**
+     * Constructor.
+     *
+     * @param attachedView
+     * @param filesDirectory
+     * @param updateListener
+     */
     public DatabaseManager(View attachedView, File filesDirectory, DatabaseUpdateListener updateListener) {
         if (INSTANCE != null)
             throw new IllegalStateException("Only one Instance allowed!");
@@ -76,6 +122,9 @@ public class DatabaseManager implements Runnable {
     }
 
     @Override
+    /**
+     * the run method of the Database Service
+     */
     public void run() {
         readDatabaseFromStorage();
 
@@ -111,6 +160,9 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * this method initializes the login account which either is cached in the files or it request a new user identity
+     */
     private void login() {
         if (user == null) {
             int attempt = 0;
@@ -167,6 +219,11 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * updates the users security token after a protected script was executed
+     *
+     * @param newToken
+     */
     private void refreshToken(String newToken) {
         user.setNewToken(newToken);
 
@@ -185,11 +242,28 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * fires a new request for the DatabaseManager
+     *
+     * @param request
+     * @param wait
+     */
     public synchronized void request(DatabaseRequest request, boolean wait) {
         request(request, wait, null);
     }
 
+    /**
+     * fires a new request for the DatabaseManager
+     *
+     * @param request
+     * @param wait
+     * @param listener
+     */
     public synchronized void request(DatabaseRequest request, boolean wait, DatabaseRequestListener listener) {
+        if (currentRequest != null) {
+            throw new IllegalStateException("Database Service is still working!");
+        }
+
         this.currentRequest = request;
         this.currentListener = listener;
 
@@ -208,6 +282,7 @@ public class DatabaseManager implements Runnable {
     /**
      *
      * @param scriptAddress the scripts address (without arguments)
+     * @param args arguments for the script
      * @return the json text
      * @throws DatabaseException
      */
@@ -218,6 +293,10 @@ public class DatabaseManager implements Runnable {
 
         if (!isConnected) {
             throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.network_failure).toString());
+        }
+
+        if (user == null) {
+            throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.database_access_failure).toString());
         }
 
         String address = scriptAddress + "?u=" + user.getId() + "&t=" + user.getHashedToken();
@@ -264,8 +343,11 @@ public class DatabaseManager implements Runnable {
         return json;
     }
 
+    /**
+     * reads the Database from the file on device storage
+     */
     private void readDatabaseFromStorage() {
-        File databaseFile = new File(filesDirectory, "database");
+        File databaseFile = new File(filesDirectory, "database.dat");
 
         if (databaseFile.exists()) {
             try {
@@ -284,6 +366,9 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * reads the Database from the server
+     */
     private void readDatabaseFromServer() {
         try {
             String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php", null);
@@ -295,6 +380,14 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * helper method for reading the Database from json text
+     *
+     * @param json
+     * @param save
+     * @throws JSONException
+     * @throws ParseException
+     */
     private void readDatabase(String json, boolean save) throws JSONException, ParseException {
         JSONObject root = new JSONObject(new JSONTokener(json));
 
@@ -342,8 +435,11 @@ public class DatabaseManager implements Runnable {
         updateListener.onDatabaseChanged();
     }
 
+    /**
+     * writes the Database to a file on device storage
+     */
     private void saveDatabaseToStorage() {
-        File eventFile = new File(filesDirectory, "database");
+        File eventFile = new File(filesDirectory, "database.dat");
 
         try {
             JSONArray eventDataArray = new JSONArray();
@@ -387,6 +483,11 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * called when a new event is registered
+     *
+     * @param event
+     */
     private void registerEvent(Event event) {
         for (int i = 0; i < eventList.size(); i++) {
             Event currentEvent = eventList.get(i);
@@ -406,6 +507,11 @@ public class DatabaseManager implements Runnable {
         eventList.add(event);
     }
 
+    /**
+     * called when a new sponsor is registered
+     *
+     * @param sponsor
+     */
     private void registerSponsor(Sponsor sponsor) {
         for (int i = 0; i < sponsorList.size(); i++) {
             Sponsor currentSponsor= sponsorList.get(i);
@@ -425,6 +531,12 @@ public class DatabaseManager implements Runnable {
         sponsorList.add(sponsor);
     }
 
+    /**
+     * sends a request to the server to participate in an event
+     *
+     * @param event
+     * @return wheter you are allowed to participate
+     */
     public boolean signInForEvent(Event event) {
         try {
             Map<String, String> args = new HashMap<>();
@@ -439,6 +551,9 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * sorts the eventList by dateStart
+     */
     private void sortEvents() {
         Collections.sort(eventList, new Comparator<Event>() {
             @Override
@@ -448,14 +563,26 @@ public class DatabaseManager implements Runnable {
         });
     }
 
+    /**
+     * stops the DatabaseService cleanly
+     */
     public void stopDatabaseService() {
         running = false;
+
+        synchronized (waitLock) {
+            waitLock.notify();
+        }
     }
 
+    /**
+     * stops the DatabaseService and saves all data
+     */
     public void destroy() {
         saveDatabaseToStorage();
 
-        running = false;
+        stopDatabaseService();
+
+        INSTANCE = null;
     }
 
     public List<Event> getEventList() {

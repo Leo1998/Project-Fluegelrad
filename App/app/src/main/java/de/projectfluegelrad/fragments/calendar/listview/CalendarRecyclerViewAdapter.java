@@ -17,7 +17,7 @@ import java.util.List;
 
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
-import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
+import de.projectfluegelrad.fragments.calendar.CalendarDayFragment2;
 import de.projectfluegelrad.database.Event;
 
 public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRecyclerViewAdapter.ViewHolder>{
@@ -57,11 +57,11 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
                 Bundle bundle = new Bundle();
                 bundle.putInt("eventId", event.getId());
 
-                CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
-                calendarDayFragment.setArguments(bundle);
+                CalendarDayFragment2 calendarDayFragment2 = new CalendarDayFragment2();
+                calendarDayFragment2.setArguments(bundle);
 
                 if (activity != null) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment2).addToBackStack("calendarDayFragment2").commit();
                 }
             }
         });

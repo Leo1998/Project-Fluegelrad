@@ -16,7 +16,7 @@ import java.util.List;
 
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
+import de.projectfluegelrad.fragments.calendar.CalendarDayFragment2;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseRequestListener;
@@ -53,10 +53,10 @@ public class CalendarGridViewFragment extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putInt("eventId", eventsOnDate.get(0).getId());
 
-                    CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
-                    calendarDayFragment.setArguments(bundle);
+                    CalendarDayFragment2 calendarDayFragment2 = new CalendarDayFragment2();
+                    calendarDayFragment2.setArguments(bundle);
 
-                    CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment2).addToBackStack("calendarDayFragment2").commit();
                 }
                 if (eventsOnDate.size() > 1) {
                     DialogFragment newFragment = new CalendarDayDialog();
