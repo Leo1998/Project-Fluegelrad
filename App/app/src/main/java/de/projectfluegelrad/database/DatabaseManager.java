@@ -295,6 +295,10 @@ public class DatabaseManager implements Runnable {
             throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.network_failure).toString());
         }
 
+        if (user == null) {
+            throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.database_access_failure).toString());
+        }
+
         String address = scriptAddress + "?u=" + user.getId() + "&t=" + user.getHashedToken();
         if (args != null) {
             for (String key : args.keySet()) {

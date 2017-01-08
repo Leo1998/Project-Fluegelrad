@@ -34,5 +34,6 @@
     <string name="phone">Phone</string>
     <string name="participate">Participate</string>
     <string name="sponsors_title">Other Sponsors are:</string>
+    <string name="app_version_title">App-Version</string>
 
 </resources>
