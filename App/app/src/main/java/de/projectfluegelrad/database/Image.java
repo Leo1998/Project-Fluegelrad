@@ -1,10 +1,8 @@
 package de.projectfluegelrad.database;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,8 +78,14 @@ public class Image {
         return bitmap;
     }
 
+    /**
+     * loads the bitmap either from the device cache or from the server
+     *
+     * @param imageCacheDir
+     * @throws IOException
+     */
     public void load(File imageCacheDir) throws IOException {
-        File cachedFile = new File(imageCacheDir, Utils.hashPath(this.path));
+        File cachedFile = new File(imageCacheDir, Utils.hashString(this.path));
 
         if (!cachedFile.exists()) {
             URL url = new URL("http://fluegelrad.ddns.net/" + this.path);

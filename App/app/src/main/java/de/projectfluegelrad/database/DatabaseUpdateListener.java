@@ -2,6 +2,9 @@ package de.projectfluegelrad.database;
 
 public interface DatabaseUpdateListener {
 
-    public void onDatabaseChanged();
+    /**
+     * called when any data in the Database changed
+     */
+    void onDatabaseChanged();
 
 }

@@ -12,6 +12,13 @@ public class Utils {
 
     private Utils() {}
 
+    /**
+     * writes all data from in to out
+     *
+     * @param in
+     * @param out
+     * @throws IOException
+     */
     public static void copyStream(InputStream in, OutputStream out) throws IOException {
         byte data[] = new byte[4096];
         int count;
@@ -20,7 +27,13 @@ public class Utils {
         }
     }
 
-    public static String hashPath(String s) {
+    /**
+     * hashes a string
+     *
+     * @param s
+     * @return
+     */
+    public static String hashString(String s) {
         try {
             byte[] bytesOfMessage = s.getBytes("UTF-8");
 

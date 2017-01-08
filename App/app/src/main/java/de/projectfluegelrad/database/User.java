@@ -2,9 +2,21 @@ package de.projectfluegelrad.database;
 
 public class User {
 
+    /**
+     * the user's id
+     */
     private int id;
+    /**
+     * the hashed security token
+     */
     private String hashedToken;
 
+    /**
+     * Constructor.
+     *
+     * @param id
+     * @param hashedToken
+     */
     public User(int id, String hashedToken) {
         this.id = id;
         this.hashedToken = hashedToken;
