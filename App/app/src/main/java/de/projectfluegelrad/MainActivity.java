@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         homeFragment = new HomeFragment();
         settingsFragment = new SettingsFragment();
 
+        refreshFragments();
+
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
         navigationView.getMenu().getItem(0).setChecked(true);
     }

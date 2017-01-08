@@ -8,8 +8,11 @@ import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import org.osmdroid.api.IMapController;
@@ -77,11 +81,13 @@ public class CalendarDayFragment2 extends Fragment {
 
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 
-        LinearLayout imageContainer = (LinearLayout) layout.findViewById(R.id.images_container);
-        buildImageContainer(imageContainer);
+        ((TextView) layout.findViewById(R.id.date)).setText(event.getDateStartFormatted());
 
-        LinearLayout sponsorsContainer = (LinearLayout) layout.findViewById(R.id.sponsors_container);
-        buildSponsorsContainer(sponsorsContainer);
+        //TabLayout imageTabs = (TabLayout) layout.findViewById(R.id.image_tabs);
+        //buildImageTabs(imageTabs);
+
+        CardView sponsorsCard = (CardView) layout.findViewById(R.id.sponsors_container);
+        buildSponsorsContainer(sponsorsCard);
 
         MapView mapView = (MapView) layout.findViewById(R.id.mapView);
         buildMapView(mapView);
@@ -129,7 +135,7 @@ public class CalendarDayFragment2 extends Fragment {
         });
     }
 
-    private void buildImageContainer(LinearLayout imagesContainer) {
+    private void buildImageTabs(TabLayout tabLayout) {
         List<Image> images = DatabaseManager.INSTANCE.getImages(this.event);
         for (int i = 0; i < images.size(); i++) {
             Image image = images.get(i);
@@ -137,11 +143,22 @@ public class CalendarDayFragment2 extends Fragment {
             ImageHolder imageView = new ImageHolder(this.getContext());
             imageView.setImage(image);
 
-            imagesContainer.addView(imageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            TabLayout.Tab tab = tabLayout.newTab();
+            tab.setCustomView(imageView);
+
+            tabLayout.addTab(tab);
+
+            //TODO
+
+            //tabLayout.addView(imageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 
-    private void buildSponsorsContainer(LinearLayout sponsorsContainer) {
+    private void buildSponsorsContainer(CardView sponsorsCard) {
+        LinearLayout sponsorsContainer = new LinearLayout(sponsorsCard.getContext());
+        sponsorsContainer.setOrientation(LinearLayout.VERTICAL);
+        sponsorsContainer.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);//TODO dividers not working
+
         //build host
         TextView hostTitle = new TextView(this.getContext());
         hostTitle.setText(R.string.host_title);
@@ -166,6 +183,10 @@ public class CalendarDayFragment2 extends Fragment {
                 sponsorsContainer.addView(sponsorView);
             }
         }
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(6, 6, 6, 6);
+        sponsorsCard.addView(sponsorsContainer, params);
     }
 
     private void buildMapView(MapView mapView) {
