@@ -34,11 +34,15 @@
 	$sIdArr = array();
 	$imArr = array();
 	$naArr = array();
+	$sMax = 0;
 	
 	while($row = $sponsorsGet->fetch()) {
 		$sIdArr[] = $row['id'];
 		$imArr[] = $row['imagePath'];
 		$naArr[] = $row['name'];
+		if($row['id'] > $sMax){
+			$sMax = $row['id'];
+		}
 	}
 	
 	$sponsorIds = implode("\",\"",$sIdArr);
@@ -48,6 +52,7 @@
 	$sponsorIds = "const sponsorIds = Array(\"".$sponsorIds."\");";
 	$sponsorImgs = "const sponsorImgs = Array(\"".$sponsorImgs."\");";
 	$sponsors = "const sponsors = Array(\"".$sponsors."\");";
+	$maxSponsorId = "const maxSponsorId = ".$sMax.";";
 	
 	echo "
 		<script type=\"text/javascript\">
@@ -58,6 +63,7 @@
 			$sponsorIds
 			$sponsorImgs
 			$sponsors
+			$maxSponsorId
 		</script>
 	";
 ?>
@@ -152,6 +158,8 @@
 				sponsorsSelect.appendChild(img);
 				sponsorsSelect.appendChild(label);
 			}
+			
+			document.getElementById('maxSponsorId').value = maxSponsorId;
 		};
 
 		OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {               
@@ -253,45 +261,12 @@
 			feature.popup = null;
 		}
 		
-		function previewImage(input) {
+		function previewImage(input,id) {
 			if (input.files && input.files[0]) {
 				var reader = new FileReader();
 				reader.onload = function (e) {
-					imageCount++;
-					var li = document.createElement('li');
-					li.id = "previewNode"+imageCount;
-					
-					var img=document.createElement('img');
-					img.src= e.target.result;
-					img.alt= "Vorschau nicht verfügbar";
-					img.title= "Vorschau";
-					img.style.height="100px";
-					
-					var text = document.createElement('input');
-					text.type = "text";
-					text.id = "imageDescription"+imageCount;
-					text.name = "imageDescription"+imageCount;
-					text.maxLength = "50";
-					text.placeholder = "Beschreibung";
-					
-					var srcText = document.createElement('input');
-					srcText.type = "text";
-					srcText.id = "imageSrc"+imageCount;
-					srcText.name = "imageSrc"+imageCount;
-					srcText.value = e.target.result;
-					srcText.style.position = "absolute";
-					srcText.style.display = "none";
-					
-					var span = document.createElement('span');
-					span.innerHTML = '<button type="button" onclick="removeImage('+imageCount+');" >Bild entfernen</button>';
-					
-					li.appendChild(img);
-					li.appendChild(text);
-					li.appendChild(srcText);
-					li.appendChild(span);
-					
-					document.getElementById('previews').appendChild(li);
-					document.getElementById('imageCount').value = imageCount;
+					var preview = document.getElementById("previewImage"+id);
+					preview.src = e.target.result;
 				}
 				reader.readAsDataURL(input.files[0]);
 			}
@@ -308,9 +283,39 @@
 			}
 		}
 		
-		function removeImage(id){
-			li = document.getElementById("previewNode"+id);
-			li.parentNode.removeChild(li);
+		function createImage(){
+			imageCount++;
+			var li = document.createElement('li');
+			li.id = "imageNode"+imageCount;
+			
+			var span1 = document.createElement('span');
+			span1.innerHTML = '<input type="file" id="imageImage'+imageCount+'" name="imageImage'+imageCount+'" onchange="previewImage(this,'+imageCount+');"/>';
+			
+			var iPreview = document.createElement('img');
+			iPreview.id = "previewImage"+imageCount;
+			iPreview.name = "previewImage"+imageCount;
+			iPreview.src = "#";
+			iPreview.alt = "Bild";
+			iPreview.title = "Preview";
+			iPreview.style.height = "100px";
+			
+			var iDesc = document.createElement('input');
+			iDesc.type = "text";
+			iDesc.id = "descriptionImage"+imageCount;
+			iDesc.name = "descriptionImage"+imageCount;
+			iDesc.maxLength = "50";
+			iDesc.placeholder = "Beschreibung";
+			
+			var span2 = document.createElement('span');
+			span2.innerHTML = '<button type="button" onclick="removeImage('+imageCount+');" >Bild entfernen</button>';
+			
+			li.appendChild(span1);
+			li.appendChild(iPreview);
+			li.appendChild(iDesc);
+			li.appendChild(span2);
+			
+			document.getElementById('images').appendChild(li);
+			document.getElementById('imageCount').value = imageCount;
 		}
 		
 		function createSponsor(){
@@ -353,13 +358,8 @@
 			sDesc.name = "descriptionSponsor"+sponsorCount;
 			sDesc.placeholder = "Beschreibung";
 			
-			var sImage = document.createElement('input');
-			sImage.type = "file";
-			sImage.id = "imageSponsor"+sponsorCount;
-			sImage.name = "imageSponsor"+sponsorCount;
-			sImage.onchange = function () {
-				previewSponsor(this,sponsorCount);
-			};
+			var span1 = document.createElement('span');
+			span1.innerHTML = '<input type="file" id="imageSponsor'+sponsorCount+'" name="imageSponsor'+sponsorCount+'" onchange="previewSponsor(this,'+sponsorCount+');"/>';
 			
 			var sPreview = document.createElement('img');
 			sPreview.id = "previewSponsor"+sponsorCount;
@@ -369,8 +369,8 @@
 			sPreview.title = "Preview";
 			sPreview.style.height = "100px";
 			
-			var span = document.createElement('span');
-			span.innerHTML = '<button type="button" onclick="removeSponsor('+sponsorCount+');" >Sponsor entfernen</button>';
+			var span2 = document.createElement('span');
+			span2.innerHTML = '<button type="button" onclick="removeSponsor('+sponsorCount+');" >Sponsor entfernen</button>';
 			
 			li.appendChild(label);
 			li.appendChild(sName);
@@ -378,12 +378,17 @@
 			li.appendChild(sMail);
 			li.appendChild(sWeb);
 			li.appendChild(sDesc);
-			li.appendChild(sImage);
+			li.appendChild(span1);
 			li.appendChild(sPreview);
-			li.appendChild(span);
+			li.appendChild(span2);
 			
 			document.getElementById('newSponsors').appendChild(li);
 			document.getElementById('sponsorCount').value = sponsorCount;
+		}
+		
+		function removeImage(id){
+			li = document.getElementById("imageNode"+id);
+			li.parentNode.removeChild(li);
 		}
 		
 		function removeSponsor(id) {
@@ -395,7 +400,7 @@
 
 	<body onload='init();'>
 		<div id= "formDiv">
-			<form action="uploadEvent.php" id="event" method="post">
+			<form action="uploadEvent.php" enctype="multipart/form-data" id="event" method="post">
 				<uol>
 					<li>
 						<input type="text" name="eventName" id="eventName" maxLength="30" placeholder = "Eventname">
@@ -435,12 +440,12 @@
 					<li>
 						<label>Position</label>
 						<br>
-						<input type = "radio" name = "knowLoc" id = "oldLoc" checked>Bekannte Location</input>
+						<input type = "radio" name = "knowLoc" id = "oldLoc" value = "1" checked>Bekannte Location</input>
 						<br>
 						<select name = "location" id = "location">
 						</select>
 						<br>
-						<input type = "radio" name = "knowLoc" id = "newLoc">Neue Location</input>
+						<input type = "radio" name = "knowLoc" id = "newLoc" value = "2">Neue Location</input>
 						<br>
 						<input type = "text" name = "newAddress" id = "newAddress" max = 30 placeholder = "Addresse"></input>
 						<input type = "checkbox" name = "setMarker" id = "setMarker">Marker platzieren</input>
@@ -459,6 +464,7 @@
 					<br>
 					<li>
 						<label>Sponsoren</label>
+						<input type = "number" id = "maxSponsorId" name = "maxSponsorId" style = "position : absolute ; display : none ;" value = "0">
 						<div name = "sponsors" id = "sponsors" multiple>
 						</div>
 						<input type = "number" id = "sponsorCount" name = "sponsorCount" style = "position : absolute ; display : none ;" value = "0">
@@ -471,8 +477,9 @@
 						<label> Bilder </label>
 						<input type = "number" id = "imageCount" name = "imageCount" style = "position : absolute ; display : none ;" value = "0">
 						<br>
-						<input onchange="previewImage(this);" type="file" />
-						<oul id="previews"></oul>
+						<button type="button" onClick="createImage();">Neues Bild</button>
+						<oul name = "images" id="images">
+						</oul>
 					</li>
 					<br>
 					<li>
