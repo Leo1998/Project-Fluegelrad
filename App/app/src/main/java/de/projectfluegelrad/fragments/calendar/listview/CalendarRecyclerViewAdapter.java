@@ -10,14 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
 
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
-import de.projectfluegelrad.fragments.calendar.CalendarDayFragment2;
+import de.projectfluegelrad.fragments.day.CalendarDayFragment;
 import de.projectfluegelrad.database.Event;
 
 public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRecyclerViewAdapter.ViewHolder>{
@@ -57,11 +54,11 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
                 Bundle bundle = new Bundle();
                 bundle.putInt("eventId", event.getId());
 
-                CalendarDayFragment2 calendarDayFragment2 = new CalendarDayFragment2();
-                calendarDayFragment2.setArguments(bundle);
+                CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
+                calendarDayFragment.setArguments(bundle);
 
                 if (activity != null) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment2).addToBackStack("calendarDayFragment2").commit();
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
                 }
             }
         });

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Image;
 import de.projectfluegelrad.database.Sponsor;
+import de.projectfluegelrad.fragments.day.ImageHolder;
 
 public class SponsorView extends RelativeLayout {
 
