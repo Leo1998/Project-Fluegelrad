@@ -106,7 +106,11 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 
 		eventTable.tableFooterView = UIView()
 		
-		NotificationCenter.default.addObserver(self, selector: #selector(CalendarListViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(CalendarListViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: nil)
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		navigationController?.setNavigationBarHidden(true, animated: false)
 	}
 	
 	override func didReceiveMemoryWarning() {

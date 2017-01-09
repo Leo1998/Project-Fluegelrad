@@ -103,7 +103,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 		refreshControl = UIRefreshControl()
 		scrollView.addSubview(refreshControl)
 		refreshControl.addTarget(self, action: #selector(CalendarDayViewController.refresh), for: .valueChanged)
-		NotificationCenter.default.addObserver(self, selector: #selector(CalendarDayViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(CalendarDayViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: nil)
 		
         descriptionLabel = UILabel()
         descriptionLabel.lineBreakMode = .byWordWrapping
@@ -255,7 +255,14 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         let shareEventButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_share"), style: .plain, target: self, action: #selector(CalendarDayViewController.share))
 
         navigationItem.setRightBarButtonItems([shareEventButton, saveEventButton], animated: false)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(CalendarDayViewController.segueBack), name: Notification.Name(Bundle.main.bundleIdentifier! + "segueBack"), object: nil)
+
     }
+	
+	func segueBack(){
+		_ = navigationController?.popViewController(animated: false)
+	}
 	
 	/**
 	called when a sponsor button is pressed

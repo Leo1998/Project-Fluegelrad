@@ -86,7 +86,11 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		
 		updateViews(fromReload: false)
 		
-		NotificationCenter.default.addObserver(self, selector: #selector(CalendarGridViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(CalendarGridViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: nil)
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		navigationController?.setNavigationBarHidden(true, animated: false)
 	}
 
     override func didReceiveMemoryWarning() {

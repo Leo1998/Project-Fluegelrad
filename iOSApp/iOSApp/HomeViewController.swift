@@ -63,14 +63,17 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 
 		eventTable.tableFooterView = UIView()
 		
-		NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: nil)
     }
 	
-
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-
+	
+	override func viewWillAppear(_ animated: Bool) {
+		navigationController?.setNavigationBarHidden(true, animated: false)
+	}
+	
 	/**
 	Gets all events and sponsors
 	decides which events to show and which title they have

@@ -20,6 +20,8 @@ class LicensesViewController: UIViewController, UITableViewDelegate, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		navigationController?.setNavigationBarHidden(false, animated: true)
+		
 		licenses.append(Licenses(name: "Material Design Icons", url: "http://github.com/google/material-design-icons/", copyright: "Copyright (C) 2005 Android Open Source Project", license: .apache20))
 		licenses.append(Licenses(name: "OpenStreetMapData", url: "www.openstreetmap.org/copyright", copyright: "(C) OpenStreetMap-Mitwirkende", license: .apache20))
 		
@@ -37,6 +39,9 @@ class LicensesViewController: UIViewController, UITableViewDelegate, UITableView
 
 		licensesTable.separatorColor = UIColor.clear
 		licensesTable.tableFooterView = UIView()
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(LicensesViewController.segueBack), name: Notification.Name(Bundle.main.bundleIdentifier! + "segueBack"), object: nil)
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -85,5 +90,16 @@ class LicensesViewController: UIViewController, UITableViewDelegate, UITableView
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return UITableViewAutomaticDimension
 	}
+	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		if self.isMovingFromParentViewController {
+			navigationController?.setNavigationBarHidden(true, animated: animated)
+		}
+	}
 
+	func segueBack(){
+		_ = navigationController?.popViewController(animated: false)
+	}
 }
