@@ -16,7 +16,7 @@ import java.util.Calendar;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
-import de.projectfluegelrad.fragments.calendar.CalendarDayFragment2;
+import de.projectfluegelrad.fragments.day.CalendarDayFragment;
 
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.ViewHolder>{
 
@@ -59,7 +59,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
                 Bundle bundle = new Bundle();
                 bundle.putInt("eventId", event.getId());
 
-                CalendarDayFragment2 calendarDayFragment = new CalendarDayFragment2();
+                CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                 calendarDayFragment.setArguments(bundle);
 
                 if (activity != null) {

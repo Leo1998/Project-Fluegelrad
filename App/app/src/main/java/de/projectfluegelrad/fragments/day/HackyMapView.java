@@ -1,4 +1,4 @@
-package de.projectfluegelrad.fragments.calendar;
+package de.projectfluegelrad.fragments.day;
 
 import android.content.Context;
 import android.os.Handler;

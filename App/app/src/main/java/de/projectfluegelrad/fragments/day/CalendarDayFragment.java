@@ -1,4 +1,4 @@
-package de.projectfluegelrad.fragments.calendar;
+package de.projectfluegelrad.fragments.day;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -10,7 +10,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -19,9 +19,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
 import org.osmdroid.api.IMapController;
@@ -43,8 +43,9 @@ import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
 import de.projectfluegelrad.database.Image;
 import de.projectfluegelrad.database.Sponsor;
+import de.projectfluegelrad.fragments.calendar.SponsorView;
 
-public class CalendarDayFragment2 extends Fragment {
+public class CalendarDayFragment extends Fragment {
 
     private Event event;
 
@@ -57,7 +58,7 @@ public class CalendarDayFragment2 extends Fragment {
 
         this.event = DatabaseManager.INSTANCE.getEvent(getArguments().getInt("eventId"));
 
-        CoordinatorLayout layout = (CoordinatorLayout) inflater.inflate(R.layout.calendar_day_fragment2, container, false);
+        CoordinatorLayout layout = (CoordinatorLayout) inflater.inflate(R.layout.calendar_day_fragment, container, false);
 
         Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolbar_day_fragment);
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_back_white));
@@ -83,8 +84,8 @@ public class CalendarDayFragment2 extends Fragment {
 
         ((TextView) layout.findViewById(R.id.date)).setText(event.getDateStartFormatted());
 
-        //TabLayout imageTabs = (TabLayout) layout.findViewById(R.id.image_tabs);
-        //buildImageTabs(imageTabs);
+        ViewPager pager = (ViewPager) layout.findViewById(R.id.image_pager);
+        buildImagePager(pager);
 
         CardView sponsorsCard = (CardView) layout.findViewById(R.id.sponsors_container);
         buildSponsorsContainer(sponsorsCard);
@@ -135,23 +136,11 @@ public class CalendarDayFragment2 extends Fragment {
         });
     }
 
-    private void buildImageTabs(TabLayout tabLayout) {
+    private void buildImagePager(ViewPager pager) {
         List<Image> images = DatabaseManager.INSTANCE.getImages(this.event);
-        for (int i = 0; i < images.size(); i++) {
-            Image image = images.get(i);
 
-            ImageHolder imageView = new ImageHolder(this.getContext());
-            imageView.setImage(image);
-
-            TabLayout.Tab tab = tabLayout.newTab();
-            tab.setCustomView(imageView);
-
-            tabLayout.addTab(tab);
-
-            //TODO
-
-            //tabLayout.addView(imageView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        }
+        ImagePagerAdapter adapter = new ImagePagerAdapter(getFragmentManager(), images);
+        pager.setAdapter(adapter);
     }
 
     private void buildSponsorsContainer(CardView sponsorsCard) {
@@ -239,10 +228,10 @@ public class CalendarDayFragment2 extends Fragment {
         intent.putExtra(CalendarContract.Events.TITLE, event.getName());
         intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateStart().getTimeInMillis());
         intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDateEnd().getTimeInMillis());
-        intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment2.this.getString(R.string.calender_organized_by) + " " + DatabaseManager.INSTANCE.getSponsor(event.getHostId()).getName());//TODO
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + DatabaseManager.INSTANCE.getSponsor(event.getHostId()).getName());//TODO
         intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
 
-        CalendarDayFragment2.this.startActivity(intent);
+        CalendarDayFragment.this.startActivity(intent);
     }
 
 }

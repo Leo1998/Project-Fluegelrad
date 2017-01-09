@@ -1,4 +1,4 @@
-package de.projectfluegelrad.fragments.calendar;
+package de.projectfluegelrad.fragments.day;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -22,7 +22,6 @@ public class ImageHolder extends RelativeLayout {
     private File imageCacheDir;
 
     private ImageView imageHolder;
-    private TextView descriptionView;
     private ProgressBar progressSpinner;
 
     public ImageHolder(Context context) {
@@ -53,28 +52,17 @@ public class ImageHolder extends RelativeLayout {
         this.imageHolder.setAdjustViewBounds(true);
         this.imageHolder.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        this.descriptionView = new TextView(context);
-        this.descriptionView.setId((int) System.currentTimeMillis() + 100);
-        this.descriptionView.setVisibility(View.INVISIBLE);
-        this.descriptionView.setGravity(Gravity.CENTER_HORIZONTAL);
-        this.descriptionView.setText("Description");
-
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         int bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, displayMetrics);
 
-        final LayoutParams spinnerParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        final LayoutParams spinnerParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         spinnerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
-        final LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        final LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         imageHolderParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-
-        final LayoutParams descriptionViewParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        descriptionViewParams.addRule(RelativeLayout.BELOW, imageHolder.getId());
-        descriptionViewParams.bottomMargin = bottomMargin;
 
         this.addView(progressSpinner, spinnerParams);
         this.addView(imageHolder, imageHolderParams);
-        this.addView(descriptionView, descriptionViewParams);
     }
 
     public void setImage(Image image) {
@@ -102,16 +90,9 @@ public class ImageHolder extends RelativeLayout {
                 @Override
                 public void run() {
                     ImageHolder.this.imageHolder.setImageBitmap(image.getBitmap());
-                    ImageHolder.this.descriptionView.setText(image.getDescription());
 
                     ImageHolder.this.progressSpinner.setVisibility(View.INVISIBLE);
                     ImageHolder.this.imageHolder.setVisibility(View.VISIBLE);
-                    ImageHolder.this.descriptionView.setVisibility(View.VISIBLE);
-
-                    if (image.getDescription() == null) {
-                        //TODO: ganz schlechter stil
-                        ImageHolder.this.removeView(ImageHolder.this.descriptionView);
-                    }
 
                     ImageHolder.this.requestLayout();
 
