@@ -25,14 +25,24 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     private var descriptionLabel: UILabel!
 	
 	/**
-	label with the prize of the event
+	label with the age of the event
 	*/
-    private var prizeLabel: UILabel!
+	private var ageLabel: UILabel!
+	
+	/**
+	label with the price of the event
+	*/
+    private var priceLabel: UILabel!
 	
 	/**
 	map of the position where the event is held
 	*/
     private var mapView: MKMapView!
+	
+	/**
+	label which says host
+	*/
+	private var hostLabel: UILabel!
 	
 	/**
 	button which is forwarding to the host of the event
@@ -64,8 +74,15 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 	*/
 	private var segueSponsor: Sponsor?
 	
+	/**
+	Pull to refresh control
+	*/
+	private var refreshControl: UIRefreshControl!
+	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		let frame = CGRect(x: 8, y: 0, width: view.frame.width - 16, height: view.frame.height)
 		
 		navigationController?.setNavigationBarHidden(false, animated: true)
         
@@ -74,28 +91,60 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         view.addSubview(header)
         header.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
         header.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: header.height)
-        
+		
+		
         scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+		scrollView.contentInset = UIEdgeInsetsMake(0, 8, 0, 8)
         view.addSubview(scrollView)
         scrollView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: header, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-        scrollView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+        scrollView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		refreshControl = UIRefreshControl()
+		scrollView.addSubview(refreshControl)
+		refreshControl.addTarget(self, action: #selector(CalendarDayViewController.refresh), for: .valueChanged)
+		NotificationCenter.default.addObserver(self, selector: #selector(CalendarDayViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
 		
         descriptionLabel = UILabel()
-        descriptionLabel.text = event.descriptionEvent
         descriptionLabel.lineBreakMode = .byWordWrapping
         descriptionLabel.numberOfLines = 0
+		descriptionLabel.text = event.descriptionEvent
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(descriptionLabel)
         descriptionLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
-        descriptionLabel.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+        descriptionLabel.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.width, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
-		participationView = ParticipationView(frame: view.frame, event: event)
+		ageLabel = UILabel()
+		if event.ageMin == 0 && event.ageMax < 99 {
+			ageLabel.text = "Für jeden bis zu \(event.ageMax!) Jahren"
+		}else if event.ageMin > 0 && event.ageMax == 99 {
+			ageLabel.text = "Für jeden ab \(event.ageMin!) Jahren"
+		}else if event.ageMin == 0 && event.ageMax >= 99 {
+			ageLabel.text = "Es gibt keine Alterbeschränkung"
+		}else{
+			ageLabel.text = "Für jeden ab \(event.ageMin!) Jahren und bis zu \(event.ageMax!) Jahren"
+		}
+		ageLabel.translatesAutoresizingMaskIntoConstraints = false
+		scrollView.addSubview(ageLabel)
+		ageLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: descriptionLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		priceLabel = UILabel()
+		if event.price == 0 {
+			priceLabel.text = "Der Eintritt ist kostenlos"
+			
+		}else {
+			priceLabel.text = "Der Eintritt kostet \(event.price!)€"
+		}
+		priceLabel.translatesAutoresizingMaskIntoConstraints = false
+		scrollView.addSubview(priceLabel)
+		priceLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: ageLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		participationView = ParticipationView(frame: frame, event: event)
 		participationView.participationButton.addTarget(self, action: #selector(CalendarDayViewController.participate), for: .touchUpInside)
 		scrollView.addSubview(participationView)
 		participationView.translatesAutoresizingMaskIntoConstraints = false
-		participationView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: descriptionLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		participationView.addConstraintsXY(xView: scrollView, xSelfAttribute: .width, xViewAttribute: .width, xMultiplier: 1, xConstant: 0, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: participationView.height)
+		participationView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: priceLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		participationView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: participationView.height)
 
 
         imageView = UIView()
@@ -103,7 +152,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         var imageViewsTemp = [ImageView]()
         var imageViewHeight: CGFloat = 0
         for (index, item) in event.images.enumerated() {
-			let imageTemp = ImageView(frame: view.frame, eventImage: item)
+			let imageTemp = ImageView(frame: frame, eventImage: item)
             imageTemp.translatesAutoresizingMaskIntoConstraints = false
             imageView.addSubview(imageTemp)
 
@@ -122,21 +171,36 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         }
         scrollView.addSubview(imageView)
         imageView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: participationView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-        imageView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: imageViewHeight)
+        imageView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: imageViewHeight)
 		
-		hostView = SponsorViewButton(frame: view.frame, sponsor: sponsors[event.hostId]!)
+		hostLabel = UILabel()
+		hostLabel.text = "Veranstalter"
+		hostLabel.translatesAutoresizingMaskIntoConstraints = false
+		scrollView.addSubview(hostLabel)
+		hostLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		hostView = SponsorViewButton(frame: frame, sponsor: sponsors[event.hostId]!)
 		hostView.addTarget(self, action: #selector(CalendarDayViewController.host), for: .touchUpInside)
 		scrollView.addSubview(hostView)
 		hostView.translatesAutoresizingMaskIntoConstraints = false
-		hostView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		hostView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: hostView.height())
-
+		hostView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: hostLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		hostView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: hostView.height())
+		
 		sponsorView = UIView()
 		sponsorView.translatesAutoresizingMaskIntoConstraints = false
 		var sponsorViews = [SponsorViewButton]()
-		var sponsorViewsHeight: CGFloat = 0
+		
+		let sponsorLabel = UILabel()
+		sponsorLabel.text = "Sponsoren"
+		sponsorLabel.translatesAutoresizingMaskIntoConstraints = false
+		sponsorView.addSubview(sponsorLabel)
+		sponsorLabel.addConstraintsXY(xView: sponsorView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		
+		sponsorLabel.layoutIfNeeded()
+		var sponsorViewsHeight: CGFloat = sponsorLabel.frame.height
+		
 		for (index, item) in event.sponsorIds.enumerated() {
-			let sponsorTemp = SponsorViewButton(frame: view.frame, sponsor: sponsors[item]!)
+			let sponsorTemp = SponsorViewButton(frame: frame, sponsor: sponsors[item]!)
 			sponsorTemp.tag = item
 			sponsorTemp.addTarget(self, action: #selector(CalendarDayViewController.sponsorTap), for: .touchUpInside)
 			
@@ -144,7 +208,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 			sponsorView.addSubview(sponsorTemp)
 			
 			if index == 0 {
-				sponsorTemp.addConstraintsXY(xView: sponsorView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+				sponsorTemp.addConstraintsXY(xView: sponsorView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 			}else{
 				sponsorTemp.addConstraintsXY(xView: sponsorView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorViews[index-1], ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 				
@@ -158,15 +222,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 		}
 		scrollView.addSubview(sponsorView)
 		sponsorView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: hostView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		sponsorView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: sponsorViewsHeight)
-		
-        prizeLabel = UILabel()
-        prizeLabel.text = String(event.price)
-        prizeLabel.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(prizeLabel)
-        prizeLabel.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-
-		
+		sponsorView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: sponsorViewsHeight)
 		
         mapView = MKMapView()
 		mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -177,21 +233,23 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         let region = MKCoordinateRegion(center: self.event.location.coordinate, span: MKCoordinateSpan(latitudeDelta: regionRadius * 2, longitudeDelta: regionRadius * 2))
         mapView.setRegion(region, animated: true)
         scrollView.addSubview(mapView)
-        mapView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: prizeLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-        mapView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: view.frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: view.frame.width/2)
+        mapView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+        mapView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: frame.width/2)
 
         
         view.layoutIfNeeded()
         
         var totalHeight: CGFloat = descriptionLabel.frame.height
         totalHeight += imageView.frame.height
-        totalHeight += prizeLabel.frame.height
+		totalHeight += ageLabel.frame.height
+        totalHeight += priceLabel.frame.height
         totalHeight += mapView.frame.height
+		totalHeight += hostLabel.frame.height
 		totalHeight += hostView.frame.height
 		totalHeight += participationView.frame.height
 		totalHeight += sponsorView.frame.height
         
-        scrollView.contentSize = CGSize(width: view.frame.width, height: totalHeight)
+        scrollView.contentSize = CGSize(width: frame.width, height: totalHeight)
         
         let saveEventButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_event_note"), style: .plain, target: self, action: #selector(CalendarDayViewController.saveEvent))
         let shareEventButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_share"), style: .plain, target: self, action: #selector(CalendarDayViewController.share))
@@ -353,5 +411,49 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
+	
+	/**
+	Forwarding the refresh to the MainViewController
+	*/
+	internal func refresh(){
+		print("Refresh")
+		
+		MainViewController.refresh()
+		
+		refreshControl.endRefreshing()
+	}
+	
+	/**
+	(Re)loads all the sponsors and the event data
+	*/
+	public func reset(){
+		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
+		
+		if sponsorData != nil {
+			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
+		}
+		
+		let eventData = UserDefaults.standard.object(forKey: "events")
+		var events = [Event]()
+		if eventData != nil {
+			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
+		}
+		for value in events {
+			if value.id == event.id {
+				event = value
+				break
+			}
+		}
+		
+		DispatchQueue.main.sync {
+			updateViews()
+		}
+	}
+	
+	/**
+	(Re)loads the participationView after refreshing
+	*/
+	private func updateViews(){
+		participationView.updateCurrentParticipants(event: event)
+	}
 }
