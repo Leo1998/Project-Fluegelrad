@@ -35,6 +35,8 @@ class LicensesViewController: UIViewController, UITableViewDelegate, UITableView
 		licensesTable.dataSource = self
 		licensesTable.backgroundColor = UIColor.clear
 
+		licensesTable.separatorColor = UIColor.clear
+		licensesTable.tableFooterView = UIView()
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,8 +60,8 @@ class LicensesViewController: UIViewController, UITableViewDelegate, UITableView
 		cell.copyright.text = licence.copyright
 		cell.license.text = licence.license
 		
-		cell.licenseView.addConstraintsXY(xView: cell, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: cell.urlLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		cell.licenseView.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.licenseView.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: cell.urlLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.licenseView.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		return cell
 	}

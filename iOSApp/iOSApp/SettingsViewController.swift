@@ -13,7 +13,7 @@ class SettingsViewController: UIViewController {
 		licensesButton = UIButton()
 		licensesButton.setTitle("Push", for: .normal)
 		licensesButton.backgroundColor = UIColor.primary()
-		licensesButton.addSubview(licensesButton)
+		view.addSubview(licensesButton)
 		licensesButton.addTarget(self, action: #selector(SettingsViewController.licensePush), for: .touchUpInside)
 		licensesButton.translatesAutoresizingMaskIntoConstraints = false
 		licensesButton.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)

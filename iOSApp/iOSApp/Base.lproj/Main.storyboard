@@ -12,7 +12,7 @@
         <!--Home View Controller-->
         <scene sceneID="hNz-n2-bh7">
             <objects>
-                <viewController id="9pv-A4-QxB" customClass="HomeViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="9pv-A4-QxB" customClass="HomeViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ia1-K6-d13"/>
                         <viewControllerLayoutGuide type="bottom" id="4ug-Mw-9AY"/>
@@ -61,7 +61,7 @@
         <!--Calendar Day View Controller-->
         <scene sceneID="Yu1-MK-sQU">
             <objects>
-                <viewController id="hIc-wv-RoO" customClass="CalendarDayViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="hIc-wv-RoO" customClass="CalendarDayViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="5B0-8J-NW2"/>
                         <viewControllerLayoutGuide type="bottom" id="LGP-kc-2pE"/>
@@ -84,7 +84,7 @@
         <!--Sponsor View Controller-->
         <scene sceneID="9SE-nz-eBO">
             <objects>
-                <viewController id="PGY-Vm-XWo" customClass="SponsorViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="PGY-Vm-XWo" customClass="SponsorViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zfU-Sj-giD"/>
                         <viewControllerLayoutGuide type="bottom" id="9V4-AJ-WPj"/>
@@ -283,6 +283,6 @@
         <image name="ic_today" width="24" height="24"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="cZo-ZH-jxK"/>
+        <segue reference="8El-ET-mUa"/>
     </inferredMetricsTieBreakers>
 </document>

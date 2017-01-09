@@ -104,6 +104,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		// default sorting method
 		sortCategory = .rating
 
+		eventTable.tableFooterView = UIView()
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(CalendarListViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
 	}
@@ -175,6 +176,8 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell:CalendarListViewCell = eventTable.dequeueReusableCell(withIdentifier: "cell")! as! CalendarListViewCell
 		
+		cell.separatorInset = UIEdgeInsetsMake(0, 8, 0, 8)
+		
 		let event:Event!
 		if searchController.isActive && searchController.searchBar.text != "" {
 			event = (filteredEvents[indexPath.row] )
@@ -196,14 +199,14 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
 		
 		cell.nameLabel.text = event.name
-		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 
 		
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
 		
 		cell.dateLabel.text = dateFormatter.string(from: event.dateStart)
-		cell.dateLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.dateLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 	
 		
 		return cell

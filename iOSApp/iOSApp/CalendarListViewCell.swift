@@ -20,11 +20,14 @@ class CalendarListViewCell: UITableViewCell {
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
+		contentView.translatesAutoresizingMaskIntoConstraints = false
+		contentView.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 8, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		contentView.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: -8, yView: self, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		imageV = UIImageView()
 		addSubview(imageV)
 		imageV.translatesAutoresizingMaskIntoConstraints = false
-		imageV.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		imageV.addConstraintsXY(xView: contentView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		nameLabel = UILabel()
 		nameLabel.translatesAutoresizingMaskIntoConstraints = false

@@ -58,20 +58,20 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		setupEvents()
 		
 		let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-		layout.sectionInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
-		let dia = (view.frame.size.width-5-5 - (7-1))/7
+		layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+		let dia = (view.frame.width-8-8 - (7-1))/7
 		layout.itemSize = CGSize(width: dia, height: dia)
 		layout.minimumInteritemSpacing = 1
 		layout.minimumLineSpacing = layout.minimumInteritemSpacing
-		layout.headerReferenceSize = CGSize(width: view.frame.size.width, height: (view.frame.size.width-5-5 - (7-1))/7)
-		
+		layout.headerReferenceSize = CGSize(width: view.frame.width, height: 65)
+
 		dayGrid = UICollectionView(frame: CGRect(), collectionViewLayout: layout)
 		dayGrid.translatesAutoresizingMaskIntoConstraints = false
 		dayGrid.register(CalendarGridHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "Header")
 		dayGrid.register(CalendarGridCell.self, forCellWithReuseIdentifier: "Cell")
 		dayGrid.backgroundColor = UIColor.clear
 		view.addSubview(dayGrid)
-		dayGrid.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		dayGrid.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		dayGrid.addConstraintsXY(xView: view, xSelfAttribute: .width, xViewAttribute: .width, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .height, yViewAttribute: .height, yMultiplier: 1, yConstant: 0)
 		
 		refreshControl = UIRefreshControl()

@@ -32,11 +32,18 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 	*/
     private var dayEvent: Event?
 	
+	/**
+	frame for the table content
+	*/
+	private var frame: CGRect!
+	
     override func viewDidLoad() {
         super.viewDidLoad()
 		
+		frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
+		
 		setupEvents()
-				
+		
 		eventTable = UITableView()
 		eventTable.register(HomeViewCell.self, forCellReuseIdentifier: "cell")
 		eventTable.separatorColor = UIColor.primary()
@@ -47,13 +54,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		eventTable.delegate = self
 		eventTable.dataSource = self
 		
-		// estimated size because the host pictures height inside the cell is UIScreen.main.bounds.height/10
-		eventTable.estimatedRowHeight = UIScreen.main.bounds.height/10 * 2
+		// estimated size because the host pictures height inside the cell is frame.height/10
+		eventTable.estimatedRowHeight = frame.height/10 * 2
 		
 		refreshControl = UIRefreshControl()
 		eventTable.addSubview(refreshControl)
 		refreshControl.addTarget(self, action: #selector(HomeViewController.refresh), for: .valueChanged)
 
+		eventTable.tableFooterView = UIView()
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier!), object: nil)
     }
@@ -143,12 +151,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:HomeViewCell = eventTable.dequeueReusableCell(withIdentifier: "cell")! as! HomeViewCell
 		let event:Event = (shownEvents[indexPath.row] )
+		
+		cell.separatorInset = UIEdgeInsetsMake(0, 8, 0, 8)
 
 		cell.titleLabel.text = titleEvents[event]
 		
 		var imageTemp = sponsors[event.hostId]?.image
 		
-		let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/10) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/10)
+		let size = CGSize(width: (imageTemp?.size.width)! * ((frame.height/10) / (imageTemp?.size.height)!), height: frame.height/10)
 		
 		UIGraphicsBeginImageContext(size)
 		imageTemp?.draw(in: CGRect(origin: .zero, size: size))
@@ -165,7 +175,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         dateFormatter.dateFormat = "EEE dd.MM.YYYY 'um' HH:mm"
         
         cell.dateLabel.text = "Das Event startet am \(dateFormatter.string(from: event.dateStart!))"
-		cell.dateLabel.addConstraintsXY(xView: cell, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.imageV, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.dateLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.imageV, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		if event.ageMin == 0 && event.ageMax < 99 {
 			cell.ageLabel.text = "Für jeden bis zu \(event.ageMax!) Jahren"
@@ -176,7 +186,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		}else{
 			cell.ageLabel.text = "Für jeden ab \(event.ageMin!) Jahren und bis zu \(event.ageMax!) Jahren"
 		}
-		cell.ageLabel.addConstraintsXY(xView: cell, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.dateLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.ageLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.dateLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		if event.price == 0 {
 			cell.priceLabel.text = "Der Eintritt ist kostenlos"
@@ -184,8 +194,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		}else {
 			cell.priceLabel.text = "Der Eintritt kostet \(event.price!)€"
 		}
-		cell.priceLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.ageLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		cell.priceLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.priceLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.ageLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.priceLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		cell.layoutIfNeeded()
 		
