@@ -1,8 +1,7 @@
 <?php
 	//Initalize PDO for mysql
 	try {
-		$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'testuser', 'BLysbG6Bsa2qn6nJ',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-		//$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'dbUser', 'fluegelrad',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+		$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'dbUser', 'fluegelrad',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 	} catch(PDOException $e) {
 		exit("Error: Connection failed");
     }
