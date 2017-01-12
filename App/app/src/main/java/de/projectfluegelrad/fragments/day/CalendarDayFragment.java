@@ -8,6 +8,7 @@ import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +19,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -94,6 +97,13 @@ public class CalendarDayFragment extends Fragment {
 
         MapView mapView = (MapView) layout.findViewById(R.id.mapView);
         buildMapView(mapView);
+
+        ((FloatingActionButton) layout.findViewById(R.id.participateFab)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Pressed", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

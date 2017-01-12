@@ -138,4 +138,14 @@
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/participateFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_thumb_up_white"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_margin="16dp"
+        app:layout_anchor="@id/app_bar_day_fragment"
+        app:layout_anchorGravity="bottom|right|end"/>
+
 </android.support.design.widget.CoordinatorLayout>
