@@ -38,7 +38,6 @@ public class CalendarGridViewFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
                 List<Event> eventsOnDate = new ArrayList<Event>();
 
                 for (Event e : events) {
@@ -56,7 +55,7 @@ public class CalendarGridViewFragment extends Fragment {
                     CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                     calendarDayFragment.setArguments(bundle);
 
-                    CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
                 }
                 if (eventsOnDate.size() > 1) {
                     DialogFragment newFragment = new CalendarDayDialog();

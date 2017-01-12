@@ -3,15 +3,15 @@
 	$type=0;
 	require('spamProtector.php');
 	
-	$locationsGet = $pdo->prepare("SELECT * FROM `locations`");
-	$locationsGet->execute();
+	$statement = $pdo->prepare("SELECT * FROM `locations`");
+	$statement->execute();
 	
 	$lIdArr = array();
 	$adArr = array();
 	$loArr = array();
 	$laArr = array();
 	
-	while($row = $locationsGet->fetch()) {
+	while($row = $statement->fetch()) {
 		$lIdArr[] = $row['id'];
 		$adArr[] = $row['address'];
 		$loArr[] = $row['longitude'];
@@ -28,15 +28,15 @@
 	$longitudes = "const longitudes = Array(\"".$longitudes."\");";
 	$latitudes = "const latitudes = Array(\"".$latitudes."\");";
 	
-	$sponsorsGet = $pdo->prepare("SELECT * FROM `sponsors`");
-	$sponsorsGet->execute();
+	$statement = $pdo->prepare("SELECT * FROM `sponsors`");
+	$statement->execute();
 	
 	$sIdArr = array();
 	$imArr = array();
 	$naArr = array();
 	$sMax = 0;
 	
-	while($row = $sponsorsGet->fetch()) {
+	while($row = $statement->fetch()) {
 		$sIdArr[] = $row['id'];
 		$imArr[] = $row['imagePath'];
 		$naArr[] = $row['name'];
@@ -461,7 +461,7 @@
 						<input type="number" name="longitude" id="longitude" min="-180" max = "180" step="any" value = 7.463>
 						<button type="button" onClick="applyLonLat();">Zu Position springen</button>
 						<button type="button" onClick="setNewMarker();">Marker platzieren</button>
-						<div id="Map" style="height:350px ; width:500px"></div>
+						<div id="Map" style="height:500px ; width:1000px"></div>
 						<div id="mapHeader">
 							&#xa9;<a href="http://www.openstreetmap.org">OpenStreetMap</a>
 							und <a href="http://www.openstreetmap.org/copyright">Mitwirkende</a>,

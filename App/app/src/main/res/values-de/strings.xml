@@ -30,4 +30,8 @@
     <string name="participate">Teilnehmen</string>
     <string name="sponsors_title">Weitere Sponsoren sind:</string>
     <string name="app_version_title">App-Version</string>
+    <string name="duration">Dauer</string>
+    <string name="date">Datum</string>
+    <string name="age">Alter</string>
+    <string name="address">Adresse</string>
 </resources>

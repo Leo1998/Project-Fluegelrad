@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.xml.datatype.Duration;
+
 public class Event {
 
     public static Event readEvent(JSONObject obj) throws JSONException, ParseException {
@@ -123,6 +125,14 @@ public class Event {
     public String getDateEndFormatted() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
         return simpleDateFormat.format(this.dateEnd.getTime());
+    }
+
+    public String getDurationFormatted() {
+        Calendar duration = Calendar.getInstance();
+        duration.setTimeInMillis(dateEnd.getTimeInMillis() - dateStart.getTimeInMillis());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
+        return simpleDateFormat.format(duration.getTime());
     }
 
     public String getDescription() {

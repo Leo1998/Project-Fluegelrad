@@ -15,13 +15,13 @@
 	}
 	
 	//SQL Statement
-	$sponsoringGet = $pdo->prepare("SELECT * from `sponsoring`");
-	$sponsoringGet->execute();
+	$statement = $pdo->prepare("SELECT * from `sponsoring`");
+	$statement->execute();
 	
 	$sponsoringArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $sponsoringGet->fetch()) {
+	while($row = $statement->fetch()) {
 		$sponsoringArray[] = $row;
 	}
 	
@@ -29,19 +29,19 @@
 	$emparray = array();
 	
 	//SQL Statement
-	$eventsGet = $pdo->prepare("SELECT 
+	$statement = $pdo->prepare("SELECT 
 		`events`.`id` , `events`.`name` , `events`.`price` , `events`.`maxParticipants` , `events`.`participants` , `events`.`dateStart` , `events`.`dateEnd` , `events`.`description` , `events`.`ageMin` , `events`.`ageMax` ,`events`.`formId` ,  
 		`locations`.`address` AS `location.address` , `locations`.`longitude` AS `location.longitude` , `locations`.`latitude` AS `location.latitude` ,
 		`hosts`.`sponsorId` AS `hostId`
 		FROM `events` 
 		JOIN `locations` ON `events`.`locationId` = `locations`.`id`
 		JOIN `hosts` ON `events`.`hostId` = `hosts`.`id`");
-	$eventsGet->execute();
+	$statement->execute();
 	
 	$eventArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $eventsGet->fetch()) {
+	while($row = $statement->fetch()) {
 		$id = $row['id'];
 		$row['sponsors'] = getSponsors($id,$sponsoringArray);
 		$eventArray[] = $row;
@@ -50,26 +50,26 @@
 	$emparray['events'] = $eventArray;
 	
 	//SQL Statement
-	$pathsGet = $pdo->prepare("SELECT * from `imagePaths`");
-	$pathsGet->execute();
+	$statement = $pdo->prepare("SELECT * from `imagePaths`");
+	$statement->execute();
 	
 	$imageArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $pathsGet->fetch()) {
+	while($row = $statement->fetch()) {
 		$imageArray[] = $row;
 	}
 	
 	$emparray['images'] = $imageArray;
 	
 	//SQL Statement
-	$sponsorsGet = $pdo->prepare("SELECT * from `sponsors`");
-	$sponsorsGet->execute();
+	$statement = $pdo->prepare("SELECT * from `sponsors`");
+	$statement->execute();
 	
 	$sponsorArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $sponsorsGet->fetch()) {
+	while($row = $statement->fetch()) {
 		$sponsorArray[] = $row;
 	}
 	
