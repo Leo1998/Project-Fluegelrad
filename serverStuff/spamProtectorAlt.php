@@ -27,19 +27,20 @@
 		$ip = getClientIp();
 		
 		//Get count & expire for client-ip from Database
-		$selectIps = $pdo->prepare("SELECT `count`,`expire` FROM `spamProtection` WHERE `ip` = ? AND `type` = ?");
-		$selectIps->execute(array($ip,$type));
+		$statement = $pdo->prepare("SELECT `count`,`expire` FROM `spamProtection` WHERE `ip` = ? AND `type` = ?");
+		$statement->execute(array($ip,$type));
 		
 		$knownIp = false;
 		
 		//Get count and expire for specific port and total count for ip from database
-		while($row = $selectIps->fetch()) {
+		while($row = $statement->fetch()) {
 			$knownIp = true;
 			if($row['expire'] < time()){
 				$time = time();
-				$deleteIps = $pdo->prepare("DELETE FROM `spamProtection` WHERE `expire` < :time");
-				$deleteIps->bindParam('time', $time, PDO::PARAM_INT);
-				$deleteIps->execute();
+				$statement2 = $pdo->prepare("DELETE FROM `spamProtection` WHERE `expire` < :time");
+				$statement2->bindParam('time', $time, PDO::PARAM_INT);
+				$statement2->execute();
+				unset($statement2);
 			}else{
 				if($type == 0 && $row['count'] >= 20){ //Allow 20 type 0 requests per Ip
 					exit("Error: Please wait ".($row['expire']-time())." seconds before trying again");
@@ -53,8 +54,9 @@
 						$newExpire += 60;
 					}
 				
-					$updateIp = $pdo->prepare("UPDATE `spamProtection` SET `expire` = ?,`count` = ? WHERE `ip` = ? AND `type` = ?");
-					$updateIp->execute(array($newExpire,$row['count']+1,$ip,$type));
+					$statement2 = $pdo->prepare("UPDATE `spamProtection` SET `expire` = ?,`count` = ? WHERE `ip` = ? AND `type` = ?");
+					$statement2->execute(array($newExpire,$row['count']+1,$ip,$type));
+					unset($statement2);
 				}
 			}
 		}
@@ -67,8 +69,8 @@
 				$newExpire += 60;
 			}
 			
-			$addIp = $pdo->prepare("INSERT INTO `spamProtection` (`ip`, `count`, `expire`, `type`) VALUES (?, ?, ?, ?);");
-			$addIp->execute(array($ip,1,$newExpire,$type));
+			$statement = $pdo->prepare("INSERT INTO `spamProtection` (`ip`, `count`, `expire`, `type`) VALUES (?, ?, ?, ?);");
+			$statement->execute(array($ip,1,$newExpire,$type));
 		}
 	}
 ?>

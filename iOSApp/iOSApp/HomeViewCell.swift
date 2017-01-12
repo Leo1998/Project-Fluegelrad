@@ -40,38 +40,42 @@ class HomeViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
+		contentView.translatesAutoresizingMaskIntoConstraints = false
+		contentView.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 8, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		contentView.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: -8, yView: self, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+				
 		titleLabel = UILabel()
 		titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
-		addSubview(titleLabel)
+		contentView.addSubview(titleLabel)
 		titleLabel.translatesAutoresizingMaskIntoConstraints = false
-		titleLabel.addConstraintsXY(xView: self, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		titleLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		nameLabel = UILabel()
 		nameLabel.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(nameLabel)
-		nameLabel.addConstraintsXY(xView: self, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: titleLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		contentView.addSubview(nameLabel)
+		nameLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: titleLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 
 		
 		imageV = UIImageView()
-		addSubview(imageV)
+		contentView.addSubview(imageV)
 		imageV.translatesAutoresizingMaskIntoConstraints = false
-		imageV.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		imageV.addConstraintsXY(xView: contentView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         
         hostNameLabel = UILabel()
         hostNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(hostNameLabel)
+        contentView.addSubview(hostNameLabel)
 		
         dateLabel = UILabel()
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(dateLabel)
+        contentView.addSubview(dateLabel)
         
         ageLabel = UILabel()
         ageLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(ageLabel)
+        contentView.addSubview(ageLabel)
 		
 		priceLabel = UILabel()
 		priceLabel.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(priceLabel)
+		contentView.addSubview(priceLabel)
 		
     }
 	

@@ -20,7 +20,6 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
         super.viewDidLoad()
 		
 		MainViewController.selfish = self
-
 		
 		// Setting the color of the TabBar titles to match the app style
 		UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.black], for: .normal)
@@ -122,7 +121,7 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
         UserDefaults.standard.synchronize()
 		
 		// Sending a message to all ViewControllers to update their data
-		NotificationCenter.default.post(name: Notification.Name(Bundle.main.bundleIdentifier!), object: self)
+		NotificationCenter.default.post(name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: self)
     }
 	
 	/**
@@ -176,4 +175,8 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
     public static func refresh(){
         databaseManager.downloadItems()
     }
+	
+	override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+		NotificationCenter.default.post(name: Notification.Name(Bundle.main.bundleIdentifier! + "segueBack"), object: self)
+	}
 }

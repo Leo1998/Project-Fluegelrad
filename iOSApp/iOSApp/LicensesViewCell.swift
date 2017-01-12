@@ -30,20 +30,25 @@ class LicensesViewCell: UITableViewCell {
 	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
+		contentView.translatesAutoresizingMaskIntoConstraints = false
+		contentView.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 8, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		contentView.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: -8, yView: self, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+
+		
 		nameLabel = UILabel()
 		nameLabel.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(nameLabel)
-		nameLabel.addConstraintsXY(xView: self, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		contentView.addSubview(nameLabel)
+		nameLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		urlLabel = UILabel()
 		urlLabel.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(urlLabel)
-		urlLabel.addConstraintsXY(xView: self, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		contentView.addSubview(urlLabel)
+		urlLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		licenseView = UIView()
 		licenseView.backgroundColor = UIColor.lightGray
 		licenseView.translatesAutoresizingMaskIntoConstraints = false
-		addSubview(licenseView)
+		contentView.addSubview(licenseView)
 		
 		copyright = UILabel()
 		copyright.translatesAutoresizingMaskIntoConstraints = false
