@@ -58,7 +58,7 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
                 calendarDayFragment.setArguments(bundle);
 
                 if (activity != null) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    activity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
                 }
             }
         });

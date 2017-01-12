@@ -35,5 +35,9 @@
     <string name="participate">Participate</string>
     <string name="sponsors_title">Other Sponsors are:</string>
     <string name="app_version_title">App-Version</string>
+    <string name="duration">Duration</string>
+    <string name="date">Date</string>
+    <string name="age">Age</string>
+    <string name="address">Address</string>
 
 </resources>

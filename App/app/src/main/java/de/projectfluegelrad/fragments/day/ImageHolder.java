@@ -55,11 +55,11 @@ public class ImageHolder extends RelativeLayout {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         int bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, displayMetrics);
 
-        final LayoutParams spinnerParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        spinnerParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        final LayoutParams spinnerParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        spinnerParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
         final LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        imageHolderParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        imageHolderParams.addRule(RelativeLayout.CENTER_IN_PARENT);
 
         this.addView(progressSpinner, spinnerParams);
         this.addView(imageHolder, imageHolderParams);
