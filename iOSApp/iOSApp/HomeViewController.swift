@@ -106,7 +106,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		
 			// deltes all outdated events
 			let today = Date()
-			for (index, value) in events.enumerated(){
+			for (index, value) in shownEvents.enumerated(){
 				if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
 					shownEvents.remove(at: index)
 				}
@@ -116,15 +116,33 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		
 			newShownEvents.append(shownEvents[0])
 			titleEvents[shownEvents[0]] = "Das nächste Event"
+			shownEvents.remove(at: 0)
+			
+			newShownEvents.append(shownEvents[0])
+			titleEvents[shownEvents[0]] = "Das übernächste Event"
+			shownEvents.remove(at: 0)
+
 		
-			var eventTemp = shownEvents[1]
-			for value in shownEvents {
-				if value.participants > eventTemp.participants && value != shownEvents[0] {
+			var eventTemp = shownEvents[0]
+			var indexTemp = 0
+			for (index, value) in shownEvents.enumerated() {
+				if value.participants > eventTemp.participants {
 					eventTemp = value
+					indexTemp = index
 				}
 			}
 			newShownEvents.append(eventTemp)
 			titleEvents[eventTemp] = "Das beliebteste Event"
+			shownEvents.remove(at: indexTemp)
+			
+			var secondEventTemp = shownEvents[0]
+			for value in shownEvents {
+				if value.participants > eventTemp.participants{
+					secondEventTemp = value
+				}
+			}
+			newShownEvents.append(secondEventTemp)
+			titleEvents[secondEventTemp] = "Das nächst beliebteste Event"
 		
 			shownEvents = newShownEvents
 		}
@@ -154,6 +172,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:HomeViewCell = eventTable.dequeueReusableCell(withIdentifier: "cell")! as! HomeViewCell
 		let event:Event = (shownEvents[indexPath.row] )
+		
+		cell.selectionStyle = .none
 		
 		cell.separatorInset = UIEdgeInsetsMake(0, 8, 0, 8)
 

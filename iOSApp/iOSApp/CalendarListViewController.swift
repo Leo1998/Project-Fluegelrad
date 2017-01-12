@@ -141,7 +141,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		})
 		
 		let today = Date()
-		for (index, value) in events.enumerated(){
+		for (index, value) in allEvents.enumerated(){
 			if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
 				allEvents.remove(at: index)
 			}
@@ -180,6 +180,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell:CalendarListViewCell = eventTable.dequeueReusableCell(withIdentifier: "cell")! as! CalendarListViewCell
 		
+		cell.selectionStyle = .none
 		cell.separatorInset = UIEdgeInsetsMake(0, 8, 0, 8)
 		
 		let event:Event!

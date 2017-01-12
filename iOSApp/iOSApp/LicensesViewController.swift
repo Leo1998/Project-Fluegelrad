@@ -56,6 +56,8 @@ class LicensesViewController: UIViewController, UITableViewDelegate, UITableView
 		let cell:LicensesViewCell = licensesTable.dequeueReusableCell(withIdentifier: "cell")! as! LicensesViewCell
 		let licence = (licenses[indexPath.row] )
 
+		cell.selectionStyle = .none
+		
 		cell.nameLabel.text = licence.name
 		cell.urlLabel.text = licence.url
 		cell.urlLabel.isUserInteractionEnabled = true
