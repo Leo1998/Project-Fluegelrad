@@ -26,8 +26,8 @@ class ParticipationView: UIView {
 	init(frame: CGRect, event: Event) {
 		super.init(frame: frame)
 
+		
 		currentParticipants = UILabel()
-		updateCurrentParticipants(event: event)
 		addSubview(currentParticipants)
 		currentParticipants.translatesAutoresizingMaskIntoConstraints = false
 		currentParticipants.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .centerY, yViewAttribute: .centerY, yMultiplier: 1, yConstant: 0)
@@ -39,6 +39,9 @@ class ParticipationView: UIView {
 		participationButton.translatesAutoresizingMaskIntoConstraints = false
 		participationButton.addConstraintsXY(xView: currentParticipants, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		participationButton.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		
+		updateCurrentParticipants(event: event)
+
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -49,6 +52,12 @@ class ParticipationView: UIView {
 	updates the label for the participants which can still join
 	*/
 	public func updateCurrentParticipants(event: Event){
-		currentParticipants.text = "Es sind noch \(event.maxParticipants - event.participants) Plätze frei."
+		if event.maxParticipants - event.participants == 0 {
+			currentParticipants.text = "Es sind keine Plätze mehr frei."
+			participationButton.isHidden = true
+		}else {
+			currentParticipants.text = "Es sind noch \(event.maxParticipants - event.participants) Plätze frei."
+			participationButton.isHidden = false
+		}
 	}
 }

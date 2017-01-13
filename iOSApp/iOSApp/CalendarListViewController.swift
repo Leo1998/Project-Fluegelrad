@@ -204,14 +204,14 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
 		
 		cell.nameLabel.text = event.name
-		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)
 
 		
 		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
+		dateFormatter.dateFormat = "EEE dd.MM.YYYY 'um' HH:mm"
 		
-		cell.dateLabel.text = dateFormatter.string(from: event.dateStart)
-		cell.dateLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.dateLabel.text = "am \(dateFormatter.string(from: event.dateStart)) Uhr"
+		cell.dateLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: -10)
 	
 		
 		return cell

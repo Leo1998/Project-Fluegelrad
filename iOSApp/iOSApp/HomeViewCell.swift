@@ -48,7 +48,7 @@ class HomeViewCell: UITableViewCell {
 		titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
 		contentView.addSubview(titleLabel)
 		titleLabel.translatesAutoresizingMaskIntoConstraints = false
-		titleLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		titleLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)
 		
 		nameLabel = UILabel()
 		nameLabel.translatesAutoresizingMaskIntoConstraints = false

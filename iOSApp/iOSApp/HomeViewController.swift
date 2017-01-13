@@ -142,7 +142,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 				}
 			}
 			newShownEvents.append(secondEventTemp)
-			titleEvents[secondEventTemp] = "Das nächst beliebteste Event"
+			titleEvents[secondEventTemp] = "Das nächste beliebteste Event"
 		
 			shownEvents = newShownEvents
 		}
