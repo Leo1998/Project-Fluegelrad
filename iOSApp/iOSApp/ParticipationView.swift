@@ -28,9 +28,11 @@ class ParticipationView: UIView {
 
 		
 		currentParticipants = UILabel()
+		currentParticipants.adjustsFontSizeToFitWidth = true
 		addSubview(currentParticipants)
 		currentParticipants.translatesAutoresizingMaskIntoConstraints = false
 		currentParticipants.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .centerY, yViewAttribute: .centerY, yMultiplier: 1, yConstant: 0)
+		
 		
 		participationButton = UIButton()
 		participationButton.setTitle("Jetzt Anmelden", for: .normal)
@@ -38,6 +40,9 @@ class ParticipationView: UIView {
 		addSubview(participationButton)
 		participationButton.translatesAutoresizingMaskIntoConstraints = false
 		participationButton.addConstraintsXY(xView: currentParticipants, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		
+		
+		currentParticipants.addConstraintsXY(xView: participationButton, xSelfAttribute: .trailing, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .centerY, yViewAttribute: .centerY, yMultiplier: 1, yConstant: 0)
 		participationButton.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		updateCurrentParticipants(event: event)

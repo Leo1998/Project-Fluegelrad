@@ -41,9 +41,12 @@ class LicensesViewCell: UITableViewCell {
 		nameLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		urlLabel = UILabel()
+		urlLabel.textColor = UIColor.primary()
+		urlLabel.adjustsFontSizeToFitWidth = true
 		urlLabel.translatesAutoresizingMaskIntoConstraints = false
 		contentView.addSubview(urlLabel)
 		urlLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		urlLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: contentView, ySelfAttribute: .trailing, yViewAttribute: .trailing, yMultiplier: 1, yConstant: 0)
 		
 		licenseView = UIView()
 		licenseView.backgroundColor = UIColor.lightGray
@@ -51,9 +54,12 @@ class LicensesViewCell: UITableViewCell {
 		contentView.addSubview(licenseView)
 		
 		copyright = UILabel()
+		copyright.numberOfLines = 0
+		copyright.lineBreakMode = .byWordWrapping
 		copyright.translatesAutoresizingMaskIntoConstraints = false
 		licenseView.addSubview(copyright)
 		copyright.addConstraintsXY(xView: licenseView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: licenseView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		copyright.addConstraintsXY(xView: licenseView, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: licenseView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		license = UILabel()
 		license.translatesAutoresizingMaskIntoConstraints = false

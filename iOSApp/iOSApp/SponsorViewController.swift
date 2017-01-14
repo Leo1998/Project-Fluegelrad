@@ -36,9 +36,25 @@ class SponsorViewController: UIViewController {
 	description of the sponsor
 	*/
 	private var sponsorDescription: UILabel!
+	
+	/**
+	view to scoll through all the sponsor data
+	*/
+	private var scrollView: UIScrollView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		let frame = CGRect(x: 8, y: 0, width: view.frame.width - 16, height: view.frame.height)
+
+		
+		scrollView = UIScrollView()
+		scrollView.translatesAutoresizingMaskIntoConstraints = false
+		scrollView.contentInset = UIEdgeInsetsMake(0, 8, 0, 8)
+		view.addSubview(scrollView)
+		scrollView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		scrollView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+
 		
 		var imageTemp = sponsor.image
 		
@@ -52,48 +68,61 @@ class SponsorViewController: UIViewController {
 		
 		
 		imageView = UIImageView(image: imageTemp)
-		view.addSubview(imageView)
+		scrollView.addSubview(imageView)
 		imageView.translatesAutoresizingMaskIntoConstraints = false
-		imageView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		imageView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		name = UILabel()
 		name.text = sponsor.name
 		name.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(name)
-		name.addConstraintsXY(xView: view, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		scrollView.addSubview(name)
+		name.addConstraintsXY(xView: scrollView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: imageView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		web = UILabel()
 		web.text = sponsor.web
+		web.textColor = UIColor.primary()
 		web.isUserInteractionEnabled = true
 		web.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SponsorViewController.webTap)))
 		web.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(web)
-		web.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: name, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		scrollView.addSubview(web)
+		web.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: name, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		mail = UILabel()
 		mail.text = sponsor.mail
+		mail.textColor = UIColor.primary()
 		mail.isUserInteractionEnabled = true
 		mail.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SponsorViewController.mailTap)))
 		mail.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(mail)
-		mail.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: web, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		scrollView.addSubview(mail)
+		mail.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: web, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		phone = UILabel()
 		phone.text = sponsor.phone
+		phone.textColor = UIColor.primary()
 		phone.isUserInteractionEnabled = true
 		phone.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(SponsorViewController.phoneTap)))
 		phone.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(phone)
-		phone.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: mail, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		scrollView.addSubview(phone)
+		phone.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: mail, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
 		sponsorDescription = UILabel()
 		sponsorDescription.text = sponsor.sponsorDescription
 		sponsorDescription.lineBreakMode = .byWordWrapping
 		sponsorDescription.numberOfLines = 0
 		sponsorDescription.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(sponsorDescription)
-		sponsorDescription.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: phone, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		sponsorDescription.addConstraintsXY(xView: view, xSelfAttribute: .width, xViewAttribute: .width, xMultiplier: 1, xConstant: 0, yView: phone, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		scrollView.addSubview(sponsorDescription)
+		sponsorDescription.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: phone, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		sponsorDescription.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.width, yView: phone, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		view.layoutIfNeeded()
+		
+		var totalHeight: CGFloat = 0
+		for view in scrollView.subviews {
+			totalHeight += view.frame.height
+		}
+		
+		scrollView.contentSize = CGSize(width: frame.width, height: totalHeight)
+
     }
 
     override func didReceiveMemoryWarning() {

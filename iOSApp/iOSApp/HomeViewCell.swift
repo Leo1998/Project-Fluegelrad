@@ -66,6 +66,7 @@ class HomeViewCell: UITableViewCell {
         contentView.addSubview(hostNameLabel)
 		
         dateLabel = UILabel()
+		dateLabel.adjustsFontSizeToFitWidth = true
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(dateLabel)
         

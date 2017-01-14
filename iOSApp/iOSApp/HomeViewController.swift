@@ -199,6 +199,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         cell.dateLabel.text = "Das Event startet am \(dateFormatter.string(from: event.dateStart!))"
 		cell.dateLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.imageV, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.dateLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .trailing, yViewAttribute: .trailing, yMultiplier: 1, yConstant: 0)
 		
 		if event.ageMin == 0 && event.ageMax < 99 {
 			cell.ageLabel.text = "Für jeden bis zu \(event.ageMax!) Jahren"

@@ -174,6 +174,15 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 			footerView.dayList.delegate = self
 			footerView.dayList.dataSource = self
 			
+			let dateFormatter = DateFormatter()
+			dateFormatter.dateFormat = "EEE dd.MM.YYYY"
+			if eventsDay.count == 1 {
+				footerView.dayLabel.text = "Events vom \(dateFormatter.string(from: Date()))"
+			}else{
+				footerView.dayLabel.text = "Keine Events an diesem Tag"
+			}
+
+			
 			return footerView
         default:
             assert(false, "Unexpected element kind")
@@ -233,9 +242,20 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if shownEvents[indexPath.item] != nil {
             eventsDay = shownEvents[indexPath.item]!
+			
+			let dateFormatter = DateFormatter()
+			dateFormatter.dateFormat = "EEE dd.MM.YYYY"
+			
+			if eventsDay.count >= 1 {
+				footerView.dayLabel.text = "Events vom \(dateFormatter.string(from: eventsDay[0].dateStart))"
+			}else{
+				footerView.dayLabel.text = "Keine Events an diesem Tag"
+			}
+			
 			footerView.dayList.reloadData()
-        }
-    }
+		}
+		
+	}
 
 	/**
 	sets the events and the sponsors of the CalendarDayViewController
@@ -343,6 +363,8 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		
 		cell.nameLabel.text = event.name
 		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)
+		cell.nameLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)
+
 		
 		
 		let dateFormatter = DateFormatter()
@@ -350,9 +372,8 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		
 		cell.dateLabel.text = "am \(dateFormatter.string(from: event.dateStart)) Uhr"
 		cell.dateLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: -10)
-		
+		cell.dateLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: -10)
 		
 		return cell
 	}
-
 }

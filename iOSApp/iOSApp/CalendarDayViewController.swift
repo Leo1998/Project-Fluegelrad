@@ -190,14 +190,20 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 		sponsorView.translatesAutoresizingMaskIntoConstraints = false
 		var sponsorViews = [SponsorViewButton]()
 		
-		let sponsorLabel = UILabel()
-		sponsorLabel.text = "Sponsoren"
-		sponsorLabel.translatesAutoresizingMaskIntoConstraints = false
-		sponsorView.addSubview(sponsorLabel)
-		sponsorLabel.addConstraintsXY(xView: sponsorView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		var sponsorViewsHeight: CGFloat = 0
 		
-		sponsorLabel.layoutIfNeeded()
-		var sponsorViewsHeight: CGFloat = sponsorLabel.frame.height
+		let sponsorLabel = UILabel()
+		if event.sponsorIds.count >= 1 {
+			sponsorLabel.text = "Sponsoren"
+			sponsorLabel.translatesAutoresizingMaskIntoConstraints = false
+			sponsorView.addSubview(sponsorLabel)
+			sponsorLabel.addConstraintsXY(xView: sponsorView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+			
+			sponsorLabel.layoutIfNeeded()
+			sponsorViewsHeight += sponsorLabel.frame.height
+		}
+		
+		
 		
 		for (index, item) in event.sponsorIds.enumerated() {
 			let sponsorTemp = SponsorViewButton(frame: frame, sponsor: sponsors[item]!)
@@ -210,7 +216,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 			if index == 0 {
 				sponsorTemp.addConstraintsXY(xView: sponsorView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 			}else{
-				sponsorTemp.addConstraintsXY(xView: sponsorView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorViews[index-1], ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+				sponsorTemp.addConstraintsXY(xView: sponsorView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorViews[index-1], ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 5)
 				
 			}
 			
@@ -233,21 +239,17 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         let region = MKCoordinateRegion(center: self.event.location.coordinate, span: MKCoordinateSpan(latitudeDelta: regionRadius * 2, longitudeDelta: regionRadius * 2))
         mapView.setRegion(region, animated: true)
         scrollView.addSubview(mapView)
-        mapView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 5)
+        mapView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: sponsorView, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 10)
         mapView.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: frame.width, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: frame.width/2)
 
         
         view.layoutIfNeeded()
         
-        var totalHeight: CGFloat = descriptionLabel.frame.height
-        totalHeight += imageView.frame.height
-		totalHeight += ageLabel.frame.height
-        totalHeight += priceLabel.frame.height
-        totalHeight += mapView.frame.height
-		totalHeight += hostLabel.frame.height
-		totalHeight += hostView.frame.height
-		totalHeight += participationView.frame.height
-		totalHeight += sponsorView.frame.height
+        var totalHeight: CGFloat = 0
+		for view in scrollView.subviews {
+			totalHeight += view.frame.height
+		}
+		totalHeight -= header.frame.height
         
         scrollView.contentSize = CGSize(width: frame.width, height: totalHeight)
         
