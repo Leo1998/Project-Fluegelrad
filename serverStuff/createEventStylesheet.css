@@ -1,16 +1,77 @@
 
-*{
+body{
+	background-color:green;
+}
+
+.container{
+	width : 100%;
+}
+.main{
+	position: relative;
+	background-color:green;
+}
+#formDiv{
+
+	width: 80%;
+	background-color:white;
+	margin: 100px;
+	margin-top:0px;
+}
+
+#middleContainer{
+	height: 120%;
+}
+
+.middle{
+	float: left;
+	width: 20%;
+	padding:20px;
+	box-sizing: border-box;
+	background-color: green;
+	height: inherit;
+}
+
+.header .footer{
+	background-color:green;
+	width:100%;
+
+}
+
+.middle label{
+
+	
+	font-weight:bold;
+}
+.middle input,textarea{
+	margin-left: 40px;
+}
+li input,label{
+	text-align:center;
+}
+
+li{
+	padding-bottom:10px;
+}
+.headline{
+	font-style: oblique;
+	font-size:20px;
+}
+#map{
 	
 }
 
-.border{
-	background-color: 
+h1{
+	text-align:center;
 }
 
-#rightBorder{
-	float : right;
+.nToM{
+	margin-left:20px;
 }
 
-#leftBorder{
-	float : left;
+.nToM input{
+	margin-left:0px;
 }
+
+
+
+

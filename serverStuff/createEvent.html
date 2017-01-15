@@ -249,94 +249,109 @@
 	</head>
 
 	<body onload='init();'>
-	
-		<div class="header" class="border" id="headBorder">
-			
-		</div>
-		
-		<div class="border" id ="rightBorder">
-		</div>
-			
-			<div id= "formDiv">
-				<form action="uploadEvent.php" id="event" method="post">
-					<uol>
-						<li>
-							<label for="eventName">Eventname</label>
-							<input type="text" name="eventName" id="eventName" maxLength="30">
-						</li>
-						<br>
-						<li>
-							<label for="price">Preis</label>
-							<input type="number" name="price" id="price" min="0" max="128" step="0.01" value = 0>
-							<label> &#x20ac;</label>
-						</li>
-						<br>
-						<li>
-							<label for="participants">Maximale Teilnehmerzahl</label>
-							<input type="number" name="participants" id="participants" min="1" >
-							<input type="checkbox" name="countParticipants" name="countParticipants" checked>
-							<label for="countParticipants">Teilnehmer z&#xe4;hlen</label>
-						</li>
-						<br>
-						<li>
-							<label>Datum und Zeit von</label>
-							<input type="datetime-local" name="dateStart" id="dateStart" max="9999-12-31T23:59:59">
-							<label>bis</label>
-							<input type="datetime-local" name="dateEnd" id="dateEnd" max="9999-12-31T23:59:59">
-						</li>
-						<br>
-						<li>
-							<label for="description">Beschreibung</label>
-							<textarea name="description" id="description"></textarea>
-						</li>
-						<br>
-						<li>
-							<label>Alter von</label>
-							<input type="number" name="ageMin" id="ageMin" min="0" max="99" value = 0>
-							<label>bis</label>
-							<input type="number" name="ageMax" id="ageMax" min="0" max="99" value = 99>
-						</li>
-						<br>
-						<li>
-							<label>Position</label>
-							<br>
-							<input type = "radio" name = "knowLoc" id = "oldLoc" checked>Bekannte Location</input>
-							<br>
-							<select name = "location" id = "location">
-							</select>
-							<br>
-							<input type = "radio" name = "knowLoc" id = "newLoc">Neue Location</input>
-							<br>
-							<label for="newAddress">Addresse:</label>
-							<input type = "text" name = "newAddress" id = "newAddress" max = 30></input>
-							<input type = "checkbox" name = "setMarker" id = "setMarker">Marker platzieren</input>
-							<br>
-							<input type="number" name="latitude" id="latitude" min="-180" max = "180" step="any" value = 0>
-							<input type="number" name="longitude" id="longitude" min="-180" max = "180" step="any" value = 0>
-							<a href="#" onClick="applyLonLat();">Zu Position springen</a>
-							<a href="#" onClick="setNewMarker();">Marker platzieren</a>
-							<div id="Map" style="height:350px ; width:500px"></div>
-							<div id="mapHeader">
-								&#xa9;<a href="http://www.openstreetmap.org">OpenStreetMap</a>
-								und <a href="http://www.openstreetmap.org/copyright">Mitwirkende</a>,
-								<a href="http://creativecommons.org/licenses/by-sa/2.0/deed.de">CC-BY-SA</a>
-							</div>
-						</li>
-						<br>
-						<li>
-							<label>Sponsoren</label>
-							<div name = "sponsors" id = "sponsors" multiple>
-							</div>
-						</li>
-						<li>
-							<input onchange="readURL(this);" type="file" />
-							<oul id="previews"></oul>
-						</li>
-						<li>
-							<input type="submit" value="Event erstellen" class="btnSubmit" />
-						</li>
-					</uol>
-				</form>
+	<div class ="main">
+			<div class= "header">
+				<div class="container">
+					<h1>Event erstellen</h1>
+				</div>
 			</div>
+			<div class ="form">
+				<div class="container" id ="middleContainer">
+					<div class= "middle" id= "formDiv">
+				
+						<form action="uploadEvent.php" id="event" method="post">
+							<uol>
+								<li>
+									<label class ="headline" for="eventName">Eventname:</label>
+									<input type="text" name="eventName" id="eventName" maxLength="30">
+								</li>
+								<br>
+								<li>
+									<label class ="headline" for="price">Preis:</label>
+									<input type="number" name="price" id="price" min="0" max="128" step="0.01" value = 0>
+									<label> &#x20ac;</label>
+								</li>
+								<br>
+								<li>
+									<label class ="headline" for="participants">Maximale Teilnehmerzahl:</label>
+									<input type="number" name="participants" id="participants" min="1" >
+									<input type="checkbox" name="countParticipants" name="countParticipants" checked>
+									<label for="countParticipants">Teilnehmer z&#xe4;hlen</label>
+								</li>
+								<br>
+								<li>
+									<label class ="headline" >Datum und Zeit: </label>
+									<label class="nToM">
+									<label>von</label>
+									<input type="datetime-local" name="dateStart" id="dateStart" max="9999-12-31T23:59:59">
+									<label>bis</label>
+									<input type="datetime-local" name="dateEnd" id="dateEnd" max="9999-12-31T23:59:59">
+									</label>
+								</li>
+								<br>
+								<li>
+									<label class ="headline" for="description">Beschreibung:</label>
+									<textarea name="description" id="description"></textarea>
+								</li>
+								<br>
+								<li>
+									<label class ="headline">Alter: </label>
+									<label class="nToM">
+									<label > von</label>
+									<input type="number" name="ageMin" id="ageMin" min="0" max="99" value = 0>
+									<label>bis</label>
+									<input type="number" name="ageMax" id="ageMax" min="0" max="99" value = 99>
+									</label>
+								</li>
+								<br>
+								<li>
+									<label class ="headline">Position</label>
+									<br>
+									<input type = "radio" name = "knowLoc" id = "oldLoc" checked>Bekannte Location</input>
+									<select name = "location" id = "location">
+									</select>
+									<br>
+									<input type = "radio" name = "knowLoc" id = "newLoc">Neue Location</input>
+									<br>
+									<label for="newAddress">Addresse:</label>
+									<input type = "text" name = "newAddress" id = "newAddress" max = 30></input>
+									<input type = "checkbox" name = "setMarker" id = "setMarker">Marker platzieren</input>
+									<br>
+									<input type="number" name="latitude" id="latitude" min="-180" max = "180" step="any" value = 0>
+									<input type="number" name="longitude" id="longitude" min="-180" max = "180" step="any" value = 0>
+									<a href="#" onClick="applyLonLat();">Zu Position springen</a>
+									<a href="#" onClick="setNewMarker();">Marker platzieren</a>
+									<div id="Map" style="height:350px ; width:500px"></div>
+									<div id="mapHeader">
+										&#xa9;<a href="http://www.openstreetmap.org">OpenStreetMap</a>
+										und <a href="http://www.openstreetmap.org/copyright">Mitwirkende</a>,
+										<a href="http://creativecommons.org/licenses/by-sa/2.0/deed.de">CC-BY-SA</a>
+									</div>
+								</li>
+								<br>
+								<li>
+									<label class ="headline">Sponsoren</label>
+									<div name = "sponsors" id = "sponsors" multiple>
+									</div>
+								</li>
+								<li>
+									<input onchange="readURL(this);" type="file" />
+									<oul id="previews"></oul>
+								</li>
+								<li>
+									<input type="submit" value="Event erstellen" class="btnSubmit" />
+								</li>
+							</uol>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<div class="footer">
+				<div class="container">
+					<div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>
