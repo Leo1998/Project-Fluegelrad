@@ -12,19 +12,18 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
+import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.fragments.day.CalendarDayFragment;
 
 public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.ViewHolder>{
 
-    private List<Event> eventList;
     private FragmentActivity activity;
 
-    public HomeRecyclerViewAdapter(List<Event> eventList){
-        this.eventList = eventList;
+    public HomeRecyclerViewAdapter(){
+
     }
 
     public void setActivity(FragmentActivity activity) {
@@ -41,29 +40,30 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        Calendar i = eventList.get(position).getDateStart();
+        final Event event = DatabaseManager.INSTANCE.getRecentEventList().get(position);
+        Calendar i = event.getDateStart();
 
-        holder.getCategoryTextView().setText(eventList.get(position).getName());
+        holder.getCategoryTextView().setText(event.getName());
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
-        holder.getDateTextView().setText(simpleDateFormat.format(eventList.get(position).getDateStart().getTime()));
+        holder.getDateTextView().setText(simpleDateFormat.format(event.getDateStart().getTime()));
 
 
-        holder.getLocationTextView().setText(eventList.get(position).getLocation().getAddress());
+        holder.getLocationTextView().setText(event.getLocation().getAddress());
         holder.getHostTextView().setText("N/A");
 
         holder.getCardView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putInt("eventId", eventList.get(position).getId());
+                bundle.putInt("eventId", event.getId());
 
                 CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                 calendarDayFragment.setArguments(bundle);
 
                 if (activity != null) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    activity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
                 }
             }
         });
@@ -71,7 +71,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
     @Override
     public int getItemCount() {
-        return this.eventList.size();
+        return DatabaseManager.INSTANCE.getRecentEventList().size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

@@ -11,12 +11,12 @@
 	} else {
 		exit("Error: Event-Id could not be found");
 	}
-
+	
 	//Load PDO and Spam-Protection
 	$type=1;
 	require('spamProtector.php');
 
-	$upload_folder = 'images/'; //Directory
+	$upload_folder = 'upload/files/'; //Directory
 	$filename = pathinfo($_FILES['userImage']['name'], PATHINFO_FILENAME);
 	$extension = strtolower(pathinfo($_FILES['userImage']['name'], PATHINFO_EXTENSION));
 

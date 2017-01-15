@@ -14,9 +14,24 @@
     <string name="action_settings">Einstellungen</string>
     <string name="licenses_open">Open-Source-Lizenzen</string>
     <string name="missing_driver_failure">Fehlender Treiber</string>
-    <string name="navigation_drawer_close"></string>
+    <string name="navigation_drawer_close">n/a</string>
     <string name="network_failure">Keine Verbindung!</string>
     <string name="no_connction_failure">Keine Verbindung!</string>
     <string name="query_execution_failure">Fehler!</string>
     <string name="clear_cache">App-Daten löschen</string>
+    <string name="host_title">Dieses Event wird veranstaltet von:</string>
+    <string name="website">Website</string>
+    <string name="phone">Telefon</string>
+    <string name="database_access_failure">Fehler bei der Verbindung!</string>
+    <string name="share">Teilen</string>
+    <string name="mail">E_Mail</string>
+    <string name="database_connction_failure">Fehler bei der Verbindung!</string>
+    <string name="navigation_drawer_open">n/a</string>
+    <string name="participate">Teilnehmen</string>
+    <string name="sponsors_title">Weitere Sponsoren sind:</string>
+    <string name="app_version_title">App-Version</string>
+    <string name="duration">Dauer</string>
+    <string name="date">Datum</string>
+    <string name="age">Alter</string>
+    <string name="address">Adresse</string>
 </resources>

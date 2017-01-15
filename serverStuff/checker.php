@@ -19,9 +19,9 @@
 	
 	//Delete expired Users
 	$time = time();
-	$deleteUsers = $pdo->prepare("DELETE FROM users WHERE expire < :time");
-	$deleteUsers->bindParam('time', $time, PDO::PARAM_INT);
-	$deleteUsers->execute();
+	$statement = $pdo->prepare("DELETE FROM users WHERE expire < :time");
+	$statement->bindParam('time', $time, PDO::PARAM_INT);
+	$statement->execute();
 
 	//Create random string
 	function random_string() {
@@ -41,11 +41,11 @@
 	}
 	
 	//Get hashed token from database
-	$selectTokens = $pdo->prepare("SELECT token,id FROM users WHERE id = ?");
-	$selectTokens->execute(array($u));
+	$statement = $pdo->prepare("SELECT token,id FROM users WHERE id = ?");
+	$statement->execute(array($u));
 	//Stays false, if database does not contain id
 	$idPresent = false;
-	while($row = $selectTokens->fetch()) {
+	while($row = $statement->fetch()) {
 		$sHash = $row['token'];
 		$sId = $row['id'];
 		//Checks token with hashed token
@@ -56,8 +56,9 @@
 			$newHash = password_hash($newToken, PASSWORD_DEFAULT);
 			$expire = time();
 			$expire += 30758400;
-			$updateToken = $pdo->prepare("UPDATE users SET token = ? , expire = ? WHERE id = ?");
-			$updateToken->execute(array($newHash,$expire,$sId));
+			$statement2 = $pdo->prepare("UPDATE users SET token = ? , expire = ? WHERE id = ?");
+			$statement2->execute(array($newHash,$expire,$sId));
+			unset($statement2);
 			//Echos new token
 			echo json_encode(array($newToken)).",";
 			break;

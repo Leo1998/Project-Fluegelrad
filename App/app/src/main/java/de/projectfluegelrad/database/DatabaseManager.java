@@ -23,9 +23,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.logging.Logger;
@@ -33,22 +36,70 @@ import de.projectfluegelrad.database.logging.SnackbarLogger;
 
 public class DatabaseManager implements Runnable {
 
+    /**
+     * static reference on the DatabaseManager
+     */
     public static DatabaseManager INSTANCE;
 
+    /**
+     * listener for changes in the database
+     */
     private final DatabaseUpdateListener updateListener;
+    /**
+     * a view the DatabaseManager is attached to (for snackbar logger)
+     */
     private final View attachedView;
+    /**
+     * the directory to store the Database files
+     */
     private final File filesDirectory;
 
+    /**
+     * list of all events
+     */
     private final List<Event> eventList = new ArrayList<Event>();
-    private final ImageAtlas imageAtlas = new ImageAtlas();
+    /**
+     * list of all images
+     */
+    private final List<Image> images = new ArrayList<>();
+    /**
+     * list of all sponsors
+     */
+    private final List<Sponsor> sponsorList = new ArrayList<Sponsor>();
+    /**
+     * the Database user account
+     */
     private User user;
 
+    /**
+     * an abstract logger for example @{@link SnackbarLogger}
+     */
     private Logger logger;
 
+    /**
+     * whether the DatabaseService loop should be running (used for stopping the service clean)
+     */
     private boolean running = false;
+    /**
+     * a waitLock where the Database Service waits for upcoming requests
+     */
     private Object waitLock = new Object();
+    /**
+     * the request which the DatabaseService is currently operating on
+     */
     private DatabaseRequest currentRequest = null;
+    /**
+     * a listener to listen for events while the request is handled
+     */
+    private DatabaseRequestListener currentListener = null;
 
+    /**
+     * Constructor.
+     *
+     * @param attachedView
+     * @param filesDirectory
+     * @param updateListener
+     */
     public DatabaseManager(View attachedView, File filesDirectory, DatabaseUpdateListener updateListener) {
         if (INSTANCE != null)
             throw new IllegalStateException("Only one Instance allowed!");
@@ -64,9 +115,16 @@ public class DatabaseManager implements Runnable {
         this.logger = new SnackbarLogger(attachedView);
 
         new Thread(this, "Database Service").start();
+
+        try {
+            Thread.sleep(100);
+        } catch(InterruptedException e) {}
     }
 
     @Override
+    /**
+     * the run method of the Database Service
+     */
     public void run() {
         readDatabaseFromStorage();
 
@@ -80,70 +138,92 @@ public class DatabaseManager implements Runnable {
                 try {
                     waitLock.wait();
                 } catch (InterruptedException e) {
+                }
             }
-        }
 
-        switch (currentRequest) {
-            case RefreshEventList:
-                readDatabaseFromServer();
-                break;
-            case SaveEventList:
-                saveDatabaseToStorage();
-                break;
-            default:
-                break;
+            switch (currentRequest) {
+                case RefreshEventList:
+                    readDatabaseFromServer();
+                    break;
+                case SaveEventList:
+                    saveDatabaseToStorage();
+                    break;
+                default:
+                    break;
             }
+
+            if (currentListener != null)
+                currentListener.onFinish();
 
             currentRequest = null;
+            currentListener = null;
         }
     }
 
+    /**
+     * this method initializes the login account which either is cached in the files or it request a new user identity
+     */
     private void login() {
         if (user == null) {
-            try {
-                File userFile = new File(filesDirectory, "user.dat");
-                String userJson = null;
-                if (userFile.exists()) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(userFile)));
+            int attempt = 0;
 
-                    StringBuilder jsonBuilder = new StringBuilder();
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null)
-                        jsonBuilder.append(inputLine);
-                    in.close();
-                    userJson = jsonBuilder.toString();
-                } else {
-                    URL url = new URL("http://fluegelrad.ddns.net/createUser.php");
-                    URLConnection c = url.openConnection();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
+            while(attempt < 2) {
+                try {
+                    File userFile = new File(filesDirectory, "user.dat");
+                    String userJson = null;
+                    if (userFile.exists()) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(userFile)));
 
-                    StringBuilder jsonBuilder = new StringBuilder();
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null)
-                        jsonBuilder.append(inputLine);
-                    in.close();
+                        StringBuilder jsonBuilder = new StringBuilder();
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null)
+                            jsonBuilder.append(inputLine);
+                        in.close();
+                        userJson = jsonBuilder.toString();
+                    } else {
+                        URL url = new URL("http://fluegelrad.ddns.net/createUser.php");
+                        URLConnection c = url.openConnection();
+                        BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
 
-                    userJson = jsonBuilder.toString();
+                        StringBuilder jsonBuilder = new StringBuilder();
+                        String inputLine;
+                        while ((inputLine = in.readLine()) != null)
+                            jsonBuilder.append(inputLine);
+                        in.close();
 
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userFile)));
-                    writer.write(userJson);
-                    writer.close();
+                        userJson = jsonBuilder.toString();
+
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userFile)));
+                        writer.write(userJson);
+                        writer.close();
+                    }
+
+                    if (userJson.startsWith("Error:"))
+                        throw new DatabaseException(userJson);
+
+                    JSONArray array = new JSONArray(new JSONTokener(userJson));
+                    int id = array.getInt(0);
+                    String token = array.getString(1);
+
+                    this.user = new User(id, token);
+                    attempt = Integer.MAX_VALUE;
+                } catch(Exception e) {
+                    e.printStackTrace();
+
+                    this.user = null;
+                    new File(filesDirectory, "user.dat").delete();
+
+                    attempt++;
                 }
-
-                if (userJson.startsWith("Error:"))
-                    throw new DatabaseException(userJson);
-
-                JSONArray array = new JSONArray(new JSONTokener(userJson));
-                int id = array.getInt(0);
-                String token = array.getString(1);
-
-                this.user = new User(id, token);
-            } catch(Exception e) {
-                e.printStackTrace();
             }
         }
     }
 
+    /**
+     * updates the users security token after a protected script was executed
+     *
+     * @param newToken
+     */
     private void refreshToken(String newToken) {
         user.setNewToken(newToken);
 
@@ -162,12 +242,30 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * fires a new request for the DatabaseManager
+     *
+     * @param request
+     * @param wait
+     */
     public synchronized void request(DatabaseRequest request, boolean wait) {
         request(request, wait, null);
     }
 
+    /**
+     * fires a new request for the DatabaseManager
+     *
+     * @param request
+     * @param wait
+     * @param listener
+     */
     public synchronized void request(DatabaseRequest request, boolean wait, DatabaseRequestListener listener) {
+        if (currentRequest != null) {
+            throw new IllegalStateException("Database Service is still working!");
+        }
+
         this.currentRequest = request;
+        this.currentListener = listener;
 
         synchronized (waitLock) {
             waitLock.notify();
@@ -179,18 +277,16 @@ public class DatabaseManager implements Runnable {
             } catch (InterruptedException e) {
             }
         }
-
-        if (listener != null)
-            listener.onFinish();
     }
 
     /**
      *
      * @param scriptAddress the scripts address (without arguments)
+     * @param args arguments for the script
      * @return the json text
      * @throws DatabaseException
      */
-    private String executeScript(String scriptAddress) throws Exception {
+    private String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
         ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
@@ -199,7 +295,20 @@ public class DatabaseManager implements Runnable {
             throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.network_failure).toString());
         }
 
+        if (user == null) {
+            throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.database_access_failure).toString());
+        }
+
         String address = scriptAddress + "?u=" + user.getId() + "&t=" + user.getHashedToken();
+        if (args != null) {
+            for (String key : args.keySet()) {
+                if (key.equals("u") || key.equals("t"))
+                    continue;
+
+                address += "&" + key + "=" + args.get(key);
+            }
+        }
+
         URL url = new URL(address);
         URLConnection c = url.openConnection();
         BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
@@ -211,8 +320,18 @@ public class DatabaseManager implements Runnable {
         in.close();
 
         String raw = jsonBuilder.toString();
-        if (raw.startsWith("Error:"))
-            throw new DatabaseException(raw);
+        if (raw.startsWith("Error:")) {
+            if (raw.equals("Error: Invalid Token") || raw.equals("Error: Unknown ID")) {
+                // fix wrong user
+                this.user = null;
+                new File(filesDirectory, "user.dat").delete();
+                login();
+                logger.log("Invalid login(retrying)");
+                return executeScript(scriptAddress, args);
+            } else {
+                throw new DatabaseException(raw);
+            }
+        }
 
         String header = raw.split(",")[0];
         String json = raw.substring(header.length() + 1);
@@ -224,8 +343,11 @@ public class DatabaseManager implements Runnable {
         return json;
     }
 
+    /**
+     * reads the Database from the file on device storage
+     */
     private void readDatabaseFromStorage() {
-        File databaseFile = new File(filesDirectory, "database");
+        File databaseFile = new File(filesDirectory, "database.dat");
 
         if (databaseFile.exists()) {
             try {
@@ -244,45 +366,64 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * reads the Database from the server
+     */
     private void readDatabaseFromServer() {
         try {
-            String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php");
+            String json = executeScript("http://fluegelrad.ddns.net/recieveDatabase.php", null);
 
             readDatabase(json, true);
-
-            updateListener.onDatabaseChanged();
         } catch(Exception e) {
             logger.log(e.getMessage());
             e.printStackTrace();
         }
     }
 
+    /**
+     * helper method for reading the Database from json text
+     *
+     * @param json
+     * @param save
+     * @throws JSONException
+     * @throws ParseException
+     */
     private void readDatabase(String json, boolean save) throws JSONException, ParseException {
         JSONObject root = new JSONObject(new JSONTokener(json));
 
         JSONArray eventDataArray = root.getJSONArray("events");
         JSONArray imageAtlasArray = root.getJSONArray("images");
+        JSONArray sponsorDataArray = root.getJSONArray("sponsors");
 
         for (int i = 0; i < eventDataArray.length(); i++) {
             JSONObject obj = eventDataArray.getJSONObject(i);
 
             Event event = Event.readEvent(obj);
 
-            Log.i("DatabaseManager", "Event: " + event.toString());
+            //Log.i("DatabaseManager", "Event: " + event.toString());
 
             registerEvent(event);
         }
 
-        imageAtlas.clearImages();
-
+        images.clear();
         for (int i = 0; i < imageAtlasArray.length(); i++) {
             JSONObject obj = imageAtlasArray.getJSONObject(i);
 
             Image image = Image.readImage(obj);
 
-            Log.i("DatabaseManager", "Image: " + image.toString());
+            //Log.i("DatabaseManager", "Image: " + image.toString());
 
-            imageAtlas.addImage(image);
+            images.add(image);
+        }
+
+        for (int i = 0; i < sponsorDataArray.length(); i++) {
+            JSONObject obj = sponsorDataArray.getJSONObject(i);
+
+            Sponsor sponsor = Sponsor.readSponsor(obj);
+
+            //Log.i("DatabaseManager", "Sponsor: " + sponsor.toString());
+
+            registerSponsor(sponsor);
         }
 
         sortEvents();
@@ -290,10 +431,15 @@ public class DatabaseManager implements Runnable {
 
         if (save)
             saveDatabaseToStorage();
+
+        updateListener.onDatabaseChanged();
     }
 
+    /**
+     * writes the Database to a file on device storage
+     */
     private void saveDatabaseToStorage() {
-        File eventFile = new File(filesDirectory, "database");
+        File eventFile = new File(filesDirectory, "database.dat");
 
         try {
             JSONArray eventDataArray = new JSONArray();
@@ -306,7 +452,6 @@ public class DatabaseManager implements Runnable {
             }
 
             JSONArray imageAtlasArray = new JSONArray();
-            List<Image> images = imageAtlas.getAllImages();
             for (int i = 0; i < images.size(); i++) {
                 Image image = images.get(i);
 
@@ -315,9 +460,19 @@ public class DatabaseManager implements Runnable {
                 imageAtlasArray.put(obj);
             }
 
+            JSONArray sponsorDataArray = new JSONArray();
+            for (int i = 0; i < sponsorList.size(); i++) {
+                Sponsor sponsor = sponsorList.get(i);
+
+                JSONObject obj = Sponsor.writeSponsor(sponsor);
+
+                sponsorDataArray.put(obj);
+            }
+
             JSONObject root = new JSONObject();
             root.put("events", eventDataArray);
             root.put("images", imageAtlasArray);
+            root.put("sponsors", sponsorDataArray);
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(eventFile)));
 
@@ -328,6 +483,11 @@ public class DatabaseManager implements Runnable {
         }
     }
 
+    /**
+     * called when a new event is registered
+     *
+     * @param event
+     */
     private void registerEvent(Event event) {
         for (int i = 0; i < eventList.size(); i++) {
             Event currentEvent = eventList.get(i);
@@ -347,6 +507,53 @@ public class DatabaseManager implements Runnable {
         eventList.add(event);
     }
 
+    /**
+     * called when a new sponsor is registered
+     *
+     * @param sponsor
+     */
+    private void registerSponsor(Sponsor sponsor) {
+        for (int i = 0; i < sponsorList.size(); i++) {
+            Sponsor currentSponsor= sponsorList.get(i);
+
+            if (currentSponsor.equalsId(sponsor)) {
+                if (currentSponsor.equals(sponsor)) {
+                    // already exists
+                    return;
+                } else {
+                    // update
+                    sponsorList.remove(currentSponsor);
+                    break;
+                }
+            }
+        }
+
+        sponsorList.add(sponsor);
+    }
+
+    /**
+     * sends a request to the server to participate in an event
+     *
+     * @param event
+     * @return wheter you are allowed to participate
+     */
+    public boolean signInForEvent(Event event) {
+        try {
+            Map<String, String> args = new HashMap<>();
+            args.put("k", Integer.toString(event.getId()));
+
+            String result = executeScript("http://fluegelrad.ddns.net/sendDatabase.php", args);
+
+            return true;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * sorts the eventList by dateStart
+     */
     private void sortEvents() {
         Collections.sort(eventList, new Comparator<Event>() {
             @Override
@@ -356,21 +563,121 @@ public class DatabaseManager implements Runnable {
         });
     }
 
+    /**
+     * stops the DatabaseService cleanly
+     */
+    public void stopDatabaseService() {
+        running = false;
+
+        synchronized (waitLock) {
+            waitLock.notify();
+        }
+    }
+
+    /**
+     * stops the DatabaseService and saves all data
+     */
+    public void destroy() {
+        saveDatabaseToStorage();
+
+        stopDatabaseService();
+
+        INSTANCE = null;
+    }
+
     public List<Event> getEventList() {
         return eventList;
     }
 
-    public ImageAtlas getImageAtlas() {
-        return imageAtlas;
+    public List<Image> getImages() {
+        return images;
     }
 
-    public void stopDatabaseService() {
-        running = false;
+    public List<Sponsor> getSponsorList() {
+        return sponsorList;
     }
 
-    public void destroy() {
-        saveDatabaseToStorage();
+    public List<Event> getRecentEventList() {
+        List<Event> list = new ArrayList<>();
 
-        running = false;
+        for (int i = eventList.size()-1; i >= 0; i--){
+            if (eventList.get(i).getDateStart().compareTo(Calendar.getInstance()) > 0){
+                list.add(eventList.get(i));
+            } else {
+                break;
+            }
+        }
+
+        Collections.reverse(list);
+
+        return list;
     }
+
+    public ArrayList<Image> getImages(Event event) {
+        ArrayList<Image> list = new ArrayList<>();
+
+        for (int i = 0; i < images.size(); i++) {
+            Image image = images.get(i);
+
+            if (image.getEventId() == event.getId()) {
+                list.add(image);
+            }
+        }
+
+        return list;
+    }
+
+    public List<Sponsor> getSponsors(Event event) {
+        int[] sponsorIds = event.getSponsors();
+        List<Sponsor> sponsors = new ArrayList<>();
+
+        for (int i = 0; i < sponsorList.size(); i++) {
+            Sponsor sponsor = sponsorList.get(i);
+
+            for (int j = 0; j < sponsorIds.length; j++) {
+                if (sponsor.getId() == sponsorIds[j]) {
+                    sponsors.add(sponsor);
+                }
+            }
+        }
+
+        return sponsors;
+    }
+
+    public Event getEvent(int eventId) {
+        for (int i = 0; i < eventList.size(); i++) {
+            Event event = eventList.get(i);
+
+            if (event.getId() == eventId) {
+                return event;
+            }
+        }
+
+        return null;
+    }
+
+    public Image getImage(String imagePath) {
+        for (int i = 0; i < images.size(); i++) {
+            Image image = images.get(i);
+
+            if (image.getPath().equals(imagePath)) {
+                return image;
+            }
+        }
+
+        return null;
+    }
+
+    public Sponsor getSponsor(int sponsorId) {
+        for (int i = 0; i < sponsorList.size(); i++) {
+            Sponsor sponsor = sponsorList.get(i);
+
+            if (sponsor.getId() == sponsorId) {
+                return sponsor;
+            }
+        }
+
+        return null;
+    }
+
 }

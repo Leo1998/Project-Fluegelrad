@@ -1,6 +1,31 @@
 package de.projectfluegelrad.database;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+
 public class Sponsor {
+
+    public static Sponsor readSponsor(JSONObject obj) throws JSONException, ParseException {
+        Sponsor sponsor = new Sponsor(obj.getInt("id"), obj.getString("name"), obj.getString("description"), obj.getString("imagePath"), obj.getString("mail"), obj.getString("phone"), obj.getString("web"));
+
+        return sponsor;
+    }
+
+    public static JSONObject writeSponsor(Sponsor sponsor) throws JSONException {
+        JSONObject obj = new JSONObject();
+
+        obj.put("id", sponsor.getId());
+        obj.put("name", sponsor.getName());
+        obj.put("description", sponsor.getDescription());
+        obj.put("imagePath", sponsor.getImagePath());
+        obj.put("mail", sponsor.getMail());
+        obj.put("phone", sponsor.getPhone());
+        obj.put("web", sponsor.getWeb());
+
+        return obj;
+    }
 
     private int id;
     private String name;
@@ -59,5 +84,9 @@ public class Sponsor {
                 ", phone='" + phone + '\'' +
                 ", web='" + web + '\'' +
                 '}';
+    }
+
+    public boolean equalsId(Sponsor s) {
+        return this.id == s.getId();
     }
 }

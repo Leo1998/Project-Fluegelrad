@@ -9,18 +9,30 @@
 	//check token & id
 	require('checker.php');
 	
+	//Check, if User already participating
+	$statement = $pdo->prepare("SELECT * FROM `participating` WHERE `userId` = ? AND `eventId` = ?");
+	$statement->execute(array($u,$k));
+	
+	while($row = $statement->fetch()) {
+		exit("Error: User is already participating");
+	}
+	
 	//Get current participants from event
-	$participantsGet = $pdo->prepare("SELECT participants,maxParticipants FROM events WHERE id = ?");
-	$participantsGet->execute(array($k));
-	while($row = $participantsGet->fetch()) {
+	$statement = $pdo->prepare("SELECT participants,maxParticipants FROM events WHERE id = ?");
+	$statement->execute(array($k));
+	while($row = $statement->fetch()) {
 		$participants = intval($row['participants']);
 		$maxParticipants = intval($row['maxParticipants']);
 	}
 	
 	//If maxParticipants is not reached, increase participants by 1
 	if($participants < $maxParticipants){
-		$participantsSet = $pdo->prepare("UPDATE events SET participants = ? WHERE id = ?");
-		$participantsSet->execute(array($participants + 1, $k));
+		$statement = $pdo->prepare("UPDATE events SET participants = ? WHERE id = ?");
+		$statement->execute(array($participants + 1, $k));
+		$statement = $pdo->prepare("INSERT INTO `participating` (`userId`, `eventId`) VALUES (:userId, :eventId);");
+		$statement->bindParam('userId', $u, PDO::PARAM_INT);
+		$statement->bindParam('eventId', $k, PDO::PARAM_INT);
+		$statement->execute();
 	}else{
 		exit("Error: max participants already reached");
 	}

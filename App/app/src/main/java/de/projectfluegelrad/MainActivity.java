@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
-import java.util.List;
 
 import de.projectfluegelrad.fragments.calendar.gridview.CalendarGridViewFragment;
 import de.projectfluegelrad.fragments.calendar.listview.CalendarListFragment;
@@ -32,7 +31,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CalendarListFragment calendarListFragment;
     private CalendarGridViewFragment calendarFragment;
     private SettingsFragment settingsFragment;
-    private SearchFragment searchFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle("");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -76,17 +74,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.databaseManager = new DatabaseManager(navigationView, new File(getApplicationContext().getFilesDir(), "database"), new DatabaseUpdateListener() {
             @Override
             public void onDatabaseChanged() {
-                relayoutAllFragments();
+                refreshFragments();
             }
         });
 
         calendarFragment = new CalendarGridViewFragment();
-
         calendarListFragment = new CalendarListFragment();
-
         homeFragment = new HomeFragment();
         settingsFragment = new SettingsFragment();
-        searchFragment = new SearchFragment();
+
+        refreshFragments();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, homeFragment).commit();
         navigationView.getMenu().getItem(0).setChecked(true);
@@ -115,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
@@ -158,24 +154,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         databaseManager.request(DatabaseRequest.SaveEventList, false);
     }
 
-    private void relayoutAllFragments() {
-        Fragment fragment = findVisibleFragment();
-
-        if (fragment != null) {
-            getSupportFragmentManager().beginTransaction().detach(fragment).attach(fragment).commit();
+    /**
+     * notifies fragment that the Database has changed
+     */
+    private void refreshFragments() {
+        if (homeFragment != null) {
+            homeFragment.refreshData();
         }
-    }
-
-    public Fragment findVisibleFragment(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        if(fragments != null){
-            for(Fragment fragment : fragments){
-                if(fragment != null && fragment.isVisible())
-                    return fragment;
-            }
+        if (calendarListFragment != null) {
+            calendarListFragment.refreshData();
         }
-        return null;
     }
 
     public DatabaseManager getDatabaseManager() {

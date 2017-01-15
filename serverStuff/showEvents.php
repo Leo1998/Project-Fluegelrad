@@ -5,32 +5,32 @@
 	
 	//Get events
 	//SQL Statement
-	$eventsGet = $pdo->prepare("SELECT `events`.*,`locations`.`address`,`locations`.`longitude`,`locations`.`latitude` , `sponsors`.* , `sponsors`.`name` AS `hostName`
+	$statement = $pdo->prepare("SELECT `events`.*,`locations`.`address`,`locations`.`longitude`,`locations`.`latitude` , `sponsors`.* , `sponsors`.`name` AS `hostName`
 		FROM `events` 
 		JOIN `locations` ON `events`.`locationId` = `locations`.`id`
 		JOIN `hosts` ON `hosts`.`id` = `events`.`hostId`
 		JOIN `sponsors` ON `sponsors`.`id` = `hosts`.`sponsorId`");
-	$eventsGet->execute();
+	$statement->execute();
 	
 	$eventArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $eventsGet->fetch()) {
+	while($row = $statement->fetch()) {
 		$eventArray[] = $row;
 	}
 	
 	//SQL Statement
-	$pathsGet = $pdo->prepare("SELECT * from `imagePaths`");
-	$pathsGet->execute();
+	$statement = $pdo->prepare("SELECT * from `imagePaths`");
+	$statement->execute();
 	
 	$imageArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $pathsGet->fetch()) {
+	while($row = $statement->fetch()) {
 		$imageArray[] = $row;
 	}
 	
-	foreach ($eventArray as &$event) {
+	foreach ($eventArray as $event) {
 		$name = $event['name'];
 		$description = str_replace("\n", "<br>", $event['description']);
 		$price = $event['price'];

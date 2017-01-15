@@ -1,11 +1,31 @@
 import UIKit
 
 class EventImage: NSObject, NSCoding{
+	
+	/**
+	image path from where to download the image from
+	*/
     private var imagePath: String!
+	
+	/**
+	description to the image
+	*/
     private(set) var imageDescription: String!
-    
+	
+	/**
+	Check if the image is already scaled
+	You should only scale the image onc
+	*/
     private(set) var scaled = false
+	
+	/**
+	The image itself
+	*/
     private var imageSave: UIImage?
+	/**
+	The reference to the image so it can download itself
+	can only be set once for scaling
+	*/
     public var image: UIImage? {
         get {
             if self.imageSave == nil {

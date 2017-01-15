@@ -1,7 +1,10 @@
 import UIKit
 
 extension UIView {
-    func addConstraintsXY(xView: UIView?, xSelfAttribute: NSLayoutAttribute, xViewAttribute: NSLayoutAttribute, xMultiplier: CGFloat, xConstant: CGFloat, yView: UIView?, ySelfAttribute: NSLayoutAttribute, yViewAttribute: NSLayoutAttribute, yMultiplier: CGFloat, yConstant: CGFloat){
+	/**
+	A simple one line solution to adding 2 Constraints	
+	*/
+    func addConstraintsXY(xView: Any?, xSelfAttribute: NSLayoutAttribute, xViewAttribute: NSLayoutAttribute, xMultiplier: CGFloat, xConstant: CGFloat, yView: Any?, ySelfAttribute: NSLayoutAttribute, yViewAttribute: NSLayoutAttribute, yMultiplier: CGFloat, yConstant: CGFloat){
         
         let tempX = NSLayoutConstraint(item: self, attribute: xSelfAttribute, relatedBy: NSLayoutRelation.equal, toItem: xView, attribute: xViewAttribute, multiplier: xMultiplier, constant: xConstant)
         
@@ -10,3 +13,5 @@ extension UIView {
         NSLayoutConstraint.activate([tempX, tempY])
     }
 }
+
+

@@ -16,7 +16,7 @@ import java.util.List;
 
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.fragments.calendar.CalendarDayFragment;
+import de.projectfluegelrad.fragments.day.CalendarDayFragment;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseRequest;
 import de.projectfluegelrad.database.DatabaseRequestListener;
@@ -38,7 +38,6 @@ public class CalendarGridViewFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
                 List<Event> eventsOnDate = new ArrayList<Event>();
 
                 for (Event e : events) {
@@ -56,7 +55,7 @@ public class CalendarGridViewFragment extends Fragment {
                     CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                     calendarDayFragment.setArguments(bundle);
 
-                    CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
                 }
                 if (eventsOnDate.size() > 1) {
                     DialogFragment newFragment = new CalendarDayDialog();
@@ -77,7 +76,12 @@ public class CalendarGridViewFragment extends Fragment {
                 ((MainActivity) CalendarGridViewFragment.this.getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, false, new DatabaseRequestListener() {
                     @Override
                     public void onFinish() {
-                        swipeRefreshLayout.setRefreshing(false);
+                        swipeRefreshLayout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
                     }
                 });
             }

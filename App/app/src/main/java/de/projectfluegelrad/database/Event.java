@@ -3,18 +3,22 @@ package de.projectfluegelrad.database;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.xml.datatype.Duration;
 
 public class Event {
 
     public static Event readEvent(JSONObject obj) throws JSONException, ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
         Calendar dateStart = Calendar.getInstance();
         dateStart.setTime(simpleDateFormat.parse(obj.getString("dateStart")));
@@ -24,9 +28,13 @@ public class Event {
 
         Location location = new Location(obj.getString("location.address"), obj.getDouble("location.longitude"), obj.getDouble("location.latitude"));
 
-        Sponsor host = new Sponsor(obj.getInt("host.id"), obj.getString("host.name"), obj.getString("host.description"), obj.getString("host.image"), obj.getString("host.mail"), obj.getString("host.phone"), obj.getString("host.web"));
+        JSONArray sponsorsArray = obj.getJSONArray("sponsors");
+        int[] sponsors = new int[sponsorsArray.length()];
+        for (int i = 0; i < sponsorsArray.length(); i++) {
+            sponsors[i] = sponsorsArray.getInt(i);
+        }
 
-        Event event = new Event(obj.getInt("id"), obj.getString("name"), obj.getInt("price"), dateStart, dateEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"), location,  host);
+        Event event = new Event(obj.getInt("id"), obj.getString("name"), obj.getInt("price"), dateStart, dateEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"), location, obj.getInt("hostId"), sponsors);
 
         return event;
     }
@@ -44,18 +52,17 @@ public class Event {
         obj.put("participants", event.getParticipants());
         obj.put("ageMin", event.getAgeMin());
         obj.put("ageMax", event.getAgeMax());
+        obj.put("hostId", event.getHostId());
+
+        JSONArray sponsorsArray = new JSONArray();
+        for (int i = 0; i < event.getSponsors().length; i++) {
+            sponsorsArray.put(event.getSponsors()[i]);
+        }
+        obj.put("sponsors", sponsorsArray);
 
         obj.put("location.address", event.getLocation().getAddress());
         obj.put("location.longitude", event.getLocation().getLongitude());
         obj.put("location.latitude", event.getLocation().getLatitude());
-
-        obj.put("host.id", event.getHost().getId());
-        obj.put("host.name", event.getHost().getName());
-        obj.put("host.description", event.getHost().getDescription());
-        obj.put("host.image", event.getHost().getImagePath());
-        obj.put("host.mail", event.getHost().getMail());
-        obj.put("host.phone", event.getHost().getPhone());
-        obj.put("host.web", event.getHost().getWeb());
 
         return obj;
     }
@@ -71,9 +78,10 @@ public class Event {
     private int ageMin;
     private int ageMax;
     private Location location;
-    private Sponsor host;
+    private int hostId;
+    private int[] sponsors;
 
-    public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, Sponsor host) {
+    public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, int hostId, int[] sponsors) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -85,7 +93,8 @@ public class Event {
         this.ageMin = ageMin;
         this.ageMax = ageMax;
         this.location = location;
-        this.host = host;
+        this.hostId = hostId;
+        this.sponsors = sponsors;
     }
 
     public int getId() {
@@ -118,6 +127,14 @@ public class Event {
         return simpleDateFormat.format(this.dateEnd.getTime());
     }
 
+    public String getDurationFormatted() {
+        Calendar duration = Calendar.getInstance();
+        duration.setTimeInMillis(dateEnd.getTimeInMillis() - dateStart.getTimeInMillis());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
+        return simpleDateFormat.format(duration.getTime());
+    }
+
     public String getDescription() {
         return description;
     }
@@ -142,8 +159,12 @@ public class Event {
         return location;
     }
 
-    public Sponsor getHost() {
-        return host;
+    public int getHostId() {
+        return hostId;
+    }
+
+    public int[] getSponsors() {
+        return sponsors;
     }
 
     @Override
@@ -160,7 +181,8 @@ public class Event {
                 ", ageMin=" + ageMin +
                 ", ageMax=" + ageMax +
                 ", location=" + location +
-                ", host=" + host +
+                ", hostId=" + hostId +
+                ", sponsors=" + Arrays.toString(sponsors) +
                 '}';
     }
 

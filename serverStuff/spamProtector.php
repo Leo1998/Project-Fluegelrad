@@ -1,8 +1,7 @@
 <?php
 	//Initalize PDO for mysql
 	try {
-		$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'testuser', 'BLysbG6Bsa2qn6nJ',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
-		//$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'dbUser', 'fluegelrad',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+		$pdo = new PDO('mysql:host=localhost;dbname=fluegelrad', 'dbUser', 'fluegelrad',array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 	} catch(PDOException $e) {
 		exit("Error: Connection failed");
     }
@@ -28,15 +27,15 @@
 	$port = $_SERVER['REMOTE_PORT'];
 	
 	//Get count & expire for client-ip from Database
-	$selectIps = $pdo->prepare("SELECT count,expire,port FROM spamProtection WHERE ip = ? AND type = ?");
-	$selectIps->execute(array($ip,$type));
+	$statement = $pdo->prepare("SELECT count,expire,port FROM spamProtection WHERE ip = ? AND type = ?");
+	$statement->execute(array($ip,$type));
 	
 	$knownIp = false;
 	$totalCount = 0;
 	$expired = false;
 	
 	//Get count and expire for specific port and total count for ip from database
-	while($row = $selectIps->fetch()) {
+	while($row = $statement->fetch()) {
 		if($expire < time()){
 			$expired = true;
 		}else{
@@ -78,22 +77,22 @@
 		//Delete expired IPs if ip expired
 		if($expired){
 			$time = time();
-			$deleteIps = $pdo->prepare("DELETE FROM spamProtection WHERE expire < :time");
-			$deleteIps->bindParam('time', $time, PDO::PARAM_INT);
-			$deleteIps->execute();
+			$statement = $pdo->prepare("DELETE FROM spamProtection WHERE expire < :time");
+			$statement->bindParam('time', $time, PDO::PARAM_INT);
+			$statement->execute();
 		}else{
 			//Choose for Type
-			if($type = 0 && $count > 2){ //Allow 3 type 0 requests per Ip+Port
+			if($type == 0 && $count > 2){ //Allow 3 type 0 requests per Ip+Port
 				exit("Error: Please wait ".($expire-time())." secounds before trying again");
-			}else if($type = 1 && $count > 0){ //Allow 1 type 1 request per Ip+Port
+			}else if($type == 1 && $count > 0){ //Allow 1 type 1 request per Ip+Port
 				exit("Error: Please wait ".($expire-time())." secounds before trying again");
 			}else{ //Not blocked
-				$updateIp = $pdo->prepare("UPDATE spamProtection SET expire = ?,count = ? WHERE ip = ? AND type = ?");
-				$updateIp->execute(array($newExpire,$count+1,$ip,$type));
+				$statement = $pdo->prepare("UPDATE spamProtection SET expire = ?,count = ? WHERE ip = ? AND type = ?");
+				$statement->execute(array($newExpire,$count+1,$ip,$type));
 			}
 		}
 	}else{ //If Ip unknown, add Ip to database
-		$addIp = $pdo->prepare("INSERT INTO `spamProtection` (`ip`, `count`, `expire`, `type`, `port`) VALUES (?, ?, ?, ?, ?);");
-		$addIp->execute(array($ip,1,$newExpire,$type,$port));
+		$statement = $pdo->prepare("INSERT INTO `spamProtection` (`ip`, `count`, `expire`, `type`, `port`) VALUES (?, ?, ?, ?, ?);");
+		$statement->execute(array($ip,1,$newExpire,$type,$port));
 	}
 ?>

@@ -6,7 +6,7 @@
         android:id="@+id/add_calendar"
         android:icon="@drawable/ic_today"
         app:itemIconTint="@color/colorAccent"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item android:title="@string/share"
         android:id="@+id/share"
         android:icon="@drawable/ic_share"

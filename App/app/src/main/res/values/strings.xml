@@ -28,5 +28,16 @@
     <string name="licenses_open">Open-Source-Licences</string>
     <string name="clear_cache">Clear App-Data</string>
     <string name="share">Share</string>
+    <string name="host_title">This event is organized by:</string>
+    <string name="website">Website</string>
+    <string name="mail">Mail</string>
+    <string name="phone">Phone</string>
+    <string name="participate">Participate</string>
+    <string name="sponsors_title">Other Sponsors are:</string>
+    <string name="app_version_title">App-Version</string>
+    <string name="duration">Duration</string>
+    <string name="date">Date</string>
+    <string name="age">Age</string>
+    <string name="address">Address</string>
 
 </resources>
