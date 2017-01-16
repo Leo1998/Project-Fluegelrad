@@ -30,10 +30,12 @@ class CalendarListViewCell: UITableViewCell {
 		imageV.addConstraintsXY(xView: contentView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		
 		nameLabel = UILabel()
+		nameLabel.adjustsFontSizeToFitWidth = true
 		nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		addSubview(nameLabel)
 		
 		dateLabel = UILabel()
+		dateLabel.adjustsFontSizeToFitWidth = true
 		dateLabel.translatesAutoresizingMaskIntoConstraints = false
 		addSubview(dateLabel)
 	}

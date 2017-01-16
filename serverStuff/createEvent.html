@@ -1,0 +1,357 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+    <title>Event erstellen</title>
+	<link rel="stylesheet" href="createEventStylesheet.css"/>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script>
+		var imageCount = 0;
+		
+        var map,vectorLayer,selectMarkerControl,selectedFeature;
+        var lat = 51.514;
+        var lon = 7.463;
+        var zoom = 15;
+        var curpos = new Array();
+        var position;
+		
+		const longitudes = Array(7.462485015869233 , 7.4691798095703446 , 7.459008872985841 , 7.46467369842534);
+		const latitudes = Array(51.516002997651704 , 51.51247766287808 , 51.51156957791462 , 51.514267071442795);
+		const addresses = Array("Location 1" , "Location 2" , "Location 3" , "Location 4");
+		const sponsors = Array("Sponsor 1" , "Sponsor 2" , "Sponsor 3" , "Sponsor 4");
+		
+		var newLocMarker;
+		var state = 0;
+		
+		var vectorLayer
+
+        var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+        var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+
+        var cntrposition = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
+		
+        function init() {
+            map = new OpenLayers.Map("Map",{
+				controls: 
+					[
+					new OpenLayers.Control.Navigation(),
+					new OpenLayers.Control.PanZoomBar(),                        
+					new OpenLayers.Control.LayerSwitcher({}),
+					new OpenLayers.Control.ScaleLine(),
+                    new OpenLayers.Control.OverviewMap(),
+                    ]
+                });
+            var mapnik      = new OpenLayers.Layer.OSM("MAP"); 
+			vectorLayer = new OpenLayers.Layer.Vector("Locations");
+			
+            map.addLayers([mapnik,vectorLayer]);
+            map.addLayer(mapnik);
+            map.setCenter(cntrposition, zoom);
+			
+			var markerClick = {
+				selector: new OpenLayers.Control.SelectFeature(vectorLayer, { onSelect: createPopup, onUnselect: destroyPopup })
+			};
+			
+			map.addControl(markerClick['selector']);
+			markerClick['selector'].activate();
+			
+            var click = new OpenLayers.Control.Click();
+            map.addControl(click);
+
+            click.activate();
+			
+			var locationSelect = document.getElementById('location');
+			
+			for(var i = 0 ; i < longitudes.length  && i < latitudes.length && i < addresses.length ; i++){
+				placeMarker((new OpenLayers.LonLat(longitudes[i],latitudes[i])),addresses[i],i+1);
+				var opt = document.createElement('option');
+				opt.value = i+1;
+				opt.innerHTML = addresses[i];
+				locationSelect.appendChild(opt);
+			}
+			
+			var sponsorsSelect = document.getElementById('sponsors');
+			
+			for(var i = 0 ; i < sponsors.length ; i++){
+				var checkbox = document.createElement('input');
+				checkbox.type = "checkbox";
+				checkbox.name = "sponsor "+(i+1);
+				checkbox.value = i+1;
+				checkbox.id = "sponsor "+(i+1);
+				
+				var label = document.createElement('label')
+				label.htmlFor = "sponsor "+(i+1);
+				label.appendChild(document.createTextNode(sponsors[i]));
+				
+				sponsorsSelect.appendChild(checkbox);
+				sponsorsSelect.appendChild(label);
+			}
+		};
+
+		OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {               
+			defaultHandlerOptions: {
+				'single': true,
+				'double': false,
+				'pixelTolerance': 0,
+				'stopSingle': false,
+				'stopDouble': false
+				},
+
+			initialize: function(options) {
+				this.handlerOptions = OpenLayers.Util.extend(
+					{}, this.defaultHandlerOptions
+					);
+				OpenLayers.Control.prototype.initialize.apply(
+					this, arguments
+					);
+				this.handler = new OpenLayers.Handler.Click(
+					this, {
+						'click': this.trigger
+					}, this.handlerOptions
+					);
+			},
+
+			trigger: function(e) {
+				var checkbox = document.getElementById("setMarker");
+				if(checkbox.checked){
+					checkbox.checked = false;
+					var lonlat = map.getLonLatFromPixel(e.xy);
+					lonlat1= new OpenLayers.LonLat(lonlat.lon,lonlat.lat).transform(toProjection,fromProjection);
+					document.getElementById("latitude").value = lonlat1.lat;
+					document.getElementById("longitude").value = lonlat1.lon;
+					if(state == 0){
+						newLocMarker = placeMarker(lonlat1,'Test',0);
+						state = 1;
+					}else if (state == 1){
+						newLocMarker.move(lonlat);
+					}
+				}
+			}
+			/**
+			
+			
+			
+			*/
+		});
+		
+		function applyLonLat(){
+			var lon = document.getElementById("longitude").value;
+			var lat = document.getElementById("latitude").value;
+			map.setCenter((new OpenLayers.LonLat(lon, lat)).transform( fromProjection, toProjection), zoom);
+		}
+		
+		function placeMarker(lonlat,popuptext,v){
+			var feature = new OpenLayers.Feature.Vector(
+				new OpenLayers.Geometry.Point( lonlat.lon,  lonlat.lat ).transform(fromProjection, toProjection),
+				{description:popuptext , value:v} ,
+				{externalGraphic: 'img/marker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25  }
+				);    
+			vectorLayer.addFeatures(feature);
+			return feature;
+		}
+		
+		function setNewMarker(){
+			var lon = document.getElementById("longitude").value;
+			var lat = document.getElementById("latitude").value;
+			var lonlat = new OpenLayers.LonLat(lon, lat);
+			var lonlat1 = lonlat.transform( fromProjection, toProjection);
+			if(state == 0){
+				newLocMarker = placeMarker(lonlat,'Test',0);
+				state = 1;
+			}else if (state == 1){
+				newLocMarker.move(lonlat1);
+			}
+			map.setCenter(lonlat1, zoom);
+		}
+		
+		function createPopup(feature) {
+			feature.popup = new OpenLayers.Popup.FramedCloud("pop",
+				feature.geometry.getBounds().getCenterLonLat(),
+				null,
+				'<div class="markerContent">'+feature.attributes.description+'</div>',
+				null,
+				true,
+				function() { controls['selector'].unselectAll(); }
+			);
+			feature.popup.closeOnMove = true;
+			map.addPopup(feature.popup);
+			var value = feature.attributes.value;
+			if(value == 0){
+				document.getElementById('newLoc').checked = true;
+			}else{
+				document.getElementById('oldLoc').checked = true;
+				document.getElementById('location').value = value;
+			}
+		}
+
+		function destroyPopup(feature) {
+			feature.popup.destroy();
+			feature.popup = null;
+		}
+		
+		function readURL(input) {
+			if (input.files && input.files[0]) {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					var li = document.createElement('li');
+					li.id = "previewNode"+imageCount;
+					
+					var img=document.createElement('img');
+					img.src= e.target.result;
+					img.alt= "Vorschau nicht verfügbar";
+					img.title= "Vorschau";
+					img.style.height="100px";
+					
+					var label = document.createTextNode("Beschreibung");
+					
+					var text = document.createElement('input');
+					text.type = "text";
+					text.id = "imageDescription"+imageCount;
+					text.name = "imageDescription"+imageCount;
+					text.max = "50";
+					
+					var srcText = document.createElement('input');
+					srcText.type = "text";
+					srcText.id = "imageSrc"+imageCount;
+					srcText.name = "imageSrc"+imageCount;
+					srcText.value = e.target.result;
+					srcText.style.position = "absolute";
+					srcText.style.display = "none";
+					
+					var span = document.createElement('span');
+					span.innerHTML = '<button type="button" onclick="removeImage('+imageCount+');" >Bild entfernen</button>';
+					
+					li.appendChild(img);
+					li.appendChild(label);
+					li.appendChild(text);
+					li.appendChild(srcText);
+					li.appendChild(span);
+					
+					document.getElementById('previews').appendChild(li);
+				}
+				reader.readAsDataURL(input.files[0]);
+			}
+			imageCount++;
+		}
+		
+		function removeImage(id){
+			li = document.getElementById("previewNode"+id);
+			li.parentNode.removeChild(li);
+		}
+	</script>
+	
+	
+	<style>
+		
+		
+	</style>
+	</head>
+
+	<body onload='init();'>
+	<div class ="main">
+			<div class= "header">
+				<div class="container">
+					<h1>Event erstellen</h1>
+				</div>
+			</div>
+			<div class ="form">
+				<div class="container" id ="middleContainer">
+					<div class= "middle" id= "formDiv">
+				
+						<form action="uploadEvent.php" id="event" method="post">
+							<uol>
+								<li>
+									<label class ="headline" for="eventName">Eventname:</label>
+									<input type="text" name="eventName" id="eventName" maxLength="30">
+								</li>
+								<br>
+								<li>
+									<label class ="headline" for="price">Preis:</label>
+									<input type="number" name="price" id="price" min="0" max="128" step="0.01" value = 0>
+									<label> &#x20ac;</label>
+								</li>
+								<br>
+								<li>
+									<label class ="headline" for="participants">Maximale Teilnehmerzahl:</label>
+									<input type="number" name="participants" id="participants" min="1" >
+									<input type="checkbox" name="countParticipants" name="countParticipants" checked>
+									<label for="countParticipants">Teilnehmer z&#xe4;hlen</label>
+								</li>
+								<br>
+								<li>
+									<label class ="headline" >Datum und Zeit: </label>
+									<label class="nToM">
+									<label>von</label>
+									<input type="datetime-local" name="dateStart" id="dateStart" max="9999-12-31T23:59:59">
+									<label>bis</label>
+									<input type="datetime-local" name="dateEnd" id="dateEnd" max="9999-12-31T23:59:59">
+									</label>
+								</li>
+								<br>
+								<li>
+									<label class ="headline" for="description">Beschreibung:</label>
+									<textarea name="description" id="description"></textarea>
+								</li>
+								<br>
+								<li>
+									<label class ="headline">Alter: </label>
+									<label class="nToM">
+									<label > von</label>
+									<input type="number" name="ageMin" id="ageMin" min="0" max="99" value = 0>
+									<label>bis</label>
+									<input type="number" name="ageMax" id="ageMax" min="0" max="99" value = 99>
+									</label>
+								</li>
+								<br>
+								<li>
+									<label class ="headline">Position</label>
+									<br>
+									<input type = "radio" name = "knowLoc" id = "oldLoc" checked>Bekannte Location</input>
+									<select name = "location" id = "location">
+									</select>
+									<br>
+									<input type = "radio" name = "knowLoc" id = "newLoc">Neue Location</input>
+									<br>
+									<label for="newAddress">Addresse:</label>
+									<input type = "text" name = "newAddress" id = "newAddress" max = 30></input>
+									<input type = "checkbox" name = "setMarker" id = "setMarker">Marker platzieren</input>
+									<br>
+									<input type="number" name="latitude" id="latitude" min="-180" max = "180" step="any" value = 0>
+									<input type="number" name="longitude" id="longitude" min="-180" max = "180" step="any" value = 0>
+									<a href="#" onClick="applyLonLat();">Zu Position springen</a>
+									<a href="#" onClick="setNewMarker();">Marker platzieren</a>
+									<div id="Map" style="height:350px ; width:500px"></div>
+									<div id="mapHeader">
+										&#xa9;<a href="http://www.openstreetmap.org">OpenStreetMap</a>
+										und <a href="http://www.openstreetmap.org/copyright">Mitwirkende</a>,
+										<a href="http://creativecommons.org/licenses/by-sa/2.0/deed.de">CC-BY-SA</a>
+									</div>
+								</li>
+								<br>
+								<li>
+									<label class ="headline">Sponsoren</label>
+									<div name = "sponsors" id = "sponsors" multiple>
+									</div>
+								</li>
+								<li>
+									<input onchange="readURL(this);" type="file" />
+									<oul id="previews"></oul>
+								</li>
+								<li>
+									<input type="submit" value="Event erstellen" class="btnSubmit" />
+								</li>
+							</uol>
+						</form>
+					</div>
+				</div>
+			</div>
+			
+			<div class="footer">
+				<div class="container">
+					<div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

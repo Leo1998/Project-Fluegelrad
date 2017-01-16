@@ -1,9 +1,9 @@
 import UIKit
 
-class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource {
 
 	/**
-	GridView ehere the calendar is shown
+	GridView where the calendar is shown
 	*/
 	private var dayGrid: UICollectionView!
 	
@@ -18,14 +18,24 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 	private var headerView: CalendarGridHeader!
 	
 	/**
+	Fotter of the grid where the events for the chosen day are ahown
+	*/
+	private var footerView: CalendarGridFooter!
+	
+	/**
 	All events
 	*/
     private var events = [Event]()
 	
 	/**
+	All events from the clicked day
+	*/
+	private var eventsDay = [Event]()
+	
+	/**
 	Shown events from the current shown month and some of the month before and after
 	*/
-    private var shownEvents = [Int: Event]()
+    private var shownEvents = [Int: [Event]]()
 	/**
 	Shown days from the current shown month and some of the month before and after
 	*/
@@ -64,10 +74,12 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		layout.minimumInteritemSpacing = 1
 		layout.minimumLineSpacing = layout.minimumInteritemSpacing
 		layout.headerReferenceSize = CGSize(width: view.frame.width, height: 65)
+		layout.footerReferenceSize = CGSize(width: view.frame.width, height: view.frame.height - (view.frame.height / 3.5 * 2))
 
 		dayGrid = UICollectionView(frame: CGRect(), collectionViewLayout: layout)
 		dayGrid.translatesAutoresizingMaskIntoConstraints = false
 		dayGrid.register(CalendarGridHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "Header")
+		dayGrid.register(CalendarGridFooter.self, forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "Footer")
 		dayGrid.register(CalendarGridCell.self, forCellWithReuseIdentifier: "Cell")
 		dayGrid.backgroundColor = UIColor.clear
 		view.addSubview(dayGrid)
@@ -78,11 +90,24 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		dayGrid.addSubview(refreshControl)
 		dayGrid.alwaysBounceVertical = true
 		
-		
 		dayGrid.delegate = self
 		dayGrid.dataSource = self
 		
+		let today = Date()
+		let cellDateTodayComponents = calendar.dateComponents([.year, .month, .day], from: today)
+
+		eventsDay = events.filter({	(event) in
+			let cellDateEventComponents = calendar.dateComponents([.year, .month, .day], from: event.dateStart)
+			
+			if cellDateTodayComponents.year == cellDateEventComponents.year && cellDateTodayComponents.month == cellDateEventComponents.month && cellDateTodayComponents.day ==		cellDateEventComponents.day {
+				return true
+			}else{
+				return false
+			}
+		})
+		
 		refreshControl.addTarget(self, action: #selector(CalendarGridViewController.refresh), for: .valueChanged)
+		
 		
 		updateViews(fromReload: false)
 		
@@ -116,18 +141,19 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
         }else if cellDateComponents.month != currentDateComponents.month{
             cell.numberLabel.textColor = UIColor.gray
         }
-        
+		
+		var eventsTemp = [Event]()
         for event in events{
             let eventDateComponents = calendar.dateComponents([.year, .month, .day], from: (event ).dateStart!)
             
             if cellDateComponents.year == eventDateComponents.year && cellDateComponents.month == eventDateComponents.month && cellDateComponents.day == eventDateComponents.day {
                 cell.numberLabel.backgroundColor = UIColor.red
-                
-                shownEvents[indexPath.item] = event
-                
-                break
+
+				eventsTemp.append(event)
             }
         }
+		shownEvents[indexPath.item] = eventsTemp
+		
         return cell
     }
     
@@ -142,6 +168,22 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
             
             
             return headerView
+		case UICollectionElementKindSectionFooter:
+			footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind,withReuseIdentifier: "Footer",for: indexPath) as! CalendarGridFooter
+			
+			footerView.dayList.delegate = self
+			footerView.dayList.dataSource = self
+			
+			let dateFormatter = DateFormatter()
+			dateFormatter.dateFormat = "EEE dd.MM.YYYY"
+			if eventsDay.count == 1 {
+				footerView.dayLabel.text = "Events vom \(dateFormatter.string(from: Date()))"
+			}else{
+				footerView.dayLabel.text = "Keine Events an diesem Tag"
+			}
+
+			
+			return footerView
         default:
             assert(false, "Unexpected element kind")
         }
@@ -199,10 +241,21 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if shownEvents[indexPath.item] != nil {
-            dayEvent = shownEvents[indexPath.item]
-            performSegue(withIdentifier: "CalendarDayViewController", sender: self)
-        }
-    }
+            eventsDay = shownEvents[indexPath.item]!
+			
+			let dateFormatter = DateFormatter()
+			dateFormatter.dateFormat = "EEE dd.MM.YYYY"
+			
+			if eventsDay.count >= 1 {
+				footerView.dayLabel.text = "Events vom \(dateFormatter.string(from: eventsDay[0].dateStart))"
+			}else{
+				footerView.dayLabel.text = "Keine Events an diesem Tag"
+			}
+			
+			footerView.dayList.reloadData()
+		}
+		
+	}
 
 	/**
 	sets the events and the sponsors of the CalendarDayViewController
@@ -277,5 +330,50 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 			updateViews(fromReload: true)
 		}
     }
+	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		dayEvent = eventsDay[indexPath.item]
+		performSegue(withIdentifier: "CalendarDayViewController", sender: self)
+	}
 
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return eventsDay.count
+	}
+	
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let cell:CalendarListViewCell = footerView.dayList.dequeueReusableCell(withIdentifier: "cell")! as! CalendarListViewCell
+		
+		cell.selectionStyle = .none
+		cell.separatorInset = UIEdgeInsetsMake(0, 8, 0, 8)
+		
+		let	event = (eventsDay[indexPath.row] )
+		
+		var imageTemp = sponsors[event.hostId]?.image
+		
+		let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/10) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/10)
+		
+		UIGraphicsBeginImageContext(size)
+		imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+		
+		imageTemp = UIGraphicsGetImageFromCurrentImageContext()!
+		UIGraphicsEndImageContext()
+		
+		cell.imageV.image = imageTemp
+		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
+		
+		cell.nameLabel.text = event.name
+		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)
+		cell.nameLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)
+
+		
+		
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "EEE dd.MM.YYYY 'um' HH:mm"
+		
+		cell.dateLabel.text = "am \(dateFormatter.string(from: event.dateStart)) Uhr"
+		cell.dateLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: -10)
+		cell.dateLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: -10)
+		
+		return cell
+	}
 }

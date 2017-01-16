@@ -29,15 +29,18 @@ class CalendarDayViewHeader: UIView {
         addSubview(nameLabel)
         nameLabel.addConstraintsXY(xView: self, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 
+
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
         
         dateLabel = UILabel()
 		dateLabel.textColor = UIColor.accent()
+		dateLabel.adjustsFontSizeToFitWidth = true
         dateLabel.text = "von \(dateFormatter.string(from: event.dateStart)) bis \(dateFormatter.string(from: event.dateEnd))"
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(dateLabel)
         dateLabel.addConstraintsXY(xView: self, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		dateLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .trailing, yViewAttribute: .trailing, yMultiplier: 1, yConstant: 0)
 		
         layoutIfNeeded()
         height += nameLabel.frame.height

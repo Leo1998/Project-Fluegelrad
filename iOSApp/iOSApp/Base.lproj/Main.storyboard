@@ -146,10 +146,10 @@
             </objects>
             <point key="canvasLocation" x="1688.8" y="248.72563718140933"/>
         </scene>
-        <!--Settings View Controller-->
+        <!--About View Controller-->
         <scene sceneID="lnE-B3-rFu">
             <objects>
-                <viewController id="TEt-3q-C0x" customClass="SettingsViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="TEt-3q-C0x" customClass="AboutViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="kaw-rk-w3D"/>
                         <viewControllerLayoutGuide type="bottom" id="Yl6-Ds-erd"/>
@@ -253,12 +253,12 @@
             </objects>
             <point key="canvasLocation" x="749.60000000000002" y="248.72563718140933"/>
         </scene>
-        <!--Einstellungen-->
+        <!--Über uns-->
         <scene sceneID="7m4-pK-C1V">
             <objects>
                 <navigationController navigationBarHidden="YES" id="RrO-A9-lJG" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Einstellungen" image="ic_settings" selectedImage="ic_settings" id="9Cn-6W-wGR"/>
+                    <tabBarItem key="tabBarItem" title="Über uns" image="ic_info_outline" selectedImage="ic_info_outline" id="9Cn-6W-wGR"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="QNE-oC-naC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -278,8 +278,8 @@
     </scenes>
     <resources>
         <image name="ic_home" width="24" height="24"/>
+        <image name="ic_info_outline" width="24" height="24"/>
         <image name="ic_list" width="24" height="24"/>
-        <image name="ic_settings" width="24" height="24"/>
         <image name="ic_today" width="24" height="24"/>
     </resources>
     <inferredMetricsTieBreakers>

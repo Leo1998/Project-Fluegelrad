@@ -141,7 +141,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		})
 		
 		let today = Date()
-		for (index, value) in events.enumerated(){
+		for (index, value) in allEvents.enumerated(){
 			if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
 				allEvents.remove(at: index)
 			}
@@ -180,6 +180,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell:CalendarListViewCell = eventTable.dequeueReusableCell(withIdentifier: "cell")! as! CalendarListViewCell
 		
+		cell.selectionStyle = .none
 		cell.separatorInset = UIEdgeInsetsMake(0, 8, 0, 8)
 		
 		let event:Event!
@@ -203,14 +204,16 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
 		
 		cell.nameLabel.text = event.name
-		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)
+		cell.nameLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)
 
 		
 		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = "EEE dd.MM.YYYY HH:mm"
+		dateFormatter.dateFormat = "EEE dd.MM.YYYY 'um' HH:mm"
 		
-		cell.dateLabel.text = dateFormatter.string(from: event.dateStart)
-		cell.dateLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		cell.dateLabel.text = "am \(dateFormatter.string(from: event.dateStart)) Uhr"
+		cell.dateLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: -10)
+		cell.dateLabel.addConstraintsXY(xView: cell, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: -10)
 	
 		
 		return cell
