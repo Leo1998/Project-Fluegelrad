@@ -252,11 +252,15 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 		totalHeight -= header.frame.height
         
         scrollView.contentSize = CGSize(width: frame.width, height: totalHeight)
-        
-        let saveEventButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_event_note"), style: .plain, target: self, action: #selector(CalendarDayViewController.saveEvent))
-        let shareEventButton = UIBarButtonItem(image: #imageLiteral(resourceName: "ic_share"), style: .plain, target: self, action: #selector(CalendarDayViewController.share))
+		
+		var buttonsTemp = [UIBarButtonItem]()
+		buttonsTemp.append(UIBarButtonItem(image: #imageLiteral(resourceName: "ic_share"), style: .plain, target: self, action: #selector(CalendarDayViewController.share)))
 
-        navigationItem.setRightBarButtonItems([shareEventButton, saveEventButton], animated: false)
+		if EKEventStore.authorizationStatus(for: .event) != .denied {
+			buttonsTemp.append(UIBarButtonItem(image: #imageLiteral(resourceName: "ic_event_note"), style: .plain, target: self, action: #selector(CalendarDayViewController.saveEvent)))
+		}
+
+		navigationItem.setRightBarButtonItems(buttonsTemp, animated: false)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(CalendarDayViewController.segueBack), name: Notification.Name(Bundle.main.bundleIdentifier! + "segueBack"), object: nil)
 
@@ -312,6 +316,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         
         switch EKEventStore.authorizationStatus(for: .event) {
         case .authorized:
+			MainViewController.createEvent(eventStore: eventStore)
             saving(eventStore: eventStore)
             break
         case .denied:
@@ -320,6 +325,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         case .notDetermined:
             eventStore.requestAccess(to: .event, completion: { (granted, error) in
                 if granted {
+					MainViewController.createEvent(eventStore: eventStore)
                     self.saving(eventStore: eventStore)
                 }else{
                     print("Calendar Access denied")

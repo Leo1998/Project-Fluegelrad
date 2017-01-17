@@ -32,30 +32,6 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 			}
 		}
 		
-		// Check authorization of the calendar
-		let eventStore = EKEventStore()
-		
-		switch EKEventStore.authorizationStatus(for: .event) {
-		case .authorized:
-			MainViewController.createEvent(eventStore: eventStore)
-			break
-		case .denied:
-			print("Calendar Access denied")
-			break
-		case .notDetermined:
-			eventStore.requestAccess(to: .event, completion: { (granted, error) in
-				if granted {
-					MainViewController.createEvent(eventStore: eventStore)
-				}else{
-					print("Calendar Access denied")
-				}
-			})
-			break
-		default:
-			print("Calendar Access default")
-		}
-		
-		
 		// Initalizing the DatabaseManager
         MainViewController.databaseManager = DatabaseManager()
         MainViewController.databaseManager.delegate = self
