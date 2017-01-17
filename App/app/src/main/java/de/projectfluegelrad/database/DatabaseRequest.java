@@ -10,6 +10,8 @@ public enum DatabaseRequest {
     /**
      * request to save the database to device storage
      */
-    SaveEventList
+    SaveEventList,
+
+    Participate
 
 }

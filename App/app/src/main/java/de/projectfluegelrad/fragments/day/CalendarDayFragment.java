@@ -101,7 +101,13 @@ public class CalendarDayFragment extends Fragment {
         ((FloatingActionButton) layout.findViewById(R.id.participateFab)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Pressed", Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putInt("eventId", event.getId());
+
+                ParticipateFragment participateFragment = new ParticipateFragment();
+                participateFragment.setArguments(bundle);
+
+                CalendarDayFragment.this.getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, participateFragment).addToBackStack("participateFragment").commit();
             }
         });
     }

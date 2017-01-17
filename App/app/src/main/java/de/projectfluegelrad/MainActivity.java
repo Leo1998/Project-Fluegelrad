@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onPause() {
         super.onPause();
 
-        databaseManager.request(DatabaseRequest.SaveEventList, false);
+        databaseManager.request(DatabaseRequest.SaveEventList, null, false, null);
     }
 
     /**

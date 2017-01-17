@@ -40,7 +40,7 @@ public class CalendarListFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                ((MainActivity) CalendarListFragment.this.getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, false, new DatabaseRequestListener() {
+                ((MainActivity) CalendarListFragment.this.getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, null, false, new DatabaseRequestListener() {
                     @Override
                     public void onFinish() {
                         swipeRefreshLayout.post(new Runnable() {

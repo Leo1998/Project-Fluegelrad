@@ -34,4 +34,5 @@
     <string name="date">Datum</string>
     <string name="age">Alter</string>
     <string name="address">Adresse</string>
+    <string name="participants">Teilnehmer</string>
 </resources>

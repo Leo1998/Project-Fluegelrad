@@ -81,6 +81,8 @@ public class Event {
     private int hostId;
     private int[] sponsors;
 
+    private boolean participating;
+
     public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, int hostId, int[] sponsors) {
         this.id = id;
         this.name = name;
@@ -165,6 +167,17 @@ public class Event {
 
     public int[] getSponsors() {
         return sponsors;
+    }
+
+    public boolean isParticipating() {
+        return participating;
+    }
+
+    public void participate() {
+        if (isParticipating())
+            throw new IllegalStateException("Already Participating!");
+
+        this.participating = true;
     }
 
     @Override

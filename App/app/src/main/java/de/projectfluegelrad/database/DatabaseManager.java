@@ -89,6 +89,10 @@ public class DatabaseManager implements Runnable {
      */
     private DatabaseRequest currentRequest = null;
     /**
+     * the arguments for the current request
+     */
+    private Object[] currentArguments = null;
+    /**
      * a listener to listen for events while the request is handled
      */
     private DatabaseRequestListener currentListener = null;
@@ -147,6 +151,9 @@ public class DatabaseManager implements Runnable {
                     break;
                 case SaveEventList:
                     saveDatabaseToStorage();
+                    break;
+                case Participate:
+                    signInForEvent((Event) currentArguments[0]);
                     break;
                 default:
                     break;
@@ -247,24 +254,15 @@ public class DatabaseManager implements Runnable {
      *
      * @param request
      * @param wait
-     */
-    public synchronized void request(DatabaseRequest request, boolean wait) {
-        request(request, wait, null);
-    }
-
-    /**
-     * fires a new request for the DatabaseManager
-     *
-     * @param request
-     * @param wait
      * @param listener
      */
-    public synchronized void request(DatabaseRequest request, boolean wait, DatabaseRequestListener listener) {
+    public synchronized void request(DatabaseRequest request, Object[] arguments, boolean wait, DatabaseRequestListener listener) {
         if (currentRequest != null) {
             throw new IllegalStateException("Database Service is still working!");
         }
 
         this.currentRequest = request;
+        this.currentArguments = arguments;
         this.currentListener = listener;
 
         synchronized (waitLock) {
@@ -537,7 +535,7 @@ public class DatabaseManager implements Runnable {
      * @param event
      * @return wheter you are allowed to participate
      */
-    public boolean signInForEvent(Event event) {
+    private boolean signInForEvent(Event event) {
         try {
             Map<String, String> args = new HashMap<>();
             args.put("k", Integer.toString(event.getId()));
