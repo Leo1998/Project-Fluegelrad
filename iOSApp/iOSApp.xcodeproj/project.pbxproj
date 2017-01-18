@@ -23,8 +23,6 @@
 		AB7913741DD4B99500EF8B97 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7913731DD4B99500EF8B97 /* DatabaseManager.swift */; };
 		AB7913761DD4C68900EF8B97 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB7913751DD4C68900EF8B97 /* MainViewController.swift */; };
 		AB9C31D91DCA2D4C0091C55F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */; };
-		AB9C31F01DCA2D4C0091C55F /* iOSAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31EF1DCA2D4C0091C55F /* iOSAppTests.swift */; };
-		AB9C31FB1DCA2D4C0091C55F /* iOSAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C31FA1DCA2D4C0091C55F /* iOSAppUITests.swift */; };
 		AB9C320B1DCA410A0091C55F /* CalendarListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C320A1DCA410A0091C55F /* CalendarListViewController.swift */; };
 		AB9C32111DCA41530091C55F /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB9C32101DCA41530091C55F /* AboutViewController.swift */; };
 		ABB960AE1E1AEA9F00A10A70 /* SortingCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABB960AD1E1AEA9F00A10A70 /* SortingCategory.swift */; };
@@ -51,23 +49,6 @@
 		ABFF890D1E215BFA0032CCD0 /* ODbL10.txt in Resources */ = {isa = PBXBuildFile; fileRef = ABFF890C1E215BFA0032CCD0 /* ODbL10.txt */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		AB9C31EC1DCA2D4C0091C55F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AB9C31CD1DCA2D4C0091C55F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AB9C31D41DCA2D4C0091C55F;
-			remoteInfo = iOSApp;
-		};
-		AB9C31F71DCA2D4C0091C55F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AB9C31CD1DCA2D4C0091C55F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AB9C31D41DCA2D4C0091C55F;
-			remoteInfo = iOSApp;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		AB037A941DDA452F004D4AAC /* HomeViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewCell.swift; sourceTree = "<group>"; };
 		AB16B6071E1D510E001B2C99 /* SponsorViewButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SponsorViewButton.swift; sourceTree = "<group>"; };
@@ -87,12 +68,6 @@
 		AB9C31D51DCA2D4C0091C55F /* iOSApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB9C31D81DCA2D4C0091C55F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AB9C31E61DCA2D4C0091C55F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AB9C31EB1DCA2D4C0091C55F /* iOSAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AB9C31EF1DCA2D4C0091C55F /* iOSAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSAppTests.swift; sourceTree = "<group>"; };
-		AB9C31F11DCA2D4C0091C55F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AB9C31F61DCA2D4C0091C55F /* iOSAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iOSAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		AB9C31FA1DCA2D4C0091C55F /* iOSAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSAppUITests.swift; sourceTree = "<group>"; };
-		AB9C31FC1DCA2D4C0091C55F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AB9C320A1DCA410A0091C55F /* CalendarListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarListViewController.swift; sourceTree = "<group>"; };
 		AB9C32101DCA41530091C55F /* AboutViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		ABB960AD1E1AEA9F00A10A70 /* SortingCategory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortingCategory.swift; sourceTree = "<group>"; };
@@ -125,20 +100,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AB1E8A031DFF31F100CDDADB /* MapKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AB9C31E81DCA2D4C0091C55F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AB9C31F31DCA2D4C0091C55F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,8 +173,6 @@
 			isa = PBXGroup;
 			children = (
 				AB9C31D71DCA2D4C0091C55F /* iOSApp */,
-				AB9C31EE1DCA2D4C0091C55F /* iOSAppTests */,
-				AB9C31F91DCA2D4C0091C55F /* iOSAppUITests */,
 				AB9C31D61DCA2D4C0091C55F /* Products */,
 				AB1E8A011DFF31F100CDDADB /* Frameworks */,
 			);
@@ -224,8 +183,6 @@
 			isa = PBXGroup;
 			children = (
 				AB9C31D51DCA2D4C0091C55F /* iOSApp.app */,
-				AB9C31EB1DCA2D4C0091C55F /* iOSAppTests.xctest */,
-				AB9C31F61DCA2D4C0091C55F /* iOSAppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -250,24 +207,6 @@
 				AB758FCB1E1C3882004135A9 /* Assets.xcassets */,
 			);
 			path = iOSApp;
-			sourceTree = "<group>";
-		};
-		AB9C31EE1DCA2D4C0091C55F /* iOSAppTests */ = {
-			isa = PBXGroup;
-			children = (
-				AB9C31EF1DCA2D4C0091C55F /* iOSAppTests.swift */,
-				AB9C31F11DCA2D4C0091C55F /* Info.plist */,
-			);
-			path = iOSAppTests;
-			sourceTree = "<group>";
-		};
-		AB9C31F91DCA2D4C0091C55F /* iOSAppUITests */ = {
-			isa = PBXGroup;
-			children = (
-				AB9C31FA1DCA2D4C0091C55F /* iOSAppUITests.swift */,
-				AB9C31FC1DCA2D4C0091C55F /* Info.plist */,
-			);
-			path = iOSAppUITests;
 			sourceTree = "<group>";
 		};
 		ABEB16D51E17FE5D006E666B /* event */ = {
@@ -332,48 +271,6 @@
 			productReference = AB9C31D51DCA2D4C0091C55F /* iOSApp.app */;
 			productType = "com.apple.product-type.application";
 		};
-		AB9C31EA1DCA2D4C0091C55F /* iOSAppTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AB9C32021DCA2D4C0091C55F /* Build configuration list for PBXNativeTarget "iOSAppTests" */;
-			buildPhases = (
-				24BA5487C69C61A781730191 /* [CP] Check Pods Manifest.lock */,
-				AB9C31E71DCA2D4C0091C55F /* Sources */,
-				AB9C31E81DCA2D4C0091C55F /* Frameworks */,
-				AB9C31E91DCA2D4C0091C55F /* Resources */,
-				E8AB818878D9208326F03ECA /* [CP] Embed Pods Frameworks */,
-				E549438AA497FA81B716DB3F /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AB9C31ED1DCA2D4C0091C55F /* PBXTargetDependency */,
-			);
-			name = iOSAppTests;
-			productName = iOSAppTests;
-			productReference = AB9C31EB1DCA2D4C0091C55F /* iOSAppTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		AB9C31F51DCA2D4C0091C55F /* iOSAppUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = AB9C32051DCA2D4C0091C55F /* Build configuration list for PBXNativeTarget "iOSAppUITests" */;
-			buildPhases = (
-				CB1E5EF363AC7038B849D934 /* [CP] Check Pods Manifest.lock */,
-				AB9C31F21DCA2D4C0091C55F /* Sources */,
-				AB9C31F31DCA2D4C0091C55F /* Frameworks */,
-				AB9C31F41DCA2D4C0091C55F /* Resources */,
-				7B61E3B018F5D9032C48A338 /* [CP] Embed Pods Frameworks */,
-				5E14EB316A1999898147B8F0 /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				AB9C31F81DCA2D4C0091C55F /* PBXTargetDependency */,
-			);
-			name = iOSAppUITests;
-			productName = iOSAppUITests;
-			productReference = AB9C31F61DCA2D4C0091C55F /* iOSAppUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -393,21 +290,9 @@
 								enabled = 0;
 							};
 							com.apple.Maps.iOS = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
-					};
-					AB9C31EA1DCA2D4C0091C55F = {
-						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = H9NQ4ZA4J7;
-						ProvisioningStyle = Automatic;
-						TestTargetID = AB9C31D41DCA2D4C0091C55F;
-					};
-					AB9C31F51DCA2D4C0091C55F = {
-						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = H9NQ4ZA4J7;
-						ProvisioningStyle = Automatic;
-						TestTargetID = AB9C31D41DCA2D4C0091C55F;
 					};
 				};
 			};
@@ -424,8 +309,6 @@
 			projectRoot = "";
 			targets = (
 				AB9C31D41DCA2D4C0091C55F /* iOSApp */,
-				AB9C31EA1DCA2D4C0091C55F /* iOSAppTests */,
-				AB9C31F51DCA2D4C0091C55F /* iOSAppUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -443,114 +326,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AB9C31E91DCA2D4C0091C55F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AB9C31F41DCA2D4C0091C55F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		24BA5487C69C61A781730191 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		5E14EB316A1999898147B8F0 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSAppUITests/Pods-iOSAppUITests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7B61E3B018F5D9032C48A338 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSAppUITests/Pods-iOSAppUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CB1E5EF363AC7038B849D934 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		E549438AA497FA81B716DB3F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSAppTests/Pods-iOSAppTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E8AB818878D9208326F03ECA /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iOSAppTests/Pods-iOSAppTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AB9C31D11DCA2D4C0091C55F /* Sources */ = {
@@ -594,36 +370,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AB9C31E71DCA2D4C0091C55F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AB9C31F01DCA2D4C0091C55F /* iOSAppTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		AB9C31F21DCA2D4C0091C55F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				AB9C31FB1DCA2D4C0091C55F /* iOSAppUITests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		AB9C31ED1DCA2D4C0091C55F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AB9C31D41DCA2D4C0091C55F /* iOSApp */;
-			targetProxy = AB9C31EC1DCA2D4C0091C55F /* PBXContainerItemProxy */;
-		};
-		AB9C31F81DCA2D4C0091C55F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = AB9C31D41DCA2D4C0091C55F /* iOSApp */;
-			targetProxy = AB9C31F71DCA2D4C0091C55F /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		ABF788501E1F97E00086E114 /* LaunchScreen.storyboard */ = {
@@ -687,7 +434,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -733,7 +480,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -772,64 +519,6 @@
 			};
 			name = Release;
 		};
-		AB9C32031DCA2D4C0091C55F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = H9NQ4ZA4J7;
-				INFOPLIST_FILE = iOSAppTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = de.project.iOSAppTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iOSApp.app/iOSApp";
-			};
-			name = Debug;
-		};
-		AB9C32041DCA2D4C0091C55F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = H9NQ4ZA4J7;
-				INFOPLIST_FILE = iOSAppTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = de.project.iOSAppTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iOSApp.app/iOSApp";
-			};
-			name = Release;
-		};
-		AB9C32061DCA2D4C0091C55F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = H9NQ4ZA4J7;
-				INFOPLIST_FILE = iOSAppUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = de.project.iOSAppUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_TARGET_NAME = iOSApp;
-			};
-			name = Debug;
-		};
-		AB9C32071DCA2D4C0091C55F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = H9NQ4ZA4J7;
-				INFOPLIST_FILE = iOSAppUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = de.project.iOSAppUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_TARGET_NAME = iOSApp;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -847,24 +536,6 @@
 			buildConfigurations = (
 				AB9C32001DCA2D4C0091C55F /* Debug */,
 				AB9C32011DCA2D4C0091C55F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AB9C32021DCA2D4C0091C55F /* Build configuration list for PBXNativeTarget "iOSAppTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AB9C32031DCA2D4C0091C55F /* Debug */,
-				AB9C32041DCA2D4C0091C55F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		AB9C32051DCA2D4C0091C55F /* Build configuration list for PBXNativeTarget "iOSAppUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				AB9C32061DCA2D4C0091C55F /* Debug */,
-				AB9C32071DCA2D4C0091C55F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
