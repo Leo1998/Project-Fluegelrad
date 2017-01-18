@@ -8,7 +8,7 @@ class HomeViewCell: UITableViewCell {
 	private(set) var titleLabel: UILabel!
 	
 	/**
-	Showing the image of the event
+	Showing the image of the events host
 	*/
 	private(set) var imageV: UIImageView!
 	
@@ -54,12 +54,11 @@ class HomeViewCell: UITableViewCell {
 		nameLabel.translatesAutoresizingMaskIntoConstraints = false
 		contentView.addSubview(nameLabel)
 		nameLabel.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: titleLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-
 		
 		imageV = UIImageView()
 		contentView.addSubview(imageV)
 		imageV.translatesAutoresizingMaskIntoConstraints = false
-		imageV.addConstraintsXY(xView: contentView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: nameLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		imageV.addConstraintsXY(xView: contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: titleLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         
         hostNameLabel = UILabel()
         hostNameLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -68,6 +67,7 @@ class HomeViewCell: UITableViewCell {
         dateLabel = UILabel()
 		dateLabel.adjustsFontSizeToFitWidth = true
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
+		dateLabel.textAlignment = .center
         contentView.addSubview(dateLabel)
         
         ageLabel = UILabel()

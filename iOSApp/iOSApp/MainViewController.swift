@@ -2,6 +2,7 @@ import UIKit
 import EventKit
 
 class MainViewController: UITabBarController, DatabaseManagerProtocol {
+	
 	/**
 	DatabaseManager to download and create all Events
 	*/
@@ -24,6 +25,7 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 		// Setting the color of the TabBar titles to match the app style
 		UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.black], for: .normal)
 		UITabBarItem.appearance().setTitleTextAttributes([NSForegroundColorAttributeName: UIColor.primary()], for: .selected)
+		UITabBar.appearance().tintColor = UIColor.primary()
 
 		// Setting the default color of the TabBar icons to the original color of the image
 		for item in tabBar.items!{
