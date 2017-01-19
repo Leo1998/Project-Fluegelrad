@@ -13,6 +13,11 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 	*/
 	private static var selfish: MainViewController!
 	
+	/**
+	A refference to an event where the user wants to participate
+	*/
+	private static var eventPart: Event?
+	
     required init?(coder aDecoder: NSCoder){
         super.init(coder: aDecoder);
     }
@@ -117,16 +122,30 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 	Displaying a message if participation to an event was successful
 	*/
 	internal func participation(status: ParticipationStatus){
-		var alert = UIAlertController(title: "Du hast dich erfolgreich bei dem Event angemeldet", message: nil, preferredStyle: .alert)
-		
+		var alert: UIAlertController
+
 		switch status {
+		case .success:
+			
+			let notification = UILocalNotification()
+			notification.alertBody = "Test"
+			notification.alertAction = "open"
+			
+			let date = Calendar.autoupdatingCurrent.date(byAdding: .hour, value: -1, to: MainViewController.eventPart!.dateStart, wrappingComponents: false)
+			
+			
+			notification.fireDate = date
+			
+			UIApplication.shared.scheduleLocalNotification(notification)
+
+			
+			alert = UIAlertController(title: "Du hast dich erfolgreich bei dem Event angemeldet", message: nil, preferredStyle: .alert)
+			break
 		case .alreadyParticipating:
 			alert = UIAlertController(title: "Du bist bereits zu diesem Event angelmeldet", message: nil, preferredStyle: .alert)
 			break
 		case .maxReached:
 			alert = UIAlertController(title: "Es gibt keinen freien Platz mehr für dich", message: nil, preferredStyle: .alert)
-			break
-		default:
 			break
 		}
 		
@@ -144,6 +163,7 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 	Forwarding the participation to the DatabaseManager
 	*/
 	public static func participate(event: Event){
+		eventPart = event
 		databaseManager.participate(event: event)
 	}
 
