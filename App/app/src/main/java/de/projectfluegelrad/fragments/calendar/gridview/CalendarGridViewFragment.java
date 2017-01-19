@@ -61,7 +61,11 @@ public class CalendarGridViewFragment extends Fragment {
                     DialogFragment newFragment = new CalendarDayDialog();
 
                     Bundle bundle = new Bundle();
-                    //bundle.putIntArray("eventIds", (ArrayList<? extends Parcelable>) eventsOnDate);
+                    int[] array = new int[eventsOnDate.size()];
+                    for (int j = 0; j < array.length; j++) {
+                        array[j] = eventsOnDate.get(j).getId();
+                    }
+                    bundle.putIntArray("eventIds", array);
 
                     newFragment.setArguments(bundle);
                     newFragment.show(CalendarGridViewFragment.this.getActivity().getSupportFragmentManager(), "eventsOnDateDialog");

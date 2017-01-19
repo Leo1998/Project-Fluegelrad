@@ -1,5 +1,6 @@
 package de.projectfluegelrad.fragments.day;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -20,7 +21,11 @@ public class ImagePagerAdapter extends FragmentStatePagerAdapter{
 
     @Override
     public Fragment getItem(int i) {
-        Fragment fragment = new ImageFragment(images.get(i));
+        Bundle bundle = new Bundle();
+        bundle.putString("imagePath", images.get(i).getPath());
+
+        Fragment fragment = new ImageFragment();
+        fragment.setArguments(bundle);
 
         return fragment;
     }

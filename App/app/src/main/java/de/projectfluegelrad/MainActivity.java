@@ -146,11 +146,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
 
-        //TODO
-        //databaseManager.request(DatabaseRequest.SaveEventList, null, false, null);
+        databaseManager.destroy();
+        databaseManager = null;
     }
 
     /**
