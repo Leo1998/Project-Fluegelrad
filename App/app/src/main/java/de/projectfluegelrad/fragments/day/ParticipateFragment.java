@@ -14,8 +14,6 @@ import android.widget.TextView;
 
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
-import de.projectfluegelrad.database.DatabaseRequest;
-import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
 
 import static de.projectfluegelrad.database.DatabaseManager.INSTANCE;
@@ -42,7 +40,7 @@ public class ParticipateFragment extends Fragment {
             participateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!event.isParticipating()) {
+                    /*if (!event.isParticipating()) {
                         DatabaseManager.INSTANCE.request(DatabaseRequest.Participate, new Event[]{event}, false, new DatabaseRequestListener() {
                             @Override
                             public void onFinish() {
@@ -54,7 +52,7 @@ public class ParticipateFragment extends Fragment {
 
                         participateButton.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
                         participateButton.setClickable(false);
-                    }
+                    }*/
                 }
             });
         }

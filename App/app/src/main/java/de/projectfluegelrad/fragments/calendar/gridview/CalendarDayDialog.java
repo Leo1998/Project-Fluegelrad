@@ -27,7 +27,7 @@ public class CalendarDayDialog extends DialogFragment {
             }
         });
 
-        builder.setTitle("Wähle ein Event");
+        builder.setTitle("Wähle ein Event");//TODO
 
         int[] eventIds = getArguments().getIntArray("eventIds");
         List<Event> allEvents = DatabaseManager.INSTANCE.getEventList();
@@ -43,7 +43,7 @@ public class CalendarDayDialog extends DialogFragment {
         }
         String[] shortDescriptions = new String[events.size()];
         for (int i = 0; i < events.size(); i++){
-            shortDescriptions[i] = events.get(i).getName() + " von " + "N/A";//TODO
+            shortDescriptions[i] = events.get(i).getName();
         }
 
         builder.setItems(shortDescriptions, new DialogInterface.OnClickListener() {

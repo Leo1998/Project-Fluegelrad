@@ -16,10 +16,10 @@ import java.util.List;
 
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
+import de.projectfluegelrad.database.DatabaseDownloadTask;
+import de.projectfluegelrad.database.DatabaseTaskWatcher;
 import de.projectfluegelrad.fragments.day.CalendarDayFragment;
 import de.projectfluegelrad.database.DatabaseManager;
-import de.projectfluegelrad.database.DatabaseRequest;
-import de.projectfluegelrad.database.DatabaseRequestListener;
 import de.projectfluegelrad.database.Event;
 
 public class CalendarGridViewFragment extends Fragment {
@@ -61,7 +61,11 @@ public class CalendarGridViewFragment extends Fragment {
                     DialogFragment newFragment = new CalendarDayDialog();
 
                     Bundle bundle = new Bundle();
-                    //bundle.putIntArray("eventIds", (ArrayList<? extends Parcelable>) eventsOnDate);
+                    int[] array = new int[eventsOnDate.size()];
+                    for (int j = 0; j < array.length; j++) {
+                        array[j] = eventsOnDate.get(j).getId();
+                    }
+                    bundle.putIntArray("eventIds", array);
 
                     newFragment.setArguments(bundle);
                     newFragment.show(CalendarGridViewFragment.this.getActivity().getSupportFragmentManager(), "eventsOnDateDialog");
@@ -73,9 +77,9 @@ public class CalendarGridViewFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                ((MainActivity) CalendarGridViewFragment.this.getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, null, false, new DatabaseRequestListener() {
+                ((MainActivity) CalendarGridViewFragment.this.getActivity()).getDatabaseManager().executeTask(new DatabaseDownloadTask(), new DatabaseTaskWatcher() {
                     @Override
-                    public void onFinish() {
+                    public void onFinish(Object result) {
                         swipeRefreshLayout.post(new Runnable() {
                             @Override
                             public void run() {

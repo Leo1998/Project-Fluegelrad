@@ -9,17 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
-import de.projectfluegelrad.database.DatabaseManager;
-import de.projectfluegelrad.database.DatabaseRequest;
-import de.projectfluegelrad.database.DatabaseRequestListener;
-import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.database.DatabaseDownloadTask;
+import de.projectfluegelrad.database.DatabaseTaskWatcher;
+import de.projectfluegelrad.fragments.calendar.gridview.CalendarGridViewFragment;
 
 public class CalendarListFragment extends Fragment {
 
@@ -40,9 +34,9 @@ public class CalendarListFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                ((MainActivity) CalendarListFragment.this.getActivity()).getDatabaseManager().request(DatabaseRequest.RefreshEventList, null, false, new DatabaseRequestListener() {
+                ((MainActivity) CalendarListFragment.this.getActivity()).getDatabaseManager().executeTask(new DatabaseDownloadTask(), new DatabaseTaskWatcher() {
                     @Override
-                    public void onFinish() {
+                    public void onFinish(Object result) {
                         swipeRefreshLayout.post(new Runnable() {
                             @Override
                             public void run() {

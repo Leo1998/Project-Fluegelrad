@@ -2,27 +2,28 @@ package de.projectfluegelrad.fragments.day;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
 
+import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Image;
 
-public class ImageHolder extends RelativeLayout {
+public class ImageHolder extends FrameLayout {
 
     private File imageCacheDir;
 
     private ImageView imageHolder;
-    private ProgressBar progressSpinner;
+    private ProgressBar progressBar;
+
+    private Image image;
 
     public ImageHolder(Context context) {
         super(context);
@@ -42,31 +43,17 @@ public class ImageHolder extends RelativeLayout {
             this.imageCacheDir.mkdir();
         }
 
-        this.progressSpinner = new ProgressBar(context);
-        this.progressSpinner.setId((int) System.currentTimeMillis());
-        this.progressSpinner.setIndeterminate(true);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.image_holder, this);
 
-        this.imageHolder = new ImageView(context);
-        this.imageHolder.setId((int) System.currentTimeMillis() + 50);
-        this.imageHolder.setVisibility(View.INVISIBLE);
-        this.imageHolder.setAdjustViewBounds(true);
-        this.imageHolder.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int bottomMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, displayMetrics);
-
-        final LayoutParams spinnerParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        spinnerParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        final LayoutParams imageHolderParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        imageHolderParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        this.addView(progressSpinner, spinnerParams);
-        this.addView(imageHolder, imageHolderParams);
+        this.progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        this.imageHolder = (ImageView) findViewById(R.id.imageView);
     }
 
     public void setImage(Image image) {
         if (image != null) {
+            this.image = image;
+
             LoadImageTask task = new LoadImageTask();
 
             task.execute(image);
@@ -91,7 +78,7 @@ public class ImageHolder extends RelativeLayout {
                 public void run() {
                     ImageHolder.this.imageHolder.setImageBitmap(image.getBitmap());
 
-                    ImageHolder.this.progressSpinner.setVisibility(View.INVISIBLE);
+                    ImageHolder.this.progressBar.setVisibility(View.INVISIBLE);
                     ImageHolder.this.imageHolder.setVisibility(View.VISIBLE);
 
                     ImageHolder.this.requestLayout();

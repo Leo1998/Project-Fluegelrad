@@ -1,4 +1,4 @@
-package de.projectfluegelrad.database.logging;
+package de.projectfluegelrad.util;
 
 import android.support.design.widget.Snackbar;
 import android.view.View;

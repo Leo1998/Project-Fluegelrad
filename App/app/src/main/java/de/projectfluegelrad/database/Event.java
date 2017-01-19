@@ -116,7 +116,7 @@ public class Event {
     }
 
     public String getDateStartFormatted() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         return simpleDateFormat.format(this.dateStart.getTime());
     }
 
@@ -125,7 +125,7 @@ public class Event {
     }
 
     public String getDateEndFormatted() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         return simpleDateFormat.format(this.dateEnd.getTime());
     }
 
