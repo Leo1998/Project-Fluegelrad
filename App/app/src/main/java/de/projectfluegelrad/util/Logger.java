@@ -1,4 +1,4 @@
-package de.projectfluegelrad.database.logging;
+package de.projectfluegelrad.util;
 
 public interface Logger {
 

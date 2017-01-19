@@ -34,4 +34,11 @@ public class User {
         this.hashedToken = newToken;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", hashedToken='" + hashedToken + '\'' +
+                '}';
+    }
 }
