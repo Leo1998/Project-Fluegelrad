@@ -21,6 +21,14 @@
                 android:id="@+id/participantsTextView"
                 android:text="participants" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:id="@+id/messageTextView"
+                android:textColor="@color/colorPrimary"
+                android:text="message" />
+
             <Button
                 android:text="@string/participate"
                 android:layout_width="match_parent"

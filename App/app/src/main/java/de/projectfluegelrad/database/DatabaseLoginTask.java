@@ -15,10 +15,10 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class DatabaseLoginTask implements DatabaseTask<User> {
+public class DatabaseLoginTask implements DatabaseTask<Void, User> {
 
     @Override
-    public User execute(DatabaseManager databaseManager) {
+    public User execute(DatabaseManager databaseManager, Void... params) {
         int attempt = 0;
 
         while(attempt < 2) {

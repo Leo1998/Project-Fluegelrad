@@ -36,6 +36,10 @@ public class Event {
 
         Event event = new Event(obj.getInt("id"), obj.getString("name"), obj.getInt("price"), dateStart, dateEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"), location, obj.getInt("hostId"), sponsors);
 
+        if (obj.has("participating")) {
+            event.participating = obj.getBoolean("participating");
+        }
+
         return event;
     }
 
@@ -63,6 +67,8 @@ public class Event {
         obj.put("location.address", event.getLocation().getAddress());
         obj.put("location.longitude", event.getLocation().getLongitude());
         obj.put("location.latitude", event.getLocation().getLatitude());
+
+        obj.put("participating", event.isParticipating());
 
         return obj;
     }
@@ -173,11 +179,12 @@ public class Event {
         return participating;
     }
 
-    public void participate() {
+    public void participate(boolean fakeIncrement) {
         if (isParticipating())
             throw new IllegalStateException("Already Participating!");
 
         this.participating = true;
+        this.participants++;
     }
 
     @Override

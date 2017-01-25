@@ -38,7 +38,7 @@ import de.projectfluegelrad.util.SnackbarLogger;
 public class DatabaseManager {
 
     private class RunningTaskWrapper {
-        DatabaseTask<?> databaseTask;
+        DatabaseTask<?, ?> databaseTask;
         AsyncTask asyncTask;
     }
 
@@ -111,7 +111,7 @@ public class DatabaseManager {
     private void firstLogin() {
         readDatabaseFromStorage();
 
-        executeTask(new DatabaseLoginTask(), new DatabaseTaskWatcher() {
+        executeTask(new DatabaseLoginTask(), null, new DatabaseTaskWatcher() {
             @Override
             public void onFinish(Object result) {
                 assert(result != null && result instanceof User);
@@ -120,7 +120,7 @@ public class DatabaseManager {
 
                 Log.i("DatabaseManager", "Logged in as: " + DatabaseManager.this.user.toString());
 
-                executeTask(new DatabaseDownloadTask(), null);
+                executeTask(new DatabaseDownloadTask(), null, null);
             }
         });
     }
@@ -151,7 +151,7 @@ public class DatabaseManager {
     /**
      * writes the Database to a file on device storage
      */
-    private void saveDatabaseToStorage() {
+    public void saveDatabaseToStorage() {
         File eventFile = new File(filesDirectory, "database.dat");
 
         try {
@@ -201,13 +201,13 @@ public class DatabaseManager {
      * @param task
      * @param watcher
      */
-    public void executeTask(final DatabaseTask task, final DatabaseTaskWatcher watcher) {
+    public void executeTask(final DatabaseTask task, final Object[] params, final DatabaseTaskWatcher watcher) {
         final RunningTaskWrapper wrapper = new RunningTaskWrapper();
 
-        AsyncTask<Void, Void, Object> asyncTask = new AsyncTask<Void, Void, Object>() {
+        AsyncTask<Object, Void, Object> asyncTask = new AsyncTask<Object, Void, Object>() {
             @Override
-            protected Object doInBackground(Void... params) {
-                return task.execute(DatabaseManager.this);
+            protected Object doInBackground(Object... params) {
+                return task.execute(DatabaseManager.this, params);
             }
 
             @Override
@@ -224,7 +224,7 @@ public class DatabaseManager {
 
         this.runningTasks.add(wrapper);
 
-        asyncTask.execute();
+        asyncTask.execute(params);
     }
 
     /**
@@ -379,12 +379,17 @@ public class DatabaseManager {
             Event currentEvent = eventList.get(i);
 
             if (currentEvent.equalsId(event)) {
-                if (currentEvent.equals(event)) {
+                if (currentEvent == event) {
                     // already exists
                     return;
                 } else {
                     // update
                     eventList.remove(currentEvent);
+
+                    if (currentEvent.isParticipating()) {
+                        event.participate(false);
+                    }
+
                     break;
                 }
             }
@@ -415,26 +420,6 @@ public class DatabaseManager {
         }
 
         sponsorList.add(sponsor);
-    }
-
-    /**
-     * sends a request to the server to participate in an event
-     *
-     * @param event
-     * @return wheter you are allowed to participate
-     */
-    private boolean signInForEvent(Event event) {
-        try {
-            Map<String, String> args = new HashMap<>();
-            args.put("k", Integer.toString(event.getId()));
-
-            String result = executeScript("http://fluegelrad.ddns.net/sendDatabase.php", args);
-
-            return true;
-        } catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     /**

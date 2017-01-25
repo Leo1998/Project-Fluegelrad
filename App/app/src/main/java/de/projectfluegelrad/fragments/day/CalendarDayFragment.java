@@ -81,6 +81,18 @@ public class CalendarDayFragment extends Fragment {
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) layout.findViewById(R.id.collapsingToolbar);
         collapsingToolbar.setTitle(event.getName());
 
+        //stupid bug fix
+        layout.findViewById(R.id.scroll_container).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+        layout.findViewById(R.id.image_pager).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 
         ((TextView) layout.findViewById(R.id.date)).setText(getResources().getString(R.string.date) + ": " + event.getDateStartFormatted() + " (" + getResources().getString(R.string.duration) + ": " + event.getDurationFormatted() + ")");

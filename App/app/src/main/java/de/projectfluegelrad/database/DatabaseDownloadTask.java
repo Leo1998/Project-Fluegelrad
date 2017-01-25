@@ -1,9 +1,9 @@
 package de.projectfluegelrad.database;
 
-public class DatabaseDownloadTask implements DatabaseTask<Void> {
+public class DatabaseDownloadTask implements DatabaseTask<Void, Void> {
 
     @Override
-    public Void execute(DatabaseManager databaseManager) {
+    public Void execute(DatabaseManager databaseManager, Void... params) {
         try {
             String json = databaseManager.executeScript("http://fluegelrad.ddns.net/recieveDatabase.php", null);
 
