@@ -1,5 +1,6 @@
 import UIKit
 
+@objc(EventImage)
 class EventImage: NSObject, NSCoding{
 	
 	/**

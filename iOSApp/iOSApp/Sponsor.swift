@@ -1,5 +1,6 @@
 import UIKit
 
+@objc(Sponsor)
 class Sponsor: NSObject, NSCoding{
 	
 	/**

@@ -100,8 +100,10 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 	internal func itemsDownloaded(events: [Event], sponsors: [Int: Sponsor]) {
 		
 		UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: sponsors), forKey: "sponsors")
-        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: events), forKey: "events")
         UserDefaults.standard.synchronize()
+		
+		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
+		myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: events), forKey: "events")
 		
 		// Sending a message to all ViewControllers to update their data
 		NotificationCenter.default.post(name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: self)
@@ -122,37 +124,7 @@ class MainViewController: UITabBarController, DatabaseManagerProtocol {
 	Displaying a message if participation to an event was successful
 	*/
 	internal func participation(status: ParticipationStatus){
-		var alert: UIAlertController
-
-		switch status {
-		case .success:
-			
-			let notification = UILocalNotification()
-			notification.alertBody = "Test"
-			notification.alertAction = "open"
-			
-			let date = Calendar.autoupdatingCurrent.date(byAdding: .hour, value: -1, to: MainViewController.eventPart!.dateStart, wrappingComponents: false)
-			
-			
-			notification.fireDate = date
-			
-			UIApplication.shared.scheduleLocalNotification(notification)
-
-			
-			alert = UIAlertController(title: "Du hast dich erfolgreich bei dem Event angemeldet", message: nil, preferredStyle: .alert)
-			break
-		case .alreadyParticipating:
-			alert = UIAlertController(title: "Du bist bereits zu diesem Event angelmeldet", message: nil, preferredStyle: .alert)
-			break
-		case .maxReached:
-			alert = UIAlertController(title: "Es gibt keinen freien Platz mehr für dich", message: nil, preferredStyle: .alert)
-			break
-		}
-		
-		let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-		alert.addAction(okAction)
-		
-		present(alert, animated: true, completion: nil)
+		CalendarDayViewController.participation(status: status, event: MainViewController.eventPart!)
 	}
 
     override func didReceiveMemoryWarning() {

@@ -2,7 +2,7 @@ import UIKit
 import MapKit
 import EventKit
 
-class CalendarDayViewController: UIViewController, MKMapViewDelegate {
+class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	
 	/**
 	the event which is shown
@@ -79,8 +79,21 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 	*/
 	private var refreshControl: UIRefreshControl!
 	
+	/**
+	A refference to itself to use in static methods
+	*/
+	private static var selfish: CalendarDayViewController!
+	
+	/**
+	the picker for setting the notification delay
+	*/
+	private static var picker: NotificationDelayPicker!
+
+	
     override func viewDidLoad() {
         super.viewDidLoad()
+		
+		CalendarDayViewController.selfish = self
 		
 		let frame = CGRect(x: 8, y: 0, width: view.frame.width - 16, height: view.frame.height)
 		
@@ -99,6 +112,10 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
         view.addSubview(scrollView)
         scrollView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: header, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         scrollView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		CalendarDayViewController.picker = NotificationDelayPicker(frame: UIScreen.main.bounds)
+		view.addSubview(CalendarDayViewController.picker)
+		CalendarDayViewController.picker.isHidden = true
 		
 		refreshControl = UIRefreshControl()
 		scrollView.addSubview(refreshControl)
@@ -391,6 +408,82 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
     }
 	
 	/**
+	gets notified about the participation status
+	*/
+	static func participation(status: ParticipationStatus, event: Event){
+		
+		
+		
+		if status == .success {
+			picker.isHidden = false
+			
+			
+			picker.done.addTarget(selfish, action: #selector(CalendarDayViewController.delayChosen), for: .touchUpInside)
+			picker.cancel.addTarget(selfish, action: #selector(CalendarDayViewController.noNotification), for: .touchUpInside)
+
+		}else{
+			CalendarDayViewController.delayClosed(status: status)
+		}
+
+	}
+	
+	/**
+	executed when delay is chosen
+	*/
+	func delayChosen(){
+		let notification = UILocalNotification()
+		notification.alertBody = "Test"
+		notification.alertAction = "open"
+		
+		let calendar = Calendar.autoupdatingCurrent
+		let dateComponents = calendar.dateComponents([.hour, .minute], from: CalendarDayViewController.picker.picker.date)
+		
+		var date = Calendar.autoupdatingCurrent.date(byAdding: .hour, value: -dateComponents.hour!, to: event.dateStart, wrappingComponents: false)
+		date = Calendar.autoupdatingCurrent.date(byAdding: .minute, value: -dateComponents.minute!, to: date!, wrappingComponents: false)
+
+		
+		notification.fireDate = date
+		
+		UIApplication.shared.scheduleLocalNotification(notification)
+		
+		CalendarDayViewController.picker.isHidden = true
+		CalendarDayViewController.delayClosed(status: .success)
+	}
+	
+	/**
+	executed when the user doesn't want to be notified
+	*/
+	func noNotification(){
+		CalendarDayViewController.picker.isHidden = true
+		CalendarDayViewController.delayClosed(status: .success)
+	}
+	
+	/**
+	executed when the delay window is closed
+	*/
+	private static func delayClosed(status: ParticipationStatus){
+		var alert: UIAlertController
+
+		
+		switch status {
+		case .success:
+			
+			alert = UIAlertController(title: "Du hast dich erfolgreich bei dem Event angemeldet", message: nil, preferredStyle: .alert)
+			break
+		case .alreadyParticipating:
+			alert = UIAlertController(title: "Du bist bereits zu diesem Event angelmeldet", message: nil, preferredStyle: .alert)
+			break
+		case .maxReached:
+			alert = UIAlertController(title: "Es gibt keinen freien Platz mehr für dich", message: nil, preferredStyle: .alert)
+			break
+		}
+		
+		let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+		alert.addAction(okAction)
+		
+		selfish.present(alert, animated: true, completion: nil)	}
+	
+	/**
 	shares the event if share is pressed
 	*/
     func share(){
@@ -448,7 +541,8 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate {
 			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
 		}
 		
-		let eventData = UserDefaults.standard.object(forKey: "events")
+		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
+		let eventData = myDefaults.object(forKey: "events")
 		var events = [Event]()
 		if eventData != nil {
 			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]

@@ -86,7 +86,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		}
 		
 		
-        let eventData = UserDefaults.standard.object(forKey: "events")
+		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
+		let eventData = myDefaults.object(forKey: "events")
+
 		
 		var events = [Event]()
 		if eventData != nil {

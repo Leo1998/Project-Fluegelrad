@@ -2,6 +2,7 @@ import Foundation
 import MapKit
 import Contacts
 
+@objc(Location)
 class Location: NSObject, MKAnnotation, NSCoding {
 	
 	/**

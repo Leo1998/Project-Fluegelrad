@@ -311,7 +311,8 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		calendar.firstWeekday = 2
 		
 		
-		let eventData = UserDefaults.standard.object(forKey: "events")
+		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
+		let eventData = myDefaults.object(forKey: "events")
 		events = [Event]()
 		if eventData != nil {
 			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
