@@ -411,16 +411,13 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	gets notified about the participation status
 	*/
 	static func participation(status: ParticipationStatus, event: Event){
-		
-		
-		
 		if status == .success {
-			picker.isHidden = false
 			
+			picker.isHidden = false
 			
 			picker.done.addTarget(selfish, action: #selector(CalendarDayViewController.delayChosen), for: .touchUpInside)
 			picker.cancel.addTarget(selfish, action: #selector(CalendarDayViewController.noNotification), for: .touchUpInside)
-
+			
 		}else{
 			CalendarDayViewController.delayClosed(status: status)
 		}

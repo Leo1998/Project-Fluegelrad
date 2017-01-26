@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -30,7 +29,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1649" y="-1416"/>
+            <point key="canvasLocation" x="1657" y="-1416"/>
         </scene>
         <!--Calendar Grid View Controller-->
         <scene sceneID="wg7-f3-ORb">
@@ -61,7 +60,7 @@
         <!--Calendar Day View Controller-->
         <scene sceneID="Yu1-MK-sQU">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="hIc-wv-RoO" customClass="CalendarDayViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CalendarDayViewController" automaticallyAdjustsScrollViewInsets="NO" id="hIc-wv-RoO" customClass="CalendarDayViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="5B0-8J-NW2"/>
                         <viewControllerLayoutGuide type="bottom" id="LGP-kc-2pE"/>
@@ -103,7 +102,7 @@
         <!--Main View Controller-->
         <scene sceneID="yl2-sM-qoP">
             <objects>
-                <tabBarController id="49e-Tb-3d3" customClass="MainViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainViewController" id="49e-Tb-3d3" customClass="MainViewController" customModule="iOSApp" customModuleProvider="target" sceneMemberID="viewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="W28-zg-YXA">
                         <rect key="frame" x="0.0" y="975" width="768" height="49"/>

@@ -31,16 +31,16 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 		eventTable.separatorColor = UIColor.primary()
 		view.addSubview(eventTable)
 		eventTable.translatesAutoresizingMaskIntoConstraints = false
-		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 
-
+		
 		eventTable.delegate = self
 		eventTable.dataSource = self
 		
 		eventTable.reloadData()
-		updatePreferedContentSize()
 		
+		preferredContentSize.height = 2000
 		
 		
     }
@@ -64,9 +64,5 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 		cell.nameLabel.text = event.name
 		
 		return cell
-	}
-	
-	private func updatePreferedContentSize(){
-		preferredContentSize = CGSize(width: 0, height: CGFloat(eventTable.numberOfRows(inSection: 0)) * eventTable.rowHeight)
 	}
 }

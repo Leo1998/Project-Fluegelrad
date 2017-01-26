@@ -47,13 +47,13 @@ class NotificationDelayPicker: UIView {
 	
 		cancel = UIButton()
 		cancel.backgroundColor = UIColor.accent()
-
 		
 		cancel.setTitleColor(UIColor.primary(), for: .normal)
 		cancel.setTitle("Keine Benarchitigung erhalten", for: .normal)
 		cancel.translatesAutoresizingMaskIntoConstraints = false
 		addSubview(cancel)
 		cancel.addConstraintsXY(xView: picker, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: picker, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+
 		
 		done = UIButton()
 		done.backgroundColor = UIColor.accent()
@@ -64,6 +64,10 @@ class NotificationDelayPicker: UIView {
 		addSubview(done)
 		done.addConstraintsXY(xView: cancel, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: picker, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		done.addConstraintsXY(xView: picker, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: picker, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+
+		layoutIfNeeded()
+		cancel.roundCorner(corners: [.bottomLeft], radius: 10)
+		done.roundCorner(corners: [.bottomRight], radius: 10)
 
 	}
 	

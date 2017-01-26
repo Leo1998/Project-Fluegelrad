@@ -24,10 +24,9 @@ extension UIView {
 				corner = corner.union(value)
 			}
 		}
-		
+				
 		let maskPath: UIBezierPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: corner, cornerRadii: CGSize(width: radius, height: radius))
 
-		
 		let maskLayer: CAShapeLayer = CAShapeLayer(layer: layer)
 		maskLayer.frame = bounds
 		maskLayer.path = maskPath.cgPath
