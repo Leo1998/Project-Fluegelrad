@@ -49,28 +49,42 @@
 	}
 	
 	//Stop if totalCount to high
-	if($type == 0 && $totalCount > 25){ //Allow maximum of 25 type 0 requests per Ip
-		exit("Error: Please wait ".($expire-time())." secounds before trying again");
-	}else if($type == 1 && $totalCount > 30){ //Allow maximum of 30 type 1 requests per Ip
-		if($knownIp){
-			exit("Error: Please wait ".($expire-time())." secounds before trying again");
-		}else{
-			exit("Error: Please wait before trying again");
+	if($type == 0){
+		if($totalCount > 25){ //Allow maximum of 25 type 0 requests per Ip
+			if($knownIp){
+				exit("Error: Please wait ".($expire-time())." secounds before trying again");
+			}else{
+				exit("Error: Please wait before trying again");
+			}
 		}
-	}else if($type != 0 && $type != 1){ //Throw Error if type unknown
-		if($knownIp){
-			exit("Error: Please wait ".($expire-time())." secounds before trying again");
-		}else{
-			exit("Error: Please wait before trying again");
+	}else if($type == 1){
+		if($totalCount > 30){ //Allow maximum of 30 type 1 requests per Ip
+			if($knownIp){
+				exit("Error: Please wait ".($expire-time())." secounds before trying again");
+			}else{
+				exit("Error: Please wait before trying again");
+			}
 		}
+	}else if($type == 2){ //Throw Error if type unknown
+		if($totalCount > 60){ //Allow maximum of 60 type 2 requests per Ip
+			if($knownIp){
+				exit("Error: Please wait ".($expire-time())." secounds before trying again");
+			}else{
+				exit("Error: Please wait before trying again");
+			}
+		}
+	}else{ //Throw Error if type unknown
+		exit("Error: ".$type);
 	}
 	
 	//Choose new expire depending on type
 	$newExpire = time();
-	if($type==0){ //Type 0: Expires after 10 secounds
+	if($type==0){ //Type 0: Expires after 10 seconds
 		$newExpire += 10;
 	}else if($type==1){ //Type 1: Expires after 30 minutes
 		$newExpire += 1800;
+	}else if($type==2){ //Type 2: Expires after 30 seconds
+		
 	}
 	
 	if($knownIp){ //Do if ip exists in database
@@ -86,9 +100,11 @@
 				exit("Error: Please wait ".($expire-time())." secounds before trying again");
 			}else if($type == 1 && $count > 0){ //Allow 1 type 1 request per Ip+Port
 				exit("Error: Please wait ".($expire-time())." secounds before trying again");
+			}else if($type == 2 && $count > 20){ //Allow 20 type 2 request per Ip+Port
+				exit("Error: Please wait ".($expire-time())." secounds before trying again");
 			}else{ //Not blocked
-				$statement = $pdo->prepare("UPDATE spamProtection SET expire = ?,count = ? WHERE ip = ? AND type = ?");
-				$statement->execute(array($newExpire,$count+1,$ip,$type));
+				$statement = $pdo->prepare("UPDATE spamProtection SET count = ? WHERE ip = ? AND type = ?");
+				$statement->execute(array($count+1,$ip,$type));
 			}
 		}
 	}else{ //If Ip unknown, add Ip to database
