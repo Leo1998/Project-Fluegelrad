@@ -1,5 +1,10 @@
 <?php
+	session_start();
 
+	if(!isset($_SESSION['hostId'])){
+		exit('Error: Must be logged in to create an Event');
+	}
+	
 	// Very usefull function
 	function getPost($id,$required){
 		if(isset($_POST[$id])){
@@ -58,9 +63,9 @@
 		return $new_path;
 	}
 	
-	//load spamprotector & pdo
-	$type=1;
-	require('spamProtector.php');
+	//Spam protection, IP ban, Initalize PDO
+	$type=2;
+	require('../scripts/spamProtector.php');
 	
 	
 	// ---- AGE ----
@@ -100,7 +105,7 @@
 		'price' => getPost('price',true),
 		'maxParticipants' => (getPost('participants',false) == false) ? (-1) : (getPost('participants',true)),
 		'participants' => (getPost('countParticipants',false) == "on") ? (0) : (-1),
-		'hostId' => 1,
+		'hostId' => $_SESSION['hostId'],
 		'dateStart' => getPost('dateStart',true),
 		'dateEnd' => getPost('dateEnd',true),
 		'ageMin' => $ageMin,

@@ -127,7 +127,8 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
 		}
 		
-		let eventData = UserDefaults.standard.object(forKey: "events")
+		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
+		let eventData = myDefaults.object(forKey: "events")
 		let events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
 		
 		allEvents = events.sorted(by: {
