@@ -33,17 +33,31 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 		eventTable.translatesAutoresizingMaskIntoConstraints = false
 		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
 		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-
 		
 		eventTable.delegate = self
 		eventTable.dataSource = self
 		
-		eventTable.reloadData()
+		let title = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 25))
+		title.text = "Events in den nächsten 24 Stunden"
+		title.textAlignment = .center
+		title.font = UIFont.boldSystemFont(ofSize: 16)
 		
-		preferredContentSize.height = 2000
+		eventTable.tableHeaderView = title
 		
-		
-    }
+		extensionContext?.widgetLargestAvailableDisplayMode = .expanded
+	}
+	
+	func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
+		if activeDisplayMode == .compact{
+			preferredContentSize = maxSize
+		}else{
+			if eventTable.visibleCells.count > 0 {
+				preferredContentSize.height = CGFloat(shownEvents.count) * eventTable.visibleCells[0].frame.height + (eventTable.tableHeaderView?.frame.height)!
+			}else{
+				extensionContext?.widgetLargestAvailableDisplayMode = .compact
+			}
+		}
+	}
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -64,5 +78,11 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 		cell.nameLabel.text = event.name
 		
 		return cell
+	}
+	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		let url = URL(string: "doJuSport://\(shownEvents[indexPath.item].id!)")!
+		
+		extensionContext?.open(url, completionHandler: nil)
 	}
 }

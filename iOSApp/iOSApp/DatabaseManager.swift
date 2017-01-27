@@ -29,17 +29,17 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 	/**
 	file to access the database
 	*/
-    private let getDatabase = "recieveDatabase.php"
+    private let getDatabase = "scripts/getEvents.php"
 	
 	/**
 	file to create a new User
 	*/
-    private let createUser = "createUser.php"
+    private let createUser = "scripts/createUser.php"
 	
 	/**
 	file to send a participation
 	*/
-	private let participate = "sendDatabase.php"
+	private let participate = "scripts/participate.php"
 	
 	/**
 	Save of all events
@@ -246,7 +246,6 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 
 		
         let jsonResultEvent: NSArray = jsonResult.object(forKey: "events") as! NSArray
-        let jsonResultImages: NSArray = jsonResult.object(forKey: "images") as! NSArray
 		let jsonResultSponsors: NSArray = jsonResult.object(forKey: "sponsors") as! NSArray
 
 		
@@ -258,19 +257,6 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             events.add(event)
         }
 		self.events = events as NSArray as! [Event]
-
-
-		
-        for i in 0 ..< jsonResultImages.count{
-            jsonElement = (jsonResultImages[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
-            
-            for item in events{
-                if (item as! Event).id == Int(jsonElement.object(forKey: "eventId") as! String)!{
-                    (item as! Event).addImage(dict: jsonElement)
-                }
-            }
-        }
-		
 		
 		for i in 0 ..< jsonResultSponsors.count{
 			jsonElement = (jsonResultSponsors[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
