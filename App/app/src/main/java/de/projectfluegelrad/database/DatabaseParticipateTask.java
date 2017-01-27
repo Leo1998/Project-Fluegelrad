@@ -13,7 +13,7 @@ public class DatabaseParticipateTask implements DatabaseTask<Event, Boolean> {
             Map<String, String> args = new HashMap<>();
             args.put("k", Integer.toString(event.getId()));
 
-            String result = databaseManager.executeScript("http://fluegelrad.ddns.net/sendDatabase.php", args);
+            String result = databaseManager.executeScript("http://fluegelrad.ddns.net/scripts/participate.php", args);
 
             event.participate(true);
 

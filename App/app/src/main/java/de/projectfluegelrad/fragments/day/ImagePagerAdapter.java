@@ -4,25 +4,28 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import java.util.List;
 
+import de.projectfluegelrad.database.Event;
 import de.projectfluegelrad.database.Image;
 
 public class ImagePagerAdapter extends FragmentStatePagerAdapter{
 
-    private List<Image> images;
+    private Event event;
 
-    public ImagePagerAdapter(FragmentManager fragmentManager, List<Image> images) {
+    public ImagePagerAdapter(FragmentManager fragmentManager, Event event) {
         super(fragmentManager);
 
-        this.images = images;
+        this.event = event;
     }
 
     @Override
     public Fragment getItem(int i) {
         Bundle bundle = new Bundle();
-        bundle.putString("imagePath", images.get(i).getPath());
+        bundle.putInt("eventId", event.getId());
+        bundle.putString("imagePath", event.getImages().get(i).getPath());
 
         Fragment fragment = new ImageFragment();
         fragment.setArguments(bundle);
@@ -32,12 +35,12 @@ public class ImagePagerAdapter extends FragmentStatePagerAdapter{
 
     @Override
     public int getCount() {
-        return images.size();
+        return event.getImages().size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return images.get(position).getDescription();
+        return event.getImages().get(position).getDescription();
     }
 
 }

@@ -1,19 +1,35 @@
 <?php
-	//check token & id
-	require('checker.php');
-	
-	function getSponsors($id,$sponsoringArray){
+
+	function getMatching($eventId,$array){
 		$res = array();
-		for($i=0; $i<count($sponsoringArray); $i++) {
-			if($sponsoringArray[$i]){
-				if($sponsoringArray[$i]['eventId'] == $id){
-					$res[] = $sponsoringArray[$i]['sponsorId'];
-				}
+		foreach($array as $content){
+			if($content['eventId'] == $eventId){
+				$res[] = $content;
 			}
 		}
 		return $res;
 	}
 	
+	function removeNumerical($array){
+		for($i = 0; array_key_exists($i,$array); $i++){
+			unset($array[$i]);
+		}
+		return $array;
+	}
+	
+	//-- GET IMAGES --
+	//SQL Statement
+	$statement = $pdo->prepare("SELECT * from `imagePaths`");
+	$statement->execute();
+	
+	$imageArray = array();
+	
+	//Iterate, put rows in emparray
+	while($row = $statement->fetch()) {
+		$imageArray[] = removeNumerical($row);
+	}
+	
+	//-- GET SPONSORS --
 	//SQL Statement
 	$statement = $pdo->prepare("SELECT * from `sponsoring`");
 	$statement->execute();
@@ -22,12 +38,11 @@
 	
 	//Iterate, put rows in emparray
 	while($row = $statement->fetch()) {
-		$sponsoringArray[] = $row;
+		$sponsoringArray[] = removeNumerical($row);
 	}
 	
-	//Initalize Array
-	$emparray = array();
 	
+	//-- GET EVENTS --
 	//SQL Statement
 	$statement = $pdo->prepare("SELECT 
 		`events`.`id` , `events`.`name` , `events`.`price` , `events`.`maxParticipants` , `events`.`participants` , `events`.`dateStart` , `events`.`dateEnd` , `events`.`description` , `events`.`ageMin` , `events`.`ageMax` ,`events`.`formId` ,  
@@ -42,26 +57,13 @@
 	
 	//Iterate, put rows in emparray
 	while($row = $statement->fetch()) {
-		$id = $row['id'];
-		$row['sponsors'] = getSponsors($id,$sponsoringArray);
-		$eventArray[] = $row;
+		$row['images'] = getMatching($row['id'],$imageArray);
+		$row['sponsors'] = getMatching($row['id'],$sponsoringArray);
+		$eventArray[] = removeNumerical($row);
 	}
 	
-	$emparray['events'] = $eventArray;
 	
-	//SQL Statement
-	$statement = $pdo->prepare("SELECT * from `imagePaths`");
-	$statement->execute();
-	
-	$imageArray = array();
-	
-	//Iterate, put rows in emparray
-	while($row = $statement->fetch()) {
-		$imageArray[] = $row;
-	}
-	
-	$emparray['images'] = $imageArray;
-	
+	//-- GET SPONSORS --
 	//SQL Statement
 	$statement = $pdo->prepare("SELECT * from `sponsors`");
 	$statement->execute();
@@ -70,11 +72,13 @@
 	
 	//Iterate, put rows in emparray
 	while($row = $statement->fetch()) {
-		$sponsorArray[] = $row;
+		$sponsorArray[] = removeNumerical($row);
 	}
 	
-	$emparray['sponsors'] = $sponsorArray;
 	
-	//Echo json with rows
-	echo json_encode($emparray);
+	//Put Sponsors and Events in emparray
+	$emparray = array(
+		'events' => $eventArray,
+		'sponsors' => $sponsorArray,
+	);
 ?>

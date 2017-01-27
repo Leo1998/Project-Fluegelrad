@@ -9,9 +9,11 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.datatype.Duration;
 
@@ -31,10 +33,22 @@ public class Event {
         JSONArray sponsorsArray = obj.getJSONArray("sponsors");
         int[] sponsors = new int[sponsorsArray.length()];
         for (int i = 0; i < sponsorsArray.length(); i++) {
-            sponsors[i] = sponsorsArray.getInt(i);
+            sponsors[i] = sponsorsArray.getJSONObject(i).getInt("sponsorId");
         }
 
-        Event event = new Event(obj.getInt("id"), obj.getString("name"), obj.getInt("price"), dateStart, dateEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"), location, obj.getInt("hostId"), sponsors);
+        List<Image> images = new ArrayList<>();
+        JSONArray imageArray = obj.getJSONArray("images");
+        for (int i = 0; i < imageArray.length(); i++) {
+            JSONObject imageObj = imageArray.getJSONObject(i);
+
+            Image image = Image.readImage(imageObj);
+
+            //Log.i("DatabaseManager", "Image: " + image.toString());
+
+            images.add(image);
+        }
+
+        Event event = new Event(obj.getInt("id"), obj.getString("name"), obj.getInt("price"), dateStart, dateEnd, obj.getString("description"), obj.getInt("maxParticipants"), obj.getInt("participants"), obj.getInt("ageMin"), obj.getInt("ageMax"), location, obj.getInt("hostId"), sponsors, images);
 
         if (obj.has("participating")) {
             event.participating = obj.getBoolean("participating");
@@ -68,6 +82,12 @@ public class Event {
         obj.put("location.longitude", event.getLocation().getLongitude());
         obj.put("location.latitude", event.getLocation().getLatitude());
 
+        JSONArray imagesArray = new JSONArray();
+        for (int i = 0; i < event.getImages().size(); i++) {
+            imagesArray.put(Image.writeImage(event.getImages().get(i)));
+        }
+        obj.put("images", imagesArray);
+
         obj.put("participating", event.isParticipating());
 
         return obj;
@@ -86,10 +106,11 @@ public class Event {
     private Location location;
     private int hostId;
     private int[] sponsors;
+    private List<Image> images;
 
     private boolean participating;
 
-    public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, int hostId, int[] sponsors) {
+    public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, int hostId, int[] sponsors, List<Image> images) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -103,6 +124,7 @@ public class Event {
         this.location = location;
         this.hostId = hostId;
         this.sponsors = sponsors;
+        this.images = images;
     }
 
     public int getId() {
@@ -173,6 +195,10 @@ public class Event {
 
     public int[] getSponsors() {
         return sponsors;
+    }
+
+    public List<Image> getImages() {
+        return images;
     }
 
     public boolean isParticipating() {
