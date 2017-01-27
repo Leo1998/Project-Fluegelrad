@@ -26,6 +26,12 @@
 	$ip = getClientIp();
 	$port = $_SERVER['REMOTE_PORT'];
 	
+	//Delete Expired
+	$time = time();
+	$statement = $pdo->prepare("DELETE FROM spamProtection WHERE expire < :time");
+	$statement->bindParam('time', $time, PDO::PARAM_INT);
+	$statement->execute();
+	
 	//Get count & expire for client-ip from Database
 	$statement = $pdo->prepare("SELECT count,expire,port FROM spamProtection WHERE ip = ? AND type = ?");
 	$statement->execute(array($ip,$type));
@@ -36,15 +42,11 @@
 	
 	//Get count and expire for specific port and total count for ip from database
 	while($row = $statement->fetch()) {
-		if($expire < time()){
-			$expired = true;
-		}else{
-			$totalCount += $row['count'];
-			if($port == $row['port']){
-				$expire = $row['expire'];
-				$count = $row['count'];
-				$knownIp = true;
-			}
+		$totalCount += $row['count'];
+		if($port == $row['port']){
+			$expire = $row['expire'];
+			$count = $row['count'];
+			$knownIp = true;
 		}
 	}
 	
@@ -84,28 +86,20 @@
 	}else if($type==1){ //Type 1: Expires after 30 minutes
 		$newExpire += 1800;
 	}else if($type==2){ //Type 2: Expires after 30 seconds
-		
+		$newExpire +=30;
 	}
 	
 	if($knownIp){ //Do if ip exists in database
-		//Delete expired IPs if ip expired
-		if($expired){
-			$time = time();
-			$statement = $pdo->prepare("DELETE FROM spamProtection WHERE expire < :time");
-			$statement->bindParam('time', $time, PDO::PARAM_INT);
-			$statement->execute();
-		}else{
-			//Choose for Type
-			if($type == 0 && $count > 2){ //Allow 3 type 0 requests per Ip+Port
-				exit("Error: Please wait ".($expire-time())." secounds before trying again");
-			}else if($type == 1 && $count > 0){ //Allow 1 type 1 request per Ip+Port
-				exit("Error: Please wait ".($expire-time())." secounds before trying again");
-			}else if($type == 2 && $count > 20){ //Allow 20 type 2 request per Ip+Port
-				exit("Error: Please wait ".($expire-time())." secounds before trying again");
-			}else{ //Not blocked
-				$statement = $pdo->prepare("UPDATE spamProtection SET count = ? WHERE ip = ? AND type = ?");
-				$statement->execute(array($count+1,$ip,$type));
-			}
+		//Choose for Type
+		if($type == 0 && $count > 2){ //Allow 3 type 0 requests per Ip+Port
+			exit("Error: Please wait ".($expire-time())." secounds before trying again");
+		}else if($type == 1 && $count > 0){ //Allow 1 type 1 request per Ip+Port
+			exit("Error: Please wait ".($expire-time())." secounds before trying again");
+		}else if($type == 2 && $count > 20){ //Allow 20 type 2 request per Ip+Port
+			exit("Error: Please wait ".($expire-time())." secounds before trying again");
+		}else{ //Not blocked
+			$statement = $pdo->prepare("UPDATE spamProtection SET count = ? WHERE ip = ? AND type = ?");
+			$statement->execute(array($count+1,$ip,$type));
 		}
 	}else{ //If Ip unknown, add Ip to database
 		$statement = $pdo->prepare("INSERT INTO `spamProtection` (`ip`, `count`, `expire`, `type`, `port`) VALUES (?, ?, ?, ?, ?);");
