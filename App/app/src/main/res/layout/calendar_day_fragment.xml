@@ -33,8 +33,7 @@
                 android:id="@+id/toolbar_day_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/AppTheme"
-                app:theme="@style/ToolbarStyle"
+                app:popupTheme="@style/ToolbarStyle"
                 app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>

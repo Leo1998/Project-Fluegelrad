@@ -12,7 +12,7 @@ import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Image;
 import de.projectfluegelrad.database.Sponsor;
-import de.projectfluegelrad.fragments.day.ImageHolder;
+import de.projectfluegelrad.fragments.AsyncImageView;
 
 public class SponsorFragment extends Fragment {
 
@@ -25,8 +25,8 @@ public class SponsorFragment extends Fragment {
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.sponsor_fragment, container, false);
 
         if (sponsor != null) {
-            ImageHolder sponsorImage = (ImageHolder) layout.findViewById(R.id.sponsor_image);
-            sponsorImage.setImage(new Image(sponsor.getImagePath()));
+            AsyncImageView sponsorImage = (AsyncImageView) layout.findViewById(R.id.sponsor_image);
+            sponsorImage.setImageAsync(new Image(sponsor.getImagePath()));
 
             TextView sponsorName = (TextView) layout.findViewById(R.id.sponsor_name);
             sponsorName.setText(sponsor.getName());

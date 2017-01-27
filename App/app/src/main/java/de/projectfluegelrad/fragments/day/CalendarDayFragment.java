@@ -167,9 +167,7 @@ public class CalendarDayFragment extends Fragment {
     }
 
     private void buildImagePager(ViewPager pager) {
-        List<Image> images = DatabaseManager.INSTANCE.getImages(this.event);
-
-        ImagePagerAdapter adapter = new ImagePagerAdapter(getFragmentManager(), images);
+        ImagePagerAdapter adapter = new ImagePagerAdapter(getFragmentManager(), event);
         pager.setAdapter(adapter);
     }
 
@@ -186,7 +184,7 @@ public class CalendarDayFragment extends Fragment {
         SponsorView hostView = new SponsorView(this.getContext(), this.getActivity());
         hostView.setSponsor(DatabaseManager.INSTANCE.getSponsor(event.getHostId()));
 
-        sponsorsContainer.addView(hostView);
+        sponsorsContainer.addView(hostView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         //build other sponsors
         List<Sponsor> sponsors = DatabaseManager.INSTANCE.getSponsors(event);
@@ -199,7 +197,7 @@ public class CalendarDayFragment extends Fragment {
                 SponsorView sponsorView = new SponsorView(this.getContext(), this.getActivity());
                 sponsorView.setSponsor(sponsor);
 
-                sponsorsContainer.addView(sponsorView);
+                sponsorsContainer.addView(sponsorView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
         }
 

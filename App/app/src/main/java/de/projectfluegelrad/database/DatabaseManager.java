@@ -64,10 +64,6 @@ public class DatabaseManager {
      */
     private final List<Event> eventList = new ArrayList<Event>();
     /**
-     * list of all images
-     */
-    private final List<Image> images = new ArrayList<>();
-    /**
      * list of all sponsors
      */
     private final List<Sponsor> sponsorList = new ArrayList<Sponsor>();
@@ -164,15 +160,6 @@ public class DatabaseManager {
                 eventDataArray.put(obj);
             }
 
-            JSONArray imageAtlasArray = new JSONArray();
-            for (int i = 0; i < images.size(); i++) {
-                Image image = images.get(i);
-
-                JSONObject obj = Image.writeImage(image);
-
-                imageAtlasArray.put(obj);
-            }
-
             JSONArray sponsorDataArray = new JSONArray();
             for (int i = 0; i < sponsorList.size(); i++) {
                 Sponsor sponsor = sponsorList.get(i);
@@ -184,7 +171,6 @@ public class DatabaseManager {
 
             JSONObject root = new JSONObject();
             root.put("events", eventDataArray);
-            root.put("images", imageAtlasArray);
             root.put("sponsors", sponsorDataArray);
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(eventFile)));
@@ -327,7 +313,6 @@ public class DatabaseManager {
         JSONObject root = new JSONObject(new JSONTokener(json));
 
         JSONArray eventDataArray = root.getJSONArray("events");
-        JSONArray imageAtlasArray = root.getJSONArray("images");
         JSONArray sponsorDataArray = root.getJSONArray("sponsors");
 
         for (int i = 0; i < eventDataArray.length(); i++) {
@@ -338,17 +323,6 @@ public class DatabaseManager {
             //Log.i("DatabaseManager", "Event: " + event.toString());
 
             registerEvent(event);
-        }
-
-        images.clear();
-        for (int i = 0; i < imageAtlasArray.length(); i++) {
-            JSONObject obj = imageAtlasArray.getJSONObject(i);
-
-            Image image = Image.readImage(obj);
-
-            //Log.i("DatabaseManager", "Image: " + image.toString());
-
-            images.add(image);
         }
 
         for (int i = 0; i < sponsorDataArray.length(); i++) {
@@ -459,10 +433,6 @@ public class DatabaseManager {
         return eventList;
     }
 
-    public List<Image> getImages() {
-        return images;
-    }
-
     public List<Sponsor> getSponsorList() {
         return sponsorList;
     }
@@ -481,20 +451,6 @@ public class DatabaseManager {
         Collections.reverse(list);*/
 
         return eventList;
-    }
-
-    public ArrayList<Image> getImages(Event event) {
-        ArrayList<Image> list = new ArrayList<>();
-
-        for (int i = 0; i < images.size(); i++) {
-            Image image = images.get(i);
-
-            if (image.getEventId() == event.getId()) {
-                list.add(image);
-            }
-        }
-
-        return list;
     }
 
     public List<Sponsor> getSponsors(Event event) {
@@ -520,18 +476,6 @@ public class DatabaseManager {
 
             if (event.getId() == eventId) {
                 return event;
-            }
-        }
-
-        return null;
-    }
-
-    public Image getImage(String imagePath) {
-        for (int i = 0; i < images.size(); i++) {
-            Image image = images.get(i);
-
-            if (image.getPath().equals(imagePath)) {
-                return image;
             }
         }
 

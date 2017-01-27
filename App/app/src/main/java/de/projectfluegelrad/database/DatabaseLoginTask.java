@@ -35,7 +35,7 @@ public class DatabaseLoginTask implements DatabaseTask<Void, User> {
                     in.close();
                     userJson = jsonBuilder.toString();
                 } else {
-                    URL url = new URL("http://fluegelrad.ddns.net/createUser.php");
+                    URL url = new URL("http://fluegelrad.ddns.net/scripts/createUser.php");
                     URLConnection c = url.openConnection();
                     BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
 

@@ -12,11 +12,11 @@ import android.widget.TextView;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.Image;
 import de.projectfluegelrad.database.Sponsor;
-import de.projectfluegelrad.fragments.day.ImageHolder;
+import de.projectfluegelrad.fragments.AsyncImageView;
 
 public class SponsorView extends RelativeLayout {
 
-    private ImageHolder sponsorImage;
+    private AsyncImageView sponsorImage;
     private TextView sponsorName;
 
     private Sponsor sponsor;
@@ -52,7 +52,7 @@ public class SponsorView extends RelativeLayout {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.sponsor_small, this);
 
-        this.sponsorImage = (ImageHolder) findViewById(R.id.sponsor_image);
+        this.sponsorImage = (AsyncImageView) findViewById(R.id.sponsor_image);
         this.sponsorName = (TextView) findViewById(R.id.sponsor_name);
     }
 
@@ -60,7 +60,7 @@ public class SponsorView extends RelativeLayout {
         if (sponsor != null) {
             this.sponsor = sponsor;
 
-            sponsorImage.setImage(new Image(sponsor.getImagePath()));
+            sponsorImage.setImageAsync(new Image(sponsor.getImagePath()));
             sponsorName.setText(sponsor.getName());
         }
     }
