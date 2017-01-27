@@ -52,15 +52,15 @@
 	}
 	
 	$sponsorIds = implode("\",\"",$sIdArr);
-	$sponsorImgs = implode("\",\"",$imArr);
+	$sponsorImgs = implode("\",\"../",$imArr);
 	$sponsors = implode("\",\"",$naArr);
 	
 	$sponsorIds = "const sponsorIds = Array(\"".$sponsorIds."\");";
-	$sponsorImgs = "const sponsorImgs = Array(\"".$sponsorImgs."\");";
+	$sponsorImgs = "const sponsorImgs = Array(\"../".$sponsorImgs."\");";
 	$sponsors = "const sponsors = Array(\"".$sponsors."\");";
 	$maxSponsorId = "const maxSponsorId = ".$sMax.";";
 	
-	$hostStuff = "const hostName = \"".$_SESSION['name']."\"; const hostImage = \"".$_SESSION['image']."\";";
+	$hostStuff = "const hostName = \"".$_SESSION['name']."\"; const hostImage = \"../".$_SESSION['image']."\";";
 	
 	echo "
 		<script type=\"text/javascript\">
