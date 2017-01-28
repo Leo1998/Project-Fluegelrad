@@ -108,10 +108,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		
 			// deltes all outdated events
 			let today = Date()
-			for (index, value) in shownEvents.enumerated(){
-				if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
-					shownEvents.remove(at: index)
-				}
+			shownEvents = shownEvents.filter(){event in
+				return (event).dateStart.compare(today) == ComparisonResult.orderedDescending
 			}
 		
 			var newShownEvents = [Event]()

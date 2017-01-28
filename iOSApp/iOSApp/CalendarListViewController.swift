@@ -142,10 +142,8 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		})
 		
 		let today = Date()
-		for (index, value) in allEvents.enumerated(){
-			if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
-				allEvents.remove(at: index)
-			}
+		allEvents = allEvents.filter(){event in
+			return (event).dateStart.compare(today) == ComparisonResult.orderedDescending
 		}
 	}
 	
