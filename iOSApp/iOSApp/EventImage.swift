@@ -15,7 +15,7 @@ class EventImage: NSObject, NSCoding{
 	
 	/**
 	Check if the image is already scaled
-	You should only scale the image onc
+	You should only scale the image once
 	*/
     private(set) var scaled = false
 	
@@ -31,10 +31,8 @@ class EventImage: NSObject, NSCoding{
         get {
             if self.imageSave == nil {
                 
-                let url = URL(string: DatabaseManager.url + self.imagePath)!
-                let data = try? Data(contentsOf: url)
-                imageSave = UIImage(data: data!)
-            }
+				imageSave = Storage.getImage(path: imagePath)
+			}
             
             return imageSave
         }

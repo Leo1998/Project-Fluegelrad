@@ -18,18 +18,17 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 	*/
 	private var allEvents = [Event]()
 
-
+	/**
+	label which is shown if error or no events
+	*/
+	private var noEventsLabel: UILabel!
 	
     override func viewDidLoad() {
         super.viewDidLoad()
+
+		_ = Storage()
 		
-		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
-		let eventData = myDefaults.object(forKey: "events")
-		
-		var events = [Event]()
-		if eventData != nil {
-			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
-		}
+		let events = Storage.getEvents()
 		
 		if events.count > 0 {
 			allEvents = events.sorted(by: {
@@ -63,6 +62,16 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 		
 		eventTable.tableHeaderView = title
 		
+		noEventsLabel = UILabel()
+		noEventsLabel.adjustsFontSizeToFitWidth = true
+		view.addSubview(noEventsLabel)
+		noEventsLabel.translatesAutoresizingMaskIntoConstraints = false
+		noEventsLabel.addConstraintsXY(xView: view, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .centerY, yViewAttribute: .centerY, yMultiplier: 1, yConstant: 0)
+		noEventsLabel.isHidden = true
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(TodayViewController.showError), name: Notification.Name(Bundle.main.bundleIdentifier! + "downloadError"), object: nil)
+
+		
 		extensionContext?.widgetLargestAvailableDisplayMode = .expanded
 	}
 	
@@ -76,17 +85,8 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 		eventTable.reloadData()
 
 		if shownEvents.count == 0 {
-			eventTable.removeFromSuperview()
 			
-			let noEventsLabel = UILabel()
-			noEventsLabel.text = "Es gibt keine Events in den nächsten 24 Stunden"
-			noEventsLabel.adjustsFontSizeToFitWidth = true
-			view.addSubview(noEventsLabel)
-			noEventsLabel.translatesAutoresizingMaskIntoConstraints = false
-			noEventsLabel.addConstraintsXY(xView: view, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .centerY, yViewAttribute: .centerY, yMultiplier: 1, yConstant: 0)
-			
-			extensionContext?.widgetLargestAvailableDisplayMode = .compact
-
+			showMessage(message: "Es gibt keine Events in den nächsten 24 Stunden")
 		}
 	}
 	
@@ -154,5 +154,26 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return UITableViewAutomaticDimension
+	}
+	
+	/**
+	Shows an error message
+	*/
+	func showError(){
+		if allEvents.count == 0 {
+			showMessage(message: "Keine Verbindung zum Server")
+		}
+	}
+	
+	/**
+	Shows a message
+	*/
+	public func showMessage(message: String){
+		eventTable.isHidden = true
+		noEventsLabel.isHidden = false
+		
+		noEventsLabel.text = message
+		
+		extensionContext?.widgetLargestAvailableDisplayMode = .compact
 	}
 }

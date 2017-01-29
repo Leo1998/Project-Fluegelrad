@@ -75,11 +75,6 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	private var segueSponsor: Sponsor?
 	
 	/**
-	Pull to refresh control
-	*/
-	private var refreshControl: UIRefreshControl!
-	
-	/**
 	A refference to itself to use in static methods
 	*/
 	private static var selfish: CalendarDayViewController!
@@ -116,11 +111,6 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 		CalendarDayViewController.picker = NotificationDelayPicker(frame: UIScreen.main.bounds)
 		view.addSubview(CalendarDayViewController.picker)
 		CalendarDayViewController.picker.isHidden = true
-		
-		refreshControl = UIRefreshControl()
-		scrollView.addSubview(refreshControl)
-		refreshControl.addTarget(self, action: #selector(CalendarDayViewController.refresh), for: .valueChanged)
-		NotificationCenter.default.addObserver(self, selector: #selector(CalendarDayViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: nil)
 		
         descriptionLabel = UILabel()
         descriptionLabel.lineBreakMode = .byWordWrapping
@@ -299,7 +289,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	called when the participation button is pressed
 	*/
 	func participate(){
-		MainViewController.participate(event: event)
+		Storage.participate(event: event)
 	}
 	
 	/**
@@ -326,91 +316,9 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	}
 	
 	/**
-	checks if event can be localy saved
-	*/
-    func saveEvent(){
-        let eventStore = EKEventStore()
-        
-        switch EKEventStore.authorizationStatus(for: .event) {
-        case .authorized:
-			MainViewController.createEvent(eventStore: eventStore)
-            saving(eventStore: eventStore)
-            break
-        case .denied:
-            print("Calendar Access denied")
-            break
-        case .notDetermined:
-            eventStore.requestAccess(to: .event, completion: { (granted, error) in
-                if granted {
-					MainViewController.createEvent(eventStore: eventStore)
-                    self.saving(eventStore: eventStore)
-                }else{
-                    print("Calendar Access denied")
-                }
-            })
-            break
-        default:
-            print("Calendar Access default")
-        }
-    }
-	
-	/**
-	saves the event to the local calendar
-	*/
-    private func saving(eventStore: EKEventStore){
-		let calendarData = UserDefaults.standard.object(forKey: "calendar")
-		let eventCalendarIdentifier = NSKeyedUnarchiver.unarchiveObject(with: calendarData as! Data) as! String
-		let eventCalendar = eventStore.calendar(withIdentifier: eventCalendarIdentifier)!
-		
-        var alreadySaved = false
-		
-        let predicate = eventStore.predicateForEvents(withStart: event.dateStart, end: event.dateEnd, calendars: [eventCalendar])
-        let events = eventStore.events(matching: predicate)
-        
-        for value in events{
-            if value.title == event.name && value.location == event.location.title && value.notes == event.descriptionEvent {
-                alreadySaved = true
-                
-                let alert = UIAlertController(title: "Event im Kalendar schon vorhanden", message: nil, preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                alert.addAction(okAction)
-                
-                present(alert, animated: true, completion: nil)
-                break
-            }
-        }
-
-        if !alreadySaved {
-            let newEvent = EKEvent(eventStore: eventStore)
-            newEvent.calendar = eventCalendar
-            newEvent.title = event.name
-            newEvent.startDate = event.dateStart
-            newEvent.endDate = event.dateEnd
-            newEvent.location = event.location.title
-            newEvent.notes = event.descriptionEvent
-            
-            do {
-                try eventStore.save(newEvent, span: .thisEvent, commit: true)
-                
-                let alert = UIAlertController(title: "Event gespeichert", message: nil, preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                alert.addAction(okAction)
-                
-                present(alert, animated: true, completion: nil)
-            } catch {
-                let alert = UIAlertController(title: "Event konnte nicht gespeichert werden", message: error.localizedDescription, preferredStyle: .alert)
-                let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-                alert.addAction(okAction)
-                
-                present(alert, animated: true, completion: nil)
-            }
-        }
-    }
-	
-	/**
 	gets notified about the participation status
 	*/
-	static func participation(status: ParticipationStatus, event: Event){
+	static func participation(status: ParticipationStatus){
 		if status == .success {
 			
 			picker.isHidden = false
@@ -488,7 +396,13 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
         let activityViewController = UIActivityViewController(activityItems: ["Test"], applicationActivities: nil)
         present(activityViewController, animated: true, completion: nil)
     }
-    
+	
+	/**
+	saves the event in the calendar
+	*/
+	func saveEvent(){
+		Storage.saveEventInCalendar(event: event)
+	}
 
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         let launchOptions = [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving]
@@ -518,32 +432,11 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
     }
 	
 	/**
-	Forwarding the refresh to the MainViewController
-	*/
-	internal func refresh(){
-		print("Refresh")
-		
-		MainViewController.refresh()
-		
-		refreshControl.endRefreshing()
-	}
-	
-	/**
 	(Re)loads all the sponsors and the event data
 	*/
 	public func reset(){
-		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
 		
-		if sponsorData != nil {
-			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
-		}
-		
-		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
-		let eventData = myDefaults.object(forKey: "events")
-		var events = [Event]()
-		if eventData != nil {
-			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
-		}
+		let events = Storage.getEvents()
 		for value in events {
 			if value.id == event.id {
 				event = value
@@ -551,15 +444,6 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 			}
 		}
 		
-		DispatchQueue.main.sync {
-			updateViews()
-		}
-	}
-	
-	/**
-	(Re)loads the participationView after refreshing
-	*/
-	private func updateViews(){
 		participationView.updateCurrentParticipants(event: event)
 	}
 }

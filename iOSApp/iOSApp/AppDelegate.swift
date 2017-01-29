@@ -10,17 +10,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let urlArray = urlString.components(separatedBy: "/")
 		
 		if urlArray.count == 3 {
-			var sponsors = [Int: Sponsor]()
-			let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
-			
-			if sponsorData != nil {
-				sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
-			}
-
-			
-			let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
-			let eventData = myDefaults.object(forKey: "events")
-			let events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
+			let sponsors = Storage.getSponsors()
+			let events = Storage.getEvents()
 
 			for value in events {
 				if value.id == Int(urlArray[2]) {

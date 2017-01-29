@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "ABC7B7531E39404C00A2C083"
-               BuildableName = "iOSAppWidget.appex"
-               BlueprintName = "iOSAppWidget"
+               BuildableName = "widget.appex"
+               BlueprintName = "widget"
                ReferencedContainer = "container:iOSApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,8 +30,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "AB9C31D41DCA2D4C0091C55F"
-               BuildableName = "iOSApp.app"
-               BlueprintName = "iOSApp"
+               BuildableName = "app.app"
+               BlueprintName = "app"
                ReferencedContainer = "container:iOSApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -48,8 +48,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "ABC7B7531E39404C00A2C083"
-            BuildableName = "iOSAppWidget.appex"
-            BlueprintName = "iOSAppWidget"
+            BuildableName = "widget.appex"
+            BlueprintName = "widget"
             ReferencedContainer = "container:iOSApp.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -72,8 +72,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AB9C31D41DCA2D4C0091C55F"
-            BuildableName = "iOSApp.app"
-            BlueprintName = "iOSApp"
+            BuildableName = "app.app"
+            BlueprintName = "app"
             ReferencedContainer = "container:iOSApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -92,8 +92,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "AB9C31D41DCA2D4C0091C55F"
-            BuildableName = "iOSApp.app"
-            BlueprintName = "iOSApp"
+            BuildableName = "app.app"
+            BlueprintName = "app"
             ReferencedContainer = "container:iOSApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
