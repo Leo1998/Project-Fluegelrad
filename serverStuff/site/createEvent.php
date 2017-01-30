@@ -17,7 +17,7 @@
 	$loArr = array();
 	$laArr = array();
 	
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$lIdArr[] = $row['id'];
 		$adArr[] = $row['address'];
 		$loArr[] = $row['longitude'];
@@ -42,7 +42,7 @@
 	$naArr = array();
 	$sMax = 0;
 	
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$sIdArr[] = $row['id'];
 		$imArr[] = $row['imagePath'];
 		$naArr[] = $row['name'];
@@ -52,15 +52,15 @@
 	}
 	
 	$sponsorIds = implode("\",\"",$sIdArr);
-	$sponsorImgs = implode("\",\"../",$imArr);
+	$sponsorImgs = implode("\",\"",$imArr);
 	$sponsors = implode("\",\"",$naArr);
 	
 	$sponsorIds = "const sponsorIds = Array(\"".$sponsorIds."\");";
-	$sponsorImgs = "const sponsorImgs = Array(\"../".$sponsorImgs."\");";
+	$sponsorImgs = "const sponsorImgs = Array(\"".$sponsorImgs."\");";
 	$sponsors = "const sponsors = Array(\"".$sponsors."\");";
 	$maxSponsorId = "const maxSponsorId = ".$sMax.";";
 	
-	$hostStuff = "const hostName = \"".$_SESSION['name']."\"; const hostImage = \"../".$_SESSION['image']."\";";
+	$hostStuff = "const hostName = \"".$_SESSION['name']."\"; const hostImage = \"".$_SESSION['image']."\";";
 	
 	echo "
 		<script type=\"text/javascript\">

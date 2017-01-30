@@ -25,8 +25,8 @@
 	$imageArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $statement->fetch()) {
-		$imageArray[] = removeNumerical($row);
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+		$imageArray[] = $row;
 	}
 	
 	//-- GET SPONSORS --
@@ -37,8 +37,8 @@
 	$sponsoringArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $statement->fetch()) {
-		$sponsoringArray[] = removeNumerical($row);
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+		$sponsoringArray[] = $row;
 	}
 	
 	
@@ -47,19 +47,21 @@
 	$statement = $pdo->prepare("SELECT 
 		`events`.`id` , `events`.`name` , `events`.`price` , `events`.`maxParticipants` , `events`.`participants` , `events`.`dateStart` , `events`.`dateEnd` , `events`.`description` , `events`.`ageMin` , `events`.`ageMax` ,`events`.`formId` ,  
 		`locations`.`address` AS `location.address` , `locations`.`longitude` AS `location.longitude` , `locations`.`latitude` AS `location.latitude` ,
-		`hosts`.`sponsorId` AS `hostId`
+		`hosts`.`sponsorId` AS `hostId`,
+		`ratings`.`rating`
 		FROM `events` 
 		JOIN `locations` ON `events`.`locationId` = `locations`.`id`
-		JOIN `hosts` ON `events`.`hostId` = `hosts`.`id`");
+		JOIN `hosts` ON `events`.`hostId` = `hosts`.`id`
+		LEFT JOIN (SELECT AVG(`rating`) AS `rating`,`eventId` FROM `eventRatings` GROUP BY `eventId`) AS `ratings` ON `ratings`.`eventId` = `events`.`id`");
 	$statement->execute();
 	
 	$eventArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$row['images'] = getMatching($row['id'],$imageArray);
 		$row['sponsors'] = getMatching($row['id'],$sponsoringArray);
-		$eventArray[] = removeNumerical($row);
+		$eventArray[] = $row;
 	}
 	
 	
@@ -71,8 +73,8 @@
 	$sponsorArray = array();
 	
 	//Iterate, put rows in emparray
-	while($row = $statement->fetch()) {
-		$sponsorArray[] = removeNumerical($row);
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+		$sponsorArray[] = $row;
 	}
 	
 	

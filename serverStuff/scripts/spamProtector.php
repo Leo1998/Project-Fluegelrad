@@ -41,7 +41,7 @@
 	$expired = false;
 	
 	//Get count and expire for specific port and total count for ip from database
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$totalCount += $row['count'];
 		if($port == $row['port']){
 			$expire = $row['expire'];

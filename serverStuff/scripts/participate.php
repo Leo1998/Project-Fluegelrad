@@ -9,18 +9,18 @@
 	//check token & id
 	require('checker.php');
 	
-	//Check, if User already participating
+	//Check if User is already participating
 	$statement = $pdo->prepare("SELECT * FROM `participating` WHERE `userId` = ? AND `eventId` = ?");
 	$statement->execute(array($u,$k));
 	
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		exit("Error: User is already participating");
 	}
 	
 	//Get current participants from event
 	$statement = $pdo->prepare("SELECT participants,maxParticipants FROM events WHERE id = ?");
 	$statement->execute(array($k));
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$participants = intval($row['participants']);
 		$maxParticipants = intval($row['maxParticipants']);
 	}
