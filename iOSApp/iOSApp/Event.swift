@@ -135,8 +135,6 @@ class Event: NSObject, NSCoding {
 		
 		sponsorIds = aDecoder.decodeObject(forKey: "sponsors") as! [Int]
 		
-		//name = aDecoder.decodeObject(of: [NSString.self], forKey: "name") as! String
-		
 	}
 	
 	

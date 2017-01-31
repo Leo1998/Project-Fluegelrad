@@ -7,7 +7,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	/**
 	the event which is shown
 	*/
-    var event: Event!
+	var event: Event!
 	
 	/**
 	All the sponosrs
@@ -82,7 +82,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	/**
 	the picker for setting the notification delay
 	*/
-	private static var picker: NotificationDelayPicker!
+	private var picker: NotificationDelayPicker!
 
 	
     override func viewDidLoad() {
@@ -108,9 +108,9 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
         scrollView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: header, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
         scrollView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
-		CalendarDayViewController.picker = NotificationDelayPicker(frame: UIScreen.main.bounds)
-		view.addSubview(CalendarDayViewController.picker)
-		CalendarDayViewController.picker.isHidden = true
+		picker = NotificationDelayPicker(frame: UIScreen.main.bounds)
+		view.addSubview(picker)
+		picker.isHidden = true
 		
         descriptionLabel = UILabel()
         descriptionLabel.lineBreakMode = .byWordWrapping
@@ -290,6 +290,9 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	*/
 	func participate(){
 		Storage.participate(event: event)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(CalendarDayViewController.participation), name: Notification.Name(Bundle.main.bundleIdentifier! + "participation"), object: nil)
+
 	}
 	
 	/**
@@ -318,13 +321,18 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	/**
 	gets notified about the participation status
 	*/
-	static func participation(status: ParticipationStatus){
+	internal func participation(_ notification: Notification){
+		let status: ParticipationStatus = notification.object as! ParticipationStatus
+		
 		if status == .success {
 			
+			Storage.participating(event: event)
+			participationView.updateCurrentParticipants(event: event)
+						
 			picker.isHidden = false
 			
-			picker.done.addTarget(selfish, action: #selector(CalendarDayViewController.delayChosen), for: .touchUpInside)
-			picker.cancel.addTarget(selfish, action: #selector(CalendarDayViewController.noNotification), for: .touchUpInside)
+			picker.done.addTarget(self, action: #selector(CalendarDayViewController.delayChosen), for: .touchUpInside)
+			picker.cancel.addTarget(self, action: #selector(CalendarDayViewController.noNotification), for: .touchUpInside)
 			
 		}else{
 			CalendarDayViewController.delayClosed(status: status)
@@ -341,7 +349,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 		notification.alertAction = "open"
 		
 		let calendar = Calendar.autoupdatingCurrent
-		let dateComponents = calendar.dateComponents([.hour, .minute], from: CalendarDayViewController.picker.picker.date)
+		let dateComponents = calendar.dateComponents([.hour, .minute], from: picker.picker.date)
 		
 		var date = Calendar.autoupdatingCurrent.date(byAdding: .hour, value: -dateComponents.hour!, to: event.dateStart, wrappingComponents: false)
 		date = Calendar.autoupdatingCurrent.date(byAdding: .minute, value: -dateComponents.minute!, to: date!, wrappingComponents: false)
@@ -351,7 +359,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 		
 		UIApplication.shared.scheduleLocalNotification(notification)
 		
-		CalendarDayViewController.picker.isHidden = true
+		picker.isHidden = true
 		CalendarDayViewController.delayClosed(status: .success)
 	}
 	
@@ -359,7 +367,7 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 	executed when the user doesn't want to be notified
 	*/
 	func noNotification(){
-		CalendarDayViewController.picker.isHidden = true
+		picker.isHidden = true
 		CalendarDayViewController.delayClosed(status: .success)
 	}
 	
