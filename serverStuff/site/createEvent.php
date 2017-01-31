@@ -1,7 +1,13 @@
 <?php
+	session_start();
+	
+	if(!isset($_SESSION['hostId'])){
+		exit('Error: Must be logged in to create an Event');
+	}
+	
 	//Spam protection, IP ban, Initalize PDO
-	$type=0;
-	require('spamProtector.php');
+	$type=2;
+	require('../scripts/spamProtector.php');
 	
 	$statement = $pdo->prepare("SELECT * FROM `locations`");
 	$statement->execute();
@@ -11,7 +17,7 @@
 	$loArr = array();
 	$laArr = array();
 	
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$lIdArr[] = $row['id'];
 		$adArr[] = $row['address'];
 		$loArr[] = $row['longitude'];
@@ -36,7 +42,7 @@
 	$naArr = array();
 	$sMax = 0;
 	
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$sIdArr[] = $row['id'];
 		$imArr[] = $row['imagePath'];
 		$naArr[] = $row['name'];
@@ -54,6 +60,8 @@
 	$sponsors = "const sponsors = Array(\"".$sponsors."\");";
 	$maxSponsorId = "const maxSponsorId = ".$sMax.";";
 	
+	$hostStuff = "const hostName = \"".$_SESSION['name']."\"; const hostImage = \"".$_SESSION['image']."\";";
+	
 	echo "
 		<script type=\"text/javascript\">
 			$addressIds
@@ -64,6 +72,7 @@
 			$sponsorImgs
 			$sponsors
 			$maxSponsorId
+			$hostStuff
 		</script>
 	";
 ?>
@@ -72,6 +81,7 @@
 
 <head>
     <title>Event erstellen</title>
+	<link href ="createEventStylesheet.css" rel="stylesheet" >
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
     <script>
 		var imageCount = 0;
@@ -152,7 +162,7 @@
 				img.style.height="50px";
 				img.htmlFor = "sponsor"+sponsorIds[i];
 				
-				var label = document.createElement('label')
+				var label = document.createElement('label');
 				label.htmlFor = "sponsor "+sponsorIds[i];
 				label.appendChild(document.createTextNode(sponsors[i]));
 				
@@ -162,6 +172,17 @@
 				
 				sponsorsSelect.appendChild(li);
 			}
+			
+			var nameLabel = document.createTextNode(hostName);
+			var image = document.createElement('img');
+			image.src= hostImage;
+			image.alt= "Bild nicht verfügbar";
+			image.title= "Vorschau";
+			image.style.height="50px";
+			
+			div = document.getElementById('hostStuff');
+			div.appendChild(nameLabel);
+			div.appendChild(image);
 			
 			document.getElementById('maxSponsorId').value = maxSponsorId;
 		};
@@ -198,7 +219,7 @@
 					document.getElementById("latitude").value = lonlat1.lat;
 					document.getElementById("longitude").value = lonlat1.lon;
 					if(!newLocMarker){
-						newLocMarker = placeMarker(lonlat1,'Test',0);
+						newLocMarker = placeMarker(lonlat1,'I am Error',0);
 					}else{
 						newLocMarker.move(lonlat);
 					}
@@ -221,7 +242,7 @@
 			var feature = new OpenLayers.Feature.Vector(
 				new OpenLayers.Geometry.Point( lonlat.lon,  lonlat.lat ).transform(fromProjection, toProjection),
 				{description:popuptext , value:v} ,
-				{externalGraphic: 'img/newerMarker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25, fillOpacity:1  }
+				{externalGraphic: '../img/newerMarker.png', graphicHeight: 25, graphicWidth: 21, graphicXOffset:-12, graphicYOffset:-25, fillOpacity:1  }
 				);    
 			vectorLayer.addFeatures(feature);
 			return feature;
@@ -233,7 +254,7 @@
 			var lonlat = new OpenLayers.LonLat(lon, lat);
 			var lonlat1 = new OpenLayers.LonLat(lon, lat).transform( fromProjection, toProjection);
 			if(!newLocMarker){
-				newLocMarker = placeMarker(lonlat,'Test',0);
+				newLocMarker = placeMarker(lonlat,'I am Error',0);
 			}else{
 				newLocMarker.move(lonlat1);
 			}
@@ -241,17 +262,17 @@
 		}
 		
 		function createPopup(feature) {
+			var value = feature.attributes.value;
 			feature.popup = new OpenLayers.Popup.FramedCloud("pop",
 				feature.geometry.getBounds().getCenterLonLat(),
 				null,
-				'<div class="markerContent">'+feature.attributes.description+'</div>',
+				'<div class="markerContent">'+(value == 0 ? document.getElementById('newAddress').value : feature.attributes.description)+'</div>',
 				null,
 				true,
 				function() { controls['selector'].unselectAll(); }
 			);
-			feature.popup.closeOnMove = true;
+			//feature.popup.closeOnMove = true;
 			map.addPopup(feature.popup);
-			var value = feature.attributes.value;
 			if(value == 0){
 				document.getElementById('newLoc').checked = true;
 			}else{
@@ -403,6 +424,16 @@
 	</head>
 
 	<body onload='init();'>
+		<div id="left"></div>
+	<div id="right"></div>
+		<div id="top"></div>
+	<div id="bottom"></div>
+		<div id= "header">
+				<form action="logout.php">
+					<div id = "hostStuff"></div>
+					<input type = "submit" value = "Abmelden">
+				</form>
+		</div>
 		<div id= "formDiv">
 			<form action="uploadEvent.php" enctype="multipart/form-data" id="event" method="post">
 				<uol>
@@ -485,6 +516,8 @@
 						<input type = "number" id = "imageCount" name = "imageCount" style = "position : absolute ; display : none ;" value = "0">
 						<br>
 						<button type="button" onClick="createImage();">Neues Bild</button>
+						<br>
+						<label>Das erste Bild wird als Vorschau-Bild des Events angezeigt</label>
 						<oul name = "images" id="images">
 						</oul>
 					</li>

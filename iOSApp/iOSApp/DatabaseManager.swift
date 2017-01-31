@@ -7,6 +7,8 @@ protocol DatabaseManagerProtocol: class {
 	func itemsDownloaded(events: [Event], sponsors: [Int: Sponsor])
 	func error()
 	func participation(status: ParticipationStatus)
+	
+	var user: User! {get set}
 }
 
 class DatabaseManager: NSObject, URLSessionDataDelegate{
@@ -14,7 +16,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 	/**
 	Reference to the delegate
 	*/
-    public weak var delegate: DatabaseManagerProtocol!
+	public var delegate: DatabaseManagerProtocol!
 	
 	/**
 	Data which is recieved
@@ -29,17 +31,17 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 	/**
 	file to access the database
 	*/
-    private let getDatabase = "recieveDatabase.php"
+    private let getDatabase = "scripts/getEvents.php"
 	
 	/**
 	file to create a new User
 	*/
-    private let createUser = "createUser.php"
+    private let createUser = "scripts/createUser.php"
 	
 	/**
 	file to send a participation
 	*/
-	private let participate = "sendDatabase.php"
+	private let participate = "scripts/participate.php"
 	
 	/**
 	Save of all events
@@ -57,21 +59,13 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 	private var tries = 0
 	
 	/**
-	user which is accessing the databse
-	*/
-    private var user: User!
-	
-	/**
 	Method to (re)download the events and sponsors
 	*/
     public func downloadItems() {
-        let userData = UserDefaults.standard.object(forKey: "user")
-        
-        if userData == nil {
+		
+        if delegate.user == nil {
             newUser()
         }else{
-            user = NSKeyedUnarchiver.unarchiveObject(with: userData as! Data) as! User
-            
             getEvents()
         }
     }
@@ -147,7 +141,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 						print(error)
 					}
 					
-					user = User(id: jsonResult[0] as! Int, token: jsonResult[1] as! String)
+					delegate.user = User(id: jsonResult[0] as! Int, token: jsonResult[1] as! String)
 					
 					getEvents()
 				}else if (task.currentRequest?.url?.absoluteString.contains(DatabaseManager.url + participate))!{
@@ -184,21 +178,9 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 			tries = 0
 			
 			if task.currentRequest?.url?.absoluteString == DatabaseManager.url + getDatabase {
-				let sponsorData = UserDefaults.standard.object(forKey: "sponosrs")
+				sponsors = Storage.getSponsors()
 				
-				if sponsorData != nil {
-					sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
-				}
-				
-				
-				let tempArray = UserDefaults.standard.object(forKey: "events")
-				
-				if tempArray != nil {
-					events = NSKeyedUnarchiver.unarchiveObject(with: tempArray as! Data) as! [Event]
-					
-				}else{
-					events = [Event]()
-				}
+				events = Storage.getEvents()
 				
 				self.delegate.itemsDownloaded(events: self.events, sponsors: self.sponsors)
 				
@@ -228,7 +210,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 		let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
 		
         let url1 = DatabaseManager.url + getDatabase
-        let url2 = "?u=" + String(user.id) + "&t=" + user.token
+        let url2 = "?u=" + String(delegate.user.id) + "&t=" + delegate.user.token
         let url = URL(string: url1 + url2)!
         
         let task = session.dataTask(with: url)
@@ -246,7 +228,6 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 
 		
         let jsonResultEvent: NSArray = jsonResult.object(forKey: "events") as! NSArray
-        let jsonResultImages: NSArray = jsonResult.object(forKey: "images") as! NSArray
 		let jsonResultSponsors: NSArray = jsonResult.object(forKey: "sponsors") as! NSArray
 
 		
@@ -258,19 +239,6 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             events.add(event)
         }
 		self.events = events as NSArray as! [Event]
-
-
-		
-        for i in 0 ..< jsonResultImages.count{
-            jsonElement = (jsonResultImages[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
-            
-            for item in events{
-                if (item as! Event).id == Int(jsonElement.object(forKey: "eventId") as! String)!{
-                    (item as! Event).addImage(dict: jsonElement)
-                }
-            }
-        }
-		
 		
 		for i in 0 ..< jsonResultSponsors.count{
 			jsonElement = (jsonResultSponsors[i] as! NSDictionary).mutableCopy() as! NSMutableDictionary
@@ -306,29 +274,10 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
             print(error)
         }
 
-        user.token = jsonResultToken[0] as! String
-        
-        UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: user), forKey: "user")
-        UserDefaults.standard.synchronize()
+        delegate.user.token = jsonResultToken[0] as! String
+		delegate.user = delegate.user
         
         return jsonResultEvent
-    }
-	
-	//TODO
-	/**
-	Downloading the image
-	*/
-    public static func loadImage(url: String, view: UIImageView){
-        
-        let url = URL(string: self.url + url)!
-        
-        let task = URLSession.shared.dataTask(with: url) { (responseData, responseUrl, error) -> Void in
-            if let data = responseData{
-                view.image = UIImage(data: data)
-            }
-        }
-        
-        task.resume()
     }
 	
 	/**
@@ -338,7 +287,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 		let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
 		
 		let url1 = DatabaseManager.url + participate
-		let url2 = "?k=" + String(event.id) + "&u=" + String(user.id) + "&t=" + user.token
+		let url2 = "?k=" + String(event.id) + "&u=" + String(delegate.user.id) + "&t=" + delegate.user.token
 		let url = URL(string: url1 + url2)!
 		
 		let task = session.dataTask(with: url)
@@ -360,17 +309,31 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 			print(error)
 		}
 		
-		user.token = jsonResultToken[0] as! String
+		delegate.user.token = jsonResultToken[0] as! String
+		delegate.user = delegate.user
 		
-		UserDefaults.standard.set(NSKeyedArchiver.archivedData(withRootObject: user), forKey: "user")
-		UserDefaults.standard.synchronize()
-		
+				
 		if (jsonString.contains("Error: User is already participating")) {
 			return .alreadyParticipating
 		}else if (jsonString.contains("Error: max participants already reached")) {
 			return .maxReached
 		}else{
 			return .success
+		}
+	}
+	
+	/**
+	downloads the image
+	*/
+	public func getImage(path: String) -> UIImage?{
+		let url = URL(string: DatabaseManager.url + path)!
+		let data = try? Data(contentsOf: url)
+		
+		if data != nil {
+			return UIImage(data: data!)
+
+		}else{
+			return nil
 		}
 	}
 }

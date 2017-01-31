@@ -121,14 +121,9 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 	Gets all events and sponsors
 	*/
 	private func setupEvents(){
-		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
+		sponsors = Storage.getSponsors()
 		
-		if sponsorData != nil {
-			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
-		}
-		
-		let eventData = UserDefaults.standard.object(forKey: "events")
-		let events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
+		let events = Storage.getEvents()
 		
 		allEvents = events.sorted(by: {
 			(event1, event2) -> Bool in
@@ -141,10 +136,8 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		})
 		
 		let today = Date()
-		for (index, value) in allEvents.enumerated(){
-			if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
-				allEvents.remove(at: index)
-			}
+		allEvents = allEvents.filter(){event in
+			return (event).dateStart.compare(today) == ComparisonResult.orderedDescending
 		}
 	}
 	
@@ -191,17 +184,20 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 		}
 		
 		var imageTemp = sponsors[event.hostId]?.image
-			
-		let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/10) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/10)
 		
-		UIGraphicsBeginImageContext(size)
-		imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+		if imageTemp != nil {
+			let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/10) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/10)
 			
-		imageTemp = UIGraphicsGetImageFromCurrentImageContext()!
-		UIGraphicsEndImageContext()
+			UIGraphicsBeginImageContext(size)
+			imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+			
+			imageTemp = UIGraphicsGetImageFromCurrentImageContext()!
+			UIGraphicsEndImageContext()
+			
+			cell.imageV.image = imageTemp
+			cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
+		}
 		
-		cell.imageV.image = imageTemp
-		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
 		
 		cell.nameLabel.text = event.name
 		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)
@@ -225,7 +221,7 @@ class CalendarListViewController: UIViewController, UITableViewDelegate, UITable
 	internal func refresh(){
 		print("Refresh")
 		
-		MainViewController.refresh()
+		Storage.refresh()
 		
 		refreshControl.endRefreshing()
 	}

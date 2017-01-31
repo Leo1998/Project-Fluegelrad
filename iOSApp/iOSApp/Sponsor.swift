@@ -1,5 +1,6 @@
 import UIKit
 
+@objc(Sponsor)
 class Sponsor: NSObject, NSCoding{
 	
 	/**
@@ -48,9 +49,7 @@ class Sponsor: NSObject, NSCoding{
 		get {
 			if self.imageSave == nil {
 				
-				let url = URL(string: DatabaseManager.url + self.imagePath!)!
-				let data = try? Data(contentsOf: url)
-				imageSave = UIImage(data: data!)
+				imageSave = Storage.getImage(path: imagePath!)
 			}
 			
 			return imageSave

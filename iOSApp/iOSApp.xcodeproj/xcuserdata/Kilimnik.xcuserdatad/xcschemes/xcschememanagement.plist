@@ -9,6 +9,11 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>iOSAppWidget.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
@@ -23,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>AB9C31F51DCA2D4C0091C55F</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>ABC7B7531E39404C00A2C083</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -1,6 +1,9 @@
 import Foundation
 
+@objc(Event)
 class Event: NSObject, NSCoding {
+	
+	
 	
 	/**
 	id of the Event
@@ -73,6 +76,7 @@ class Event: NSObject, NSCoding {
 	private(set) var images = [EventImage]()
 	
 	init(dict: NSDictionary) {
+		
 		self.id = Int(dict.object(forKey: "id") as! String)
 		self.name = dict.object(forKey: "name") as! String
 		self.price = Int(dict.object(forKey: "price") as! String)
@@ -97,12 +101,16 @@ class Event: NSObject, NSCoding {
 		
 		let sponsors = (dict.object(forKey: "sponsors") as! NSArray)
 		for value in sponsors{
-			self.sponsorIds.append(Int((value as! NSString) as String)!)
+			self.sponsorIds.append(Int(((value as! NSDictionary).object(forKey: "sponsorId")
+ as! NSString) as String)!)
 		}
-	}
-	
-	public func addImage(dict: NSDictionary){
-		images.append(EventImage(dict: dict))
+		
+		let images = (dict.object(forKey: "images") as! NSArray)
+		for value in images{
+			self.images.append(EventImage(dict: value as! NSDictionary))
+		}
+		
+
 	}
 	
 	required init(coder aDecoder: NSCoder) {
@@ -126,6 +134,8 @@ class Event: NSObject, NSCoding {
 		hostId = aDecoder.decodeObject(forKey: "hostId") as! Int
 		
 		sponsorIds = aDecoder.decodeObject(forKey: "sponsors") as! [Int]
+		
+		//name = aDecoder.decodeObject(of: [NSString.self], forKey: "name") as! String
 		
 	}
 	

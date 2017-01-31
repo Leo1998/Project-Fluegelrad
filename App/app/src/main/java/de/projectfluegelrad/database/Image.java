@@ -87,23 +87,25 @@ public class Image {
     public void load(File imageCacheDir) throws IOException {
         File cachedFile = new File(imageCacheDir, Utils.hashString(this.path));
 
-        if (!cachedFile.exists()) {
-            URL url = new URL("http://fluegelrad.ddns.net/" + this.path);
-            URLConnection c = url.openConnection();
+        if (getBitmap() == null) {
+            if (!cachedFile.exists()) {
+                URL url = new URL("http://fluegelrad.ddns.net/" + this.path);
+                URLConnection c = url.openConnection();
 
-            InputStream in = c.getInputStream();
-            OutputStream out = new FileOutputStream(cachedFile);
+                InputStream in = c.getInputStream();
+                OutputStream out = new FileOutputStream(cachedFile);
 
-            Utils.copyStream(in, out);
+                Utils.copyStream(in, out);
+                in.close();
+                out.close();
+            }
+
+            InputStream in = new FileInputStream(cachedFile);
+
+            Image.this.bitmap = BitmapFactory.decodeStream(in);
+
             in.close();
-            out.close();
         }
-
-        InputStream in = new FileInputStream(cachedFile);
-
-        Image.this.bitmap = BitmapFactory.decodeStream(in);
-
-        in.close();
     }
 
     public void disposeBitmap() {

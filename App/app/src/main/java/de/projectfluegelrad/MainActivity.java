@@ -9,17 +9,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
 
-import de.projectfluegelrad.fragments.calendar.gridview.CalendarGridViewFragment;
-import de.projectfluegelrad.fragments.calendar.listview.CalendarListFragment;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseUpdateListener;
+import de.projectfluegelrad.fragments.calendar.gridview.CalendarGridViewFragment;
+import de.projectfluegelrad.fragments.calendar.listview.CalendarListFragment;
 import de.projectfluegelrad.fragments.home.HomeFragment;
 import de.projectfluegelrad.fragments.settings.SettingsFragment;
 
@@ -143,6 +142,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        
+        databaseManager.saveDatabaseToStorage();
     }
 
     @Override

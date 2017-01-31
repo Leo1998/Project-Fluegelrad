@@ -1,7 +1,5 @@
 package de.projectfluegelrad.database;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONTokener;
 
@@ -15,10 +13,10 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class DatabaseLoginTask implements DatabaseTask<User> {
+public class DatabaseLoginTask implements DatabaseTask<Void, User> {
 
     @Override
-    public User execute(DatabaseManager databaseManager) {
+    public User execute(DatabaseManager databaseManager, Void... params) {
         int attempt = 0;
 
         while(attempt < 2) {
@@ -35,7 +33,7 @@ public class DatabaseLoginTask implements DatabaseTask<User> {
                     in.close();
                     userJson = jsonBuilder.toString();
                 } else {
-                    URL url = new URL("http://fluegelrad.ddns.net/createUser.php");
+                    URL url = new URL("http://fluegelrad.ddns.net/scripts/createUser.php");
                     URLConnection c = url.openConnection();
                     BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
 

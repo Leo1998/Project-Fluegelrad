@@ -79,19 +79,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 	decides which events to show and which title they have
 	*/
     private func setupEvents(){
-		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
+		sponsors = Storage.getSponsors()
 		
-		if sponsorData != nil {
-			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
-		}
-		
-		
-        let eventData = UserDefaults.standard.object(forKey: "events")
-		
-		var events = [Event]()
-		if eventData != nil {
-			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
-		}
+		let events = Storage.getEvents()
 		
 		if events.count > 0 && sponsors.count > 0 {
 			shownEvents = events.sorted(by: {
@@ -106,10 +96,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		
 			// deltes all outdated events
 			let today = Date()
-			for (index, value) in shownEvents.enumerated(){
-				if (value ).dateStart.compare(today) == ComparisonResult.orderedAscending{
-					shownEvents.remove(at: index)
-				}
+			shownEvents = shownEvents.filter(){event in
+				return (event).dateStart.compare(today) == ComparisonResult.orderedDescending
 			}
 		
 			var newShownEvents = [Event]()
@@ -181,16 +169,20 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		
 		var imageTemp = sponsors[event.hostId]?.image
 		
-		let size = CGSize(width: (imageTemp?.size.width)! * ((frame.height/10) / (imageTemp?.size.height)!), height: frame.height/10)
+		if imageTemp != nil {
+			let size = CGSize(width: (imageTemp?.size.width)! * ((frame.height/10) / (imageTemp?.size.height)!), height: frame.height/10)
+			
+			UIGraphicsBeginImageContext(size)
+			imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+			
+			imageTemp = UIGraphicsGetImageFromCurrentImageContext()!
+			UIGraphicsEndImageContext()
+			
+			cell.imageV.image = imageTemp
+			cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
+		}
 		
-		UIGraphicsBeginImageContext(size)
-		imageTemp?.draw(in: CGRect(origin: .zero, size: size))
 		
-		imageTemp = UIGraphicsGetImageFromCurrentImageContext()!
-		UIGraphicsEndImageContext()
-		
-		cell.imageV.image = imageTemp
-		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
 		cell.hostNameLabel.text = sponsors[event.hostId]?.name
 		cell.hostNameLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.imageV, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		
@@ -236,7 +228,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     internal func refresh(){
         print("Refresh")
         
-        MainViewController.refresh()
+        Storage.refresh()
 		
 		refreshControl.endRefreshing()
     }

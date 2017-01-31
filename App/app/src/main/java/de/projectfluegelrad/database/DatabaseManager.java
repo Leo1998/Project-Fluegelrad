@@ -17,17 +17,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +35,7 @@ import de.projectfluegelrad.util.SnackbarLogger;
 public class DatabaseManager {
 
     private class RunningTaskWrapper {
-        DatabaseTask<?> databaseTask;
+        DatabaseTask<?, ?> databaseTask;
         AsyncTask asyncTask;
     }
 
@@ -63,10 +60,6 @@ public class DatabaseManager {
      * list of all events
      */
     private final List<Event> eventList = new ArrayList<Event>();
-    /**
-     * list of all images
-     */
-    private final List<Image> images = new ArrayList<>();
     /**
      * list of all sponsors
      */
@@ -111,7 +104,7 @@ public class DatabaseManager {
     private void firstLogin() {
         readDatabaseFromStorage();
 
-        executeTask(new DatabaseLoginTask(), new DatabaseTaskWatcher() {
+        executeTask(new DatabaseLoginTask(), null, new DatabaseTaskWatcher() {
             @Override
             public void onFinish(Object result) {
                 assert(result != null && result instanceof User);
@@ -120,7 +113,7 @@ public class DatabaseManager {
 
                 Log.i("DatabaseManager", "Logged in as: " + DatabaseManager.this.user.toString());
 
-                executeTask(new DatabaseDownloadTask(), null);
+                executeTask(new DatabaseDownloadTask(), null, null);
             }
         });
     }
@@ -151,7 +144,7 @@ public class DatabaseManager {
     /**
      * writes the Database to a file on device storage
      */
-    private void saveDatabaseToStorage() {
+    public void saveDatabaseToStorage() {
         File eventFile = new File(filesDirectory, "database.dat");
 
         try {
@@ -162,15 +155,6 @@ public class DatabaseManager {
                 JSONObject obj = Event.writeEvent(event);
 
                 eventDataArray.put(obj);
-            }
-
-            JSONArray imageAtlasArray = new JSONArray();
-            for (int i = 0; i < images.size(); i++) {
-                Image image = images.get(i);
-
-                JSONObject obj = Image.writeImage(image);
-
-                imageAtlasArray.put(obj);
             }
 
             JSONArray sponsorDataArray = new JSONArray();
@@ -184,7 +168,6 @@ public class DatabaseManager {
 
             JSONObject root = new JSONObject();
             root.put("events", eventDataArray);
-            root.put("images", imageAtlasArray);
             root.put("sponsors", sponsorDataArray);
 
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(eventFile)));
@@ -201,13 +184,13 @@ public class DatabaseManager {
      * @param task
      * @param watcher
      */
-    public void executeTask(final DatabaseTask task, final DatabaseTaskWatcher watcher) {
+    public void executeTask(final DatabaseTask task, final Object[] params, final DatabaseTaskWatcher watcher) {
         final RunningTaskWrapper wrapper = new RunningTaskWrapper();
 
-        AsyncTask<Void, Void, Object> asyncTask = new AsyncTask<Void, Void, Object>() {
+        AsyncTask<Object, Void, Object> asyncTask = new AsyncTask<Object, Void, Object>() {
             @Override
-            protected Object doInBackground(Void... params) {
-                return task.execute(DatabaseManager.this);
+            protected Object doInBackground(Object... params) {
+                return task.execute(DatabaseManager.this, params);
             }
 
             @Override
@@ -224,7 +207,7 @@ public class DatabaseManager {
 
         this.runningTasks.add(wrapper);
 
-        asyncTask.execute();
+        asyncTask.execute(params);
     }
 
     /**
@@ -327,7 +310,6 @@ public class DatabaseManager {
         JSONObject root = new JSONObject(new JSONTokener(json));
 
         JSONArray eventDataArray = root.getJSONArray("events");
-        JSONArray imageAtlasArray = root.getJSONArray("images");
         JSONArray sponsorDataArray = root.getJSONArray("sponsors");
 
         for (int i = 0; i < eventDataArray.length(); i++) {
@@ -338,17 +320,6 @@ public class DatabaseManager {
             //Log.i("DatabaseManager", "Event: " + event.toString());
 
             registerEvent(event);
-        }
-
-        images.clear();
-        for (int i = 0; i < imageAtlasArray.length(); i++) {
-            JSONObject obj = imageAtlasArray.getJSONObject(i);
-
-            Image image = Image.readImage(obj);
-
-            //Log.i("DatabaseManager", "Image: " + image.toString());
-
-            images.add(image);
         }
 
         for (int i = 0; i < sponsorDataArray.length(); i++) {
@@ -379,12 +350,17 @@ public class DatabaseManager {
             Event currentEvent = eventList.get(i);
 
             if (currentEvent.equalsId(event)) {
-                if (currentEvent.equals(event)) {
+                if (currentEvent == event) {
                     // already exists
                     return;
                 } else {
                     // update
                     eventList.remove(currentEvent);
+
+                    if (currentEvent.isParticipating()) {
+                        event.participate(false);
+                    }
+
                     break;
                 }
             }
@@ -415,26 +391,6 @@ public class DatabaseManager {
         }
 
         sponsorList.add(sponsor);
-    }
-
-    /**
-     * sends a request to the server to participate in an event
-     *
-     * @param event
-     * @return wheter you are allowed to participate
-     */
-    private boolean signInForEvent(Event event) {
-        try {
-            Map<String, String> args = new HashMap<>();
-            args.put("k", Integer.toString(event.getId()));
-
-            String result = executeScript("http://fluegelrad.ddns.net/sendDatabase.php", args);
-
-            return true;
-        } catch(Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     /**
@@ -474,10 +430,6 @@ public class DatabaseManager {
         return eventList;
     }
 
-    public List<Image> getImages() {
-        return images;
-    }
-
     public List<Sponsor> getSponsorList() {
         return sponsorList;
     }
@@ -496,20 +448,6 @@ public class DatabaseManager {
         Collections.reverse(list);*/
 
         return eventList;
-    }
-
-    public ArrayList<Image> getImages(Event event) {
-        ArrayList<Image> list = new ArrayList<>();
-
-        for (int i = 0; i < images.size(); i++) {
-            Image image = images.get(i);
-
-            if (image.getEventId() == event.getId()) {
-                list.add(image);
-            }
-        }
-
-        return list;
     }
 
     public List<Sponsor> getSponsors(Event event) {
@@ -535,18 +473,6 @@ public class DatabaseManager {
 
             if (event.getId() == eventId) {
                 return event;
-            }
-        }
-
-        return null;
-    }
-
-    public Image getImage(String imagePath) {
-        for (int i = 0; i < images.size(); i++) {
-            Image image = images.get(i);
-
-            if (image.getPath().equals(imagePath)) {
-                return image;
             }
         }
 

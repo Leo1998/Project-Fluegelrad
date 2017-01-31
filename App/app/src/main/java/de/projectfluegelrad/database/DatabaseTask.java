@@ -1,7 +1,7 @@
 package de.projectfluegelrad.database;
 
-public interface DatabaseTask<Result> {
+public interface DatabaseTask<Param, Result> {
 
-    Result execute(DatabaseManager databaseManager);
+    Result execute(DatabaseManager databaseManager, Param... params);
 
 }

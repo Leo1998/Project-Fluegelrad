@@ -35,4 +35,6 @@
     <string name="age">Alter</string>
     <string name="address">Adresse</string>
     <string name="participants">Teilnehmer</string>
+    <string name="participating">Du bist angemeldet!</string>
+    <string name="participate_error">Fehler beim teilnehmen!</string>
 </resources>

@@ -17,10 +17,10 @@ import java.util.List;
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseDownloadTask;
-import de.projectfluegelrad.database.DatabaseTaskWatcher;
-import de.projectfluegelrad.fragments.day.CalendarDayFragment;
 import de.projectfluegelrad.database.DatabaseManager;
+import de.projectfluegelrad.database.DatabaseTaskWatcher;
 import de.projectfluegelrad.database.Event;
+import de.projectfluegelrad.fragments.day.CalendarDayFragment;
 
 public class CalendarGridViewFragment extends Fragment {
 
@@ -55,7 +55,7 @@ public class CalendarGridViewFragment extends Fragment {
                     CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                     calendarDayFragment.setArguments(bundle);
 
-                    CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
                 }
                 if (eventsOnDate.size() > 1) {
                     DialogFragment newFragment = new CalendarDayDialog();
@@ -77,7 +77,7 @@ public class CalendarGridViewFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                ((MainActivity) CalendarGridViewFragment.this.getActivity()).getDatabaseManager().executeTask(new DatabaseDownloadTask(), new DatabaseTaskWatcher() {
+                ((MainActivity) CalendarGridViewFragment.this.getActivity()).getDatabaseManager().executeTask(new DatabaseDownloadTask(), null, new DatabaseTaskWatcher() {
                     @Override
                     public void onFinish(Object result) {
                         swipeRefreshLayout.post(new Runnable() {

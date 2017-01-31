@@ -35,7 +35,7 @@
 	$expire += 30758400;
 	
 	//Insert data in database and get Id
-	$statement = $pdo->prepare("INSERT INTO `users` (`id`, `token`, `expire`, `hostId`) VALUES (NULL, ?, ?, 0);");
+	$statement = $pdo->prepare("INSERT INTO `users` (`id`, `token`, `expire`) VALUES (NULL, ?, ?);");
 	$statement->execute(array($hash,$expire));
 	$id = intval($pdo->lastInsertId());
 	

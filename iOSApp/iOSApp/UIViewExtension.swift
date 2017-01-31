@@ -12,6 +12,28 @@ extension UIView {
         
         NSLayoutConstraint.activate([tempX, tempY])
     }
+	
+	/**
+	Choose which corner to round
+	*/
+	func roundCorner(corners: [UIRectCorner], radius: CGFloat){
+		
+		var corner = corners[0]
+		for (index, value) in corners.enumerated(){
+			if index != 0 {
+				corner = corner.union(value)
+			}
+		}
+				
+		let maskPath: UIBezierPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: corner, cornerRadii: CGSize(width: radius, height: radius))
+
+		let maskLayer: CAShapeLayer = CAShapeLayer(layer: layer)
+		maskLayer.frame = bounds
+		maskLayer.path = maskPath.cgPath
+		
+		layer.mask = maskLayer
+		
+	}
 }
 
 
