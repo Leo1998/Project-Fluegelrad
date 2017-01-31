@@ -1,82 +1,3 @@
-<?php
-	session_start();
-	
-	if(!isset($_SESSION['hostId'])){
-		exit('Error: Must be logged in to create an Event');
-	}
-	
-	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
-	
-	$statement = $pdo->prepare("SELECT * FROM `locations`");
-	$statement->execute();
-	
-	$lIdArr = array();
-	$adArr = array();
-	$loArr = array();
-	$laArr = array();
-	
-	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$lIdArr[] = $row['id'];
-		$adArr[] = $row['address'];
-		$loArr[] = $row['longitude'];
-		$laArr[] = $row['latitude'];
-	}
-	
-	$addressIds = implode("\",\"",$lIdArr);
-	$addresses = implode("\",\"",$adArr);
-	$longitudes = implode("\",\"",$loArr);
-	$latitudes = implode("\",\"",$laArr);
-	
-	$addressIds = "const addressIds = Array(\"".$addressIds."\");";
-	$addresses = "const addresses = Array(\"".$addresses."\");";
-	$longitudes = "const longitudes = Array(\"".$longitudes."\");";
-	$latitudes = "const latitudes = Array(\"".$latitudes."\");";
-	
-	$statement = $pdo->prepare("SELECT * FROM `sponsors`");
-	$statement->execute();
-	
-	$sIdArr = array();
-	$imArr = array();
-	$naArr = array();
-	$sMax = 0;
-	
-	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$sIdArr[] = $row['id'];
-		$imArr[] = $row['imagePath'];
-		$naArr[] = $row['name'];
-		if($row['id'] > $sMax){
-			$sMax = $row['id'];
-		}
-	}
-	
-	$sponsorIds = implode("\",\"",$sIdArr);
-	$sponsorImgs = implode("\",\"",$imArr);
-	$sponsors = implode("\",\"",$naArr);
-	
-	$sponsorIds = "const sponsorIds = Array(\"".$sponsorIds."\");";
-	$sponsorImgs = "const sponsorImgs = Array(\"".$sponsorImgs."\");";
-	$sponsors = "const sponsors = Array(\"".$sponsors."\");";
-	$maxSponsorId = "const maxSponsorId = ".$sMax.";";
-	
-	$hostStuff = "const hostName = \"".$_SESSION['name']."\"; const hostImage = \"".$_SESSION['image']."\";";
-	
-	echo "
-		<script type=\"text/javascript\">
-			$addressIds
-			$addresses
-			$longitudes
-			$latitudes
-			$sponsorIds
-			$sponsorImgs
-			$sponsors
-			$maxSponsorId
-			$hostStuff
-		</script>
-	";
-?>
-
 <html>
 
 <head>
@@ -148,27 +69,23 @@
 			
 			for(var i = 0 ; i < sponsors.length ; i++){
 				var li = document.createElement('li');
-				li.class = "sponsorNode";
 				
 				var checkbox = document.createElement('input');
 				checkbox.type = "checkbox";
 				checkbox.name = "sponsor "+sponsorIds[i];
 				checkbox.value = sponsorIds[i];
 				checkbox.id = "sponsor "+sponsorIds[i];
-				checkbox.class = "sponsorCheckbox";
 				
 				var img=document.createElement('img');
 				img.src= sponsorImgs[i];
-				img.alt= "Bild nicht verfÃ¼gbar";
+				img.alt= "Bild nicht verfügbar";
 				img.title= "Vorschau";
 				img.style.height="50px";
 				img.htmlFor = "sponsor"+sponsorIds[i];
-				img.class = "sponsorImage";
 				
 				var label = document.createElement('label');
 				label.htmlFor = "sponsor "+sponsorIds[i];
 				label.appendChild(document.createTextNode(sponsors[i]));
-				label.class = "sponsorName";
 				
 				li.appendChild(checkbox);
 				li.appendChild(img);
@@ -180,7 +97,7 @@
 			var nameLabel = document.createTextNode(hostName);
 			var image = document.createElement('img');
 			image.src= hostImage;
-			image.alt= "Bild nicht verfÃ¼gbar";
+			image.alt= "Bild nicht verfügbar";
 			image.title= "Vorschau";
 			image.style.height="50px";
 			
@@ -316,11 +233,9 @@
 			imageCount++;
 			var li = document.createElement('li');
 			li.id = "imageNode"+imageCount;
-			li.class = "imageNode"
 			
 			var span1 = document.createElement('span');
 			span1.innerHTML = '<input type="file" id="imageImage'+imageCount+'" name="imageImage'+imageCount+'" onchange="previewImage(this,'+imageCount+');"/>';
-			span1.class = "imageInput";
 			
 			var iPreview = document.createElement('img');
 			iPreview.id = "previewImage"+imageCount;
@@ -329,7 +244,6 @@
 			iPreview.alt = "Bild";
 			iPreview.title = "Preview";
 			iPreview.style.height = "100px";
-			iPreview.class = "imagePreview";
 			
 			var iDesc = document.createElement('input');
 			iDesc.type = "text";
@@ -337,11 +251,9 @@
 			iDesc.name = "descriptionImage"+imageCount;
 			iDesc.maxLength = "50";
 			iDesc.placeholder = "Beschreibung";
-			iDesc.class = "imageDesc";
 			
 			var span2 = document.createElement('span');
 			span2.innerHTML = '<button type="button" onclick="removeImage('+imageCount+');" >Bild entfernen</button>';
-			span2.class = "imageRemove";
 			
 			li.appendChild(span1);
 			li.appendChild(iPreview);
@@ -356,10 +268,8 @@
 			sponsorCount++;
 			var li = document.createElement('li');
 			li.id = "newSponsor"+sponsorCount;
-			li.class = "newSponsorNode";
 			
 			var label = document.createTextNode("Neuer Sponsor");
-			label.class = "newSponsorLabel"
 			
 			var sName = document.createElement('input');
 			sName.type = "text";
@@ -367,7 +277,6 @@
 			sName.name = "nameSponsor"+sponsorCount;
 			sName.maxLength = "30";
 			sName.placeholder = "Name";
-			sName.class = "newSponsorName";
 			
 			var sPhone = document.createElement('input');
 			sPhone.type = "text";
@@ -375,7 +284,6 @@
 			sPhone.name = "phoneSponsor"+sponsorCount;
 			sPhone.maxLength = "30";
 			sPhone.placeholder = "Telefon (optional)";
-			sPhone.class = "newSponsorPhone";
 			
 			var sMail = document.createElement('input');
 			sMail.type = "text";
@@ -383,7 +291,6 @@
 			sMail.name = "mailSponsor"+sponsorCount;
 			sMail.maxLength = "30";
 			sMail.placeholder = "E-Mail (optional)";
-			sMail.class = "newSponsorMail";
 			
 			var sWeb = document.createElement('input');
 			sWeb.type = "text";
@@ -391,17 +298,14 @@
 			sWeb.name = "webSponsor"+sponsorCount;
 			sWeb.maxLength = "30";
 			sWeb.placeholder = "Website (optional)";
-			sWeb.class = "newSponsorWeb";
 			
 			var sDesc = document.createElement('textarea');
 			sDesc.id = "descriptionSponsor"+sponsorCount;
 			sDesc.name = "descriptionSponsor"+sponsorCount;
 			sDesc.placeholder = "Beschreibung";
-			sDesc.class = "newSponsorDesc";
 			
 			var span1 = document.createElement('span');
 			span1.innerHTML = '<input type="file" id="imageSponsor'+sponsorCount+'" name="imageSponsor'+sponsorCount+'" onchange="previewSponsor(this,'+sponsorCount+');"/>';
-			span1.class = "newSponsorImgInput";
 			
 			var sPreview = document.createElement('img');
 			sPreview.id = "previewSponsor"+sponsorCount;
@@ -410,11 +314,9 @@
 			sPreview.alt = "Bild";
 			sPreview.title = "Preview";
 			sPreview.style.height = "100px";
-			sPreview.class = "newSponsorImgPreview";
 			
 			var span2 = document.createElement('span');
 			span2.innerHTML = '<button type="button" onclick="removeSponsor('+sponsorCount+');" >Sponsor entfernen</button>';
-			span2.class = "newSponsorRemove";
 			
 			li.appendChild(label);
 			li.appendChild(sName);
@@ -443,10 +345,10 @@
 	</head>
 
 	<body onload='init();'>
-		<div id="left"></div>
-	<div id="right"></div>
+		
 		<div id="top"></div>
-	<div id="bottom"></div>
+		<div id="left"></div>
+		<div id="right"></div>
 		<div id= "header">
 				<form action="logout.php">
 					<div id = "hostStuff"></div>
@@ -455,7 +357,7 @@
 		</div>
 		<div id= "formDiv">
 			<form action="uploadEvent.php" enctype="multipart/form-data" id="event" method="post">
-				<uol style="list-style-type: none;">
+				<uol>
 					<li>
 						<input type="text" name="eventName" id="eventName" maxLength="30" placeholder = "Eventname">
 					</li>
@@ -547,5 +449,6 @@
 				</uol>
 			</form>
 		</div>
+		<div id="bottom"></div>
 	</body>
 </html>

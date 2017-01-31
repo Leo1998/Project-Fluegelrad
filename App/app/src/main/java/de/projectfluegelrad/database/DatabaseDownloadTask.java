@@ -1,7 +1,5 @@
 package de.projectfluegelrad.database;
 
-import android.util.Log;
-
 public class DatabaseDownloadTask implements DatabaseTask<Void, Void> {
 
     @Override

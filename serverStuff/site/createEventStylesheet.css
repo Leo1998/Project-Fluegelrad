@@ -1,76 +1,30 @@
 
-body{
-	background-color:green;
-}
-
-.container{
-	width : 100%;
-}
-.main{
-	position: relative;
-	background-color:green;
-}
 #formDiv{
-
-	width: 80%;
-	background-color:white;
-	margin: 100px;
-	margin-top:0px;
+	padding-left:15px;
 }
 
-#middleContainer{
-	height: 120%;
-}
 
-.middle{
-	float: left;
-	width: 20%;
-	padding:20px;
-	box-sizing: border-box;
-	background-color: green;
-	height: inherit;
-}
 
-.header .footer{
-	background-color:green;
-	width:100%;
 
-}
-
-.middle label{
-
-	
-	font-weight:bold;
-}
-.middle input,textarea{
-	margin-left: 40px;
-}
-li input,label{
-	text-align:center;
-}
-
-li{
-	padding-bottom:10px;
-}
-.headline{
-	font-style: oblique;
-	font-size:20px;
-}
-#map{
+#top, #bottom, #left, #right {
+	background: #00ff00;
 	
 }
-
-h1{
-	text-align:center;
+#left, #right {
+	top: 0; bottom: 0;
+	width: 15px;
+	position: fixed;
+	height:100% - 15px;
 }
-
-.nToM{
-	margin-left:20px;
+#left { left: 0; }
+#right { right: 0; }
+		
+#top, #bottom {
+	left: 0; right: 0;
+	height: 15px;
 }
-
-.nToM input{
-	margin-left:0px;
-}
+#top { top: 0; }
+#bottom { bottom: 0; }
 
 
 

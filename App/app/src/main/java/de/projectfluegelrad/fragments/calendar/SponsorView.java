@@ -44,7 +44,7 @@ public class SponsorView extends RelativeLayout {
                     SponsorFragment sponsorFragment = new SponsorFragment();
                     sponsorFragment.setArguments(bundle);
 
-                    activity.getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
                 }
             }
         });

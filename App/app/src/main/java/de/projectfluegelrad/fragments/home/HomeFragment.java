@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,7 @@ import android.view.ViewGroup;
 import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseDownloadTask;
-import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.DatabaseTaskWatcher;
-import de.projectfluegelrad.fragments.calendar.gridview.CalendarGridViewFragment;
 
 public class HomeFragment extends Fragment {
 

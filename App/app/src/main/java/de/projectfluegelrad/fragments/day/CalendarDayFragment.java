@@ -8,7 +8,6 @@ import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,11 +18,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.viewpagerindicator.CirclePageIndicator;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
@@ -42,7 +41,6 @@ import de.projectfluegelrad.BuildConfig;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
 import de.projectfluegelrad.database.Event;
-import de.projectfluegelrad.database.Image;
 import de.projectfluegelrad.database.Sponsor;
 import de.projectfluegelrad.fragments.calendar.SponsorView;
 
@@ -87,20 +85,22 @@ public class CalendarDayFragment extends Fragment {
             public void onClick(View v) {
             }
         });
-        layout.findViewById(R.id.image_pager).setOnClickListener(new View.OnClickListener() {
+        layout.findViewById(R.id.image_slider).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             }
         });
+
+        ViewPager slider = (ViewPager) layout.findViewById(R.id.image_slider);
+        buildImageSlider(slider);
+        CirclePageIndicator indicator = (CirclePageIndicator) layout.findViewById(R.id.image_slider_indicator);
+        indicator.setViewPager(slider);
 
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 
         ((TextView) layout.findViewById(R.id.date)).setText(getResources().getString(R.string.date) + ": " + event.getDateStartFormatted() + " (" + getResources().getString(R.string.duration) + ": " + event.getDurationFormatted() + ")");
 
         ((TextView) layout.findViewById(R.id.age)).setText(getResources().getString(R.string.age) + ": " + event.getAgeMin() + " - " + event.getAgeMax());
-
-        ViewPager pager = (ViewPager) layout.findViewById(R.id.image_pager);
-        buildImagePager(pager);
 
         CardView sponsorsCard = (CardView) layout.findViewById(R.id.sponsors_container);
         buildSponsorsContainer(sponsorsCard);
@@ -110,7 +110,7 @@ public class CalendarDayFragment extends Fragment {
         MapView mapView = (MapView) layout.findViewById(R.id.mapView);
         buildMapView(mapView);
 
-        ((FloatingActionButton) layout.findViewById(R.id.participateFab)).setOnClickListener(new View.OnClickListener() {
+        layout.findViewById(R.id.participateFab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
@@ -119,7 +119,7 @@ public class CalendarDayFragment extends Fragment {
                 ParticipateFragment participateFragment = new ParticipateFragment();
                 participateFragment.setArguments(bundle);
 
-                CalendarDayFragment.this.getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, participateFragment).addToBackStack("participateFragment").commit();
+                CalendarDayFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, participateFragment).addToBackStack("participateFragment").commit();
             }
         });
     }
@@ -166,9 +166,9 @@ public class CalendarDayFragment extends Fragment {
         });
     }
 
-    private void buildImagePager(ViewPager pager) {
-        ImagePagerAdapter adapter = new ImagePagerAdapter(getFragmentManager(), event);
-        pager.setAdapter(adapter);
+    private void buildImageSlider(ViewPager slider) {
+        ImageSliderAdapter adapter = new ImageSliderAdapter(this.getContext(), event);
+        slider.setAdapter(adapter);
     }
 
     private void buildSponsorsContainer(CardView sponsorsCard) {

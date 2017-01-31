@@ -47,7 +47,7 @@
 	$statement->execute(array($name));
 	//Stays false, if database does not contain host
 	$knownHost = false;
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$pHash = $row['pass'];
 		$hId = $row['id'];
 		//Checks password with hashed password

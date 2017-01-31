@@ -45,7 +45,7 @@
 	$statement->execute(array($u));
 	//Stays false, if database does not contain id
 	$idPresent = false;
-	while($row = $statement->fetch()) {
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$sHash = $row['token'];
 		$sId = $row['id'];
 		//Checks token with hashed token
