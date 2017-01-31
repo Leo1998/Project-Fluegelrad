@@ -1,7 +1,5 @@
 package de.projectfluegelrad.database;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONTokener;
 

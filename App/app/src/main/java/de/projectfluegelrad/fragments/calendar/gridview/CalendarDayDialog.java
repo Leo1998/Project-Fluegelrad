@@ -55,7 +55,7 @@ public class CalendarDayDialog extends DialogFragment {
                 CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                 calendarDayFragment.setArguments(bundle);
 
-                CalendarDayDialog.this.getActivity().getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right).replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                CalendarDayDialog.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
             }
         });
 

@@ -1,14 +1,11 @@
 package de.projectfluegelrad.fragments.day;
 
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseManager;
@@ -20,7 +17,7 @@ public class ImageFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.image_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.image_base, container, false);
 
         Event event = DatabaseManager.INSTANCE.getEvent(getArguments().getInt("eventId"));
         Image image = null;

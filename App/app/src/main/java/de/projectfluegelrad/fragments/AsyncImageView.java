@@ -2,7 +2,6 @@ package de.projectfluegelrad.fragments;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -42,13 +41,6 @@ public class AsyncImageView extends ImageView {
         this.setScaleType(ScaleType.CENTER_CROP);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(state);
-
-        this.setImageBitmap(this.image.getBitmap());
-    }
-
     public void setImageAsync(Image image) {
         if (image != null) {
             this.image = image;
@@ -76,6 +68,7 @@ public class AsyncImageView extends ImageView {
                 @Override
                 public void run() {
                     AsyncImageView.this.setImageBitmap(image.getBitmap());
+                    AsyncImageView.this.setContentDescription(image.getDescription());
                 }
             });
 

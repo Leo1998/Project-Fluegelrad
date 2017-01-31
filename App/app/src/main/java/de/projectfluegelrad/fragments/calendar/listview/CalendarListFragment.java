@@ -13,7 +13,6 @@ import de.projectfluegelrad.MainActivity;
 import de.projectfluegelrad.R;
 import de.projectfluegelrad.database.DatabaseDownloadTask;
 import de.projectfluegelrad.database.DatabaseTaskWatcher;
-import de.projectfluegelrad.fragments.calendar.gridview.CalendarGridViewFragment;
 
 public class CalendarListFragment extends Fragment {
 
