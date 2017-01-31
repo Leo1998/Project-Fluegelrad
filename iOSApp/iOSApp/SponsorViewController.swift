@@ -56,21 +56,24 @@ class SponsorViewController: UIViewController {
 		scrollView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 
 		
-		var imageTemp = sponsor.image
-		
-		let size = CGSize(width: UIScreen.main.bounds.width, height: (imageTemp?.size.height)! / ((imageTemp?.size.width)! / UIScreen.main.bounds.width))
-		
-		UIGraphicsBeginImageContext(size)
-		imageTemp?.draw(in: CGRect(origin: .zero, size: size))
-		
-		imageTemp = UIGraphicsGetImageFromCurrentImageContext()
-		UIGraphicsEndImageContext()
-		
-		
-		imageView = UIImageView(image: imageTemp)
+		imageView = UIImageView()
 		scrollView.addSubview(imageView)
 		imageView.translatesAutoresizingMaskIntoConstraints = false
 		imageView.addConstraintsXY(xView: scrollView, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: scrollView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+		
+		var imageTemp = sponsor.image
+		
+		if imageTemp != nil {
+			let size = CGSize(width: UIScreen.main.bounds.width, height: (imageTemp?.size.height)! / ((imageTemp?.size.width)! / UIScreen.main.bounds.width))
+			
+			UIGraphicsBeginImageContext(size)
+			imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+			
+			imageTemp = UIGraphicsGetImageFromCurrentImageContext()
+			UIGraphicsEndImageContext()
+
+			imageView.image = imageTemp
+		}
 		
 		name = UILabel()
 		name.text = sponsor.name

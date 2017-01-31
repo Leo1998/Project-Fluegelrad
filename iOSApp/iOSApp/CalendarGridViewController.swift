@@ -291,7 +291,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     internal func refresh(){
         print("Refresh")
         
-        MainViewController.refresh()
+        Storage.refresh()
         
         refreshControl.endRefreshing()
     }
@@ -300,23 +300,14 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 	Gets all events and sponsors
 	*/
 	private func setupEvents(){
-		let sponsorData = UserDefaults.standard.object(forKey: "sponsors")
-		
-		if sponsorData != nil {
-			sponsors = NSKeyedUnarchiver.unarchiveObject(with: sponsorData as! Data) as! [Int: Sponsor]
-		}
+		sponsors = Storage.getSponsors()
 		
 		date = Date()
 		calendar = Calendar.autoupdatingCurrent
 		calendar.firstWeekday = 2
 		
 		
-		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
-		let eventData = myDefaults.object(forKey: "events")
-		events = [Event]()
-		if eventData != nil {
-			events = NSKeyedUnarchiver.unarchiveObject(with: eventData as! Data) as! [Event]
-		}
+		events = Storage.getEvents()
 		
 		updateCalendar()
 	}
@@ -351,16 +342,19 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		
 		var imageTemp = sponsors[event.hostId]?.image
 		
-		let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/10) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/10)
+		if imageTemp != nil {
+			let size = CGSize(width: (imageTemp?.size.width)! * ((UIScreen.main.bounds.height/10) / (imageTemp?.size.height)!), height: UIScreen.main.bounds.height/10)
+			
+			UIGraphicsBeginImageContext(size)
+			imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+			
+			imageTemp = UIGraphicsGetImageFromCurrentImageContext()!
+			UIGraphicsEndImageContext()
+			
+			cell.imageV.image = imageTemp
+			cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
+		}
 		
-		UIGraphicsBeginImageContext(size)
-		imageTemp?.draw(in: CGRect(origin: .zero, size: size))
-		
-		imageTemp = UIGraphicsGetImageFromCurrentImageContext()!
-		UIGraphicsEndImageContext()
-		
-		cell.imageV.image = imageTemp
-		cell.imageV.addConstraintsXY(xView: nil, xSelfAttribute: .width, xViewAttribute: .notAnAttribute, xMultiplier: 1, xConstant: (imageTemp?.size.width)!, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (imageTemp?.size.height)!)
 		
 		cell.nameLabel.text = event.name
 		cell.nameLabel.addConstraintsXY(xView: cell.imageV, xSelfAttribute: .leading, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 10)

@@ -9,29 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "iOSApp/MainViewController.swift"
-            timestampString = "507137658.865568"
+            filePath = "iOSApp/Storage.swift"
+            timestampString = "507399105.656228"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
-            landmarkName = "participation(status:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "iOSApp/MainViewController.swift"
-            timestampString = "507137662.209364"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "138"
-            endingLineNumber = "138"
-            landmarkName = "participate(event:)"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
+            landmarkName = "error()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

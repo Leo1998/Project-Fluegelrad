@@ -1,13 +1,6 @@
 <?php
 	session_start();
-	
-	function removeNumerical($array){
-		for($i = 0; array_key_exists($i,$array); $i++){
-			unset($array[$i]);
-		}
-		return $array;
-	}
-	
+
 	//Spam protection, IP ban, Initalize PDO
 	$type=2;
 	require('../scripts/spamProtector.php');
@@ -18,17 +11,19 @@
 		`events`.`id` , `events`.`name` , `events`.`price` , `events`.`maxParticipants` , `events`.`participants` , `events`.`dateStart` , `events`.`dateEnd` , `events`.`description` ,  
 		`locations`.`address` AS `location.address` ,
 		`sponsors`.`imagePath` AS `sponsorImage`,
-		`imagePaths`.`path` AS `image`
+		`imagePaths`.`path` AS `image`,
+		`ratings`.`rating`
 		FROM `events` 
 		JOIN `locations` ON `events`.`locationId` = `locations`.`id`
 		JOIN `hosts` ON `events`.`hostId` = `hosts`.`id`
 		JOIN `sponsors` ON `sponsors`.`id` = `hosts`.`sponsorId`
 		JOIN (SELECT * from `imagePaths` GROUP BY `imagePaths`.`eventId`) AS `imagePaths` ON `imagePaths`.`eventId` = `events`.`id`
+		LEFT JOIN (SELECT AVG(`rating`) AS `rating`,`eventId` FROM `eventRatings` GROUP BY `eventId`) AS `ratings` ON `ratings`.`eventId` = `events`.`id`
 		ORDER BY `events`.`dateStart` , `events`.`dateEnd`");
 	$statement->execute();
 	
-	while($row = $statement->fetch()) {
-		$eventArray[] = removeNumerical($row);
+	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+		$eventArray[] = $row;
 	}
 	
 	echo "

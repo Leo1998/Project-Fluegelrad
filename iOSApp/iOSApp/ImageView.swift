@@ -19,22 +19,29 @@ class ImageView: UIView {
     
 	init(frame: CGRect, eventImage: EventImage) {
         super.init(frame: frame)
-        
+		
+		image = UIImageView()
+		image.translatesAutoresizingMaskIntoConstraints = false
+		addSubview(image)
+		image.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
         if !eventImage.scaled {
             let imageTemp = eventImage.image
-            
-            let size = CGSize(width: frame.width, height: (imageTemp?.size.height)! / ((imageTemp?.size.width)! / frame.width))
-            
-            UIGraphicsBeginImageContext(size)
-            imageTemp?.draw(in: CGRect(origin: .zero, size: size))
-            
-            eventImage.image = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-        }
-        image = UIImageView(image: eventImage.image)
-        image.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(image)
-        image.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
+			
+			if imageTemp != nil {
+				let size = CGSize(width: frame.width, height: (imageTemp?.size.height)! / ((imageTemp?.size.width)! / frame.width))
+				
+				UIGraphicsBeginImageContext(size)
+				imageTemp?.draw(in: CGRect(origin: .zero, size: size))
+				
+				eventImage.image = UIGraphicsGetImageFromCurrentImageContext()
+				UIGraphicsEndImageContext()
+
+				image.image = eventImage.image
+			}
+		}else{
+			image.image = eventImage.image
+		}
+		
 
         imageDescription = UILabel()
         imageDescription.translatesAutoresizingMaskIntoConstraints = false
