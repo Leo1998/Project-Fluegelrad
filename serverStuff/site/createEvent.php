@@ -147,12 +147,14 @@
 			
 			for(var i = 0 ; i < sponsors.length ; i++){
 				var li = document.createElement('li');
+				li.class = "sponsorNode";
 				
 				var checkbox = document.createElement('input');
 				checkbox.type = "checkbox";
 				checkbox.name = "sponsor "+sponsorIds[i];
 				checkbox.value = sponsorIds[i];
 				checkbox.id = "sponsor "+sponsorIds[i];
+				checkbox.class = "sponsorCheckbox";
 				
 				var img=document.createElement('img');
 				img.src= sponsorImgs[i];
@@ -160,10 +162,12 @@
 				img.title= "Vorschau";
 				img.style.height="50px";
 				img.htmlFor = "sponsor"+sponsorIds[i];
+				img.class = "sponsorImage";
 				
 				var label = document.createElement('label');
 				label.htmlFor = "sponsor "+sponsorIds[i];
 				label.appendChild(document.createTextNode(sponsors[i]));
+				label.class = "sponsorName";
 				
 				li.appendChild(checkbox);
 				li.appendChild(img);
@@ -311,9 +315,11 @@
 			imageCount++;
 			var li = document.createElement('li');
 			li.id = "imageNode"+imageCount;
+			li.class = "imageNode"
 			
 			var span1 = document.createElement('span');
 			span1.innerHTML = '<input type="file" id="imageImage'+imageCount+'" name="imageImage'+imageCount+'" onchange="previewImage(this,'+imageCount+');"/>';
+			span1.class = "imageInput";
 			
 			var iPreview = document.createElement('img');
 			iPreview.id = "previewImage"+imageCount;
@@ -322,6 +328,7 @@
 			iPreview.alt = "Bild";
 			iPreview.title = "Preview";
 			iPreview.style.height = "100px";
+			iPreview.class = "imagePreview";
 			
 			var iDesc = document.createElement('input');
 			iDesc.type = "text";
@@ -329,9 +336,11 @@
 			iDesc.name = "descriptionImage"+imageCount;
 			iDesc.maxLength = "50";
 			iDesc.placeholder = "Beschreibung";
+			iDesc.class = "imageDesc";
 			
 			var span2 = document.createElement('span');
 			span2.innerHTML = '<button type="button" onclick="removeImage('+imageCount+');" >Bild entfernen</button>';
+			span2.class = "imageRemove";
 			
 			li.appendChild(span1);
 			li.appendChild(iPreview);
@@ -346,8 +355,10 @@
 			sponsorCount++;
 			var li = document.createElement('li');
 			li.id = "newSponsor"+sponsorCount;
+			li.class = "newSponsorNode";
 			
 			var label = document.createTextNode("Neuer Sponsor");
+			label.class = "newSponsorLabel"
 			
 			var sName = document.createElement('input');
 			sName.type = "text";
@@ -355,6 +366,7 @@
 			sName.name = "nameSponsor"+sponsorCount;
 			sName.maxLength = "30";
 			sName.placeholder = "Name";
+			sName.class = "newSponsorName";
 			
 			var sPhone = document.createElement('input');
 			sPhone.type = "text";
@@ -362,6 +374,7 @@
 			sPhone.name = "phoneSponsor"+sponsorCount;
 			sPhone.maxLength = "30";
 			sPhone.placeholder = "Telefon (optional)";
+			sPhone.class = "newSponsorPhone";
 			
 			var sMail = document.createElement('input');
 			sMail.type = "text";
@@ -369,6 +382,7 @@
 			sMail.name = "mailSponsor"+sponsorCount;
 			sMail.maxLength = "30";
 			sMail.placeholder = "E-Mail (optional)";
+			sMail.class = "newSponsorMail";
 			
 			var sWeb = document.createElement('input');
 			sWeb.type = "text";
@@ -376,14 +390,17 @@
 			sWeb.name = "webSponsor"+sponsorCount;
 			sWeb.maxLength = "30";
 			sWeb.placeholder = "Website (optional)";
+			sWeb.class = "newSponsorWeb";
 			
 			var sDesc = document.createElement('textarea');
 			sDesc.id = "descriptionSponsor"+sponsorCount;
 			sDesc.name = "descriptionSponsor"+sponsorCount;
 			sDesc.placeholder = "Beschreibung";
+			sDesc.class = "newSponsorDesc";
 			
 			var span1 = document.createElement('span');
 			span1.innerHTML = '<input type="file" id="imageSponsor'+sponsorCount+'" name="imageSponsor'+sponsorCount+'" onchange="previewSponsor(this,'+sponsorCount+');"/>';
+			span1.class = "newSponsorImgInput";
 			
 			var sPreview = document.createElement('img');
 			sPreview.id = "previewSponsor"+sponsorCount;
@@ -392,9 +409,11 @@
 			sPreview.alt = "Bild";
 			sPreview.title = "Preview";
 			sPreview.style.height = "100px";
+			sPreview.class = "newSponsorImgPreview";
 			
 			var span2 = document.createElement('span');
 			span2.innerHTML = '<button type="button" onclick="removeSponsor('+sponsorCount+');" >Sponsor entfernen</button>';
+			span2.class = "newSponsorRemove";
 			
 			li.appendChild(label);
 			li.appendChild(sName);
@@ -431,7 +450,7 @@
 		</div>
 		<div id= "formDiv">
 			<form action="uploadEvent.php" enctype="multipart/form-data" id="event" method="post">
-				<uol>
+				<uol style="list-style-type: none;">
 					<li>
 						<input type="text" name="eventName" id="eventName" maxLength="30" placeholder = "Eventname">
 					</li>
