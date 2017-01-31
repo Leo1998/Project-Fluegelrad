@@ -1,6 +1,6 @@
 
 body{
-	background-color:green;
+	
 }
 
 .container{
@@ -8,7 +8,11 @@ body{
 }
 .main{
 	position: relative;
-	background-color:green;
+	
+}
+
+.header, .footer, body, .main, .middle{
+	background-color : "magenta";
 }
 #formDiv{
 
@@ -27,12 +31,11 @@ body{
 	width: 20%;
 	padding:20px;
 	box-sizing: border-box;
-	background-color: green;
+
 	height: inherit;
 }
 
 .header .footer{
-	background-color:green;
 	width:100%;
 
 }
