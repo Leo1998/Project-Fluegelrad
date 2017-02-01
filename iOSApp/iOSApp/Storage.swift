@@ -255,6 +255,13 @@ class Storage: DatabaseManagerProtocol {
 	}
 	
 	/**
+	rate an event
+	*/
+	public static func rate(event: Event, rate: Int){
+		databaseManager.rate(event: event, rate: rate)
+	}
+	
+	/**
 	set user to participating
 	*/
 	public static func participating(event: Event){
@@ -271,6 +278,30 @@ class Storage: DatabaseManagerProtocol {
 			
 			myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: participating), forKey: "participating")
 
+		}
+	}
+
+	/**
+	delete participating so he can only rate once
+	*/
+	public static func removeParticipating(event: Event){
+		if isParticipating(event: event) {
+			let participatingData = myDefaults.object(forKey: "participating")
+			
+			
+			var participating = [Int]()
+			if participatingData != nil {
+				participating = NSKeyedUnarchiver.unarchiveObject(with: participatingData as! Data) as! [Int]
+			}
+			
+			for (index, value) in participating.enumerated() {
+				if value == event.id {
+					participating.remove(at: index)
+				}
+			}
+			
+			myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: participating), forKey: "participating")
+			
 		}
 	}
 	

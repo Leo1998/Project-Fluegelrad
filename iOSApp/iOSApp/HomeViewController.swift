@@ -111,36 +111,46 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		
 			var newShownEvents = [Event]()
 		
-			newShownEvents.append(shownEvents[0])
-			titleEvents[shownEvents[0]] = "Das nächste Event"
-			shownEvents.remove(at: 0)
+			if shownEvents.count >= 1 {
+				newShownEvents.append(shownEvents[0])
+				titleEvents[shownEvents[0]] = "Das nächste Event"
+				shownEvents.remove(at: 0)
+			}
 			
-			newShownEvents.append(shownEvents[0])
-			titleEvents[shownEvents[0]] = "Das übernächste Event"
-			shownEvents.remove(at: 0)
+			if shownEvents.count >= 1 {
+				newShownEvents.append(shownEvents[0])
+				titleEvents[shownEvents[0]] = "Das übernächste Event"
+				shownEvents.remove(at: 0)
+			}
 
-		
-			var eventTemp = shownEvents[0]
-			var indexTemp = 0
-			for (index, value) in shownEvents.enumerated() {
-				if value.participants > eventTemp.participants {
-					eventTemp = value
-					indexTemp = index
+			if shownEvents.count >= 1 {
+				var eventTemp = shownEvents[0]
+				var indexTemp = 0
+				for (index, value) in shownEvents.enumerated() {
+					if value.participants > eventTemp.participants {
+						eventTemp = value
+						indexTemp = index
+					}
+				}
+				newShownEvents.append(eventTemp)
+				titleEvents[eventTemp] = "Das beliebteste Event"
+				shownEvents.remove(at: indexTemp)
+				
+				if shownEvents.count >= 1 {
+					var secondEventTemp = shownEvents[0]
+					for value in shownEvents {
+						if value.participants > eventTemp.participants{
+							secondEventTemp = value
+						}
+					}
+					newShownEvents.append(secondEventTemp)
+					titleEvents[secondEventTemp] = "Das nächste beliebteste Event"
+					
 				}
 			}
-			newShownEvents.append(eventTemp)
-			titleEvents[eventTemp] = "Das beliebteste Event"
-			shownEvents.remove(at: indexTemp)
 			
-			var secondEventTemp = shownEvents[0]
-			for value in shownEvents {
-				if value.participants > eventTemp.participants{
-					secondEventTemp = value
-				}
-			}
-			newShownEvents.append(secondEventTemp)
-			titleEvents[secondEventTemp] = "Das nächste beliebteste Event"
-		
+			
+			
 			shownEvents = newShownEvents
 		}
     }

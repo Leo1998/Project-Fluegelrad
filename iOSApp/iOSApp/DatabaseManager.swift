@@ -44,6 +44,11 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 	private let participate = "scripts/participate.php"
 	
 	/**
+	file to send a rate for an event
+	*/
+	private let rate = "scripts/rate.php"
+	
+	/**
 	Save of all events
 	*/
     private var events = [Event]()
@@ -154,6 +159,9 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 				}else if (task.currentRequest?.url?.absoluteString.contains(DatabaseManager.url + getDatabase))!{
 					print("Data downloaded")
 					self.parseJSON()
+				}else if (task.currentRequest?.url?.absoluteString.contains(DatabaseManager.url + rate))!{
+					print("Rated")
+					rateToken(jsonString: jsonString)
 				}
 			}
 		}
@@ -335,5 +343,37 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 		}else{
 			return nil
 		}
+	}
+	
+	/**
+	rate an event
+	*/
+	public func rate(event: Event, rate: Int){
+		let session = URLSession(configuration: URLSessionConfiguration.default, delegate: self, delegateQueue: nil)
+		
+		let url1 = DatabaseManager.url + self.rate
+		let url2 = "?&u=" + String(delegate.user.id) + "&t=" + delegate.user.token + "&k=" + String(event.id) + "&r=" + String(rate)
+		let url = URL(string: url1 + url2)!
+		
+		let task = session.dataTask(with: url)
+		task.resume()
+	}
+	
+	/**
+	save the new user token after rate
+	*/
+	private func rateToken(jsonString: String){
+		let jsonDataToken = jsonString.substring(to: (jsonString.characters.index(of: ","))!)
+		
+		var jsonResultToken: NSArray = NSArray()
+		
+		do{
+			jsonResultToken = try JSONSerialization.jsonObject(with: (jsonDataToken.data(using: .utf8))!, options:JSONSerialization.ReadingOptions.allowFragments) as! NSArray
+		} catch let error as NSError {
+			print(error)
+		}
+		
+		delegate.user.token = jsonResultToken[0] as! String
+		delegate.user = delegate.user
 	}
 }
