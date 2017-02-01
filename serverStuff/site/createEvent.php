@@ -134,7 +134,7 @@
 				checkbox.class = "sponsorCheckbox";
 				
 				var img=document.createElement('img');
-				img.src= imagePath;
+				img.src= "../"+imagePath;
 				img.alt= "Bild nicht verfügbar";
 				img.title= "Vorschau";
 				img.style.height="50px";
