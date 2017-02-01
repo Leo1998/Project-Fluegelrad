@@ -27,7 +27,7 @@ class Storage: DatabaseManagerProtocol {
 		set(user) {
 			userSave = user
 			
-			Storage.myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: user), forKey: "user")
+			Storage.myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: userSave), forKey: "user")
 		}
 	}
 	private var userSave: User!
@@ -44,6 +44,19 @@ class Storage: DatabaseManagerProtocol {
 		
 		Storage.databaseManager = databaseManager
 	}
+	
+	/**
+	loads the events from the storage which can be rated
+	*/
+	static func getEventsRatable() -> [Event] {
+		var events = Storage.getEvents()
+		let today = Date()
+		events = events.filter(){event in
+			return (event).dateStart.compare(today) == ComparisonResult.orderedAscending && Storage.isParticipating(event: event)
+		}
+		return events
+	}
+
 	
 	/**
 	loads the events from the storage
@@ -220,6 +233,47 @@ class Storage: DatabaseManagerProtocol {
 		return databaseManager.getImage(path: path)
 	}
 	
+	/**
+	check if user is already participating
+	*/
+	public static func isParticipating(event: Event) -> Bool{
+		let participatingData = myDefaults.object(forKey: "participating")
+		
+		
+		var participating = [Int]()
+		if participatingData != nil {
+			participating = NSKeyedUnarchiver.unarchiveObject(with: participatingData as! Data) as! [Int]
+		}
+		
+		for value in participating {
+			if value == event.id {
+				return true
+			}
+		}
+		
+		return false
+	}
+	
+	/**
+	set user to participating
+	*/
+	public static func participating(event: Event){
+		if !isParticipating(event: event) {
+			let participatingData = myDefaults.object(forKey: "participating")
+			
+			
+			var participating = [Int]()
+			if participatingData != nil {
+				participating = NSKeyedUnarchiver.unarchiveObject(with: participatingData as! Data) as! [Int]
+			}
+
+			participating.append(event.id)
+			
+			myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: participating), forKey: "participating")
+
+		}
+	}
+	
 	
 	/**
 	Saving the events and sponsors
@@ -251,8 +305,6 @@ class Storage: DatabaseManagerProtocol {
 	Displaying a message if participation to an event was successful
 	*/
 	internal func participation(status: ParticipationStatus){
-		#if app
-			CalendarDayViewController.participation(status: status)
-		#endif
+		NotificationCenter.default.post(name: Notification.Name(Bundle.main.bundleIdentifier! + "participation"), object: status)
 	}
 }

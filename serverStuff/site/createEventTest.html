@@ -1,49 +1,3 @@
-<?php
-	session_start();
-	
-	if(!isset($_SESSION['hostId'])){
-		exit('Error: Must be logged in to create an Event');
-	}
-	
-	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
-	
-	$statement = $pdo->prepare("SELECT * FROM `locations`");
-	$statement->execute();
-	
-	$locations = array();
-	
-	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$locations[] = $row;
-	}
-	
-	
-	$statement = $pdo->prepare("SELECT * FROM `sponsors`");
-	$statement->execute();
-	
-	$sMax = 0;
-	$sponsors = array();
-	
-	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$sponsors[] = $row;
-		if($row['id'] > $sMax){
-			$sMax = $row['id'];
-		}
-	}
-	
-	
-	echo "
-		<script type=\"text/javascript\">
-			const knownLocs = ".json_encode($locations,JSON_PRETTY_PRINT).";
-			const sponsors = ".json_encode($sponsors,JSON_PRETTY_PRINT).";
-			const maxSponsorId = ".$sMax.";
-			const hostName = \"".$_SESSION['name']."\";
-			const hostImage = \"".$_SESSION['image']."\";
-		</script>
-	";
-?>
-
 <html>
 
 <head>
@@ -103,48 +57,35 @@
 			
 			var locationSelect = document.getElementById('location');
 			
-			for (var i = 0; i < knownLocs.length; i++){
-				var address = knownLocs[i]["address"];
-				var lonLat = new OpenLayers.LonLat(knownLocs[i]["longitude"],knownLocs[i]["latitude"]);
-				var id = knownLocs[i]["id"];
-				
-				placeMarker(lonLat,address,id);
-				
+			for(var i = 0 ; i < longitudes.length  && i < latitudes.length && i < addresses.length ; i++){
+				placeMarker((new OpenLayers.LonLat(longitudes[i],latitudes[i])),addresses[i],addressIds[i]);
 				var opt = document.createElement('option');
-				opt.value = id;
-				opt.innerHTML = address;
+				opt.value = addressIds[i];
+				opt.innerHTML = addresses[i];
 				locationSelect.appendChild(opt);
 			}
 			
 			var sponsorsSelect = document.getElementById('sponsors');
 			
-			for (var i = 0; i < sponsors.length; i++){
-				var id = sponsors[i]["id"];
-				var name = sponsors[i]["name"];
-				var imagePath = sponsors[i]["imagePath"];
-				
+			for(var i = 0 ; i < sponsors.length ; i++){
 				var li = document.createElement('li');
-				li.class = "sponsorNode";
 				
 				var checkbox = document.createElement('input');
 				checkbox.type = "checkbox";
-				checkbox.name = "sponsor "+id;
-				checkbox.value = id;
-				checkbox.id = "sponsor "+id;
-				checkbox.class = "sponsorCheckbox";
+				checkbox.name = "sponsor "+sponsorIds[i];
+				checkbox.value = sponsorIds[i];
+				checkbox.id = "sponsor "+sponsorIds[i];
 				
 				var img=document.createElement('img');
-				img.src= imagePath;
-				img.alt= "Bild nicht verfÃ¼gbar";
+				img.src= sponsorImgs[i];
+				img.alt= "Bild nicht verfügbar";
 				img.title= "Vorschau";
 				img.style.height="50px";
-				img.htmlFor = "sponsor"+id;
-				img.class = "sponsorImage";
+				img.htmlFor = "sponsor"+sponsorIds[i];
 				
 				var label = document.createElement('label');
-				label.htmlFor = "sponsor "+id;
-				label.appendChild(document.createTextNode(name));
-				label.class = "sponsorName";
+				label.htmlFor = "sponsor "+sponsorIds[i];
+				label.appendChild(document.createTextNode(sponsors[i]));
 				
 				li.appendChild(checkbox);
 				li.appendChild(img);
@@ -156,7 +97,7 @@
 			var nameLabel = document.createTextNode(hostName);
 			var image = document.createElement('img');
 			image.src= hostImage;
-			image.alt= "Bild nicht verfÃ¼gbar";
+			image.alt= "Bild nicht verfügbar";
 			image.title= "Vorschau";
 			image.style.height="50px";
 			
@@ -165,7 +106,7 @@
 			div.appendChild(image);
 			
 			document.getElementById('maxSponsorId').value = maxSponsorId;
-		}
+		};
 
 		OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {               
 			defaultHandlerOptions: {
@@ -292,11 +233,9 @@
 			imageCount++;
 			var li = document.createElement('li');
 			li.id = "imageNode"+imageCount;
-			li.class = "imageNode"
 			
 			var span1 = document.createElement('span');
 			span1.innerHTML = '<input type="file" id="imageImage'+imageCount+'" name="imageImage'+imageCount+'" onchange="previewImage(this,'+imageCount+');"/>';
-			span1.class = "imageInput";
 			
 			var iPreview = document.createElement('img');
 			iPreview.id = "previewImage"+imageCount;
@@ -305,7 +244,6 @@
 			iPreview.alt = "Bild";
 			iPreview.title = "Preview";
 			iPreview.style.height = "100px";
-			iPreview.class = "imagePreview";
 			
 			var iDesc = document.createElement('input');
 			iDesc.type = "text";
@@ -313,11 +251,9 @@
 			iDesc.name = "descriptionImage"+imageCount;
 			iDesc.maxLength = "50";
 			iDesc.placeholder = "Beschreibung";
-			iDesc.class = "imageDesc";
 			
 			var span2 = document.createElement('span');
 			span2.innerHTML = '<button type="button" onclick="removeImage('+imageCount+');" >Bild entfernen</button>';
-			span2.class = "imageRemove";
 			
 			li.appendChild(span1);
 			li.appendChild(iPreview);
@@ -332,10 +268,8 @@
 			sponsorCount++;
 			var li = document.createElement('li');
 			li.id = "newSponsor"+sponsorCount;
-			li.class = "newSponsorNode";
 			
 			var label = document.createTextNode("Neuer Sponsor");
-			label.class = "newSponsorLabel"
 			
 			var sName = document.createElement('input');
 			sName.type = "text";
@@ -343,7 +277,6 @@
 			sName.name = "nameSponsor"+sponsorCount;
 			sName.maxLength = "30";
 			sName.placeholder = "Name";
-			sName.class = "newSponsorName";
 			
 			var sPhone = document.createElement('input');
 			sPhone.type = "text";
@@ -351,7 +284,6 @@
 			sPhone.name = "phoneSponsor"+sponsorCount;
 			sPhone.maxLength = "30";
 			sPhone.placeholder = "Telefon (optional)";
-			sPhone.class = "newSponsorPhone";
 			
 			var sMail = document.createElement('input');
 			sMail.type = "text";
@@ -359,7 +291,6 @@
 			sMail.name = "mailSponsor"+sponsorCount;
 			sMail.maxLength = "30";
 			sMail.placeholder = "E-Mail (optional)";
-			sMail.class = "newSponsorMail";
 			
 			var sWeb = document.createElement('input');
 			sWeb.type = "text";
@@ -367,17 +298,14 @@
 			sWeb.name = "webSponsor"+sponsorCount;
 			sWeb.maxLength = "30";
 			sWeb.placeholder = "Website (optional)";
-			sWeb.class = "newSponsorWeb";
 			
 			var sDesc = document.createElement('textarea');
 			sDesc.id = "descriptionSponsor"+sponsorCount;
 			sDesc.name = "descriptionSponsor"+sponsorCount;
 			sDesc.placeholder = "Beschreibung";
-			sDesc.class = "newSponsorDesc";
 			
 			var span1 = document.createElement('span');
 			span1.innerHTML = '<input type="file" id="imageSponsor'+sponsorCount+'" name="imageSponsor'+sponsorCount+'" onchange="previewSponsor(this,'+sponsorCount+');"/>';
-			span1.class = "newSponsorImgInput";
 			
 			var sPreview = document.createElement('img');
 			sPreview.id = "previewSponsor"+sponsorCount;
@@ -386,11 +314,9 @@
 			sPreview.alt = "Bild";
 			sPreview.title = "Preview";
 			sPreview.style.height = "100px";
-			sPreview.class = "newSponsorImgPreview";
 			
 			var span2 = document.createElement('span');
 			span2.innerHTML = '<button type="button" onclick="removeSponsor('+sponsorCount+');" >Sponsor entfernen</button>';
-			span2.class = "newSponsorRemove";
 			
 			li.appendChild(label);
 			li.appendChild(sName);
@@ -419,10 +345,10 @@
 	</head>
 
 	<body onload='init();'>
-		<div id="left"></div>
-	<div id="right"></div>
+		
 		<div id="top"></div>
-	<div id="bottom"></div>
+		<div id="left"></div>
+		<div id="right"></div>
 		<div id= "header">
 				<form action="logout.php">
 					<div id = "hostStuff"></div>
@@ -431,7 +357,7 @@
 		</div>
 		<div id= "formDiv">
 			<form action="uploadEvent.php" enctype="multipart/form-data" id="event" method="post">
-				<uol style="list-style-type: none;">
+				<uol>
 					<li>
 						<input type="text" name="eventName" id="eventName" maxLength="30" placeholder = "Eventname">
 					</li>
@@ -523,5 +449,6 @@
 				</uol>
 			</form>
 		</div>
+		<div id="bottom"></div>
 	</body>
 </html>

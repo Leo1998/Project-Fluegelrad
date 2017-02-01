@@ -67,16 +67,26 @@
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <RemoteRunnable
+         runnableDebuggingMode = "2"
+         BundleIdentifier = "com.apple.springboard">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AB9C31D41DCA2D4C0091C55F"
-            BuildableName = "app.app"
-            BlueprintName = "app"
+            BlueprintIdentifier = "ABC7B7531E39404C00A2C083"
+            BuildableName = "widget.appex"
+            BlueprintName = "widget"
             ReferencedContainer = "container:iOSApp.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </RemoteRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "ABC7B7531E39404C00A2C083"
+            BuildableName = "widget.appex"
+            BlueprintName = "widget"
+            ReferencedContainer = "container:iOSApp.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

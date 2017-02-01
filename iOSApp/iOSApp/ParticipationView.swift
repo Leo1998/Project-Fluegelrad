@@ -60,9 +60,20 @@ class ParticipationView: UIView {
 		if event.maxParticipants - event.participants == 0 {
 			currentParticipants.text = "Es sind keine Plätze mehr frei."
 			participationButton.isHidden = true
-		}else {
-			currentParticipants.text = "Es sind noch \(event.maxParticipants - event.participants) Plätze frei."
+		}else if event.maxParticipants >= 0 {
+			currentParticipants.text = "Es sind noch \(event.maxParticipants - event.participants) von \(event.maxParticipants!) Plätzen frei."
 			participationButton.isHidden = false
+		}else if event.participants >= 0{
+			currentParticipants.text = "Es sind noch \(event.participants!) Personen angemeldet"
+			participationButton.isHidden = false
+		}else {
+			currentParticipants.text = "Es ist keine Anmeldung verfügbar"
+			participationButton.isHidden = true
+		}
+		
+		if Storage.isParticipating(event: event) {
+			currentParticipants.text = "Du hast dich zu diesem Event bereits angemeldet."
+			participationButton.isHidden = true
 		}
 	}
 }

@@ -64,6 +64,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 		eventTable.tableFooterView = UIView()
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(HomeViewController.reset), name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: nil)
+		
+		let butt = UIButton()
+		butt.setImage(#imageLiteral(resourceName: "ic_rate_review_white"), for: .normal)
+		butt.setTitle("Bewerten", for: .normal)
+		butt.sizeToFit()
+		butt.addTarget(self, action: #selector(HomeViewController.rate), for: .touchUpInside)
+		
+		
+		navigationItem.setRightBarButton(UIBarButtonItem(customView: butt), animated: false)
     }
 	
     override func didReceiveMemoryWarning() {
@@ -71,7 +80,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
 	
 	override func viewWillAppear(_ animated: Bool) {
-		navigationController?.setNavigationBarHidden(true, animated: false)
+		navigationController?.setNavigationBarHidden(false, animated: false)
 	}
 	
 	/**
@@ -243,4 +252,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 			eventTable.reloadData()
 		}
     }
+	
+	internal func rate(){
+		performSegue(withIdentifier: "RatingViewController", sender: self)
+	}
 }
