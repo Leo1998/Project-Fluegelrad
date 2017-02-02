@@ -1,13 +1,20 @@
 <html>
 	<head>
-	
+		<title>Login</title>
 	</head>
 	
 	<body>
-		<form action="login.php" id="login" method="post">
-			<input type="text" id="name" name="name" maxLength="30" placeholder="Name">
-			<input type="password" id="pass" name="pass" maxLength="30" placeholder="Passwort">
-			<input type="submit" value="Anmelden" class="btnSubmit" />
-		</form>
+		<header>
+			<a href="home.php"> Home</a>
+			<a href="eventList.php"> Eventliste</a>
+		</header>
+		
+		<article>
+			<form action="login.php" id="login" method="post">
+				<input type="text" id="name" name="name" maxLength="30" placeholder="Name">
+				<input type="password" id="pass" name="pass" maxLength="30" placeholder="Passwort">
+				<input type="submit" value="Anmelden" class="btnSubmit" />
+			</form>
+		</article>
 	</body>
 </html>

@@ -2,7 +2,8 @@
 	session_start();
 	
 	if(!isset($_SESSION['hostId'])){
-		exit('Error: Must be logged in to create an Event');
+		header("Location: home.php");
+		exit();
 	}
 	
 	//Spam protection, IP ban, Initalize PDO
@@ -32,14 +33,14 @@
 		}
 	}
 	
+	$hostStuff = "const hostStuff = {\"id\" : ".$_SESSION['hostId'].", \"name\" : \"".$_SESSION['name']."\", \"image\" : \"".$_SESSION['image']."\"};";
 	
 	echo "
 		<script type=\"text/javascript\">
 			const knownLocs = ".json_encode($locations,JSON_PRETTY_PRINT).";
 			const sponsors = ".json_encode($sponsors,JSON_PRETTY_PRINT).";
 			const maxSponsorId = ".$sMax.";
-			const hostName = \"".$_SESSION['name']."\";
-			const hostImage = \"".$_SESSION['image']."\";
+			$hostStuff;
 		</script>
 	";
 ?>
@@ -153,16 +154,26 @@
 				sponsorsSelect.appendChild(li);
 			}
 			
-			var nameLabel = document.createTextNode(hostName);
+			var div = document.createElement('div');
+			div.id = "Host";
+				
+			var nameLabel = document.createTextNode(hostStuff["name"]);
 			var image = document.createElement('img');
-			image.src= hostImage;
+			image.src= hostStuff["image"];
 			image.alt= "Bild nicht verfügbar";
 			image.title= "Vorschau";
 			image.style.height="50px";
-			
-			div = document.getElementById('hostStuff');
+				
+			var logout = document.createElement("a");
+			logout.href = "logout.php";
+			logout.innerHTML = "Abmelden";
+				
 			div.appendChild(nameLabel);
 			div.appendChild(image);
+			div.appendChild(logout);
+			
+			document.getElementById("header").appendChild(div);
+
 			
 			document.getElementById('maxSponsorId').value = maxSponsorId;
 		}
@@ -419,16 +430,14 @@
 	</head>
 
 	<body onload='init();'>
+		<header id = "header">
+			<a href="home.php"> Home</a>
+			<a href="eventList.php"> Eventliste</a>
+		</header>
 		<div id="left"></div>
 	<div id="right"></div>
 		<div id="top"></div>
 	<div id="bottom"></div>
-		<div id= "header">
-				<form action="logout.php">
-					<div id = "hostStuff"></div>
-					<input type = "submit" value = "Abmelden">
-				</form>
-		</div>
 		<div id= "formDiv">
 			<form action="uploadEvent.php" enctype="multipart/form-data" id="event" method="post">
 				<uol style="list-style-type: none;">
