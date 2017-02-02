@@ -54,7 +54,7 @@
 				
 				var nameLabel = document.createTextNode(hostStuff["name"]);
 				var image = document.createElement('img');
-				image.src= hostStuff["image"];
+				image.src= "../"+hostStuff["image"];
 				image.alt= "Bild nicht verfügbar";
 				image.title= "Vorschau";
 				image.style.height="50px";

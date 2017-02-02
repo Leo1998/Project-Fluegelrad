@@ -93,7 +93,7 @@
 				
 				var nameLabel = document.createTextNode(hostStuff["name"]);
 				var image = document.createElement('img');
-				image.src= hostStuff["image"];
+				image.src= "../"+hostStuff["image"];
 				image.alt= "Bild nicht verfügbar";
 				image.title= "Vorschau";
 				image.style.height="50px";
@@ -156,13 +156,26 @@
 			
 			mapDiv = document.createElement("div");
 			
-			var hostName = document.createElement("div");
-			hostName.innerHTML = data["host.name"];
+			var hostName = document.createElement("a");
+			hostName.innerHTML = "Veranstalter:"+data["host.name"];
+			hostName.href = "showSponsor.php?k="+data["host.id"];
 			
-			var hostImage
+			var hostImage = document.createElement('img');
+			hostImage.src= "../"+data["host.image"];
+			hostImage.alt= "Bild nicht verfügbar";
+			hostImage.title= "VeranstalterBild";
+			hostImage.style.height="100px";
 			
 			var sponsorsDiv = document.createElement("div");
 			sponsorsDiv.id = "sponsorsDiv";
+			
+			for(var i = 0 ; i in data["images"] ; i++){
+				addImage(data["images"][i],imagesDiv);
+			}
+			
+			for(var i = 0 ; i in data["sponsors"] ; i++){
+				addSponsor(data["sponsors"][i],imagesDiv);
+			}
 			
 			var oul = document.getElementById("event");
 			oul.appendChild(eventName);
@@ -171,14 +184,31 @@
 			oul.appendChild(participants);
 			oul.appendChild(price);
 			oul.appendChild(description);
+			oul.appendChild(hostName);
+			oul.appendChild(hostImage);
+			oul.appendChild(sponsorsDiv);
 		}
 		
-		function addSponsor(sponsor){
+		function addSponsor(sponsor,div){
 			
 		}
 		
-		function addImage(image){
+		function addImage(image,div){
+			var imageDiv = document.createElement("div");
+			imageDiv.class = "imageDiv";
 			
+			var image = document.createElement('img');
+			image.src= "../"+image["path"];
+			image.alt= "Bild nicht verfügbar";
+			image.title= "EventBild";
+			image.style.height="100px";
+			
+			var description = document.createTextNode(image["description"]);
+			
+			imageDiv.appendChild(image);
+			imageDiv.appendChild(description);
+			
+			div.appendChild(imageDiv);
 		}
 	</script>
 	</head>

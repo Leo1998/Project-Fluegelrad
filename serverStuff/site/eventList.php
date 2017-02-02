@@ -67,7 +67,7 @@
 				
 				var nameLabel = document.createTextNode(hostStuff["name"]);
 				var image = document.createElement('img');
-				image.src= hostStuff["image"];
+				image.src= "../"+hostStuff["image"];
 				image.alt= "Bild nicht verfügbar";
 				image.title= "Vorschau";
 				image.style.height="50px";
@@ -81,6 +81,12 @@
 				div.appendChild(logout);
 				
 				document.getElementById("header").appendChild(div);
+				
+				var createEvent = document.createElement('a');
+				createEvent.href = "createEvent.php";
+				createEvent.innerHTML = "Neues Event erstellen";
+				
+				document.getElementById("createEventDiv").appendChild(createEvent);
 			}else{
 				var login = document.createElement("a");
 				login.href = "login.html";
@@ -173,6 +179,8 @@
 		<article>
 			<oul id="events" name="events" style="list-style-type: none;">
 			</oul>
+			<br>
+			<div id="createEventDiv"></div>
 		</article>
 	</body>
 </html>
