@@ -75,5 +75,12 @@ class ParticipationView: UIView {
 			currentParticipants.text = "Du hast dich zu diesem Event bereits angemeldet."
 			participationButton.isHidden = true
 		}
+		
+		let today = Date()
+		if (event).dateStart.compare(today) == ComparisonResult.orderedAscending {
+			currentParticipants.text = "Das Event ist leider schon vorbei."
+			participationButton.isHidden = true
+
+		}
 	}
 }
