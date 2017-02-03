@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Project Fluegelrad</string>
+    <string name="app_name">Do.AKTIV</string>
     <string name="calender_grid">Kalender</string>
     <string name="calender_list">Event Liste</string>
     <string name="drawer_about">Info</string>
