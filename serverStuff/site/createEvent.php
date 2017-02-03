@@ -2,7 +2,8 @@
 	session_start();
 	
 	if(!isset($_SESSION['hostId'])){
-		exit('Error: Must be logged in to create an Event');
+		header("Location: home.php");
+		exit();
 	}
 	
 	//Spam protection, IP ban, Initalize PDO
@@ -12,67 +13,34 @@
 	$statement = $pdo->prepare("SELECT * FROM `locations`");
 	$statement->execute();
 	
-	$lIdArr = array();
-	$adArr = array();
-	$loArr = array();
-	$laArr = array();
+	$locations = array();
 	
 	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$lIdArr[] = $row['id'];
-		$adArr[] = $row['address'];
-		$loArr[] = $row['longitude'];
-		$laArr[] = $row['latitude'];
+		$locations[] = $row;
 	}
 	
-	$addressIds = implode("\",\"",$lIdArr);
-	$addresses = implode("\",\"",$adArr);
-	$longitudes = implode("\",\"",$loArr);
-	$latitudes = implode("\",\"",$laArr);
-	
-	$addressIds = "const addressIds = Array(\"".$addressIds."\");";
-	$addresses = "const addresses = Array(\"".$addresses."\");";
-	$longitudes = "const longitudes = Array(\"".$longitudes."\");";
-	$latitudes = "const latitudes = Array(\"".$latitudes."\");";
 	
 	$statement = $pdo->prepare("SELECT * FROM `sponsors`");
 	$statement->execute();
 	
-	$sIdArr = array();
-	$imArr = array();
-	$naArr = array();
 	$sMax = 0;
+	$sponsors = array();
 	
 	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$sIdArr[] = $row['id'];
-		$imArr[] = $row['imagePath'];
-		$naArr[] = $row['name'];
+		$sponsors[] = $row;
 		if($row['id'] > $sMax){
 			$sMax = $row['id'];
 		}
 	}
 	
-	$sponsorIds = implode("\",\"",$sIdArr);
-	$sponsorImgs = implode("\",\"",$imArr);
-	$sponsors = implode("\",\"",$naArr);
-	
-	$sponsorIds = "const sponsorIds = Array(\"".$sponsorIds."\");";
-	$sponsorImgs = "const sponsorImgs = Array(\"".$sponsorImgs."\");";
-	$sponsors = "const sponsors = Array(\"".$sponsors."\");";
-	$maxSponsorId = "const maxSponsorId = ".$sMax.";";
-	
-	$hostStuff = "const hostName = \"".$_SESSION['name']."\"; const hostImage = \"".$_SESSION['image']."\";";
+	$hostStuff = "const hostStuff = {\"id\" : ".$_SESSION['hostId'].", \"name\" : \"".$_SESSION['name']."\", \"image\" : \"".$_SESSION['image']."\"};";
 	
 	echo "
 		<script type=\"text/javascript\">
-			$addressIds
-			$addresses
-			$longitudes
-			$latitudes
-			$sponsorIds
-			$sponsorImgs
-			$sponsors
-			$maxSponsorId
-			$hostStuff
+			const knownLocs = ".json_encode($locations,JSON_PRETTY_PRINT).";
+			const sponsors = ".json_encode($sponsors,JSON_PRETTY_PRINT).";
+			const maxSponsorId = ".$sMax.";
+			$hostStuff;
 		</script>
 	";
 ?>
@@ -136,38 +104,47 @@
 			
 			var locationSelect = document.getElementById('location');
 			
-			for(var i = 0 ; i < longitudes.length  && i < latitudes.length && i < addresses.length ; i++){
-				placeMarker((new OpenLayers.LonLat(longitudes[i],latitudes[i])),addresses[i],addressIds[i]);
+			for (var i = 0; i < knownLocs.length; i++){
+				var address = knownLocs[i]["address"];
+				var lonLat = new OpenLayers.LonLat(knownLocs[i]["longitude"],knownLocs[i]["latitude"]);
+				var id = knownLocs[i]["id"];
+				
+				placeMarker(lonLat,address,id);
+				
 				var opt = document.createElement('option');
-				opt.value = addressIds[i];
-				opt.innerHTML = addresses[i];
+				opt.value = id;
+				opt.innerHTML = address;
 				locationSelect.appendChild(opt);
 			}
 			
 			var sponsorsSelect = document.getElementById('sponsors');
 			
-			for(var i = 0 ; i < sponsors.length ; i++){
+			for (var i = 0; i < sponsors.length; i++){
+				var id = sponsors[i]["id"];
+				var name = sponsors[i]["name"];
+				var imagePath = sponsors[i]["imagePath"];
+				
 				var li = document.createElement('li');
 				li.class = "sponsorNode";
 				
 				var checkbox = document.createElement('input');
 				checkbox.type = "checkbox";
-				checkbox.name = "sponsor "+sponsorIds[i];
-				checkbox.value = sponsorIds[i];
-				checkbox.id = "sponsor "+sponsorIds[i];
+				checkbox.name = "sponsor "+id;
+				checkbox.value = id;
+				checkbox.id = "sponsor "+id;
 				checkbox.class = "sponsorCheckbox";
 				
 				var img=document.createElement('img');
-				img.src= sponsorImgs[i];
+				img.src= "../"+imagePath;
 				img.alt= "Bild nicht verfügbar";
 				img.title= "Vorschau";
 				img.style.height="50px";
-				img.htmlFor = "sponsor"+sponsorIds[i];
+				img.htmlFor = "sponsor"+id;
 				img.class = "sponsorImage";
 				
 				var label = document.createElement('label');
-				label.htmlFor = "sponsor "+sponsorIds[i];
-				label.appendChild(document.createTextNode(sponsors[i]));
+				label.htmlFor = "sponsor "+id;
+				label.appendChild(document.createTextNode(name));
 				label.class = "sponsorName";
 				
 				li.appendChild(checkbox);
@@ -177,19 +154,29 @@
 				sponsorsSelect.appendChild(li);
 			}
 			
-			var nameLabel = document.createTextNode(hostName);
+			var div = document.createElement('div');
+			div.id = "Host";
+				
+			var nameLabel = document.createTextNode(hostStuff["name"]);
 			var image = document.createElement('img');
-			image.src= hostImage;
+			image.src= "../"+hostStuff["image"];
 			image.alt= "Bild nicht verfügbar";
 			image.title= "Vorschau";
 			image.style.height="50px";
-			
-			div = document.getElementById('hostStuff');
+				
+			var logout = document.createElement("a");
+			logout.href = "logout.php";
+			logout.innerHTML = "Abmelden";
+				
 			div.appendChild(nameLabel);
 			div.appendChild(image);
+			div.appendChild(logout);
+			
+			document.getElementById("header").appendChild(div);
+
 			
 			document.getElementById('maxSponsorId').value = maxSponsorId;
-		};
+		}
 
 		OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {               
 			defaultHandlerOptions: {
@@ -443,16 +430,14 @@
 	</head>
 
 	<body onload='init();'>
+		<header id = "header">
+			<a href="home.php"> Home</a>
+			<a href="eventList.php"> Eventliste</a>
+		</header>
 		<div id="left"></div>
 	<div id="right"></div>
 		<div id="top"></div>
 	<div id="bottom"></div>
-		<div id= "header">
-				<form action="logout.php">
-					<div id = "hostStuff"></div>
-					<input type = "submit" value = "Abmelden">
-				</form>
-		</div>
 		<div id= "formDiv">
 			<form action="uploadEvent.php" enctype="multipart/form-data" id="event" method="post">
 				<uol style="list-style-type: none;">

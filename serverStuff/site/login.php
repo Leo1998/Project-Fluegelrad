@@ -66,7 +66,9 @@
 				$_SESSION['name'] = $name;
 				$_SESSION['image'] = $row['imagePath'];
 			}
-			break;
+			
+			header("Location: home.php");
+			exit();
 		}else{
 			exit("Passwort falsch");
 		}

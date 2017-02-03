@@ -328,8 +328,10 @@ class CalendarDayViewController: UIViewController, MKMapViewDelegate  {
 			
 			Storage.participating(event: event)
 			participationView.updateCurrentParticipants(event: event)
-						
-			picker.isHidden = false
+			
+			DispatchQueue.main.async {
+				self.picker.isHidden = false
+			}
 			
 			picker.done.addTarget(self, action: #selector(CalendarDayViewController.delayChosen), for: .touchUpInside)
 			picker.cancel.addTarget(self, action: #selector(CalendarDayViewController.noNotification), for: .touchUpInside)

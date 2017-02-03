@@ -16,6 +16,11 @@ class RatingViewController: UIViewController, UITableViewDelegate, UITableViewDa
 	All the sponosrs
 	*/
 	private var sponsors = [Int: Sponsor]()
+	
+	/**
+	view for rating
+	*/
+	private var ratingView: RatingView!
 
 
 
@@ -46,6 +51,19 @@ class RatingViewController: UIViewController, UITableViewDelegate, UITableViewDa
 		
 		eventTable.tableHeaderView = title
 
+		ratingView = RatingView(frame: view.frame)
+		view.addSubview(ratingView)
+		ratingView.translatesAutoresizingMaskIntoConstraints = false
+		ratingView.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: topLayoutGuide, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		ratingView.addConstraintsXY(xView: view, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		ratingView.isHidden = true
+		
+		ratingView.done.addTarget(self, action: #selector(RatingViewController.done), for: .touchUpInside)
+		ratingView.cancel.addTarget(self, action: #selector(RatingViewController.cancel), for: .touchUpInside)
+		
+		for value in ratingView.starButtons {
+			value.addTarget(self, action: #selector(RatingViewController.startTouched), for: .touchUpInside)
+		}
 
 		NotificationCenter.default.addObserver(self, selector: #selector(RatingViewController.segueBack), name: Notification.Name(Bundle.main.bundleIdentifier! + "segueBack"), object: nil)
 		
@@ -101,6 +119,28 @@ class RatingViewController: UIViewController, UITableViewDelegate, UITableViewDa
 		
 		
 		return cell
+	}
+	
+	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		ratingView.isHidden = false
+		ratingView.event = rateableEvents[indexPath.item]
+	}
+	
+	internal func startTouched(sender: UIButton){
+		ratingView.rateChange(rate: sender.tag+1)
+	}
+	
+	internal func cancel(){
+		ratingView.isHidden = true
+	}
+	
+	internal func done(){
+		Storage.rate(event: ratingView.event, rate: ratingView.rate)
+		ratingView.isHidden = true
+		Storage.removeParticipating(event: ratingView.event)
+		
+		rateableEvents = Storage.getEventsRatable()
+		eventTable.reloadData()
 	}
 
 }

@@ -38,7 +38,7 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 		eventTable = UITableView()
 		eventTable.register(TodayViewCell.self, forCellReuseIdentifier: "cell")
 		eventTable.estimatedRowHeight = 50
-		eventTable.separatorColor = UIColor.red
+		eventTable.separatorInset = UIEdgeInsets.zero
 		view.addSubview(eventTable)
 		eventTable.translatesAutoresizingMaskIntoConstraints = false
 		eventTable.addConstraintsXY(xView: view, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: view, ySelfAttribute: .top, yViewAttribute: .top, yMultiplier: 1, yConstant: 0)
@@ -54,6 +54,13 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 		title.text = "Events in den nächsten 24 Stunden"
 		title.textAlignment = .center
 		title.adjustsFontSizeToFitWidth = true
+		
+		if #available(iOS 9, *){
+			if #available(iOS 10, *) {} else {
+				title.textColor = UIColor.lightGray
+
+			}
+		}
 		
 		eventTable.tableHeaderView = title
 		

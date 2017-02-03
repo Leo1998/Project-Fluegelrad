@@ -20,7 +20,7 @@
 	
 	// Uploads an image
 	function uploadImage($name){
-		$upload_folder = 'upload/files/'; //Directory
+		$upload_folder = '../upload/files/'; //Directory
 		$filename = pathinfo($_FILES[$name]['name'], PATHINFO_FILENAME);
 		$extension = strtolower(pathinfo($_FILES[$name]['name'], PATHINFO_EXTENSION));
 
@@ -60,7 +60,7 @@
 	 
 		//Upload file
 		move_uploaded_file($_FILES[$name]['tmp_name'], $new_path);
-		return $new_path;
+		return str_replace("../",$new_path,"");
 	}
 	
 	//Spam protection, IP ban, Initalize PDO

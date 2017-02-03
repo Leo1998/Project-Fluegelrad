@@ -36,6 +36,15 @@ class TodayViewCell: UITableViewCell {
 		participantsLabel.translatesAutoresizingMaskIntoConstraints = false
 		participantsLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: startTimeLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
 		participantsLabel.addConstraintsXY(xView: self, xSelfAttribute: .leading, xViewAttribute: .leading, xMultiplier: 1, xConstant: 0, yView: self, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		if #available(iOS 9, *){
+			if #available(iOS 10, *) {} else {
+				participantsLabel.textColor = UIColor.lightGray
+				startTimeLabel.textColor = UIColor.lightGray
+				nameLabel.textColor = UIColor.lightGray
+			}
+		}
+
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
