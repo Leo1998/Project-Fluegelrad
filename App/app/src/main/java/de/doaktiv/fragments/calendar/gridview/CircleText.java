@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import de.doaktiv.R;
 
-public class CircleText extends TextView{
+public class CircleText extends TextView {
     private Drawable drawable;
 
     private GradientDrawable pressed;

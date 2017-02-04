@@ -1,20 +1,26 @@
 package de.doaktiv.fragments.day;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import de.doaktiv.MainActivity;
 import de.doaktiv.R;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.DatabaseParticipateTask;
+import de.doaktiv.database.DatabaseRateTask;
 import de.doaktiv.database.DatabaseTaskWatcher;
 import de.doaktiv.database.Event;
 
@@ -24,7 +30,7 @@ public class ParticipateFragment extends Fragment {
 
     private Event event;
 
-    private boolean clickable = true;
+    private boolean participateButtonClickable = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,15 +41,17 @@ public class ParticipateFragment extends Fragment {
         if (event != null) {
             assignData(layout);
 
+            final CardView ratingCard = (CardView) layout.findViewById(R.id.ratingCard);
+            ratingCard.setVisibility(event.isParticipating() ? View.VISIBLE : View.INVISIBLE);
+
             final Button participateButton = (Button) layout.findViewById(R.id.participateButton);
             participateButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (!event.isParticipating() && clickable) {
-                        clickable = false;
+                    if (!event.isParticipating() && participateButtonClickable) {
+                        participateButtonClickable = false;
 
                         final DatabaseManager databaseManager = ((MainActivity) ParticipateFragment.this.getActivity()).getDatabaseManager();
-
                         databaseManager.executeTask(new DatabaseParticipateTask(), new Event[] {event}, new DatabaseTaskWatcher() {
                             @Override
                             public void onFinish(Object result) {
@@ -51,10 +59,34 @@ public class ParticipateFragment extends Fragment {
 
                                 if (success) {
                                     assignData(layout);
+
+                                    ratingCard.setVisibility(View.VISIBLE);
                                 } else {
                                     makeSnackbar(layout, getResources().getString(R.string.participate_error));
 
-                                    clickable = true;
+                                    participateButtonClickable = true;
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+
+            final RatingBar ratingBar = (RatingBar) layout.findViewById(R.id.ratingBar);
+            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                @Override
+                public void onRatingChanged(final RatingBar ratingBar, float rating, boolean fromUser) {
+                    if (fromUser) {
+                        int r = Math.max(0, Math.min(5, (int) rating));
+
+                        final DatabaseManager databaseManager = ((MainActivity) ParticipateFragment.this.getActivity()).getDatabaseManager();
+                        databaseManager.executeTask(new DatabaseRateTask(), new DatabaseRateTask.RateParamsWrapper[]{new DatabaseRateTask.RateParamsWrapper(event, r)}, new DatabaseTaskWatcher() {
+                            @Override
+                            public void onFinish(Object result) {
+                                boolean success = (Boolean) result;
+
+                                if (!success) {
+                                    makeSnackbar(layout, getResources().getString(R.string.rating_error));
                                 }
                             }
                         });

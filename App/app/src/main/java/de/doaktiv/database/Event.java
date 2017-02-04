@@ -47,6 +47,9 @@ public class Event {
         if (obj.has("participating")) {
             event.participating = obj.getBoolean("participating");
         }
+        if (obj.has("userRating")) {
+            event.userRating = obj.getInt("userRating");
+        }
 
         return event;
     }
@@ -83,6 +86,7 @@ public class Event {
         obj.put("images", imagesArray);
 
         obj.put("participating", event.isParticipating());
+        obj.put("userRating", event.getUserRating());
 
         return obj;
     }
@@ -103,6 +107,7 @@ public class Event {
     private List<Image> images;
 
     private boolean participating;
+    private int userRating;
 
     public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, int hostId, int[] sponsors, List<Image> images) {
         this.id = id;
@@ -199,12 +204,20 @@ public class Event {
         return participating;
     }
 
+    public int getUserRating() {
+        return userRating;
+    }
+
     public void participate(boolean fakeIncrement) {
         if (isParticipating())
             throw new IllegalStateException("Already Participating!");
 
         this.participating = true;
         this.participants++;
+    }
+
+    public void rate(int rating) {
+        this.userRating = rating;
     }
 
     @Override

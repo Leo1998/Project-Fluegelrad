@@ -77,7 +77,7 @@ public class CalendarGridView extends LinearLayout {
         params.weight = 1;
 
         Calendar calendarTemp = (Calendar) currentDate.clone();
-        for (int i = 0; i < 7; i++){
+        for (int i = 0; i < 7; i++) {
             TextView day = new TextView(getContext());
             calendarTemp.set(2016, 7, i + 1);
             day.setText(new SimpleDateFormat("EEE").format(calendarTemp.getTime()));
@@ -87,6 +87,7 @@ public class CalendarGridView extends LinearLayout {
             header.addView(day);
         }
     }
+
     private void assignUiElements() {
         header = (LinearLayout)findViewById(R.id.calendar_header);
         btnPrev = (ImageView)findViewById(R.id.calendar_prev_button);
@@ -138,6 +139,7 @@ public class CalendarGridView extends LinearLayout {
     }
 
     private class CalendarAdapter extends ArrayAdapter<Calendar> {
+
         private LayoutInflater inflater;
 
         public CalendarAdapter(Context context, ArrayList<Calendar> days) {
@@ -153,7 +155,6 @@ public class CalendarGridView extends LinearLayout {
             int year = date.get(Calendar.YEAR);
 
             Calendar today = Calendar.getInstance();
-
 
             if (view == null) {
                 view = inflater.inflate(R.layout.calendar_grid_item, parent, false);

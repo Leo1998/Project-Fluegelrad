@@ -42,5 +42,6 @@
     <string name="participants">Participants</string>
     <string name="participating">You are participating!</string>
     <string name="participate_error">Error while requesting participate!</string>
+    <string name="rating_error">Error while rating!</string>
 
 </resources>

@@ -24,7 +24,6 @@ import de.doaktiv.fragments.day.CalendarDayFragment;
 
 public class CalendarGridViewFragment extends Fragment {
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final List<Event> events = DatabaseManager.INSTANCE.getEventList();
