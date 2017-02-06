@@ -1,4 +1,5 @@
-package de.doaktiv.fragments.calendar.listview;
+package de.doaktiv.fragments;
+
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -17,9 +18,13 @@ import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
 import de.doaktiv.fragments.day.CalendarDayFragment;
 
-public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRecyclerViewAdapter.ViewHolder>{
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private FragmentActivity activity;
+
+    public RecyclerViewAdapter(){
+
+    }
 
     public void setActivity(FragmentActivity activity) {
         this.activity = activity;
@@ -27,7 +32,7 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.calender_list_item, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.home_fragment_item, parent, false);
 
         ViewHolder item = new ViewHolder(v);
         return item;
@@ -38,13 +43,19 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
         final Event event = DatabaseManager.INSTANCE.getRecentEventList().get(position);
         Calendar i = event.getDateStart();
 
-        holder.getNameTextView().setText(event.getName());
+        holder.getCategoryTextView().setText(event.getName());
+
+        if (event.getImages().size() > 0) {
+            holder.getImageView().setImageAsync(event.getImages().get(0));
+        }else{
+            holder.getImageView().setImageAsync();
+        }
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-        simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
+        simpleDateFormat.applyPattern("E \ndd.MM.yyyy \n HH:mm");
         holder.getDateTextView().setText(simpleDateFormat.format(event.getDateStart().getTime()));
 
-        //TODO
+
         holder.getLocationTextView().setText(event.getLocation().getAddress());
         holder.getHostTextView().setText("N/A");
 
@@ -69,20 +80,24 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
         return DatabaseManager.INSTANCE.getRecentEventList().size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder{
+
         private TextView dateTextView;
-        private TextView nameTextView;
+        private TextView categoryTextView;
         private TextView locationTextView;
         private TextView hostTextView;
+        private AsyncImageView imageView;
 
         private CardView cardView;
 
-        ViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
+
             dateTextView = (TextView)itemView.findViewById(R.id.date);
-            nameTextView = (TextView)itemView.findViewById(R.id.name);
+            categoryTextView = (TextView)itemView.findViewById(R.id.category);
             locationTextView = (TextView)itemView.findViewById(R.id.location);
             hostTextView = (TextView)itemView.findViewById(R.id.host);
+            imageView = (AsyncImageView)itemView.findViewById(R.id.imageView);
 
             cardView = (CardView) itemView.findViewById(R.id.card_view);
         }
@@ -91,8 +106,8 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
             return dateTextView;
         }
 
-        public TextView getNameTextView() {
-            return nameTextView;
+        public TextView getCategoryTextView() {
+            return categoryTextView;
         }
 
         public TextView getLocationTextView() {
@@ -101,6 +116,10 @@ public class CalendarRecyclerViewAdapter extends RecyclerView.Adapter<CalendarRe
 
         public TextView getHostTextView() {
             return hostTextView;
+        }
+
+        public AsyncImageView getImageView(){
+            return imageView;
         }
 
         public CardView getCardView() {
