@@ -230,12 +230,27 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 			cell.priceLabel.text = "Der Eintritt kostet \(event.price!)€"
 		}
 		cell.priceLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.ageLabel, ySelfAttribute: .top, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
-		cell.priceLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		
+		
+		if event.images.count >= 1 {
+			cell.eventImage = ImageView(frame: cell.contentView.frame, eventImage: event.images[0])
+			cell.contentView.addSubview(cell.eventImage)
+			cell.eventImage.translatesAutoresizingMaskIntoConstraints = false
+			cell.eventImage.addConstraintsXY(xView: cell.priceLabel, xSelfAttribute: .top, xViewAttribute: .bottom, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .leading, yViewAttribute: .leading, yMultiplier: 1, yConstant: 0)
+			cell.eventImage.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .bottom, xViewAttribute: .bottom, xMultiplier: 1, xConstant: -75, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: cell.eventImage.height)
+		}else{
+			cell.priceLabel.addConstraintsXY(xView: cell.contentView, xSelfAttribute: .centerX, xViewAttribute: .centerX, xMultiplier: 1, xConstant: 0, yView: cell.contentView, ySelfAttribute: .bottom, yViewAttribute: .bottom, yMultiplier: 1, yConstant: 0)
+		}
+		
 		
 		cell.layoutIfNeeded()
 		
         return cell
     }
+	
+	func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+		return UITableViewAutomaticDimension
+	}
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return UITableViewAutomaticDimension

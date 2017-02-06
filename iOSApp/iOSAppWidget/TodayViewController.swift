@@ -142,7 +142,7 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 	}
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let url = URL(string: "doJuSport://\(shownEvents[indexPath.item].id!)")!
+		let url = URL(string: "doaktiv://\(shownEvents[indexPath.item].id!)")!
 		
 		extensionContext?.open(url, completionHandler: nil)
 	}
@@ -203,7 +203,6 @@ class TodayViewController: UIViewController, NCWidgetProviding, UITableViewDeleg
 			return (event).dateStart.compare(today) == ComparisonResult.orderedDescending && (event).dateStart.compare(tomorrow!) == ComparisonResult.orderedAscending
 		}
 		
-		shownEvents = allEvents
 		
 		eventTable.reloadData()
 		

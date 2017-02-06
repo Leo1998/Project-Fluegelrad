@@ -36,7 +36,12 @@ class HomeViewCell: UITableViewCell {
 	Showing the price of the event
 	*/
 	private(set) var priceLabel: UILabel!
-    
+	
+	/**
+	image of the event
+	*/
+	public var eventImage: ImageView!
+	
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 		
