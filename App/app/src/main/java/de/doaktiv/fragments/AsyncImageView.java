@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import java.io.File;
 import java.io.IOException;
 
+import de.doaktiv.R;
 import de.doaktiv.database.Image;
 
 public class AsyncImageView extends ImageView {
@@ -39,14 +40,19 @@ public class AsyncImageView extends ImageView {
 
         this.setAdjustViewBounds(true);
         this.setScaleType(ScaleType.CENTER_CROP);
+
+        this.setImageResource(R.mipmap.ic_no_image);
     }
 
     public void setImageAsync(Image image) {
+        this.image = image;
+
         if (image != null) {
-            this.image = image;
             LoadImageTask task = new LoadImageTask();
 
             task.execute(image);
+        } else {
+            this.setImageResource(R.mipmap.ic_no_image);
         }
     }
 

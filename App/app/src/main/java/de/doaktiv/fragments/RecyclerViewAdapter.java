@@ -47,14 +47,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         if (event.getImages().size() > 0) {
             holder.getImageView().setImageAsync(event.getImages().get(0));
-        }else{
-            holder.getImageView().setImageAsync();
         }
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
         simpleDateFormat.applyPattern("E \ndd.MM.yyyy \n HH:mm");
         holder.getDateTextView().setText(simpleDateFormat.format(event.getDateStart().getTime()));
-
 
         holder.getLocationTextView().setText(event.getLocation().getAddress());
         holder.getHostTextView().setText("N/A");
