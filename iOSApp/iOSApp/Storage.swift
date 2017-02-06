@@ -35,7 +35,7 @@ class Storage: DatabaseManagerProtocol {
 	/**
 	the user under which the data is saved
 	*/
-	private static let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
+	private static let myDefaults = UserDefaults(suiteName: "group.doaktiv")!
 		
 	init() {
 		let databaseManager = DatabaseManager()
@@ -124,7 +124,7 @@ class Storage: DatabaseManagerProtocol {
 		// If not created create new
 		if !created {
 			let eventCalendar = EKCalendar(for: .event, eventStore: eventStore)
-			eventCalendar.title = "DoJuSport Events"
+			eventCalendar.title = "Do.Aktiv Events"
 			eventCalendar.cgColor = UIColor.primary().cgColor
 			
 			for value in eventStore.sources {
@@ -299,7 +299,7 @@ class Storage: DatabaseManagerProtocol {
 					participating.remove(at: index)
 				}
 			}
-			
+		
 			myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: participating), forKey: "participating")
 			
 		}
@@ -309,13 +309,12 @@ class Storage: DatabaseManagerProtocol {
 	/**
 	Saving the events and sponsors
 	*/
-	internal func itemsDownloaded(events: [Event], sponsors: [Int: Sponsor]) {
+	internal func itemsDownloaded(events: [Event], sponsors: [Int:  Sponsor]) {
 		
-		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
-		myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: events), forKey: "events")
-		myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: sponsors), forKey: "sponsors")
+		Storage.myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: events), forKey: "events")
+		Storage.myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: sponsors), forKey: "sponsors")
 		
-		myDefaults.synchronize()
+		Storage.myDefaults.synchronize()
 		
 		// Sending a message to all ViewControllers to update their data
 		NotificationCenter.default.post(name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: self)

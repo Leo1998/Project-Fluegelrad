@@ -15,11 +15,17 @@
 		";
 ?>
 
-<html>
 
+<html>
 <head>
-    <title>Home</title>
-    <script>
+	<title>Home</title>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+	<meta charset="utf-8">
+	<meta name="author" content="@Firmenname" /> <!-- Hier sollte der Name des Autors, der Inhalte erstellt, rein. -->
+	<meta name="Description" content="Ersellen sie ihr Event!" /> 
+    <link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> <!-- Hier sollte der Pfad zur CSS-datei eingetragen werden, 
+           die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
+	<script>
 		var mapDiv;
 	
 		function init(){
@@ -52,16 +58,40 @@
 			}
 		}
 	</script>
-	</head>
-	
-	<body onload='init();'>
-		<header id="header">
-			<a href="home.php"> Home</a>
-			<a href="eventList.php"> Eventliste</a>
-		</header>
-		
-		<article>
+</head>
+
+<body onload='init();'>
+
+  <header>
+   <a id="logo" href="./"><span>Do</span>-Aktiv</a> 
+  </header>
+  
+  <nav>
+  	<ul>
+   		<li class="active">Home</li>
+   		<li><a href="createEvent.php">Event erstellen</a></li>
+   		<li><a href="eventList.php">Eventliste</a></li>
+		<li><a href="logout.php">Ausloggen</a></li>
+  	</ul>
+  </nav>
+
+  <main role="main">
+
+
+  <section>
 			Home
-		</article>
-	</body>
+    </section>    
+   
+  	<aside>
+		<!-- Sidebar -->
+    	
+	</aside>
+	
+    </main>
+  	
+    <footer>
+		<!-- Footer -->
+	</footer>
+
+</body>
 </html>

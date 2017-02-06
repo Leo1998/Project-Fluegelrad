@@ -64,7 +64,7 @@ class DatabaseManager: NSObject, URLSessionDataDelegate{
 	private var tries = 0
 	
 	/**
-	Method to (re)download the events and sponsors
+	Method to (re)f the events and sponsors
 	*/
     public func downloadItems() {
 		
