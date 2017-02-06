@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title>Login</title>
+	<title>Ausloggen</title>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
 	<meta charset="utf-8">
 	<meta name="author" content="@Firmenname" /> <!-- Hier sollte der Name des Autors, der Inhalte erstellt, rein. -->
@@ -18,11 +18,12 @@
   
   <nav>
   	<ul>
+   		
    		<li><a href="home.php">Home</a></li>
 		<li><a href="createEvent.php">Event erstellen</a></li>
    		<li><a href="eventList.php">Eventliste</a></li>
-		<li class="active">Login</li>
-		<li><a href="logout.php">Ausloggen</a></li>
+		
+		<li class="active">Ausloggen</li>
   	</ul>
   </nav>
 
@@ -30,14 +31,7 @@
 
 
   <section>
-	<h2> Login: </h2>
-		<form action="login.php" id="login" method="post">
-				<label>Name:</label>
-				<input type="text" id="name" name="name" maxLength="30" placeholder="Name">
-				<label>Passwort:</label>
-				<input type="password" id="pass" name="pass" maxLength="30" placeholder="Passwort">
-				<input type="submit" value="Anmelden" class="btnSubmit" />
-			</form>
+		Sie sind nun ausgeloggt !
 	
     </section>    
    

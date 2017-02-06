@@ -1,45 +1,4 @@
-<?php
-	session_start();
-	
-	if(isset($_GET['k'])){
-		$k = $_GET['k'];
-	}else{
-		header("Location: home.php");
-		exit();
-	}
-	
-	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
-	
-	$statement = $pdo->prepare("SELECT * FROM `sponsors` WHERE `sponsors`.`id` = ?");
-	$statement->execute(array($k));
-	
-	if($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$sponsor = $row;
-	}else{
-		header("Location: home.php");
-		exit();
-	}
-	
-	$sponsor["description"] = nl2br($sponsor["description"]);
-	
-	
-	if(isset($_SESSION['hostId'])){
-		$hostStuff = "const hostStuff = {\"id\" : ".$_SESSION['hostId'].", \"name\" : \"".$_SESSION['name']."\", \"image\" : \"".$_SESSION['image']."\"};";
-	}else{
-		$hostStuff = "const hostStuff = null;";
-	}
-	
-	
-	echo "
-<script type=\"text/javascript\">
-	const data = ".json_encode($sponsor,JSON_PRETTY_PRINT).";
-	$hostStuff
-</script>
-		";
-?>
-
+<!doctype html>
 <html>
 <head>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
@@ -47,7 +6,7 @@
 	<meta name="author" content="@Firmenname" /> <!-- Hier sollte der Name des Autors, der Inhalte erstellt, rein. -->
 	<meta name="Description" content="Ersellen sie ihr Event!" /> 
     <link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> <!-- Hier sollte der Pfad zur CSS-datei eingetragen werden, 
-           die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
+           die fÃ¼r die Bildschirmausgabe zustÃ¤ndig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
 	<script>
 		var mapDiv;
 	
@@ -59,7 +18,7 @@
 				var nameLabel = document.createTextNode(hostStuff["name"]);
 				var image = document.createElement('img');
 				image.src= "../"+hostStuff["image"];
-				image.alt= "Bild nicht verfügbar";
+				image.alt= "Bild nicht verfÃ¼gbar";
 				image.title= "Vorschau";
 				image.style.height="50px";
 				
@@ -89,7 +48,7 @@
 			var sponsorImg = document.createElement('img');
 			sponsorImg.class = "eventImg";
 			sponsorImg.src = "../"+data["imagePath"];
-			sponsorImg.alt = "Bild nicht verfügbar";
+			sponsorImg.alt = "Bild nicht verfÃ¼gbar";
 			sponsorImg.style.height = "200px";
 			
 			var description = document.createElement("p");
