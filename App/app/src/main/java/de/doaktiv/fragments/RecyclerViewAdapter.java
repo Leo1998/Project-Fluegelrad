@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.home;
+package de.doaktiv.fragments;
 
 
 import android.os.Bundle;
@@ -18,11 +18,11 @@ import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
 import de.doaktiv.fragments.day.CalendarDayFragment;
 
-public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.ViewHolder>{
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private FragmentActivity activity;
 
-    public HomeRecyclerViewAdapter(){
+    public RecyclerViewAdapter(){
 
     }
 
@@ -45,10 +45,13 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
         holder.getCategoryTextView().setText(event.getName());
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-        simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
-        holder.getDateTextView().setText(simpleDateFormat.format(event.getDateStart().getTime()));
+        if (event.getImages().size() > 0) {
+            holder.getImageView().setImageAsync(event.getImages().get(0));
+        }
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        simpleDateFormat.applyPattern("E \ndd.MM.yyyy \n HH:mm");
+        holder.getDateTextView().setText(simpleDateFormat.format(event.getDateStart().getTime()));
 
         holder.getLocationTextView().setText(event.getLocation().getAddress());
         holder.getHostTextView().setText("N/A");
@@ -80,6 +83,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
         private TextView categoryTextView;
         private TextView locationTextView;
         private TextView hostTextView;
+        private AsyncImageView imageView;
 
         private CardView cardView;
 
@@ -90,6 +94,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
             categoryTextView = (TextView)itemView.findViewById(R.id.category);
             locationTextView = (TextView)itemView.findViewById(R.id.location);
             hostTextView = (TextView)itemView.findViewById(R.id.host);
+            imageView = (AsyncImageView)itemView.findViewById(R.id.imageView);
 
             cardView = (CardView) itemView.findViewById(R.id.card_view);
         }
@@ -108,6 +113,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
         public TextView getHostTextView() {
             return hostTextView;
+        }
+
+        public AsyncImageView getImageView(){
+            return imageView;
         }
 
         public CardView getCardView() {

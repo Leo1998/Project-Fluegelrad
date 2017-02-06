@@ -13,10 +13,11 @@ import de.doaktiv.MainActivity;
 import de.doaktiv.R;
 import de.doaktiv.database.DatabaseDownloadTask;
 import de.doaktiv.database.DatabaseTaskWatcher;
+import de.doaktiv.fragments.RecyclerViewAdapter;
 
 public class CalendarListFragment extends Fragment {
 
-    private CalendarRecyclerViewAdapter adapter;
+    private RecyclerViewAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -26,7 +27,7 @@ public class CalendarListFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        this.adapter = new CalendarRecyclerViewAdapter();
+        this.adapter = new RecyclerViewAdapter();
         adapter.setActivity(getActivity());
         recyclerView.setAdapter(adapter);
 

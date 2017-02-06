@@ -14,10 +14,11 @@ import de.doaktiv.MainActivity;
 import de.doaktiv.R;
 import de.doaktiv.database.DatabaseDownloadTask;
 import de.doaktiv.database.DatabaseTaskWatcher;
+import de.doaktiv.fragments.RecyclerViewAdapter;
 
 public class HomeFragment extends Fragment {
 
-    private HomeRecyclerViewAdapter adapter;
+    private RecyclerViewAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -27,7 +28,7 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        this.adapter = new HomeRecyclerViewAdapter();
+        this.adapter = new RecyclerViewAdapter();
         adapter.setActivity(getActivity());
         recyclerView.setAdapter(adapter);
 

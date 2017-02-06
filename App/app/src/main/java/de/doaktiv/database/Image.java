@@ -17,6 +17,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 
+import de.doaktiv.util.Utils;
+
 public class Image {
 
     public static Image readImage(JSONObject obj) throws JSONException, ParseException {
