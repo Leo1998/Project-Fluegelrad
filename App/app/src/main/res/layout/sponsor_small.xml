@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:weightSum="1">
 
-    <de.projectfluegelrad.fragments.AsyncImageView
+    <de.doaktiv.fragments.AsyncImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/sponsor_image"

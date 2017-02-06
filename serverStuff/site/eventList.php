@@ -38,21 +38,67 @@
 		$eventArray[] = $row;
 	}
 	
+	if(isset($_SESSION['hostId'])){
+		$hostStuff = "const hostStuff = {\"id\" : ".$_SESSION['hostId'].", \"name\" : \"".$_SESSION['name']."\", \"image\" : \"".$_SESSION['image']."\"};";
+	}else{
+		$hostStuff = "const hostStuff = null;";
+	}
+	
 	echo "
 <script type=\"text/javascript\">
 	const data = ".json_encode($eventArray,JSON_PRETTY_PRINT).";
+	$hostStuff
 </script>
-	";
+		";
 ?>
 
 <html>
-
 <head>
-    <title>Eventliste</title>
+	<title>Eventliste</title>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+	<meta charset="utf-8">
+	<meta name="author" content="@Firmenname" /> <!-- Hier sollte der Name des Autors, der Inhalte erstellt, rein. -->
+	<meta name="Description" content="Ersellen sie ihr Event!" /> 
+    <link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> <!-- Hier sollte der Pfad zur CSS-datei eingetragen werden, 
+           die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
+	
     <script>
 		function init(){
 			for(var i = 0 ; i in data ; i++){
 				addEvent(data[i]);
+			}
+			if(hostStuff != null){
+				var div = document.createElement('div');
+				div.id = "Host";
+				
+				var nameLabel = document.createTextNode(hostStuff["name"]);
+				var image = document.createElement('img');
+				image.src= "../"+hostStuff["image"];
+				image.alt= "Bild nicht verfügbar";
+				image.title= "Vorschau";
+				image.style.height="50px";
+				
+				var logout = document.createElement("a");
+				logout.href = "logout.php";
+				logout.innerHTML = "Abmelden";
+				
+				div.appendChild(nameLabel);
+				div.appendChild(image);
+				div.appendChild(logout);
+				
+				document.getElementById("header").appendChild(div);
+				
+				var createEvent = document.createElement('a');
+				createEvent.href = "createEvent.php";
+				createEvent.innerHTML = "Neues Event erstellen";
+				
+				document.getElementById("createEventDiv").appendChild(createEvent);
+			}else{
+				var login = document.createElement("a");
+				login.href = "login.html";
+				login.innerHTML = "Anmelden";
+				
+				document.getElementById("header").appendChild(login);
 			}
 		}
 		
@@ -60,9 +106,9 @@
 			var li = document.createElement('li');
 			li.id = "event"+event["id"];
 			
-			var name = document.createElement('span');
-			name.class = 'eventName';
+			var name = document.createElement('a');
 			name.innerHTML = event["name"]+"<br>";
+			name.href = "showEvent.php?k="+event["id"];
 			
 			var rating = document.createElement('span');
 			rating.class = 'eventRating';
@@ -128,10 +174,39 @@
 			document.getElementById('events').appendChild(document.createElement('br'));
 		}
 	</script>
-	</head>
+</head>
+<body onload='init();'>
+  <header>
+   <a id="logo" href="./"><span>Do</span>-Aktiv</a> 
+  </header>
+  
+  <nav>
+  	<ul>
+		<li><a href="createEvent.php">Event erstellen</a></li>
+   		<li><a href="home.php">Home</a></li>
+   		<li class="active">Eventliste</li>
+		<li><a href="logout.php">Ausloggen</a></li>
+  	</ul>
+  </nav>
 
-	<body onload='init();'>
-		<oul id="events" name="events" style="list-style-type: none;">
-		</oul>
-	</body>
+  <main role="main">
+
+
+  <section>
+	
+	<ul id="events" name="events" style="list-style-type: none;">
+	</ul>
+	<br>
+	<div id="createEventDiv"></div>
+	
+    </section>    
+   
+  	
+    </main>
+  	
+    <footer>
+		 
+	</footer>
+
+</body>
 </html>

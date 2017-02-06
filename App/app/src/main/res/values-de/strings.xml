@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Project Fluegelrad</string>
+    <string name="app_name">Do.AKTIV</string>
     <string name="calender_grid">Kalender</string>
     <string name="calender_list">Event Liste</string>
     <string name="drawer_about">Info</string>
@@ -37,4 +37,5 @@
     <string name="participants">Teilnehmer</string>
     <string name="participating">Du bist angemeldet!</string>
     <string name="participate_error">Fehler beim teilnehmen!</string>
+    <string name="rating_error">Fehler beim bewerten!</string>
 </resources>

@@ -2,7 +2,8 @@
 	session_start();
 	
 	if(!isset($_SESSION['hostId'])){
-		exit('Error: Must be logged in to create an Event');
+		header("Location: home.php");
+		exit();
 	}
 	
 	//Spam protection, IP ban, Initalize PDO
@@ -32,24 +33,27 @@
 		}
 	}
 	
+	$hostStuff = "const hostStuff = {\"id\" : ".$_SESSION['hostId'].", \"name\" : \"".$_SESSION['name']."\", \"image\" : \"".$_SESSION['image']."\"};";
 	
 	echo "
 		<script type=\"text/javascript\">
 			const knownLocs = ".json_encode($locations,JSON_PRETTY_PRINT).";
 			const sponsors = ".json_encode($sponsors,JSON_PRETTY_PRINT).";
 			const maxSponsorId = ".$sMax.";
-			const hostName = \"".$_SESSION['name']."\";
-			const hostImage = \"".$_SESSION['image']."\";
+			$hostStuff;
 		</script>
 	";
 ?>
-
 <html>
-
 <head>
-    <title>Event erstellen</title>
-	<link href ="createEventStylesheet.css" rel="stylesheet" >
+	<title>Event erstellen</title>
     <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+	<meta charset="utf-8">
+	<meta name="author" content="@Firmenname" /> <!-- Hier sollte der Name des Autors, der Inhalte erstellt, rein. -->
+	<meta name="Description" content="Ersellen sie ihr Event!" /> 
+    <link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> <!-- Hier sollte der Pfad zur CSS-datei eingetragen werden, 
+           die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
+	
     <script>
 		var imageCount = 0;
 		var sponsorCount = 0;
@@ -153,16 +157,26 @@
 				sponsorsSelect.appendChild(li);
 			}
 			
-			var nameLabel = document.createTextNode(hostName);
+			var div = document.createElement('div');
+			div.id = "Host";
+				
+			var nameLabel = document.createTextNode(hostStuff["name"]);
 			var image = document.createElement('img');
-			image.src= hostImage;
+			image.src= "../"+hostStuff["image"];
 			image.alt= "Bild nicht verfügbar";
 			image.title= "Vorschau";
 			image.style.height="50px";
-			
-			div = document.getElementById('hostStuff');
+				
+			var logout = document.createElement("a");
+			logout.href = "logout.php";
+			logout.innerHTML = "Abmelden";
+				
 			div.appendChild(nameLabel);
 			div.appendChild(image);
+			div.appendChild(logout);
+			
+			document.getElementById("header").appendChild(div);
+
 			
 			document.getElementById('maxSponsorId').value = maxSponsorId;
 		}
@@ -416,41 +430,50 @@
 			li.parentNode.removeChild(li);
 		}
 	</script>
-	</head>
+</head>
+<body onload='init();'>
+  <header>
+   <a id="logo" href="./"><span>Do</span>-Aktiv</a> 
+  </header>
+  
+  <nav>
+  	<ul>
+   		<li class="active">Event erstellen</li>
+   		<li><a href="home.php">Home</a></li>
+   		<li><a href="eventList.php">Eventliste</a></li>
+		<li><a href="logout.php">Ausloggen</a></li>
+  	</ul>
+  </nav>
 
-	<body onload='init();'>
-		<div id="left"></div>
-	<div id="right"></div>
-		<div id="top"></div>
-	<div id="bottom"></div>
-		<div id= "header">
-				<form action="logout.php">
-					<div id = "hostStuff"></div>
-					<input type = "submit" value = "Abmelden">
-				</form>
-		</div>
+  <main role="main">
+
+
+  <section>
+   	
 		<div id= "formDiv">
 			<form action="uploadEvent.php" enctype="multipart/form-data" id="event" method="post">
-				<uol style="list-style-type: none;">
+				<ul style="list-style-type: none;">
 					<li>
+						<h2 for="name">Eventname:</h2>
 						<input type="text" name="eventName" id="eventName" maxLength="30" placeholder = "Eventname">
 					</li>
 					<br>
 					<li>
-						<label for="price">Preis</label>
+						<h2 for="price">Preis:</h2>
 						<input type="number" name="price" id="price" min="0" max="128" step="0.01" value = 0>
 						<label> &#x20ac;</label>
 					</li>
 					<br>
 					<li>
-						<label for="participants">Maximale Teilnehmerzahl</label>
+						<h2 for="participants">Maximale Teilnehmerzahl:</h2>
 						<input type="number" name="participants" id="participants" min="1" placeholder = "Keine">
 						<input type="checkbox" name="countParticipants" id="countParticipants" checked>
 						<label for="countParticipants">Teilnehmer z&#xe4;hlen</label>
 					</li>
 					<br>
 					<li>
-						<label>Datum und Zeit von</label>
+						<h2>Datum und Zeit:</h2>
+						<label>von</label>
 						<input type="datetime-local" name="dateStart" id="dateStart" max="9999-12-31T23:59:59">
 						<label>bis</label>
 						<input type="datetime-local" name="dateEnd" id="dateEnd" max="9999-12-31T23:59:59">
@@ -461,15 +484,15 @@
 					</li>
 					<br>
 					<li>
-						<label>Alter von</label>
+						<h2>Alter:</h2>
+						<label>von</label>
 						<input type="number" name="ageMin" id="ageMin" min="0" max="99" value = 0>
 						<label>bis</label>
 						<input type="number" name="ageMax" id="ageMax" min="0" max="99" value = 99>
 					</li>
 					<br>
 					<li>
-						<label>Position</label>
-						<br>
+						<h2>Position:</h2>
 						<input type = "radio" name = "knowLoc" id = "oldLoc" value = "1" checked></input>
 						<label for="oldLoc">Bekannte Location</label>
 						<br>
@@ -483,45 +506,73 @@
 						<input type = "checkbox" name = "setMarker" id = "setMarker"></input>
 						<label for="setMarker">Marker platzieren</label>
 						<br>
+						<br>
 						<input type="number" name="latitude" id="latitude" min="-180" max = "180" step="any" value = 51.514>
 						<input type="number" name="longitude" id="longitude" min="-180" max = "180" step="any" value = 7.463>
+						<br>
+						<br>
 						<button type="button" onClick="applyLonLat();">Zu Position springen</button>
 						<button type="button" onClick="setNewMarker();">Marker platzieren</button>
-						<div id="Map" style="height:500px ; width:1000px"></div>
+						<br>
+						<br>
+						<div id="Map" ></div>
 						<div id="mapHeader">
 							&#xa9;<a href="http://www.openstreetmap.org">OpenStreetMap</a>
 							und <a href="http://www.openstreetmap.org/copyright">Mitwirkende</a>,
 							<a href="http://creativecommons.org/licenses/by-sa/2.0/deed.de">CC-BY-SA</a>
 						</div>
 					</li>
-					<br>
 					<li>
-						<label>Sponsoren</label>
+						<h2>Sponsoren:</h2>
 						<input type = "number" id = "maxSponsorId" name = "maxSponsorId" style = "position : absolute ; display : none ;" value = "0">
-						<oul name = "sponsors" id = "sponsors" multiple>
-						</oul>
+						<ul name = "sponsors" id = "sponsors" multiple>
+						</ul>
 						<input type = "number" id = "sponsorCount" name = "sponsorCount" style = "position : absolute ; display : none ;" value = "0">
 						<button type="button" onClick="createSponsor();">Neuer Sponsor</button>
-						<oul name = "newSponsors" id = "newSponsors">
-						</oul>
+						<ul name = "newSponsors" id = "newSponsors">
+						</ul>
 					</li>
 					<br>
 					<li>
-						<label> Bilder </label>
+						<h2>Bilder:</h2>
 						<input type = "number" id = "imageCount" name = "imageCount" style = "position : absolute ; display : none ;" value = "0">
 						<br>
 						<button type="button" onClick="createImage();">Neues Bild</button>
 						<br>
 						<label>Das erste Bild wird als Vorschau-Bild des Events angezeigt</label>
-						<oul name = "images" id="images">
-						</oul>
+						<ul name = "images" id="images">
+						</ul>
 					</li>
 					<br>
 					<li>
 						<input type="submit" value="Event erstellen" class="btnSubmit" />
 					</li>
-				</uol>
+				</ul>
 			</form>
 		</div>
-	</body>
+	
+    </section>    
+   
+  	<aside> <!-- Diese Sidebar kann vom Inhalt verändert werden. Sie wird nicht ausgedruckt. -->
+    	<h3>Tipps und Anmerkungen beim Erstellen</h3>
+    	<p>
+        	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
+		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
+        	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
+		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
+        	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
+		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
+        	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
+		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
+		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
+         </p>
+	</aside>
+    </main>
+  	
+    <footer>
+		 
+	</footer>
+
+</body>
 </html>

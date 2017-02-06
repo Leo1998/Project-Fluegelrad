@@ -26,7 +26,7 @@
                 android:layout_alignLeft="@+id/sponsor_image"
                 android:layout_alignStart="@+id/sponsor_image" />
 
-            <de.projectfluegelrad.fragments.AsyncImageView
+            <de.doaktiv.fragments.AsyncImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/sponsor_image"

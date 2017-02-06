@@ -6,13 +6,11 @@ android {
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
     defaultConfig {
-        applicationId "de.projectfluegelrad"
+        applicationId "de.doaktiv"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-
-        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
