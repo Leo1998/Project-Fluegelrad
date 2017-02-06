@@ -48,11 +48,23 @@ class Storage: DatabaseManagerProtocol {
 	/**
 	loads the events from the storage which can be rated
 	*/
-	static func getEventsRatable() -> [Event] {
+	static func getEventsRateable() -> [Event] {
+		let ratedData = myDefaults.object(forKey: "rated")
+		
+		var rated = [Int: Event]()
+		if ratedData != nil {
+			rated = NSKeyedUnarchiver.unarchiveObject(with: ratedData as! Data) as! [Int: Event]
+		}
+		
 		var events = Storage.getEvents()
 		let today = Date()
 		events = events.filter(){event in
-			return (event).dateStart.compare(today) == ComparisonResult.orderedAscending && Storage.isParticipating(event: event)
+			if event.participants == -1 {
+				return (event).dateStart.compare(today) == ComparisonResult.orderedAscending && rated[event.id] == nil
+			}else {
+				return (event).dateStart.compare(today) == ComparisonResult.orderedAscending && Storage.isParticipating(event: event) && rated[event.id] == nil
+			}
+			
 		}
 		return events
 	}
@@ -259,6 +271,18 @@ class Storage: DatabaseManagerProtocol {
 	*/
 	public static func rate(event: Event, rate: Int){
 		databaseManager.rate(event: event, rate: rate)
+		
+		let ratedData = myDefaults.object(forKey: "rated")
+		
+		var rated = [Int: Event]()
+		if ratedData != nil {
+			rated = NSKeyedUnarchiver.unarchiveObject(with: ratedData as! Data) as! [Int: Event]
+		}
+		
+		rated[event.id] = event
+		
+		myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: rated), forKey: "rated")
+
 	}
 	
 	/**
