@@ -27,7 +27,7 @@ class RatingViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
 		
-		rateableEvents = Storage.getEventsRatable()
+		rateableEvents = Storage.getEventsRateable()
 		sponsors = Storage.getSponsors()
 		
 		eventTable = UITableView()
@@ -137,9 +137,8 @@ class RatingViewController: UIViewController, UITableViewDelegate, UITableViewDa
 	internal func done(){
 		Storage.rate(event: ratingView.event, rate: ratingView.rate)
 		ratingView.isHidden = true
-		Storage.removeParticipating(event: ratingView.event)
 		
-		rateableEvents = Storage.getEventsRatable()
+		rateableEvents = Storage.getEventsRateable()
 		eventTable.reloadData()
 	}
 
