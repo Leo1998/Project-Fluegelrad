@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -495,7 +496,7 @@ public class DatabaseManager {
     }
 
     public List<Event> getRecentEventList() {
-        /**List<Event> list = new ArrayList<>();
+        List<Event> list = new ArrayList<>();
 
         for (int i = eventList.size()-1; i >= 0; i--){
             if (eventList.get(i).getDateStart().compareTo(Calendar.getInstance()) > 0){
@@ -505,9 +506,43 @@ public class DatabaseManager {
             }
         }
 
-        Collections.reverse(list);*/
+        Collections.reverse(list);
 
-        return eventList;
+        return list;
+    }
+
+    public List<Event> getHomeEventList() {
+        List<Event> recent = getRecentEventList();
+        List<Event> shown = new ArrayList<>();
+
+        for (int i = 0; i < 1; i++){
+            if (recent.size() >= 1) {
+                shown.add(recent.get(0));
+                recent.remove(0);
+            }
+
+            if (recent.size() >= 1) {
+                shown.add(recent.get(0));
+                recent.remove(0);
+            }
+        }
+
+        for (int i = 0; i < 1; i++) {
+            if (recent.size() >= 1) {
+                Event mostPopular = recent.get(0);
+
+                for (Event event : recent) {
+                    if (event.getParticipants() > mostPopular.getParticipants()) {
+                        mostPopular = event;
+                    }
+                }
+
+                shown.add(mostPopular);
+                recent.remove(mostPopular);
+            }
+        }
+
+            return shown;
     }
 
     public List<Sponsor> getSponsors(Event event) {

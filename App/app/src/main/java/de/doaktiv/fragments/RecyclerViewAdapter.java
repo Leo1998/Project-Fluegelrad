@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import de.doaktiv.R;
 import de.doaktiv.database.DatabaseManager;
@@ -22,8 +23,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private FragmentActivity activity;
 
-    public RecyclerViewAdapter(){
+    private boolean homeView;
 
+    public RecyclerViewAdapter(boolean homeView){
+        this.homeView = homeView;
     }
 
     public void setActivity(FragmentActivity activity) {
@@ -40,7 +43,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        final Event event = DatabaseManager.INSTANCE.getRecentEventList().get(position);
+        final Event event;
+
+        if (homeView) {
+            event = DatabaseManager.INSTANCE.getHomeEventList().get(position);
+        }else {
+            event = DatabaseManager.INSTANCE.getRecentEventList().get(position);
+        }
+
         Calendar i = event.getDateStart();
 
         holder.getCategoryTextView().setText(event.getName());
@@ -74,7 +84,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        return DatabaseManager.INSTANCE.getRecentEventList().size();
+        if (homeView) {
+            return DatabaseManager.INSTANCE.getHomeEventList().size();
+        }else {
+            return DatabaseManager.INSTANCE.getRecentEventList().size();
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
