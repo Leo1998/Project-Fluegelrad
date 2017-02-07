@@ -2,6 +2,6 @@
 	session_start();
 	session_destroy();
 	
-	header("Location: http://localhost/site/home.php");
+	header("Location: home.php");
 	exit();
 ?>
