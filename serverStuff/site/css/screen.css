@@ -10,7 +10,7 @@
 
 /* -- Allgemeines -- */
 html {
-  background: url(../img/bg.gif) #e7f3f7; /* Hier sollte man, auch wenn man ein Bild als Hintergrund hat, nicht vergessen die Hintergrundfarbe zu setzen. Es könnte nämlich sein dass man aus Versehen für den Text die gleiche Farbe hat wie für den Hintergrund wobei die Leute mit ausgeschalteten Bildern nichts erkennen können. Andererseits verwendet man heute eher durch CSS erzeugte Muster und Verläufe, um die Ladezeit für Bilder zu sparen.*/
+  background: url(../img/bg.jpg) #e7f3f7; /* Hier sollte man, auch wenn man ein Bild als Hintergrund hat, nicht vergessen die Hintergrundfarbe zu setzen. Es könnte nämlich sein dass man aus Versehen für den Text die gleiche Farbe hat wie für den Hintergrund wobei die Leute mit ausgeschalteten Bildern nichts erkennen können. Andererseits verwendet man heute eher durch CSS erzeugte Muster und Verläufe, um die Ladezeit für Bilder zu sparen.*/
   color: black;
 }
 
@@ -33,7 +33,7 @@ body {
 
 /* - Logo bzw. Kopf - */
 header {
-  background: url(../img/blume.jpg) 0 0 no-repeat black; /* Das Bild mit der Blume hat einen Übergang zum Schwarzen, das nutzen wir aus. Wir lassen es oben links beginnen und wiederholen es nicht. Dadurch dass die Hintergrundfarbe auch schwarz ist, entsteht der Eindruck als ob das Bild unendlich lang wäre. */
+  background: url(../img/testHeader.jpg) 0 0 no-repeat black; /* Das Bild mit der Blume hat einen Übergang zum Schwarzen, das nutzen wir aus. Wir lassen es oben links beginnen und wiederholen es nicht. Dadurch dass die Hintergrundfarbe auch schwarz ist, entsteht der Eindruck als ob das Bild unendlich lang wäre. */
   height: 64px; /* Das Blumenbild ist 64px hoch also wählen wir das auch als Höhe für unseren Kopf. */
   margin: 0; /* Manche Browser haben das schon voreingestellt aber nicht alle, deshalb vereinheitlichen wir das. */
   padding: 0 20px;
@@ -57,7 +57,6 @@ a:visited { color: black; } /* Besuchte Links werden schwarz, bleiben dennoch un
 
 /* - Der Hauptinhaltsteil - */
 main {
-  background: url(../img/blaue-blume.png) no-repeat 100% 0 white; /* Die kleine, blaue, halbdurchsichtige Blume wird als Hintergrundbild, welches rechts oben in der Ecke steht, definiert. */
   padding: 0 2%; 
   line-height: 1.5em; /* Zur besseren Lesbarkeit erhöhen wir die Zeilenhöhe. */
 }
@@ -146,7 +145,9 @@ img { /* Alle Bilder bekommen einen schönen Rahmen. */
   padding: 1px;
   width:33%
 }
-
+.imageNode .sponsorNode{
+	background-color: #8C8C8C;
+}
 
 /* -- Layoutspezifisches -- */
 

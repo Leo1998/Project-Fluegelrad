@@ -108,9 +108,9 @@
 				
 				div.appendChild(nameLabel);
 				div.appendChild(image);
-				div.appendChild(logout);
-				
-				document.getElementById("header").appendChild(div);
+				//div.appendChild(logout);
+				document.getElementById("loginfield").appendChild(logout);
+				//document.getElementById("header").appendChild(div);
 			}else{
 				var login = document.createElement("a");
 				login.href = "login.html";
@@ -230,7 +230,7 @@
    		<li><a href="home.php">Home</li>
    		<li><a href="createEvent.php">Event erstellen</a></li>
    		<li><a href="eventList.php">Eventliste</a></li>
-		<li><a href="logout.php">Ausloggen</a></li>
+		<li class="loginfield"></li>
   	</ul>
   </nav>
 
