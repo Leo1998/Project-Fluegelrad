@@ -149,6 +149,10 @@ img { /* Alle Bilder bekommen einen schönen Rahmen. */
 	background-color: #8C8C8C;
 }
 
+.imageRemove {
+	float : right;
+}
+
 /* -- Layoutspezifisches -- */
 
 footer {
