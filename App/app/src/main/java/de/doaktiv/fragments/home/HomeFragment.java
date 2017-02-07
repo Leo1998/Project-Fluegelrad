@@ -10,10 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.doaktiv.MainActivity;
 import de.doaktiv.R;
 import de.doaktiv.database.DatabaseDownloadTask;
+import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.DatabaseTaskWatcher;
+import de.doaktiv.database.Event;
 import de.doaktiv.fragments.RecyclerViewAdapter;
 
 public class HomeFragment extends Fragment {
@@ -28,7 +33,8 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        this.adapter = new RecyclerViewAdapter();
+
+        this.adapter = new RecyclerViewAdapter(true);
         adapter.setActivity(getActivity());
         recyclerView.setAdapter(adapter);
 
