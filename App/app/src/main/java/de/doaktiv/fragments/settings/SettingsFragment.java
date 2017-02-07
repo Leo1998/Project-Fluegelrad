@@ -52,8 +52,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         notices.addNotice(new Notice("osmdroid", "https://github.com/osmdroid/osmdroid", "", new ApacheSoftwareLicense20())); // wer ist der owner???
 
-        notices.addNotice(new Notice("ViewPagerIndicator", "https://github.com/JakeWharton/ViewPagerIndicator", "Copyright 2012 Jake Wharton\nCopyright 2011 Patrik Åkerfeldt\nCopyright 2011 Francisco Figueiredo Jr.", new ApacheSoftwareLicense20()));
-
         new LicensesDialog.Builder(SettingsFragment.this.getContext())
                 .setNotices(notices)
                 .setIncludeOwnLicense(true)

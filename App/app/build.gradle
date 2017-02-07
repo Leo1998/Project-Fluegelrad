@@ -9,11 +9,8 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
-    }
-    dexOptions {
-        javaMaxHeapSize "4g"
-        preDexLibraries = false
+
+        vectorDrawables.useSupportLibrary true
     }
     buildTypes {
         release {
