@@ -230,7 +230,7 @@
    		<li><a href="home.php">Home</li>
    		<li><a href="createEvent.php">Event erstellen</a></li>
    		<li><a href="eventList.php">Eventliste</a></li>
-		<li class="loginfield"></li>
+		<li id="loginfield"></li>
   	</ul>
   </nav>
 
