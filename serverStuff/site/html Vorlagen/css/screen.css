@@ -1,10 +1,6 @@
 /* ACHTUNG! Man sollte alle Hilfskommentare hier herauslöschen, bevor man das CSS
  * produktiv nutzt, damit die Datei so klein wie möglich bleibt.
- */
-
- /* NORMALISIERUNG:
-    Manche WebDesigner stellen alle margin und paddings auf 0, um eine einheitliche Darstellung zu erreichen, andererseits muss man dann ALLES wieder neu formatieren.
-	box-sizing für alle Elemente ist jedoch sehr sinnvoll, da man damit Rahmen und Innenabstände automatisch in der Breite einschließt und so leichter layouten kann. */ 
+ */ 
 * {    
 	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
@@ -35,13 +31,17 @@ body {
   width: 990px;
 }
 
+.imageNode{
+	background-color: #8C8C8C;
+}
+
 /* - Logo bzw. Kopf - */
 header {
-	background: url(../img/blume.jpg) 0 0 no-repeat black; /* Das Bild mit der Blume hat einen Übergang zum Schwarzen, das nutzen wir aus. Wir lassen es oben links beginnen und wiederholen es nicht. Dadurch, dass die Hintergrundfarbe auch schwarz ist, entsteht der Eindruck als ob das Bild unendlich lang wäre. */
-	height: 64px; /* Das Blumenbild ist 64px hoch also wählen wir das auch als Höhe für unseren Kopf. */
-	margin: 0; /* Manche Browser haben das schon voreingestellt aber nicht alle, deshalb vereinheitlichen wir das. */
-	padding: 0 20px;
-	text-align: right;
+  background: url(../img/testHeader.jpg) 0 0 no-repeat black; /* Das Bild mit der Blume hat einen Übergang zum Schwarzen, das nutzen wir aus. Wir lassen es oben links beginnen und wiederholen es nicht. Dadurch dass die Hintergrundfarbe auch schwarz ist, entsteht der Eindruck als ob das Bild unendlich lang wäre. */
+  height: 64px; /* Das Blumenbild ist 64px hoch also wählen wir das auch als Höhe für unseren Kopf. */
+  margin: 0; /* Manche Browser haben das schon voreingestellt aber nicht alle, deshalb vereinheitlichen wir das. */
+  padding: 0 20px;
+  text-align: right;
   line-height: 54px;
   font-size: 54px; /* Das Logo soll auch in unseren Kopf passen, deswegen ist es ein wenig kleiner. */
   letter-spacing: -3px; /* Wieder ein wenig Typografie damit das Logo besser aussieht. */
@@ -61,12 +61,24 @@ a:visited { color: black; } /* Besuchte Links werden schwarz, bleiben dennoch un
 
 /* - Der Hauptinhaltsteil - */
 main {
-  background: url(../img/blaue-blume.png) no-repeat 100% 0 white; /* Die kleine, blaue, halbdurchsichtige Blume wird als Hintergrundbild, welches rechts oben in der Ecke steht, definiert. */
   padding: 0 2%; 
   line-height: 1.5em; /* Zur besseren Lesbarkeit erhöhen wir die Zeilenhöhe. */
 }
 
 section{display : inline-block;width:73%;}
+
+#Map{
+	padding: 0;
+	height: 500px;
+	width: 100%;
+}
+#mapHeader{
+	font-size:8px;
+}
+
+label{
+  font-weight:normal;
+}
 
 /* - Sidebar, Rechte Spalte - */
 aside {
@@ -145,14 +157,13 @@ footer {
   clear: both; /* Damit #main mindestens so hoch ausgedehnt wird wie aside, falls aside länger sein sollte. */
   padding: 2%;
   text-align:center;
-  border-top: 1px dotted #aaa; /* Hiermit trennen wir den footer optisch vom eigentlichen Inhalt ab. */
+  border-top: 1px dotted #aaa; /* Hiermit trennen wir optisch den footer vom eigentlichen Inhalt ab. */
 }
 
 footer .copy span {
 	margin:0 auto;
 	display:block;
 }
-
 
 
 /* - Menü - */
@@ -178,7 +189,7 @@ nav ul li a {
   text-decoration: none;
 }
 
-nav ul li a:hover {   /* wenn die Maus drüberfährt, leucht der Link gelb auf! */
+nav ul li a:hover {   /* wenn die Maus drüberfährt, leucht der Link Gelb auf! */
 	color:green;
 	background:yellow;
 	opacity:0.8;
@@ -227,13 +238,13 @@ header {
 header a#logo {
  text-decoration: none; /* Hier lassen wir den Unterstrich weg. */
 }
-.skip, aside, nav { /* Wenn sich jemand eine Seite aus dem Internet ausdruckt dann will er mit hoher Wahrscheinlichkeit den Inhalt drucken und nicht das Menü oder sonstige Angaben, die für die Navigation auf dem Bildschirm gedacht sind. Deshalb lassen wir diese vom Papier verschwinden. Das spart auch viel Papier und Tinte. */
+.skip, aside, nav { /* Wenn sich jemand eine Seite aus dem Internet ausdruckt dann will er mit hoher Wahrscheinlichkeit den Inhalt drucken und nicht das Menü oder sonstige Angaben, die für die Navigation auf dem Bildschirm gedacht sind. Deshalb lassen wir diese vom Papier verschwinden. Das spart auch viel Paphier und Tinte. */
  display: none;
 }
 main a:link:after, main a:visited:after { /* Auf dem gedruckten Blatt Papier kann man keinen Link klicken. Deshalb drucken wir den gesammten URL dieses Links dahinter an.  Wer mehr zu diesem Thema wissen will sei auf <http://www.alistapart.com/articles/goingtoprint/ verwiesen.> */
    content: " (" attr(href) ") ";
    font-size: 0.9em; }
-main a[href^="/"]:after { /* Der Mozilla/Firefox zeigt, im Gegensatz zum Opera, die Domain nicht von selbst an. Hier müssen wir mittels CSS3 nachhelfen. */
+main a[href^="/"]:after { /* Der Mozilla/Firefox zeigen, im Gegensatz zum Opera, die Domain nicht von selbst an. Hier müssen wir mittels CSS3, welches er schon zum Teil versteht, nachhelfen. */
  content: " (http://example.org" attr(href) ") ";
 }
 .fright { /* Damit die Fließeigenschaften auch beim Drucken beachtet werden. */

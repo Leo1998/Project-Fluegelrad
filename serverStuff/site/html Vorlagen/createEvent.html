@@ -1,49 +1,4 @@
-<?php
-	session_start();
-	
-	if(!isset($_SESSION['hostId'])){
-		header("Location: home.php");
-		exit();
-	}
-	
-	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
-	
-	$statement = $pdo->prepare("SELECT * FROM `locations`");
-	$statement->execute();
-	
-	$locations = array();
-	
-	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$locations[] = $row;
-	}
-	
-	
-	$statement = $pdo->prepare("SELECT * FROM `sponsors`");
-	$statement->execute();
-	
-	$sMax = 0;
-	$sponsors = array();
-	
-	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$sponsors[] = $row;
-		if($row['id'] > $sMax){
-			$sMax = $row['id'];
-		}
-	}
-	
-	$hostStuff = "const hostStuff = {\"id\" : ".$_SESSION['hostId'].", \"name\" : \"".$_SESSION['name']."\", \"image\" : \"".$_SESSION['image']."\"};";
-	
-	echo "
-		<script type=\"text/javascript\">
-			const knownLocs = ".json_encode($locations,JSON_PRETTY_PRINT).";
-			const sponsors = ".json_encode($sponsors,JSON_PRETTY_PRINT).";
-			const maxSponsorId = ".$sMax.";
-			$hostStuff;
-		</script>
-	";
-?>
+
 <html>
 <head>
 	<title>Event erstellen</title>
@@ -176,10 +131,9 @@
 				
 			div.appendChild(nameLabel);
 			div.appendChild(image);
+			div.appendChild(logout);
 			
-			document.getElementById("loginfield").appendChild(logout);
-			
-			//document.getElementById("header").appendChild(div);
+			document.getElementById("header").appendChild(div);
 
 			
 			document.getElementById('maxSponsorId').value = maxSponsorId;
@@ -333,11 +287,10 @@
 			span2.innerHTML = '<button type="button" onclick="removeImage('+imageCount+');" >Bild entfernen</button>';
 			span2.class = "imageRemove";
 			
-			li.appendChild(span2);
 			li.appendChild(span1);
 			li.appendChild(iPreview);
-			li.appendChild(document.createElement('br');
 			li.appendChild(iDesc);
+			li.appendChild(span2);
 			
 			document.getElementById('images').appendChild(li);
 			document.getElementById('imageCount').value = imageCount;
@@ -442,7 +395,7 @@
 		<li><a href="home.php">Home</a></li>
    		<li class="active">Event erstellen</li>
    		<li><a href="eventList.php">Eventliste</a></li>
-		<li id= "loginfield"></li>
+		<li><a href="logout.php">Ausloggen</a></li>
   	</ul>
   </nav>
 

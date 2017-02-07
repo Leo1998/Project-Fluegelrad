@@ -84,9 +84,9 @@
 				
 				div.appendChild(nameLabel);
 				div.appendChild(image);
-				div.appendChild(logout);
-				
-				document.getElementById("header").appendChild(div);
+				//div.appendChild(logout);
+				document.getElementById("loginfield").appendChild(logout);
+				//document.getElementById("header").appendChild(div);
 				
 				var createEvent = document.createElement('a');
 				createEvent.href = "createEvent.php";
@@ -182,10 +182,10 @@
   
   <nav>
   	<ul>
+		<li><a href="home.php">Home</a></li>
 		<li><a href="createEvent.php">Event erstellen</a></li>
-   		<li><a href="home.php">Home</a></li>
    		<li class="active">Eventliste</li>
-		<li><a href="logout.php">Ausloggen</a></li>
+		<li class ="loginfield"></li>
   	</ul>
   </nav>
 
