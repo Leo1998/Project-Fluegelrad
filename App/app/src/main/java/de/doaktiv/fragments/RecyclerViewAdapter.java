@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.home;
+package de.doaktiv.fragments;
 
 
 import android.os.Bundle;
@@ -12,18 +12,21 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import de.doaktiv.R;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
 import de.doaktiv.fragments.day.CalendarDayFragment;
 
-public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerViewAdapter.ViewHolder>{
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private FragmentActivity activity;
 
-    public HomeRecyclerViewAdapter(){
+    private boolean homeView;
 
+    public RecyclerViewAdapter(boolean homeView){
+        this.homeView = homeView;
     }
 
     public void setActivity(FragmentActivity activity) {
@@ -40,15 +43,25 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        final Event event = DatabaseManager.INSTANCE.getRecentEventList().get(position);
+        final Event event;
+
+        if (homeView) {
+            event = DatabaseManager.INSTANCE.getHomeEventList().get(position);
+        }else {
+            event = DatabaseManager.INSTANCE.getRecentEventList().get(position);
+        }
+
         Calendar i = event.getDateStart();
 
         holder.getCategoryTextView().setText(event.getName());
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-        simpleDateFormat.applyPattern("E  dd.MM.yyyy HH:mm");
-        holder.getDateTextView().setText(simpleDateFormat.format(event.getDateStart().getTime()));
+        if (event.getImages().size() > 0) {
+            holder.getImageView().setImageAsync(event.getImages().get(0));
+        }
 
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
+        simpleDateFormat.applyPattern("E \ndd.MM.yyyy \n HH:mm");
+        holder.getDateTextView().setText(simpleDateFormat.format(event.getDateStart().getTime()));
 
         holder.getLocationTextView().setText(event.getLocation().getAddress());
         holder.getHostTextView().setText("N/A");
@@ -71,7 +84,11 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
     @Override
     public int getItemCount() {
-        return DatabaseManager.INSTANCE.getRecentEventList().size();
+        if (homeView) {
+            return DatabaseManager.INSTANCE.getHomeEventList().size();
+        }else {
+            return DatabaseManager.INSTANCE.getRecentEventList().size();
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -80,6 +97,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
         private TextView categoryTextView;
         private TextView locationTextView;
         private TextView hostTextView;
+        private AsyncImageView imageView;
 
         private CardView cardView;
 
@@ -90,6 +108,7 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
             categoryTextView = (TextView)itemView.findViewById(R.id.category);
             locationTextView = (TextView)itemView.findViewById(R.id.location);
             hostTextView = (TextView)itemView.findViewById(R.id.host);
+            imageView = (AsyncImageView)itemView.findViewById(R.id.imageView);
 
             cardView = (CardView) itemView.findViewById(R.id.card_view);
         }
@@ -108,6 +127,10 @@ public class HomeRecyclerViewAdapter extends RecyclerView.Adapter<HomeRecyclerVi
 
         public TextView getHostTextView() {
             return hostTextView;
+        }
+
+        public AsyncImageView getImageView(){
+            return imageView;
         }
 
         public CardView getCardView() {

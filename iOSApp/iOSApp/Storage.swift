@@ -35,7 +35,7 @@ class Storage: DatabaseManagerProtocol {
 	/**
 	the user under which the data is saved
 	*/
-	private static let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
+	private static let myDefaults = UserDefaults(suiteName: "group.doaktiv")!
 		
 	init() {
 		let databaseManager = DatabaseManager()
@@ -48,11 +48,23 @@ class Storage: DatabaseManagerProtocol {
 	/**
 	loads the events from the storage which can be rated
 	*/
-	static func getEventsRatable() -> [Event] {
+	static func getEventsRateable() -> [Event] {
+		let ratedData = myDefaults.object(forKey: "rated")
+		
+		var rated = [Int: Event]()
+		if ratedData != nil {
+			rated = NSKeyedUnarchiver.unarchiveObject(with: ratedData as! Data) as! [Int: Event]
+		}
+		
 		var events = Storage.getEvents()
 		let today = Date()
 		events = events.filter(){event in
-			return (event).dateStart.compare(today) == ComparisonResult.orderedAscending && Storage.isParticipating(event: event)
+			if event.participants == -1 {
+				return (event).dateStart.compare(today) == ComparisonResult.orderedAscending && rated[event.id] == nil
+			}else {
+				return (event).dateStart.compare(today) == ComparisonResult.orderedAscending && Storage.isParticipating(event: event) && rated[event.id] == nil
+			}
+			
 		}
 		return events
 	}
@@ -124,7 +136,7 @@ class Storage: DatabaseManagerProtocol {
 		// If not created create new
 		if !created {
 			let eventCalendar = EKCalendar(for: .event, eventStore: eventStore)
-			eventCalendar.title = "DoJuSport Events"
+			eventCalendar.title = "Do.Aktiv Events"
 			eventCalendar.cgColor = UIColor.primary().cgColor
 			
 			for value in eventStore.sources {
@@ -259,6 +271,18 @@ class Storage: DatabaseManagerProtocol {
 	*/
 	public static func rate(event: Event, rate: Int){
 		databaseManager.rate(event: event, rate: rate)
+		
+		let ratedData = myDefaults.object(forKey: "rated")
+		
+		var rated = [Int: Event]()
+		if ratedData != nil {
+			rated = NSKeyedUnarchiver.unarchiveObject(with: ratedData as! Data) as! [Int: Event]
+		}
+		
+		rated[event.id] = event
+		
+		myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: rated), forKey: "rated")
+
 	}
 	
 	/**
@@ -299,7 +323,7 @@ class Storage: DatabaseManagerProtocol {
 					participating.remove(at: index)
 				}
 			}
-			
+		
 			myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: participating), forKey: "participating")
 			
 		}
@@ -309,13 +333,12 @@ class Storage: DatabaseManagerProtocol {
 	/**
 	Saving the events and sponsors
 	*/
-	internal func itemsDownloaded(events: [Event], sponsors: [Int: Sponsor]) {
+	internal func itemsDownloaded(events: [Event], sponsors: [Int:  Sponsor]) {
 		
-		let myDefaults = UserDefaults(suiteName: "group.com.iOSApp")!
-		myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: events), forKey: "events")
-		myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: sponsors), forKey: "sponsors")
+		Storage.myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: events), forKey: "events")
+		Storage.myDefaults.set(NSKeyedArchiver.archivedData(withRootObject: sponsors), forKey: "sponsors")
 		
-		myDefaults.synchronize()
+		Storage.myDefaults.synchronize()
 		
 		// Sending a message to all ViewControllers to update their data
 		NotificationCenter.default.post(name: Notification.Name(Bundle.main.bundleIdentifier! + "downloaded"), object: self)

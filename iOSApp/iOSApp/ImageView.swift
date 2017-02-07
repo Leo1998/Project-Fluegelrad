@@ -41,6 +41,7 @@ class ImageView: UIView {
 		}else{
 			image.image = eventImage.image
 		}
+		image.addConstraintsXY(xView: self, xSelfAttribute: .trailing, xViewAttribute: .trailing, xMultiplier: 1, xConstant: 0, yView: nil, ySelfAttribute: .height, yViewAttribute: .notAnAttribute, yMultiplier: 1, yConstant: (image.image?.size.height)!)
 		
 
         imageDescription = UILabel()

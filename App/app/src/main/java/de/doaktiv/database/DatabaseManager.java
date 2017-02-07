@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -69,7 +70,7 @@ public class DatabaseManager {
      */
     private User user;
     /**
-     *
+     *  list of all running tasks
      */
     private final List<RunningTaskWrapper> runningTasks = new ArrayList<>();
     /**
@@ -210,6 +211,59 @@ public class DatabaseManager {
         asyncTask.execute(params);
     }
 
+    public String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
+        String address = scriptAddress + "?u=" + user.getId() + "&t=" + user.getHashedToken();
+        if (args != null) {
+            for (String key : args.keySet()) {
+                if (key.equals("u") || key.equals("t"))
+                    continue;
+
+                address += "&" + key + "=" + args.get(key);
+            }
+        }
+
+        URL url = new URL(address);
+        URLConnection c = url.openConnection();
+        BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
+
+        StringBuilder jsonBuilder = new StringBuilder();
+        String inputLine;
+        while ((inputLine = in.readLine()) != null)
+            jsonBuilder.append(inputLine);
+        in.close();
+
+        String raw = jsonBuilder.toString();
+        if (raw.startsWith("Error:")) {
+            if (raw.equals("Error: Invalid Token") || raw.equals("Error: Unknown ID")) {
+                // fix wrong user
+                this.user = null;
+                new File(filesDirectory, "user.dat").delete();
+
+                executeTask(new DatabaseLoginTask(), null, new DatabaseTaskWatcher() {
+                    @Override
+                    public void onFinish(Object result) {
+                        assert(result != null && result instanceof User);
+
+                        DatabaseManager.this.user = (User) result;
+
+                        Log.i("DatabaseManager", "Logged in as: " + DatabaseManager.this.user.toString());
+                    }
+                });
+            } else {
+                throw new DatabaseException(raw);
+            }
+        }
+
+        String header = raw.split(",")[0];
+        String json = raw.substring(header.length() + 1);
+
+        JSONArray headerArray = new JSONArray(new JSONTokener(header));
+        String newToken = headerArray.getString(0);
+        refreshToken(newToken);
+
+        return json;
+    }
+
     /**
      *
      * @param scriptAddress the scripts address (without arguments)
@@ -217,7 +271,7 @@ public class DatabaseManager {
      * @return the json text
      * @throws DatabaseException
      */
-    String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
+    String executeSecript(String scriptAddress, Map<String, String> args) throws Exception {
         ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
@@ -256,10 +310,17 @@ public class DatabaseManager {
                 // fix wrong user
                 this.user = null;
                 new File(filesDirectory, "user.dat").delete();
-                /*login();
-                logger.log("Invalid login(retrying)");
-                return executeScript(scriptAddress, args);*/
-                //TODO
+
+                executeTask(new DatabaseLoginTask(), null, new DatabaseTaskWatcher() {
+                    @Override
+                    public void onFinish(Object result) {
+                        assert(result != null && result instanceof User);
+
+                        DatabaseManager.this.user = (User) result;
+
+                        Log.i("DatabaseManager", "Logged in as: " + DatabaseManager.this.user.toString());
+                    }
+                });
             } else {
                 throw new DatabaseException(raw);
             }
@@ -435,7 +496,7 @@ public class DatabaseManager {
     }
 
     public List<Event> getRecentEventList() {
-        /**List<Event> list = new ArrayList<>();
+        List<Event> list = new ArrayList<>();
 
         for (int i = eventList.size()-1; i >= 0; i--){
             if (eventList.get(i).getDateStart().compareTo(Calendar.getInstance()) > 0){
@@ -445,9 +506,43 @@ public class DatabaseManager {
             }
         }
 
-        Collections.reverse(list);*/
+        Collections.reverse(list);
 
-        return eventList;
+        return list;
+    }
+
+    public List<Event> getHomeEventList() {
+        List<Event> recent = getRecentEventList();
+        List<Event> shown = new ArrayList<>();
+
+        for (int i = 0; i < 1; i++){
+            if (recent.size() >= 1) {
+                shown.add(recent.get(0));
+                recent.remove(0);
+            }
+
+            if (recent.size() >= 1) {
+                shown.add(recent.get(0));
+                recent.remove(0);
+            }
+        }
+
+        for (int i = 0; i < 1; i++) {
+            if (recent.size() >= 1) {
+                Event mostPopular = recent.get(0);
+
+                for (Event event : recent) {
+                    if (event.getParticipants() > mostPopular.getParticipants()) {
+                        mostPopular = event;
+                    }
+                }
+
+                shown.add(mostPopular);
+                recent.remove(mostPopular);
+            }
+        }
+
+            return shown;
     }
 
     public List<Sponsor> getSponsors(Event event) {

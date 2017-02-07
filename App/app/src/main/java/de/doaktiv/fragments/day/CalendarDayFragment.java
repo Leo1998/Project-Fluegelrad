@@ -22,8 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.viewpagerindicator.CirclePageIndicator;
-
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -93,8 +91,6 @@ public class CalendarDayFragment extends Fragment {
 
         ViewPager slider = (ViewPager) layout.findViewById(R.id.image_slider);
         buildImageSlider(slider);
-        CirclePageIndicator indicator = (CirclePageIndicator) layout.findViewById(R.id.image_slider_indicator);
-        indicator.setViewPager(slider);
 
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 

@@ -1,4 +1,4 @@
-package de.doaktiv.database;
+package de.doaktiv.util;
 
 import java.io.IOException;
 import java.io.InputStream;
