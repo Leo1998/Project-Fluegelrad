@@ -125,18 +125,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 </android.support.v4.view.ViewPager>
-
-                <com.viewpagerindicator.CirclePageIndicator
-                    android:id="@+id/image_slider_indicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentBottom="true"
-                    android:padding="10dp"
-                    app:centered="true"
-                    app:fillColor="@android:color/white"
-                    app:pageColor="@color/colorPrimary"
-                    app:snap="false" />
             </RelativeLayout >
 
             <android.support.v7.widget.Toolbar
