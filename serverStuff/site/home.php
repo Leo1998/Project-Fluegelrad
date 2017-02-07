@@ -54,7 +54,7 @@
 				login.href = "login.html";
 				login.innerHTML = "Anmelden";
 				
-				document.getElementById("header").appendChild(login);
+				document.getElementById("loginfield").appendChild(login);
 			}
 		}
 	</script>
