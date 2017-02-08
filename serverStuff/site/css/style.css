@@ -14,7 +14,7 @@
 
 /* -- Allgemeines -- */
 html {
-  background: url(../img/bg.jpg) #e7f3f7; /* Hier sollte man, auch wenn man ein Bild als Hintergrund hat, nicht vergessen die Hintergrundfarbe zu setzen. Es könnte nämlich sein dass man aus Versehen für den Text die gleiche Farbe hat wie für den Hintergrund wobei die Leute mit ausgeschalteten Bildern nichts erkennen können. Andererseits verwendet man heute eher durch CSS erzeugte Muster und Verläufe, um die Ladezeit für Bilder zu sparen.*/
+  background: #12b736; /* Hier sollte man, auch wenn man ein Bild als Hintergrund hat, nicht vergessen die Hintergrundfarbe zu setzen. Es könnte nämlich sein dass man aus Versehen für den Text die gleiche Farbe hat wie für den Hintergrund wobei die Leute mit ausgeschalteten Bildern nichts erkennen können. Andererseits verwendet man heute eher durch CSS erzeugte Muster und Verläufe, um die Ladezeit für Bilder zu sparen.*/
   color: black;
 }
 

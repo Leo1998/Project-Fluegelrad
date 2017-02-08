@@ -53,16 +53,14 @@
 ?>
 
 <html>
-<head>
-	<title>Eventliste</title>
-    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
-	<meta charset="utf-8">
-	<meta name="author" content="@Firmenname" /> <!-- Hier sollte der Name des Autors, der Inhalte erstellt, rein. -->
-	<meta name="Description" content="Ersellen sie ihr Event!" /> 
-    <link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> <!-- Hier sollte der Pfad zur CSS-datei eingetragen werden, 
-           die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
+	<head>
+		<title>Eventliste</title>
+		<script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+		<meta charset="utf-8">
+		<meta name="Description" content="Liste aller Events" /> 
+		<link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> 
 	
-    <script>
+		<script>
 		function init(){
 			for(var i = 0 ; i in data ; i++){
 				addEvent(data[i]);
@@ -98,7 +96,7 @@
 				login.href = "login.html";
 				login.innerHTML = "Anmelden";
 				
-				document.getElementById("header").appendChild(login);
+				document.getElementById("loginfield").appendChild(login);
 			}
 		}
 		
@@ -109,6 +107,7 @@
 			var name = document.createElement('a');
 			name.innerHTML = event["name"]+"<br>";
 			name.href = "showEvent.php?k="+event["id"];
+			name.class = "eventName";
 			
 			var rating = document.createElement('span');
 			rating.class = 'eventRating';
@@ -134,7 +133,7 @@
 			participants.class = 'eventPart';
 			if(event["participants"] >= 0){
 				if(event["maxParticipants"] >= 0){
-					participants.innerHTML = event["participants"]+"/"+event["maxParticipants"]+"Teilnehmer<br>";
+					participants.innerHTML = event["participants"]+"/"+event["maxParticipants"]+"  Teilnehmern<br>";
 				}else{
 					participants.innerHTML = event["participants"]+" Teilnehmer angemeldet<br>";
 				}
@@ -148,7 +147,7 @@
 			
 			var dateLoc = document.createElement('span');
 			dateLoc.class = 'eventDateLoc';
-			dateLoc.innerHTML = "Von "+event["dateStart"]+" bis "+event["dateEnd"]+" ,Ort: "+event["address"]+"<br>";
+			dateLoc.innerHTML = "Von "+event["dateStart"]+  " Uhr bis "+event["dateEnd"]+" Uhr <br>Ort: "+event["address"]+"<br>";
 			
 			var desc = document.createElement('span');
 			desc.class = 'eventDesc';
@@ -162,8 +161,8 @@
 			
 			li.appendChild(name);
 			li.appendChild(rating);
-			li.appendChild(img);
 			li.appendChild(sponsorImg);
+			li.appendChild(img);
 			li.appendChild(price);
 			li.appendChild(participants);
 			li.appendChild(dateLoc);
@@ -174,39 +173,37 @@
 			document.getElementById('events').appendChild(document.createElement('br'));
 		}
 	</script>
-</head>
-<body onload='init();'>
-  <header>
-   <a id="logo" href="./"><span>Do</span>-Aktiv</a> 
-  </header>
+	</head>
+	<body onload='init();'>
+		<header>
+		
+			<a id="logo" href="./"><span>Do</span>-Aktiv</a> 
+			
+		</header>
   
-  <nav>
-  	<ul>
-		<li><a href="home.php">Home</a></li>
-		<li><a href="createEvent.php">Event erstellen</a></li>
-   		<li class="active">Eventliste</li>
-		<li class ="loginfield"></li>
-  	</ul>
-  </nav>
+		<nav>
+		
+			<ul>
+			
+				<li><a href="../index.php">Home</a></li>
+				<li><a href="createEvent.php">Event erstellen</a></li>
+				<li class="active">Eventliste</li>
+				<li id ="loginfield"></li>
+				
+			</ul>
+			
+		</nav>
 
-  <main role="main">
+		<main role="main">
 
-
-  <section>
-	
-	<ul id="events" name="events" style="list-style-type: none;">
-	</ul>
-	<br>
-	<div id="createEventDiv"></div>
-	
-    </section>    
-   
-  	
-    </main>
-  	
-    <footer>
-		 
-	</footer>
-
-</body>
+			<section>
+			
+				<ul id="events" name="events" style="list-style-type: none;">
+				</ul>
+				<br>
+				<div id="createEventDiv"></div>
+			
+			</section>    
+		</main>
+	</body>
 </html>

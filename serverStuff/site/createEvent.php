@@ -2,7 +2,7 @@
 	session_start();
 	
 	if(!isset($_SESSION['hostId'])){
-		header("Location: home.php");
+		header("Location: ../index.php");
 		exit();
 	}
 	
@@ -55,6 +55,7 @@
            die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
 	
     <script>
+		
 		var imageCount = 0;
 		var sponsorCount = 0;
 		
@@ -120,6 +121,7 @@
 				locationSelect.appendChild(opt);
 			}
 			
+			
 			var sponsorsSelect = document.getElementById('sponsors');
 			
 			for (var i = 0; i < sponsors.length; i++){
@@ -153,12 +155,13 @@
 				
 				li.appendChild(checkbox);
 				li.appendChild(img);
-				li.appendChild(document.createElement('br');
+				li.appendChild(document.createElement('br'));
 				li.appendChild(label);
 				
 				sponsorsSelect.appendChild(li);
 				sponsorsSelect.appendChild(document.createElement('br'));
 			}
+			
 			
 			var div = document.createElement('div');
 			div.id = "Host";
@@ -305,8 +308,7 @@
 			imageCount++;
 			var li = document.createElement('li');
 			li.id = "imageNode"+imageCount;
-			li.class = "imageNode"
-			li.
+			li.class = "imageNode";
 			
 			var span1 = document.createElement('span');
 			span1.innerHTML = '<input type="file" id="imageImage'+imageCount+'" name="imageImage'+imageCount+'" onchange="previewImage(this,'+imageCount+');"/>';
@@ -336,7 +338,7 @@
 			li.appendChild(span2);
 			li.appendChild(span1);
 			li.appendChild(iPreview);
-			li.appendChild(document.createElement('br');
+			li.appendChild(document.createElement('br'));
 			li.appendChild(iDesc);
 			
 			document.getElementById('images').appendChild(li);
@@ -439,7 +441,7 @@
   
   <nav>
   	<ul>
-		<li><a href="home.php">Home</a></li>
+		<li><a href="../index.php">Home</a></li>
    		<li class="active">Event erstellen</li>
    		<li><a href="eventList.php">Eventliste</a></li>
 		<li id= "loginfield"></li>
@@ -526,11 +528,11 @@
 					<li>
 						<h2>Sponsoren:</h2>
 						<input type = "number" id = "maxSponsorId" name = "maxSponsorId" style = "position : absolute ; display : none ;" value = "0">
-						<ul name = "sponsors" id = "sponsors" multiple>
+						<ul name = "sponsors" id = "sponsors"  style="list-style-type: none;" multiple>
 						</ul>
 						<input type = "number" id = "sponsorCount" name = "sponsorCount" style = "position : absolute ; display : none ;" value = "0">
 						<button type="button" onClick="createSponsor();">Neuer Sponsor</button>
-						<ul name = "newSponsors" id = "newSponsors">
+						<ul name = "newSponsors" id = "newSponsors"  style="list-style-type: none;">
 						</ul>
 					</li>
 					<br>
@@ -541,7 +543,7 @@
 						<button type="button" onClick="createImage();">Neues Bild</button>
 						<br>
 						<label>Das erste Bild wird als Vorschau-Bild des Events angezeigt</label>
-						<ul name = "images" id="images">
+						<ul name = "images" id="images"  style="list-style-type: none;">
 						</ul>
 					</li>
 					<br>
