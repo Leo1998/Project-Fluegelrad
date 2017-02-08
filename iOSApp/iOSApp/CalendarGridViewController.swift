@@ -69,7 +69,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		
 		let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
 		layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-		let dia = (view.frame.width-8-8 - (7-1))/7
+		let dia = (view.frame.width-8-8 - (7-1))/8
 		layout.itemSize = CGSize(width: dia, height: dia)
 		layout.minimumInteritemSpacing = 1
 		layout.minimumLineSpacing = layout.minimumInteritemSpacing
