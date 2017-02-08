@@ -2,7 +2,7 @@
 	session_start();
 	
 	if(!isset($_SESSION['hostId'])){
-		header("Location: home.php");
+		header("Location: ../index.php");
 		exit();
 	}
 	
@@ -439,7 +439,7 @@
   
   <nav>
   	<ul>
-		<li><a href="home.php">Home</a></li>
+		<li><a href="../index.php">Home</a></li>
    		<li class="active">Event erstellen</li>
    		<li><a href="eventList.php">Eventliste</a></li>
 		<li id= "loginfield"></li>

@@ -182,7 +182,7 @@
   
   <nav>
   	<ul>
-		<li><a href="home.php">Home</a></li>
+		<li><a href="../index.php">Home</a></li>
 		<li><a href="createEvent.php">Event erstellen</a></li>
    		<li class="active">Eventliste</li>
 		<li id ="loginfield"></li>

@@ -227,7 +227,7 @@
   <nav>
   	<ul>
 		<li class="active">Event</li>
-   		<li><a href="home.php">Home</li>
+   		<li><a href="../index.php">Home</li>
    		<li><a href="createEvent.php">Event erstellen</a></li>
    		<li><a href="eventList.php">Eventliste</a></li>
 		<li id="loginfield"></li>

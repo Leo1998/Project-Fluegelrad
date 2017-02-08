@@ -4,7 +4,7 @@
 	if(isset($_GET['k'])){
 		$k = $_GET['k'];
 	}else{
-		header("Location: home.php");
+		header("Location: ../index.php");
 		exit();
 	}
 	
@@ -18,7 +18,7 @@
 	if($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$sponsor = $row;
 	}else{
-		header("Location: home.php");
+		header("Location: ../index.php");
 		exit();
 	}
 	
@@ -137,7 +137,7 @@
   <nav>
   	<ul>
 		<li class="active">Sponsor</li>
-   		<li><a href="home.php">Home</li>
+   		<li><a href="../index.php">Home</li>
    		<li><a href="createEvent.php">Event erstellen</a></li>
    		<li><a href="eventList.php">Eventliste</a></li>
 		<li id= "loginfield"></li>
