@@ -109,6 +109,7 @@
 			var name = document.createElement('a');
 			name.innerHTML = event["name"]+"<br>";
 			name.href = "showEvent.php?k="+event["id"];
+			name.class = "eventName";
 			
 			var rating = document.createElement('span');
 			rating.class = 'eventRating';
@@ -134,7 +135,7 @@
 			participants.class = 'eventPart';
 			if(event["participants"] >= 0){
 				if(event["maxParticipants"] >= 0){
-					participants.innerHTML = event["participants"]+"/"+event["maxParticipants"]+"Teilnehmer<br>";
+					participants.innerHTML = event["participants"]+"/"+event["maxParticipants"]+"  Teilnehmern<br>";
 				}else{
 					participants.innerHTML = event["participants"]+" Teilnehmer angemeldet<br>";
 				}
@@ -148,7 +149,7 @@
 			
 			var dateLoc = document.createElement('span');
 			dateLoc.class = 'eventDateLoc';
-			dateLoc.innerHTML = "Von "+event["dateStart"]+" bis "+event["dateEnd"]+" ,Ort: "+event["address"]+"<br>";
+			dateLoc.innerHTML = "Von "+event["dateStart"]+  " Uhr bis "+event["dateEnd"]+" Uhr <br>Ort: "+event["address"]+"<br>";
 			
 			var desc = document.createElement('span');
 			desc.class = 'eventDesc';
@@ -162,8 +163,8 @@
 			
 			li.appendChild(name);
 			li.appendChild(rating);
-			li.appendChild(img);
 			li.appendChild(sponsorImg);
+			li.appendChild(img);
 			li.appendChild(price);
 			li.appendChild(participants);
 			li.appendChild(dateLoc);
