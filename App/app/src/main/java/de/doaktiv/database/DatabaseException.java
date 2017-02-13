@@ -1,6 +1,8 @@
 package de.doaktiv.database;
 
-
+/**
+ * exception...
+ */
 public class DatabaseException extends Exception {
 
     public DatabaseException() {

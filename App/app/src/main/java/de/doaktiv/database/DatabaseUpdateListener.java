@@ -1,5 +1,8 @@
 package de.doaktiv.database;
 
+/**
+ * simple interface to notify when the database somehow changed
+ */
 public interface DatabaseUpdateListener {
 
     /**

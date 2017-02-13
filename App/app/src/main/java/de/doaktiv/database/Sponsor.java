@@ -5,6 +5,9 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 
+/**
+ * a class to store Sponsor data
+ */
 public class Sponsor {
 
     public static Sponsor readSponsor(JSONObject obj) throws JSONException, ParseException {

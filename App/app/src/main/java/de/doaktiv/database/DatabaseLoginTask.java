@@ -13,17 +13,22 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
+/**
+ * logs in with the saved user profile or tries to create a new one
+ */
 public class DatabaseLoginTask implements DatabaseTask<Void, User> {
 
     @Override
     public User execute(DatabaseManager databaseManager, Void... params) {
         int attempt = 0;
 
+        // 2 attempts then cancel
         while(attempt < 2) {
             try {
                 File userFile = new File(databaseManager.getFilesDirectory(), "user.dat");
                 String userJson = null;
                 if (userFile.exists()) {
+                    // login with saved user
                     BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(userFile)));
 
                     StringBuilder jsonBuilder = new StringBuilder();
@@ -33,6 +38,7 @@ public class DatabaseLoginTask implements DatabaseTask<Void, User> {
                     in.close();
                     userJson = jsonBuilder.toString();
                 } else {
+                    // create new user
                     URL url = new URL("http://fluegelrad.ddns.net/scripts/createUser.php");
                     URLConnection c = url.openConnection();
                     BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
@@ -50,6 +56,7 @@ public class DatabaseLoginTask implements DatabaseTask<Void, User> {
                     writer.close();
                 }
 
+                // error check
                 if (userJson.startsWith("Error:"))
                     throw new DatabaseException(userJson);
 

@@ -11,6 +11,9 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * a class to store all event data
+ */
 public class Event {
 
     public static Event readEvent(JSONObject obj) throws JSONException, ParseException {
@@ -106,9 +109,35 @@ public class Event {
     private int[] sponsors;
     private List<Image> images;
 
+    // local values are not in the database but are saved locally
+
+    /**
+     * local value
+     */
     private boolean participating;
+    /**
+     * local value
+     */
     private int userRating;
 
+    /**
+     * Constructor...
+     *
+     * @param id
+     * @param name
+     * @param price
+     * @param dateStart
+     * @param dateEnd
+     * @param description
+     * @param maxParticipants
+     * @param participants
+     * @param ageMin
+     * @param ageMax
+     * @param location
+     * @param hostId
+     * @param sponsors
+     * @param images
+     */
     public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, int hostId, int[] sponsors, List<Image> images) {
         this.id = id;
         this.name = name;
@@ -142,6 +171,10 @@ public class Event {
         return dateStart;
     }
 
+    /**
+     *
+     * @return dateStart formatted as a string
+     */
     public String getDateStartFormatted() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         return simpleDateFormat.format(this.dateStart.getTime());
@@ -151,11 +184,19 @@ public class Event {
         return dateEnd;
     }
 
+    /**
+     *
+     * @return dateEnd formatted as a string
+     */
     public String getDateEndFormatted() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         return simpleDateFormat.format(this.dateEnd.getTime());
     }
 
+    /**
+     *
+     * @return the duration of the event formatted as a string
+     */
     public String getDurationFormatted() {
         Calendar duration = Calendar.getInstance();
         duration.setTimeInMillis(dateEnd.getTimeInMillis() - dateStart.getTimeInMillis());
@@ -208,6 +249,11 @@ public class Event {
         return userRating;
     }
 
+    /**
+     * used to participate with the event (this method is only local and should only be called from {@link DatabaseParticipateTask})
+     *
+     * @param fakeIncrement if true the number of participants gets incremented locally so it looks right until the database gets refreshed
+     */
     public void participate(boolean fakeIncrement) {
         if (isParticipating())
             throw new IllegalStateException("Already Participating!");
@@ -216,6 +262,11 @@ public class Event {
         this.participants++;
     }
 
+    /**
+     * used to rate an event (this method is only local and should only be called from {@link DatabaseRateTask})
+     *
+     * @param rating the rating
+     */
     public void rate(int rating) {
         this.userRating = rating;
     }

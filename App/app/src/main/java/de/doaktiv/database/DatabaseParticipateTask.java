@@ -3,6 +3,9 @@ package de.doaktiv.database;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * requests participation for a given event
+ */
 public class DatabaseParticipateTask implements DatabaseTask<Event, Boolean> {
 
     @Override

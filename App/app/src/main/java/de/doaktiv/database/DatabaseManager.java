@@ -33,8 +33,14 @@ import de.doaktiv.R;
 import de.doaktiv.util.Logger;
 import de.doaktiv.util.SnackbarLogger;
 
+/**
+ * the DatabaseManager is the main class of the database system
+ */
 public class DatabaseManager {
 
+    /**
+     * a wrapper to link a running {@link DatabaseTask} to its {@link AsyncTask}
+     */
     private class RunningTaskWrapper {
         DatabaseTask<?, ?> databaseTask;
         AsyncTask asyncTask;
@@ -102,6 +108,9 @@ public class DatabaseManager {
         firstLogin();
     }
 
+    /**
+     * reads the local copy of the database and then tries to login and recieve the database from the server
+     */
     private void firstLogin() {
         readDatabaseFromStorage();
 
@@ -186,6 +195,7 @@ public class DatabaseManager {
      * @param watcher
      */
     public void executeTask(final DatabaseTask task, final Object[] params, final DatabaseTaskWatcher watcher) {
+        // wrapper
         final RunningTaskWrapper wrapper = new RunningTaskWrapper();
 
         AsyncTask<Object, Void, Object> asyncTask = new AsyncTask<Object, Void, Object>() {
@@ -203,65 +213,13 @@ public class DatabaseManager {
             }
         };
 
+        // register in running tasks
         wrapper.databaseTask = task;
         wrapper.asyncTask = asyncTask;
-
         this.runningTasks.add(wrapper);
 
+        // execute it
         asyncTask.execute(params);
-    }
-
-    public String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
-        String address = scriptAddress + "?u=" + user.getId() + "&t=" + user.getHashedToken();
-        if (args != null) {
-            for (String key : args.keySet()) {
-                if (key.equals("u") || key.equals("t"))
-                    continue;
-
-                address += "&" + key + "=" + args.get(key);
-            }
-        }
-
-        URL url = new URL(address);
-        URLConnection c = url.openConnection();
-        BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
-
-        StringBuilder jsonBuilder = new StringBuilder();
-        String inputLine;
-        while ((inputLine = in.readLine()) != null)
-            jsonBuilder.append(inputLine);
-        in.close();
-
-        String raw = jsonBuilder.toString();
-        if (raw.startsWith("Error:")) {
-            if (raw.equals("Error: Invalid Token") || raw.equals("Error: Unknown ID")) {
-                // fix wrong user
-                this.user = null;
-                new File(filesDirectory, "user.dat").delete();
-
-                executeTask(new DatabaseLoginTask(), null, new DatabaseTaskWatcher() {
-                    @Override
-                    public void onFinish(Object result) {
-                        assert(result != null && result instanceof User);
-
-                        DatabaseManager.this.user = (User) result;
-
-                        Log.i("DatabaseManager", "Logged in as: " + DatabaseManager.this.user.toString());
-                    }
-                });
-            } else {
-                throw new DatabaseException(raw);
-            }
-        }
-
-        String header = raw.split(",")[0];
-        String json = raw.substring(header.length() + 1);
-
-        JSONArray headerArray = new JSONArray(new JSONTokener(header));
-        String newToken = headerArray.getString(0);
-        refreshToken(newToken);
-
-        return json;
     }
 
     /**
@@ -271,7 +229,8 @@ public class DatabaseManager {
      * @return the json text
      * @throws DatabaseException
      */
-    String executeSecript(String scriptAddress, Map<String, String> args) throws Exception {
+    String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
+        // check network
         ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
@@ -284,7 +243,10 @@ public class DatabaseManager {
             throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.database_access_failure).toString());
         }
 
+        // append user data
         String address = scriptAddress + "?u=" + user.getId() + "&t=" + user.getHashedToken();
+
+        //append arguments
         if (args != null) {
             for (String key : args.keySet()) {
                 if (key.equals("u") || key.equals("t"))
@@ -294,6 +256,7 @@ public class DatabaseManager {
             }
         }
 
+        // build connection
         URL url = new URL(address);
         URLConnection c = url.openConnection();
         BufferedReader in = new BufferedReader(new InputStreamReader(c.getInputStream()));
@@ -304,6 +267,7 @@ public class DatabaseManager {
             jsonBuilder.append(inputLine);
         in.close();
 
+        // the raw result
         String raw = jsonBuilder.toString();
         if (raw.startsWith("Error:")) {
             if (raw.equals("Error: Invalid Token") || raw.equals("Error: Unknown ID")) {
@@ -322,13 +286,16 @@ public class DatabaseManager {
                     }
                 });
             } else {
+                // error!!!
                 throw new DatabaseException(raw);
             }
         }
 
+        // split header and data
         String header = raw.split(",")[0];
         String json = raw.substring(header.length() + 1);
 
+        // read header and refresh security token
         JSONArray headerArray = new JSONArray(new JSONTokener(header));
         String newToken = headerArray.getString(0);
         refreshToken(newToken);
@@ -378,8 +345,6 @@ public class DatabaseManager {
 
             Event event = Event.readEvent(obj);
 
-            //Log.i("DatabaseManager", "Event: " + event.toString());
-
             registerEvent(event);
         }
 
@@ -387,8 +352,6 @@ public class DatabaseManager {
             JSONObject obj = sponsorDataArray.getJSONObject(i);
 
             Sponsor sponsor = Sponsor.readSponsor(obj);
-
-            //Log.i("DatabaseManager", "Sponsor: " + sponsor.toString());
 
             registerSponsor(sponsor);
         }
@@ -495,6 +458,10 @@ public class DatabaseManager {
         return sponsorList;
     }
 
+    /**
+     *
+     * @return alist of recent events
+     */
     public List<Event> getRecentEventList() {
         List<Event> list = new ArrayList<>();
 
@@ -511,6 +478,10 @@ public class DatabaseManager {
         return list;
     }
 
+    /**
+     *
+     * @return a list of events prepared for the home view
+     */
     public List<Event> getHomeEventList() {
         List<Event> recent = getRecentEventList();
         List<Event> shown = new ArrayList<>();

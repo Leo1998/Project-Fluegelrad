@@ -19,6 +19,9 @@ import java.text.ParseException;
 
 import de.doaktiv.util.Utils;
 
+/**
+ * a class for images stored in the database
+ */
 public class Image {
 
     public static Image readImage(JSONObject obj) throws JSONException, ParseException {
@@ -43,9 +46,13 @@ public class Image {
     private int eventId;
     private String description;
 
+    /**
+     * the bitmap (can be null if not loaded)
+     */
     private Bitmap bitmap;
 
     /**
+     * Constructor...
      *
      * @param path
      */
@@ -91,6 +98,7 @@ public class Image {
 
         if (getBitmap() == null) {
             if (!cachedFile.exists()) {
+                // load image data from server
                 URL url = new URL("http://fluegelrad.ddns.net/" + this.path);
                 URLConnection c = url.openConnection();
 
@@ -102,14 +110,16 @@ public class Image {
                 out.close();
             }
 
+            // load image from cache directory
             InputStream in = new FileInputStream(cachedFile);
-
             Image.this.bitmap = BitmapFactory.decodeStream(in);
-
             in.close();
         }
     }
 
+    /**
+     * deletes the bitmap if it was loaded
+     */
     public void disposeBitmap() {
         bitmap = null;
     }

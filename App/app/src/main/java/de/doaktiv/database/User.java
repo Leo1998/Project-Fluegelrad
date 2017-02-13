@@ -1,5 +1,8 @@
 package de.doaktiv.database;
 
+/**
+ * the local representation of a user.
+ */
 public class User {
 
     /**

@@ -1,5 +1,8 @@
 package de.doaktiv.database;
 
+/**
+ * Downloads all data from the server
+ */
 public class DatabaseDownloadTask implements DatabaseTask<Void, Void> {
 
     @Override

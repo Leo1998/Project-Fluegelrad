@@ -1,5 +1,8 @@
 package de.doaktiv.database;
 
+/**
+ * a class to store Location data
+ */
 public class Location {
 
     private String address;
