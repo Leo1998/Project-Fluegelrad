@@ -69,7 +69,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
 		
 		let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
 		layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-		let dia = (view.frame.width-8-8 - (7-1))/7
+		let dia = (view.frame.width-8-8 - (7-1))/8
 		layout.itemSize = CGSize(width: dia, height: dia)
 		layout.minimumInteritemSpacing = 1
 		layout.minimumLineSpacing = layout.minimumInteritemSpacing
@@ -147,7 +147,7 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
             let eventDateComponents = calendar.dateComponents([.year, .month, .day], from: (event ).dateStart!)
             
             if cellDateComponents.year == eventDateComponents.year && cellDateComponents.month == eventDateComponents.month && cellDateComponents.day == eventDateComponents.day {
-                cell.numberLabel.backgroundColor = UIColor.magenta
+                cell.numberLabel.backgroundColor =  UIColor(red: 224/255, green: 58/255, blue: 188/255, alpha: 255/255)
 
 				eventsTemp.append(event)
             }
@@ -199,15 +199,19 @@ class CalendarGridViewController: UIViewController, UICollectionViewDelegate, UI
     private func updateCalendar() {
         daysShown.removeAll()
         
-        var dateTemp = Date(timeIntervalSince1970: date.timeIntervalSince1970)
+        var dateTemp = Date()
         
-        var dateComponents = calendar.dateComponents([.era, .year, .month], from: dateTemp )
+        var dateComponents = calendar.dateComponents([.year, .month], from: dateTemp )
         dateComponents.day = 1
         
         dateTemp = calendar.date(from: dateComponents)!
         
-        let monthBeginningCell = calendar.dateComponents([.weekday], from: dateTemp ).weekday! == 1 ? 7 : calendar.dateComponents([.weekday], from: dateTemp ).weekday! - 1
-        
+        var monthBeginningCell = 7
+		if calendar.dateComponents([.weekday], from: dateTemp ).weekday! != 1 {
+			monthBeginningCell = calendar.dateComponents([.weekday], from: dateTemp ).weekday! - 1
+		}
+		
+		
         dateComponents.day = -monthBeginningCell
         
         var dateBegin = calendar.date(byAdding: .day, value: -monthBeginningCell, to: dateTemp, wrappingComponents: false)

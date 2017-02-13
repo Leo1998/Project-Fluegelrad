@@ -108,15 +108,15 @@
 				
 				div.appendChild(nameLabel);
 				div.appendChild(image);
-				div.appendChild(logout);
-				
-				document.getElementById("header").appendChild(div);
+				//div.appendChild(logout);
+				document.getElementById("loginfield").appendChild(logout);
+				//document.getElementById("header").appendChild(div);
 			}else{
 				var login = document.createElement("a");
 				login.href = "login.html";
 				login.innerHTML = "Anmelden";
 				
-				document.getElementById("header").appendChild(login);
+				document.getElementById("loginfield").appendChild(login);
 			}
 			
 			document.title = data["name"];
@@ -227,10 +227,10 @@
   <nav>
   	<ul>
 		<li class="active">Event</li>
-   		<li><a href="home.php">Home</li>
+   		<li><a href="../index.php">Home</li>
    		<li><a href="createEvent.php">Event erstellen</a></li>
    		<li><a href="eventList.php">Eventliste</a></li>
-		<li><a href="logout.php">Ausloggen</a></li>
+		<li id="loginfield"></li>
   	</ul>
   </nav>
 

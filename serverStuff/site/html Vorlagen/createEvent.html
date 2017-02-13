@@ -1,49 +1,4 @@
-<?php
-	session_start();
-	
-	if(!isset($_SESSION['hostId'])){
-		header("Location: ../index.php");
-		exit();
-	}
-	
-	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
-	
-	$statement = $pdo->prepare("SELECT * FROM `locations`");
-	$statement->execute();
-	
-	$locations = array();
-	
-	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$locations[] = $row;
-	}
-	
-	
-	$statement = $pdo->prepare("SELECT * FROM `sponsors`");
-	$statement->execute();
-	
-	$sMax = 0;
-	$sponsors = array();
-	
-	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$sponsors[] = $row;
-		if($row['id'] > $sMax){
-			$sMax = $row['id'];
-		}
-	}
-	
-	$hostStuff = "const hostStuff = {\"id\" : ".$_SESSION['hostId'].", \"name\" : \"".$_SESSION['name']."\", \"image\" : \"".$_SESSION['image']."\"};";
-	
-	echo "
-		<script type=\"text/javascript\">
-			const knownLocs = ".json_encode($locations,JSON_PRETTY_PRINT).";
-			const sponsors = ".json_encode($sponsors,JSON_PRETTY_PRINT).";
-			const maxSponsorId = ".$sMax.";
-			$hostStuff;
-		</script>
-	";
-?>
+
 <html>
 <head>
 	<title>Event erstellen</title>
@@ -55,7 +10,6 @@
            die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
 	
     <script>
-		
 		var imageCount = 0;
 		var sponsorCount = 0;
 		
@@ -121,7 +75,6 @@
 				locationSelect.appendChild(opt);
 			}
 			
-			
 			var sponsorsSelect = document.getElementById('sponsors');
 			
 			for (var i = 0; i < sponsors.length; i++){
@@ -155,13 +108,12 @@
 				
 				li.appendChild(checkbox);
 				li.appendChild(img);
-				li.appendChild(document.createElement('br'));
+				li.appendChild(document.createElement('br');
 				li.appendChild(label);
 				
 				sponsorsSelect.appendChild(li);
 				sponsorsSelect.appendChild(document.createElement('br'));
 			}
-			
 			
 			var div = document.createElement('div');
 			div.id = "Host";
@@ -179,10 +131,9 @@
 				
 			div.appendChild(nameLabel);
 			div.appendChild(image);
+			div.appendChild(logout);
 			
-			document.getElementById("loginfield").appendChild(logout);
-			
-			//document.getElementById("header").appendChild(div);
+			document.getElementById("header").appendChild(div);
 
 			
 			document.getElementById('maxSponsorId').value = maxSponsorId;
@@ -308,7 +259,8 @@
 			imageCount++;
 			var li = document.createElement('li');
 			li.id = "imageNode"+imageCount;
-			li.class = "imageNode";
+			li.class = "imageNode"
+			li.
 			
 			var span1 = document.createElement('span');
 			span1.innerHTML = '<input type="file" id="imageImage'+imageCount+'" name="imageImage'+imageCount+'" onchange="previewImage(this,'+imageCount+');"/>';
@@ -335,11 +287,10 @@
 			span2.innerHTML = '<button type="button" onclick="removeImage('+imageCount+');" >Bild entfernen</button>';
 			span2.class = "imageRemove";
 			
-			li.appendChild(span2);
 			li.appendChild(span1);
 			li.appendChild(iPreview);
-			li.appendChild(document.createElement('br'));
 			li.appendChild(iDesc);
+			li.appendChild(span2);
 			
 			document.getElementById('images').appendChild(li);
 			document.getElementById('imageCount').value = imageCount;
@@ -441,10 +392,10 @@
   
   <nav>
   	<ul>
-		<li><a href="../index.php">Home</a></li>
+		<li><a href="home.php">Home</a></li>
    		<li class="active">Event erstellen</li>
    		<li><a href="eventList.php">Eventliste</a></li>
-		<li id= "loginfield"></li>
+		<li><a href="logout.php">Ausloggen</a></li>
   	</ul>
   </nav>
 
@@ -528,11 +479,11 @@
 					<li>
 						<h2>Sponsoren:</h2>
 						<input type = "number" id = "maxSponsorId" name = "maxSponsorId" style = "position : absolute ; display : none ;" value = "0">
-						<ul name = "sponsors" id = "sponsors"  style="list-style-type: none;" multiple>
+						<ul name = "sponsors" id = "sponsors" multiple>
 						</ul>
 						<input type = "number" id = "sponsorCount" name = "sponsorCount" style = "position : absolute ; display : none ;" value = "0">
 						<button type="button" onClick="createSponsor();">Neuer Sponsor</button>
-						<ul name = "newSponsors" id = "newSponsors"  style="list-style-type: none;">
+						<ul name = "newSponsors" id = "newSponsors">
 						</ul>
 					</li>
 					<br>
@@ -543,7 +494,7 @@
 						<button type="button" onClick="createImage();">Neues Bild</button>
 						<br>
 						<label>Das erste Bild wird als Vorschau-Bild des Events angezeigt</label>
-						<ul name = "images" id="images"  style="list-style-type: none;">
+						<ul name = "images" id="images">
 						</ul>
 					</li>
 					<br>

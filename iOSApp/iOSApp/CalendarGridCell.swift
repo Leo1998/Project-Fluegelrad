@@ -15,8 +15,8 @@ class CalendarGridCell: UICollectionViewCell {
         numberLabel.textAlignment = NSTextAlignment.center
         numberLabel.layer.masksToBounds = true
         numberLabel.layer.cornerRadius = frame.size.width/2
-        numberLabel.font = UIFont(name: numberLabel.font.fontName, size: 30)
-        
+        numberLabel.font = UIFont(name: numberLabel.font.fontName, size: frame.size.width/2)
+		
         addSubview(numberLabel)
     }
     
