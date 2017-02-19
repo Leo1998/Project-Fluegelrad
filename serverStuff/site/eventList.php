@@ -51,7 +51,7 @@
 </script>
 		";
 ?>
-
+<!doctype html>
 <html>
 	<head>
 		<title>Eventliste</title>
@@ -59,120 +59,136 @@
 		<meta charset="utf-8">
 		<meta name="Description" content="Liste aller Events" /> 
 		<link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> 
-	
+		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" /> <!-- Cookie Message -->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 		<script>
-		function init(){
-			for(var i = 0 ; i in data ; i++){
-				addEvent(data[i]);
-			}
-			if(hostStuff != null){
-				var div = document.createElement('div');
-				div.id = "Host";
-				
-				var nameLabel = document.createTextNode(hostStuff["name"]);
-				var image = document.createElement('img');
-				image.src= "../"+hostStuff["image"];
-				image.alt= "Bild nicht verfügbar";
-				image.title= "Vorschau";
-				image.style.height="50px";
-				
-				var logout = document.createElement("a");
-				logout.href = "logout.php";
-				logout.innerHTML = "Abmelden";
-				
-				div.appendChild(nameLabel);
-				div.appendChild(image);
-				//div.appendChild(logout);
-				document.getElementById("loginfield").appendChild(logout);
-				//document.getElementById("header").appendChild(div);
-				
-				var createEvent = document.createElement('a');
-				createEvent.href = "createEvent.php";
-				createEvent.innerHTML = "Neues Event erstellen";
-				
-				document.getElementById("createEventDiv").appendChild(createEvent);
-			}else{
-				var login = document.createElement("a");
-				login.href = "login.html";
-				login.innerHTML = "Anmelden";
-				
-				document.getElementById("loginfield").appendChild(login);
-			}
-		}
-		
-		function addEvent(event){
-			var li = document.createElement('li');
-			li.id = "event"+event["id"];
-			
-			var name = document.createElement('a');
-			name.innerHTML = event["name"]+"<br>";
-			name.href = "showEvent.php?k="+event["id"];
-			name.class = "eventName";
-			
-			var rating = document.createElement('span');
-			rating.class = 'eventRating';
-			if(event["rating"] != null){
-				rating.innerHTML = "Bewertung: "+event["rating"]+"<br>";
-			}
-			
-			var img = document.createElement('img');
-			img.class = "eventImg";
-			img.src = "../"+event["image"];
-			img.alt = "Bild nicht verfügbar";
-			img.style.height = "200px";
-			
-			var price = document.createElement('span');
-			price.class = 'eventPrice';
-			if(event["price"]>0){
-				price.innerHTML = "<br>Kosten: "+event["price"]+"€<br>";
-			}else{
-				price.innerHTML = "<br>Kostenlos<br>";
-			}
-			
-			var participants = document.createElement('span');
-			participants.class = 'eventPart';
-			if(event["participants"] >= 0){
-				if(event["maxParticipants"] >= 0){
-					participants.innerHTML = event["participants"]+"/"+event["maxParticipants"]+"  Teilnehmern<br>";
-				}else{
-					participants.innerHTML = event["participants"]+" Teilnehmer angemeldet<br>";
+			window.addEventListener("load", function(){
+			window.cookieconsent.initialise({
+				"palette": {
+					"popup": {
+						"background": "#ffffff",
+						"text": "#000000"
+					},
+					"button": {
+						"background": "#dddddd",
+						"text": "#000000"
+					}
+				},
+				"theme": "edgeless",
+				"position": "bottom-right"
+			})});
+			function init(){
+				for(var i = 0 ; i in data ; i++){
+					addEvent(data[i]);
 				}
-			}else{
-				if(event["maxParticipants"] >= 0){
-					participants.innerHTML = "Maximale Teilnehmerzahl: "+event["maxParticipants"]+"<br>";
+				if(hostStuff != null){
+					var div = document.createElement('div');
+					div.id = "Host";
+					
+					var nameLabel = document.createTextNode(hostStuff["name"]);
+					var image = document.createElement('img');
+					image.src= "../"+hostStuff["image"];
+					image.alt= "Bild nicht verfügbar";
+					image.title= "Vorschau";
+					image.style.height="50px";
+					
+					var logout = document.createElement("a");
+					logout.href = "logout.php";
+					logout.innerHTML = "Abmelden";
+					
+					div.appendChild(nameLabel);
+					div.appendChild(image);
+					//div.appendChild(logout);
+					document.getElementById("loginfield").appendChild(logout);
+					//document.getElementById("header").appendChild(div);
+					
+					var createEvent = document.createElement('a');
+					createEvent.href = "createEvent.php";
+					createEvent.innerHTML = "Neues Event erstellen";
+					
+					document.getElementById("createEventDiv").appendChild(createEvent);
 				}else{
-					participants.innerHTML = "Dieses Event besitzt keine Teilnehmerangaben<br>";
+					var login = document.createElement("a");
+					login.href = "login.php";
+					login.innerHTML = "Anmelden";
+					
+					document.getElementById("loginfield").appendChild(login);
 				}
 			}
 			
-			var dateLoc = document.createElement('span');
-			dateLoc.class = 'eventDateLoc';
-			dateLoc.innerHTML = "Von "+event["dateStart"]+  " Uhr bis "+event["dateEnd"]+" Uhr <br>Ort: "+event["address"]+"<br>";
-			
-			var desc = document.createElement('span');
-			desc.class = 'eventDesc';
-			desc.innerHTML = event["description1"]+"<br>"+event["description2"]+"<br>";
-			
-			var sponsorImg = document.createElement('img');
-			sponsorImg.class = "sponsorImg";
-			sponsorImg.src = "../"+event["sponsorImage"];
-			sponsorImg.alt = "Sponsorbild nicht verfügbar";
-			sponsorImg.style.height = "100px";
-			
-			li.appendChild(name);
-			li.appendChild(rating);
-			li.appendChild(sponsorImg);
-			li.appendChild(img);
-			li.appendChild(price);
-			li.appendChild(participants);
-			li.appendChild(dateLoc);
-			li.appendChild(desc);
-			
-			document.getElementById('events').appendChild(li);
-			
-			document.getElementById('events').appendChild(document.createElement('br'));
-		}
-	</script>
+			function addEvent(event){
+				var li = document.createElement('li');
+				li.id = "event"+event["id"];
+				
+				var name = document.createElement('a');
+				name.innerHTML = event["name"]+"<br>";
+				name.href = "showEvent.php?k="+event["id"];
+				name.class = "eventName";
+				
+				var rating = document.createElement('span');
+				rating.class = 'eventRating';
+				if(event["rating"] != null){
+					rating.innerHTML = "Bewertung: "+event["rating"]+"<br>";
+				}
+				
+				var img = document.createElement('img');
+				img.class = "eventImg";
+				img.src = "../"+event["image"];
+				img.alt = "Bild nicht verfügbar";
+				img.style.height = "200px";
+				
+				var price = document.createElement('span');
+				price.class = 'eventPrice';
+				if(event["price"]>0){
+					price.innerHTML = "<br>Kosten: "+event["price"]+"€<br>";
+				}else{
+					price.innerHTML = "<br>Kostenlos<br>";
+				}
+				
+				var participants = document.createElement('span');
+				participants.class = 'eventPart';
+				if(event["participants"] >= 0){
+					if(event["maxParticipants"] >= 0){
+						participants.innerHTML = event["participants"]+"/"+event["maxParticipants"]+"  Teilnehmern<br>";
+					}else{
+						participants.innerHTML = event["participants"]+" Teilnehmer angemeldet<br>";
+					}
+				}else{
+					if(event["maxParticipants"] >= 0){
+						participants.innerHTML = "Maximale Teilnehmerzahl: "+event["maxParticipants"]+"<br>";
+					}else{
+						participants.innerHTML = "Dieses Event besitzt keine Teilnehmerangaben<br>";
+					}
+				}
+				
+				var dateLoc = document.createElement('span');
+				dateLoc.class = 'eventDateLoc';
+				dateLoc.innerHTML = "Von "+event["dateStart"]+  " Uhr bis "+event["dateEnd"]+" Uhr <br>Ort: "+event["address"]+"<br>";
+				
+				var desc = document.createElement('span');
+				desc.class = 'eventDesc';
+				desc.innerHTML = event["description1"]+"<br>"+event["description2"]+"<br>";
+				
+				var sponsorImg = document.createElement('img');
+				sponsorImg.class = "sponsorImg";
+				sponsorImg.src = "../"+event["sponsorImage"];
+				sponsorImg.alt = "Sponsorbild nicht verfügbar";
+				sponsorImg.style.height = "100px";
+				
+				li.appendChild(name);
+				li.appendChild(rating);
+				li.appendChild(sponsorImg);
+				li.appendChild(img);
+				li.appendChild(price);
+				li.appendChild(participants);
+				li.appendChild(dateLoc);
+				li.appendChild(desc);
+				
+				document.getElementById('events').appendChild(li);
+				
+				document.getElementById('events').appendChild(document.createElement('br'));
+			}
+		</script>
 	</head>
 	<body onload='init();'>
 		<header>
