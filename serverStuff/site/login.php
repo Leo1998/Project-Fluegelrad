@@ -1,81 +1,78 @@
 <?php
-	session_start();
-
-	//Get Hostname(name)
-	if(isset($_POST['name'])) {
-		$name = $_POST['name'];
-	} else {
-		exit("Error: ?name is not set");
-	}
 	
-	//Get password(pass)
-	if(isset($_POST['pass'])) {
-		$pass = $_POST['pass'];
-	} else {
-		exit("Error: ?pass is not set");
-	}
-
-	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
-	
-	//Delete expired Sessions
-	$time = time();
-	$statement = $pdo->prepare("DELETE FROM sessions WHERE expire < :time");
-	$statement->bindParam('time', $time, PDO::PARAM_INT);
-	$statement->execute();
-
-	//Create random string
-	function random_string() {
-		if(function_exists('random_bytes')) {
-			$bytes = random_bytes(16);
-			$str = bin2hex($bytes); 
-		} else if(function_exists('openssl_random_pseudo_bytes')) {
-			$bytes = openssl_random_pseudo_bytes(16);
-			$str = bin2hex($bytes); 
-		} else if(function_exists('mcrypt_create_iv')) {
-			$bytes = mcrypt_create_iv(16, MCRYPT_DEV_URANDOM);
-			$str = bin2hex($bytes); 
-		} else {
-			$str = md5(uniqid('SOdfiov389sSug94kbv', true));
-		}	
-		return $str;
-	}
-	
-	//Get hashed password from database
-	$statement = $pdo->prepare("SELECT `hosts`.`pass`,`hosts`.`id`,`sponsors`.`imagePath` FROM `hosts` JOIN `sponsors` ON `hosts`.`sponsorId` = `sponsors`.`id` AND `sponsors`.`name` = ?");
-	$statement->execute(array($name));
-	//Stays false, if database does not contain host
-	$knownHost = false;
-	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$pHash = $row['pass'];
-		$hId = $row['id'];
-		//Checks password with hashed password
-		if(password_verify($pass, $pHash)){
-			$knownHost = true;
-			//Rehash pHash if necessary
-			if(password_needs_rehash($pHash, PASSWORD_DEFAULT)){
-				$pHash = password_hash($pass, PASSWORD_DEFAULT);
-				$statement2 = $pdo->prepare("UPDATE `hosts` SET `hosts`.`pass` = ? WHERE `hosts`.`id` = ?");
-				$statement2->execute(array($pHash,$hId));
-				unset($statement2);
-			}
-			
-			if(!isset($_SESSION['hostId'])){
-				$_SESSION['hostId'] = $hId;
-				$_SESSION['name'] = $name;
-				$_SESSION['image'] = $row['imagePath'];
-			}
-			
-			header("Location: ../index.php");
-			exit();
-		}else{
-			exit("Passwort falsch");
-		}
-	}
-	
-	//exit if database does not contain Host
-	if(!$knownHost){
-		exit("Unbekannter Host");
-	}
 ?>
+<!doctype html>
+<html>
+<head>
+	<title>Login</title>
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+	<meta charset="utf-8">
+	<meta name="author" content="@Firmenname" /> <!-- Hier sollte der Name des Autors, der Inhalte erstellt, rein. -->
+	<meta name="Description" content="Ersellen sie ihr Event!" /> 
+    <link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> <!-- Hier sollte der Pfad zur CSS-datei eingetragen werden, 
+           die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" /> <!-- Cookie Message -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+	<script>
+		window.addEventListener("load", function(){
+		window.cookieconsent.initialise({
+			"palette": {
+				"popup": {
+					"background": "#ffffff",
+					"text": "#000000"
+				},
+				"button": {
+					"background": "#dddddd",
+					"text": "#000000"
+				}
+			},
+			"theme": "edgeless",
+			"position": "bottom-right"
+		})});
+	</script>
+</head>
+
+<body onload='init();'>
+
+  <header>
+   <a id="logo" href="./"><span>Do</span>-Aktiv</a> 
+  </header>
+  
+  <nav>
+  	<ul>
+   		<li><a href="../index.php">Home</a></li>
+		<li><a href="createEvent.php">Event erstellen</a></li>
+   		<li><a href="eventList.php">Eventliste</a></li>
+		<li class="active">Login</li>
+		<li class ="loginfield"></li>
+  	</ul>
+  </nav>
+
+  <main role="main">
+
+
+  <section>
+	<h2> Login: </h2>
+		<form action="verify.php" id="login" method="post">
+				<label>Name:</label>
+				<input type="text" id="name" name="name" maxLength="30" placeholder="Name">
+				<label>Passwort:</label>
+				<input type="password" id="pass" name="pass" maxLength="30" placeholder="Passwort">
+				<input type="submit" value="Anmelden" class="btnSubmit" />
+			</form>
+	
+    </section>    
+   
+  	<aside>
+		<!-- Sidebar -->
+    	
+	</aside>
+	
+    </main>
+  	
+    <footer>
+		<!-- Footer -->
+	</footer>
+
+</body>
+</html>

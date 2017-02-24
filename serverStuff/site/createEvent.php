@@ -2,7 +2,7 @@
 	session_start();
 	
 	if(!isset($_SESSION['hostId'])){
-		header("Location: ../index.php");
+		header("Location: ../index.php?m=3");
 		exit();
 	}
 	
@@ -44,6 +44,7 @@
 		</script>
 	";
 ?>
+<!doctype html>
 <html>
 <head>
 	<title>Event erstellen</title>
@@ -53,8 +54,24 @@
 	<meta name="Description" content="Ersellen sie ihr Event!" /> 
     <link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> <!-- Hier sollte der Pfad zur CSS-datei eingetragen werden, 
            die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
-	
-    <script>
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" /> <!-- Cookie Message -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+	<script>
+		window.addEventListener("load", function(){
+		window.cookieconsent.initialise({
+			"palette": {
+				"popup": {
+					"background": "#ffffff",
+					"text": "#000000"
+				},
+				"button": {
+					"background": "#dddddd",
+					"text": "#000000"
+				}
+			},
+			"theme": "edgeless",
+			"position": "bottom-right"
+		})});
 		
 		var imageCount = 0;
 		var sponsorCount = 0;
@@ -483,6 +500,7 @@
 					</li>
 					<br>
 					<li>
+						<h2>Beschreibung:</h2>
 						<textarea name="description" id="description" placeholder = "Beschreibung"></textarea>
 					</li>
 					<br>
@@ -559,16 +577,23 @@
   	<aside> 
     	<h3>Tipps und Anmerkungen beim Erstellen</h3>
     	<p>
-        	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
-		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
-        	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
-		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
-        	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
-		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
-        	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
-		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam tristique tristique lacus in varius. Donec nec vestibulum ligula. Aenean
-		 	turpis diam, feugiat a luctus in, rhoncus eget risus.
+        	Alle Felder, die mit einem "*" markiert sind, müssen ausgefüllt werden.<br>
+			<br>
+			Wenn keine maximale Teilnehmerzahl angegeben wurde, besitzt das Event keine Teilnehmerbeschränkung.<br>
+			Wenn die Teilnehmer gezählt werden sollen, können sich Nutzer der App für das Event anmelden.<br>
+			<br>
+			Bei der Angabe des Ortes muss entweder ein bekannter Ort ausgewählt oder ein neuer erstellt werden.<br>
+			Ein bekannter Ort kann entweder aus der Liste ausgesucht oder auf der Karte angeklickt werden, um ihn auszuwählen.<br>
+			Wenn ein neuer Ort erstellt werden soll, müssen alle Felder gefüllt sein.<br>
+			Wenn "Marker platzieren" gedrückt wurde, kann man auf einen Punkt auf der Karte klicken um die Koordinaten dieses Punktes als Koordinaten der neuen Ortes zu übernehmen.<br>
+        	<br>
+			Nur Bilder mit dem Dateiformat .png .jpg oder .gif sind erlaubt.<br>
+			Bilder dürfen maximal 500kb groß sein.<br>
+			Bitte achten sie darauf, dass die Bilder fehlerfrei sind, weil sie sonst nicht hochgeladen werden.<br>
+			Sollte ein Bild Fehler enthalten oder keine Beschreibung haben, wird dieses nicht hochgeladen.<br>
+			<br>
+			Wenn notwendige Felder unausgefüllt waren, wird das Event nicht hochgeladen.<br>
+			Wenn notwendige Felder bei Bildern oder bei neuen Sponsoren unausgefüllt waren, werden diese nicht hochgeladen. Das Event kann trotzdem hochgeladen werden.<br>
          </p>
 	</aside>
     </main>
