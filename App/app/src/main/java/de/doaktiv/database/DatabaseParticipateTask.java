@@ -21,7 +21,7 @@ public class DatabaseParticipateTask implements DatabaseTask<Event, Boolean> {
             event.participate(true);
 
             return Boolean.TRUE;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Boolean.FALSE;
         }

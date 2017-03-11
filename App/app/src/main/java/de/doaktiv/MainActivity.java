@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        for(int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
+        for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); ++i) {
             getSupportFragmentManager().popBackStack();
         }
 
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onPause() {
         super.onPause();
-        
+
         databaseManager.saveDatabaseToStorage();
     }
 

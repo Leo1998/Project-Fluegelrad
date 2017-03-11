@@ -138,7 +138,7 @@ public class Event {
      * @param sponsors
      * @param images
      */
-    public Event(int id, String name,  int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, int hostId, int[] sponsors, List<Image> images) {
+    public Event(int id, String name, int price, Calendar dateStart, Calendar dateEnd, String description, int maxParticipants, int participants, int ageMin, int ageMax, Location location, int hostId, int[] sponsors, List<Image> images) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -172,7 +172,6 @@ public class Event {
     }
 
     /**
-     *
      * @return dateStart formatted as a string
      */
     public String getDateStartFormatted() {
@@ -185,7 +184,6 @@ public class Event {
     }
 
     /**
-     *
      * @return dateEnd formatted as a string
      */
     public String getDateEndFormatted() {
@@ -194,7 +192,6 @@ public class Event {
     }
 
     /**
-     *
      * @return the duration of the event formatted as a string
      */
     public String getDurationFormatted() {

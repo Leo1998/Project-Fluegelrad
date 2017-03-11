@@ -76,7 +76,7 @@ public class DatabaseManager {
      */
     private User user;
     /**
-     *  list of all running tasks
+     * list of all running tasks
      */
     private final List<RunningTaskWrapper> runningTasks = new ArrayList<>();
     /**
@@ -117,7 +117,7 @@ public class DatabaseManager {
         executeTask(new DatabaseLoginTask(), null, new DatabaseTaskWatcher() {
             @Override
             public void onFinish(Object result) {
-                assert(result != null && result instanceof User);
+                assert (result != null && result instanceof User);
 
                 DatabaseManager.this.user = (User) result;
 
@@ -184,13 +184,12 @@ public class DatabaseManager {
 
             writer.write(root.toString());
             writer.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     /**
-     *
      * @param task
      * @param watcher
      */
@@ -223,9 +222,8 @@ public class DatabaseManager {
     }
 
     /**
-     *
      * @param scriptAddress the scripts address (without arguments)
-     * @param args arguments for the script
+     * @param args          arguments for the script
      * @return the json text
      * @throws DatabaseException
      */
@@ -278,7 +276,7 @@ public class DatabaseManager {
                 executeTask(new DatabaseLoginTask(), null, new DatabaseTaskWatcher() {
                     @Override
                     public void onFinish(Object result) {
-                        assert(result != null && result instanceof User);
+                        assert (result != null && result instanceof User);
 
                         DatabaseManager.this.user = (User) result;
 
@@ -321,7 +319,7 @@ public class DatabaseManager {
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(userFile)));
             writer.write(array.toString());
             writer.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -400,7 +398,7 @@ public class DatabaseManager {
      */
     private void registerSponsor(Sponsor sponsor) {
         for (int i = 0; i < sponsorList.size(); i++) {
-            Sponsor currentSponsor= sponsorList.get(i);
+            Sponsor currentSponsor = sponsorList.get(i);
 
             if (currentSponsor.equalsId(sponsor)) {
                 if (currentSponsor.equals(sponsor)) {
@@ -459,14 +457,13 @@ public class DatabaseManager {
     }
 
     /**
-     *
      * @return alist of recent events
      */
     public List<Event> getRecentEventList() {
         List<Event> list = new ArrayList<>();
 
-        for (int i = eventList.size()-1; i >= 0; i--){
-            if (eventList.get(i).getDateStart().compareTo(Calendar.getInstance()) > 0){
+        for (int i = eventList.size() - 1; i >= 0; i--) {
+            if (eventList.get(i).getDateStart().compareTo(Calendar.getInstance()) > 0) {
                 list.add(eventList.get(i));
             } else {
                 break;
@@ -479,14 +476,13 @@ public class DatabaseManager {
     }
 
     /**
-     *
      * @return a list of events prepared for the home view
      */
     public List<Event> getHomeEventList() {
         List<Event> recent = getRecentEventList();
         List<Event> shown = new ArrayList<>();
 
-        for (int i = 0; i < 1; i++){
+        for (int i = 0; i < 1; i++) {
             if (recent.size() >= 1) {
                 shown.add(recent.get(0));
                 recent.remove(0);
@@ -513,7 +509,7 @@ public class DatabaseManager {
             }
         }
 
-            return shown;
+        return shown;
     }
 
     public List<Sponsor> getSponsors(Event event) {

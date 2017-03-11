@@ -27,7 +27,7 @@ public class DatabaseRateTask implements DatabaseTask<DatabaseRateTask.RateParam
             String result = databaseManager.executeScript("http://fluegelrad.ddns.net/scripts/rate.php", args);
 
             return Boolean.TRUE;
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return Boolean.FALSE;
         }

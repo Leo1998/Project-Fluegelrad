@@ -7,7 +7,8 @@ import java.util.UUID;
 
 public class Utils {
 
-    private Utils() {}
+    private Utils() {
+    }
 
     /**
      * writes all data from in to out
@@ -35,7 +36,7 @@ public class Utils {
             byte[] bytesOfMessage = s.getBytes("UTF-8");
 
             return UUID.nameUUIDFromBytes(bytesOfMessage).toString();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

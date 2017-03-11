@@ -28,7 +28,7 @@ public class CalendarGridViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final List<Event> events = DatabaseManager.INSTANCE.getEventList();
 
-        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout)inflater.inflate(R.layout.calender_grid_fragment, container, false);
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.calender_grid_fragment, container, false);
 
         final CalendarGridView calendarGridView = (CalendarGridView) swipeRefreshLayout.findViewById(R.id.calendar_view);
         calendarGridView.setEvents(events);

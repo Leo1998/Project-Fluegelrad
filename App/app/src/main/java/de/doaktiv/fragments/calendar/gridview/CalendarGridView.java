@@ -89,11 +89,11 @@ public class CalendarGridView extends LinearLayout {
     }
 
     private void assignUiElements() {
-        header = (LinearLayout)findViewById(R.id.calendar_header);
-        btnPrev = (ImageView)findViewById(R.id.calendar_prev_button);
-        btnNext = (ImageView)findViewById(R.id.calendar_next_button);
-        txtDate = (TextView)findViewById(R.id.calendar_date_display);
-        grid = (GridView)findViewById(R.id.calendar_grid);
+        header = (LinearLayout) findViewById(R.id.calendar_header);
+        btnPrev = (ImageView) findViewById(R.id.calendar_prev_button);
+        btnNext = (ImageView) findViewById(R.id.calendar_next_button);
+        txtDate = (TextView) findViewById(R.id.calendar_date_display);
+        grid = (GridView) findViewById(R.id.calendar_grid);
     }
 
     private void assignClickHandlers() {
@@ -116,7 +116,7 @@ public class CalendarGridView extends LinearLayout {
 
     public void updateCalendar() {
         daysShown = new ArrayList<>();
-        Calendar calendar = (Calendar)currentDate.clone();
+        Calendar calendar = (Calendar) currentDate.clone();
 
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         int monthBeginningCell = calendar.get(Calendar.DAY_OF_WEEK) - 1 == 0 ? 6 : calendar.get(Calendar.DAY_OF_WEEK) - 1 - 1;
@@ -148,7 +148,7 @@ public class CalendarGridView extends LinearLayout {
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup parent){
+        public View getView(int position, View view, ViewGroup parent) {
             Calendar date = getItem(position);
             int day = date.get(Calendar.DAY_OF_MONTH);
             int month = date.get(Calendar.MONTH);
@@ -172,17 +172,17 @@ public class CalendarGridView extends LinearLayout {
                 }
             }
 
-            ((CircleText)view).setTypeface(null, Typeface.NORMAL);
-            ((CircleText)view).setTextColor(Color.BLACK);
+            ((CircleText) view).setTypeface(null, Typeface.NORMAL);
+            ((CircleText) view).setTextColor(Color.BLACK);
 
             if (month != currentDate.get(Calendar.MONTH) || year != currentDate.get(Calendar.YEAR)) {
-                ((CircleText)view).setTextColor(ContextCompat.getColor(getContext(), R.color.greyed_out));
+                ((CircleText) view).setTextColor(ContextCompat.getColor(getContext(), R.color.greyed_out));
             } else if (month == today.get(Calendar.MONTH) && year == today.get(Calendar.YEAR) && day == today.get(Calendar.DAY_OF_MONTH)) {
-                ((CircleText)view).setTypeface(null, Typeface.BOLD);
-                ((CircleText)view).setTextColor(ContextCompat.getColor(getContext(), R.color.today));
+                ((CircleText) view).setTypeface(null, Typeface.BOLD);
+                ((CircleText) view).setTextColor(ContextCompat.getColor(getContext(), R.color.today));
             }
 
-            ((CircleText)view).setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
+            ((CircleText) view).setText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)));
 
             GridView.LayoutParams params = new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, grid.getColumnWidth());
             view.setLayoutParams(params);

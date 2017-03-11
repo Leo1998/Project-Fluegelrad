@@ -11,7 +11,7 @@ public class DatabaseDownloadTask implements DatabaseTask<Void, Void> {
             String json = databaseManager.executeScript("http://fluegelrad.ddns.net/scripts/getEvents.php", null);
 
             databaseManager.readDatabase(json, true);
-        } catch(Exception e) {
+        } catch (Exception e) {
             databaseManager.getLogger().log(e.getMessage());
             e.printStackTrace();
         }

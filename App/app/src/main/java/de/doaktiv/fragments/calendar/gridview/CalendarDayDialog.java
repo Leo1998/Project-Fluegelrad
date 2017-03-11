@@ -42,7 +42,7 @@ public class CalendarDayDialog extends DialogFragment {
             }
         }
         String[] shortDescriptions = new String[events.size()];
-        for (int i = 0; i < events.size(); i++){
+        for (int i = 0; i < events.size(); i++) {
             shortDescriptions[i] = events.get(i).getName();
         }
 

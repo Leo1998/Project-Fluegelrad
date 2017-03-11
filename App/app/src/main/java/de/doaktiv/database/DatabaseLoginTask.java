@@ -23,7 +23,7 @@ public class DatabaseLoginTask implements DatabaseTask<Void, User> {
         int attempt = 0;
 
         // 2 attempts then cancel
-        while(attempt < 2) {
+        while (attempt < 2) {
             try {
                 File userFile = new File(databaseManager.getFilesDirectory(), "user.dat");
                 String userJson = null;
@@ -67,7 +67,7 @@ public class DatabaseLoginTask implements DatabaseTask<Void, User> {
                 User user = new User(id, token);
 
                 return user;
-            } catch(Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
 
                 attempt++;

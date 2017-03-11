@@ -1,8 +1,5 @@
 package de.doaktiv.fragments.day;
 
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -52,7 +49,7 @@ public class ParticipateFragment extends Fragment {
                         participateButtonClickable = false;
 
                         final DatabaseManager databaseManager = ((MainActivity) ParticipateFragment.this.getActivity()).getDatabaseManager();
-                        databaseManager.executeTask(new DatabaseParticipateTask(), new Event[] {event}, new DatabaseTaskWatcher() {
+                        databaseManager.executeTask(new DatabaseParticipateTask(), new Event[]{event}, new DatabaseTaskWatcher() {
                             @Override
                             public void onFinish(Object result) {
                                 boolean success = (Boolean) result;

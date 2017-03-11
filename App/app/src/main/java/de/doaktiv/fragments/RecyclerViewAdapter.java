@@ -12,20 +12,19 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 import de.doaktiv.R;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
 import de.doaktiv.fragments.day.CalendarDayFragment;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private FragmentActivity activity;
 
     private boolean homeView;
 
-    public RecyclerViewAdapter(boolean homeView){
+    public RecyclerViewAdapter(boolean homeView) {
         this.homeView = homeView;
     }
 
@@ -47,7 +46,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         if (homeView) {
             event = DatabaseManager.INSTANCE.getHomeEventList().get(position);
-        }else {
+        } else {
             event = DatabaseManager.INSTANCE.getRecentEventList().get(position);
         }
 
@@ -86,12 +85,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public int getItemCount() {
         if (homeView) {
             return DatabaseManager.INSTANCE.getHomeEventList().size();
-        }else {
+        } else {
             return DatabaseManager.INSTANCE.getRecentEventList().size();
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView dateTextView;
         private TextView categoryTextView;
@@ -104,11 +103,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         public ViewHolder(View itemView) {
             super(itemView);
 
-            dateTextView = (TextView)itemView.findViewById(R.id.date);
-            categoryTextView = (TextView)itemView.findViewById(R.id.category);
-            locationTextView = (TextView)itemView.findViewById(R.id.location);
-            hostTextView = (TextView)itemView.findViewById(R.id.host);
-            imageView = (AsyncImageView)itemView.findViewById(R.id.imageView);
+            dateTextView = (TextView) itemView.findViewById(R.id.date);
+            categoryTextView = (TextView) itemView.findViewById(R.id.category);
+            locationTextView = (TextView) itemView.findViewById(R.id.location);
+            hostTextView = (TextView) itemView.findViewById(R.id.host);
+            imageView = (AsyncImageView) itemView.findViewById(R.id.imageView);
 
             cardView = (CardView) itemView.findViewById(R.id.card_view);
         }
@@ -129,7 +128,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             return hostTextView;
         }
 
-        public AsyncImageView getImageView(){
+        public AsyncImageView getImageView() {
             return imageView;
         }
 

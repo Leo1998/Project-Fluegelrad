@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import de.doaktiv.MainActivity;
 import de.doaktiv.R;
 import de.doaktiv.database.DatabaseDownloadTask;
-import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.DatabaseTaskWatcher;
 import de.doaktiv.fragments.RecyclerViewAdapter;
 

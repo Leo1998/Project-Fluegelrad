@@ -138,9 +138,9 @@ public class CalendarDayFragment extends Fragment {
         Menu menu = toolbar.getMenu();
 
         // tint icons
-        for(int i = 0; i < menu.size(); i++){
+        for (int i = 0; i < menu.size(); i++) {
             Drawable drawable = menu.getItem(i).getIcon();
-            if(drawable != null) {
+            if (drawable != null) {
                 drawable.mutate();
                 drawable.setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
             }
@@ -224,6 +224,7 @@ public class CalendarDayFragment extends Fragment {
                         public boolean onItemSingleTapUp(final int index, final OverlayItem item) {
                             return false;
                         }
+
                         @Override
                         public boolean onItemLongPress(final int index, final OverlayItem item) {
                             return false;

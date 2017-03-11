@@ -34,9 +34,9 @@ public class CircleText extends TextView {
         init();
     }
 
-    private void init(){
+    private void init() {
         drawable = ContextCompat.getDrawable(getContext(), R.drawable.touch_selector);
-        if (drawable instanceof StateListDrawable){
+        if (drawable instanceof StateListDrawable) {
             drawable = ContextCompat.getDrawable(getContext(), R.drawable.touch_selector);
             DrawableContainer.DrawableContainerState d = ((DrawableContainer.DrawableContainerState) drawable.getConstantState());
             Drawable[] children = d.getChildren();
@@ -62,7 +62,7 @@ public class CircleText extends TextView {
 
     @Override
     protected void drawableStateChanged() {
-        if (drawable != null){
+        if (drawable != null) {
             drawable.setState(getDrawableState());
             invalidate();
         }
