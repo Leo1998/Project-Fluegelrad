@@ -1,14 +1,7 @@
 <?php
-	session_start();
-	
-	if(!isset($_SESSION['hostId'])){
-		header("Location: ../index.php?m=3");
-		exit();
-	}
-	
 	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
+	$hostRequired=true;
+	require('../scripts/sitePrepare.php');
 	
 	$statement = $pdo->prepare("SELECT * FROM `locations`");
 	$statement->execute();
@@ -180,26 +173,37 @@
 			}
 			
 			
+			var navLogout = document.createElement("a");
+			navLogout.href = "logout.php";
+			navLogout.innerHTML = "Abmelden";
+			
+			document.getElementById("loginfield").appendChild(navLogout);
+			
 			var div = document.createElement('div');
-			div.id = "Host";
-				
-			var nameLabel = document.createTextNode(hostStuff["name"]);
+			
+			div.appendChild(document.createTextNode("Angemeldet als:"));
+			div.appendChild(document.createElement("br"));
+			div.appendChild(document.createTextNode(hostStuff["name"]));
+			div.appendChild(document.createElement("br"));
+			
 			var image = document.createElement('img');
 			image.src= "../"+hostStuff["image"];
 			image.alt= "Bild nicht verfügbar";
 			image.title= "Vorschau";
-			image.style.height="50px";
-				
+			image.style.width="100px";
+			image.style.height="100px";
+			div.appendChild(image);
+			
+			div.appendChild(document.createElement("br"));
+			
 			var logout = document.createElement("a");
 			logout.href = "logout.php";
 			logout.innerHTML = "Abmelden";
-				
-			div.appendChild(nameLabel);
-			div.appendChild(image);
+			div.appendChild(logout);
 			
-			document.getElementById("loginfield").appendChild(logout);
+			document.getElementById("hostInfos").appendChild(div);
 			
-			//document.getElementById("header").appendChild(div);
+			document.getElementById("hostInfos").className = "show";
 
 			
 			document.getElementById('maxSponsorId').value = maxSponsorId;
@@ -601,6 +605,7 @@
     <footer>
 		 
 	</footer>
-
+	
+	<div id="hostInfos"></div>
 </body>
 </html>

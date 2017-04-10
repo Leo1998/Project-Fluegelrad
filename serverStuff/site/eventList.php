@@ -1,9 +1,7 @@
 <?php
-	session_start();
-
 	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
+	$hostRequired=false;
+	require('../scripts/sitePrepare.php');
 	
 	//GET EVENTS
 	$eventArray = array();
@@ -19,11 +17,13 @@
 		JOIN `sponsors` ON `sponsors`.`id` = `hosts`.`sponsorId`
 		LEFT JOIN (SELECT * from `imagePaths` GROUP BY `imagePaths`.`eventId`) AS `imagePaths` ON `imagePaths`.`eventId` = `events`.`id`
 		LEFT JOIN (SELECT AVG(`rating`) AS `rating`,`eventId` FROM `eventRatings` GROUP BY `eventId`) AS `ratings` ON `ratings`.`eventId` = `events`.`id`
+		WHERE `events`.`dateEnd` > STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s')
 		ORDER BY `events`.`dateStart` , `events`.`dateEnd`");
-	$statement->execute();
+	$time = date("Y-m-d H:i:s", time());
+	$statement->execute(array($time));
 	
 	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$desc = explode("\n",$row["description"]);
+		$desc = explode("\\n",$row["description"]);
 		unset($row["description"]);
 		if(isset($desc[0])){
 			$row["description1"] = $desc[0];
@@ -38,15 +38,23 @@
 		$eventArray[] = $row;
 	}
 	
+	$expiredArray = array();
+	
 	if(isset($_SESSION['hostId'])){
-		$hostStuff = "const hostStuff = {\"id\" : ".$_SESSION['hostId'].", \"name\" : \"".$_SESSION['name']."\", \"image\" : \"".$_SESSION['image']."\"};";
-	}else{
-		$hostStuff = "const hostStuff = null;";
+		//GET EXPIRED EVENTS
+		$statement = $pdo->prepare("SELECT
+			`events`.`id` , `events`.`name` , `events`.`dateEnd`
+			FROM `events`
+			WHERE `events`.`hostId` = ? AND `events`.`dateEnd` < STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s')");
+		$statement->execute(array($_SESSION['hostId'],$time));
+		
+		$expiredArray = $statement->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
 	echo "
 <script type=\"text/javascript\">
 	const data = ".json_encode($eventArray,JSON_PRETTY_PRINT).";
+	const expired = ".json_encode($expiredArray,JSON_PRETTY_PRINT).";
 	$hostStuff
 </script>
 		";
@@ -57,8 +65,8 @@
 		<title>Eventliste</title>
 		<script src="http://www.openlayers.org/api/OpenLayers.js"></script>
 		<meta charset="utf-8">
-		<meta name="Description" content="Liste aller Events" /> 
-		<link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> 
+		<meta name="Description" content="Liste aller Events" http-equiv="pragma" content="no-cache"/> 
+		<link href="css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" />
 		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" /> <!-- Cookie Message -->
 		<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 		<script>
@@ -82,31 +90,61 @@
 					addEvent(data[i]);
 				}
 				if(hostStuff != null){
-					var div = document.createElement('div');
-					div.id = "Host";
+					var navLogout = document.createElement("a");
+					navLogout.href = "logout.php";
+					navLogout.innerHTML = "Abmelden";
 					
-					var nameLabel = document.createTextNode(hostStuff["name"]);
+					document.getElementById("loginfield").appendChild(navLogout);
+					
+					var div = document.createElement('div');
+					
+					div.appendChild(document.createTextNode("Angemeldet als:"));
+					div.appendChild(document.createElement("br"));
+					div.appendChild(document.createTextNode(hostStuff["name"]));
+					div.appendChild(document.createElement("br"));
+					
 					var image = document.createElement('img');
 					image.src= "../"+hostStuff["image"];
 					image.alt= "Bild nicht verfügbar";
 					image.title= "Vorschau";
-					image.style.height="50px";
+					image.style.width="100px";
+					image.style.height="100px";
+					div.appendChild(image);
+					
+					div.appendChild(document.createElement("br"));
 					
 					var logout = document.createElement("a");
 					logout.href = "logout.php";
 					logout.innerHTML = "Abmelden";
+					div.appendChild(logout);
 					
-					div.appendChild(nameLabel);
-					div.appendChild(image);
-					//div.appendChild(logout);
-					document.getElementById("loginfield").appendChild(logout);
-					//document.getElementById("header").appendChild(div);
+					document.getElementById("hostInfos").appendChild(div);
 					
-					var createEvent = document.createElement('a');
-					createEvent.href = "createEvent.php";
-					createEvent.innerHTML = "Neues Event erstellen";
+					document.getElementById("hostInfos").className = "show";
 					
-					document.getElementById("createEventDiv").appendChild(createEvent);
+					if(expired.length > 0){
+						document.getElementById("expiredHeader").innerHTML = "Sie haben folgende ausgelaufenen Events";
+						
+						var ul = document.getElementById("expiredEvents");
+						
+						for(var i = 0 ; i in expired ; i++){
+							var li = document.createElement("li");
+							
+							var name = document.createElement('a');
+							name.innerHTML = expired[i]["name"]+"<br>";
+							name.href = "expiredEvent.php?k="+expired[i]["id"];
+							name.class = "eventName";
+							
+							li.appendChild(name);
+							li.appendChild(document.createTextNode("Ausgelaufen seit: "+expired[i]["dateEnd"]));
+							
+							ul.appendChild(li);
+							ul.appendChild.createElement("br");
+						}
+					}else{
+						document.getElementById("expiredHeader").innerHTML = "Sie haben keine ausgelaufenen Events";
+					}
+					
 				}else{
 					var login = document.createElement("a");
 					login.href = "login.php";
@@ -217,9 +255,14 @@
 				<ul id="events" name="events" style="list-style-type: none;">
 				</ul>
 				<br>
-				<div id="createEventDiv"></div>
+				<h2 id="expiredHeader"></h2>
+				<ul id="expiredEvents" style="list-style-type: none;">
+				</ul>
 			
 			</section>    
+			
 		</main>
+		
+		<div id="hostInfos"></div>
 	</body>
 </html>

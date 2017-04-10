@@ -1,5 +1,7 @@
 <?php
-	session_start();
+	//Spam protection, IP ban, Initalize PDO
+	$hostRequired=false;
+	require('../scripts/sitePrepare.php');
 
 	//Get Hostname(name)
 	if(isset($_POST['name'])) {
@@ -17,10 +19,6 @@
 		exit();
 	}
 
-	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
-	
 	//Delete expired Sessions
 	$time = time();
 	$statement = $pdo->prepare("DELETE FROM sessions WHERE expire < :time");
@@ -69,7 +67,7 @@
 				$_SESSION['image'] = $row['imagePath'];
 			}
 			
-			$statement2 = $pdo->prepare("SELECT `events`.`id` FROM `events` WHERE `events`.`hostId` = ? AND `events`.`dateEnd` < ?");
+			$statement2 = $pdo->prepare("SELECT `events`.`id` FROM `events` WHERE `events`.`hostId` = ? AND `events`.`dateEnd` < STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s')");
 			$time = date("Y-m-d H:i:s", time());
 			$statement2->execute(array($hId,$time));
 			
