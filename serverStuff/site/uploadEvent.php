@@ -73,7 +73,7 @@
 	 
 		//Upload file
 		move_uploaded_file($_FILES[$name]['tmp_name'], $new_path);
-		return str_replace("../",$new_path,"");
+		return str_replace("../","",$new_path);
 	}
 	
 	// ---- AGE ----
@@ -97,8 +97,8 @@
 	$eParams = array(
 		'name' => getPost('eventName',true,"Eventname war nicht gesetzt"),
 		'locId' => 0,
-		'price' => getPost('price',true,"Eventpreis war nicht gesetzt"),
-		'maxParticipants' => (getPost('participants',false,null) == false) ? (-1) : (getPost('participants',true,"Fehler 02 beim Event-Hochladen")),
+		'price' => (getPost('price',false,null) == false) ? (0) : (getPost('price',true,"Fehler 02.1 beim Event-Hochladen")),
+		'maxParticipants' => (getPost('participants',false,null) == false) ? (-1) : (getPost('participants',true,"Fehler 02.2 beim Event-Hochladen")),
 		'participants' => (getPost('countParticipants',false,null) == "on") ? (0) : (-1),
 		'hostId' => $_SESSION['hostId'],
 		'dateStart' => getPost('dateStart',true,"Startdatum war nicht gesetzt"),
@@ -189,7 +189,7 @@
 	// ---- IMAGES ----
 	for($i = 1; $i <= $newImages; $i++ ){
 		if(getPost('descriptionImage'.$i,false,null) != false){ //If getPost is false, either image has been deleted or hasn´t been completed. In both situation, no need to add Image.
-			$imgPath = uploadImage('imageImage'.$i);
+			$imgPath = uploadImage('imageImage'.$i,getPost('descriptionImage'.$i,false,null));
 			$params = array(
 				'path' => $imgPath,
 				'eventId' => $eventId,
