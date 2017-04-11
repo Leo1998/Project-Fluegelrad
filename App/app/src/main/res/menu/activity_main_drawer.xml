@@ -2,9 +2,6 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="@string/drawer_home"
-        android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home" />
     <item android:title="@string/drawer_calender"
         android:icon="@drawable/ic_today"
         android:id="@+id/nav_calender" />

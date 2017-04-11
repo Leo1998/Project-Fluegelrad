@@ -1,8 +1,7 @@
-package de.doaktiv.fragments.home;
+package de.doaktiv.android.fragments.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,13 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import de.doaktiv.MainActivity;
 import de.doaktiv.R;
+import de.doaktiv.android.DoaktivFragment;
+import de.doaktiv.android.DoaktivActivity;
 import de.doaktiv.database.DatabaseDownloadTask;
 import de.doaktiv.database.DatabaseTaskWatcher;
-import de.doaktiv.fragments.RecyclerViewAdapter;
+import de.doaktiv.android.fragments.RecyclerViewAdapter;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends DoaktivFragment {
 
     private RecyclerViewAdapter adapter;
 
@@ -28,15 +28,14 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-
         this.adapter = new RecyclerViewAdapter(true);
-        adapter.setActivity(getActivity());
+        adapter.setActivity((DoaktivActivity) getActivity());
         recyclerView.setAdapter(adapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                ((MainActivity) HomeFragment.this.getActivity()).getDatabaseManager().executeTask(new DatabaseDownloadTask(), null, new DatabaseTaskWatcher() {
+                ((DoaktivActivity) HomeFragment.this.getActivity()).getDatabaseManager().executeTask(new DatabaseDownloadTask(), null, new DatabaseTaskWatcher() {
                     @Override
                     public void onFinish(Object result) {
                         swipeRefreshLayout.post(new Runnable() {

@@ -52,7 +52,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true">
 
-                <de.doaktiv.fragments.AsyncImageView
+                <de.doaktiv.android.fragments.AsyncImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"

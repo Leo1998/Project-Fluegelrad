@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.day;
+package de.doaktiv.android.fragments.day;
 
 import android.content.Context;
 import android.os.Handler;

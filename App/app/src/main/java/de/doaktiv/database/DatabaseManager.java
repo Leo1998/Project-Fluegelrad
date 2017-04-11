@@ -1,11 +1,7 @@
 package de.doaktiv.database;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,10 +24,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-
-import de.doaktiv.R;
-import de.doaktiv.util.Logger;
-import de.doaktiv.util.SnackbarLogger;
 
 /**
  * the DatabaseManager is the main class of the database system
@@ -56,10 +48,6 @@ public class DatabaseManager {
      */
     private final DatabaseUpdateListener updateListener;
     /**
-     * a view the DatabaseManager is attached to (for snackbar logger)
-     */
-    private final View attachedView;
-    /**
      * the directory to store the Database files
      */
     private final File filesDirectory;
@@ -79,31 +67,23 @@ public class DatabaseManager {
      * list of all running tasks
      */
     private final List<RunningTaskWrapper> runningTasks = new ArrayList<>();
-    /**
-     * an abstract logger for example @{@link SnackbarLogger}
-     */
-    private Logger logger;
 
     /**
      * Constructor.
      *
-     * @param attachedView
      * @param filesDirectory
      * @param updateListener
      */
-    public DatabaseManager(View attachedView, File filesDirectory, DatabaseUpdateListener updateListener) {
+    public DatabaseManager(File filesDirectory, DatabaseUpdateListener updateListener) {
         if (INSTANCE != null)
             throw new IllegalStateException("Only one Instance allowed!");
         INSTANCE = this;
 
-        this.attachedView = attachedView;
         this.filesDirectory = filesDirectory;
         if (!filesDirectory.exists()) {
             filesDirectory.mkdirs();
         }
         this.updateListener = updateListener;
-
-        this.logger = new SnackbarLogger(attachedView);
 
         firstLogin();
     }
@@ -228,17 +208,17 @@ public class DatabaseManager {
      * @throws DatabaseException
      */
     String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
-        // check network
-        ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        // TODO:check network
+        /*ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
         if (!isConnected) {
             throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.network_failure).toString());
-        }
+        }*/
 
         if (user == null) {
-            throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.database_access_failure).toString());
+            //throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.database_access_failure).toString());
         }
 
         // append user data
@@ -442,10 +422,6 @@ public class DatabaseManager {
 
     public File getFilesDirectory() {
         return filesDirectory;
-    }
-
-    public Logger getLogger() {
-        return logger;
     }
 
     public List<Event> getEventList() {

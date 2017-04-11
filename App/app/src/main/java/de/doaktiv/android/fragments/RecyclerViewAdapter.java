@@ -1,8 +1,7 @@
-package de.doaktiv.fragments;
+package de.doaktiv.android.fragments;
 
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,13 +13,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import de.doaktiv.R;
+import de.doaktiv.android.DoaktivActivity;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
-import de.doaktiv.fragments.day.CalendarDayFragment;
+import de.doaktiv.android.fragments.day.CalendarDayFragment;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private FragmentActivity activity;
+    private DoaktivActivity activity;
 
     private boolean homeView;
 
@@ -28,7 +28,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.homeView = homeView;
     }
 
-    public void setActivity(FragmentActivity activity) {
+    public void setActivity(DoaktivActivity activity) {
         this.activity = activity;
     }
 
@@ -75,7 +75,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 calendarDayFragment.setArguments(bundle);
 
                 if (activity != null) {
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    activity.getController().openScreen(calendarDayFragment);
                 }
             }
         });

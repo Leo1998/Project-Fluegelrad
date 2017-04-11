@@ -1,8 +1,7 @@
-package de.doaktiv.fragments.calendar.gridview;
+package de.doaktiv.android.fragments.calendar.gridview;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,15 +13,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import de.doaktiv.MainActivity;
 import de.doaktiv.R;
+import de.doaktiv.android.DoaktivActivity;
+import de.doaktiv.android.DoaktivFragment;
 import de.doaktiv.database.DatabaseDownloadTask;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.DatabaseTaskWatcher;
 import de.doaktiv.database.Event;
-import de.doaktiv.fragments.day.CalendarDayFragment;
+import de.doaktiv.android.fragments.day.CalendarDayFragment;
 
-public class CalendarGridViewFragment extends Fragment {
+public class CalendarGridViewFragment extends DoaktivFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class CalendarGridViewFragment extends Fragment {
                     CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                     calendarDayFragment.setArguments(bundle);
 
-                    CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    //CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
                 }
                 if (eventsOnDate.size() > 1) {
                     DialogFragment newFragment = new CalendarDayDialog();
@@ -76,7 +76,7 @@ public class CalendarGridViewFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                ((MainActivity) CalendarGridViewFragment.this.getActivity()).getDatabaseManager().executeTask(new DatabaseDownloadTask(), null, new DatabaseTaskWatcher() {
+                ((DoaktivActivity) CalendarGridViewFragment.this.getActivity()).getDatabaseManager().executeTask(new DatabaseDownloadTask(), null, new DatabaseTaskWatcher() {
                     @Override
                     public void onFinish(Object result) {
                         swipeRefreshLayout.post(new Runnable() {

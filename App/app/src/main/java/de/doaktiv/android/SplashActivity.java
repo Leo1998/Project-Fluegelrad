@@ -1,4 +1,4 @@
-package de.doaktiv;
+package de.doaktiv.android;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, DoaktivActivity.class);
         startActivity(intent);
         finish();
     }

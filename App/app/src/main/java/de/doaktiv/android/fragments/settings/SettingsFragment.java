@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.settings;
+package de.doaktiv.android.fragments.settings;
 
 
 import android.content.pm.PackageInfo;
@@ -8,15 +8,16 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 
 import de.doaktiv.R;
+import de.doaktiv.android.DoaktivFragment;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class SettingsFragment extends DoaktivFragment {
 
-    @Override
+    /*@Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings_preferences);
 
@@ -37,7 +38,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             appVersionPreference.setSummary(info.versionName + " (versionCode: " + info.versionCode + ")");
         } catch (PackageManager.NameNotFoundException e) {
         }
-    }
+    }*/
 
     public void launchLicensesDialog() {
         final Notices notices = new Notices();

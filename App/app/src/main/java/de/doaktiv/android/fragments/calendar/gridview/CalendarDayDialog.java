@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.calendar.gridview;
+package de.doaktiv.android.fragments.calendar.gridview;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -9,10 +9,9 @@ import android.support.v7.app.AlertDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.doaktiv.R;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
-import de.doaktiv.fragments.day.CalendarDayFragment;
+import de.doaktiv.android.fragments.day.CalendarDayFragment;
 
 public class CalendarDayDialog extends DialogFragment {
 
@@ -55,7 +54,7 @@ public class CalendarDayDialog extends DialogFragment {
                 CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
                 calendarDayFragment.setArguments(bundle);
 
-                CalendarDayDialog.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                //CalendarDayDialog.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
             }
         });
 

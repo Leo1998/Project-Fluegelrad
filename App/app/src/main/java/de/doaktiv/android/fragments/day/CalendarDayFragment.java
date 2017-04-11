@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.day;
+package de.doaktiv.android.fragments.day;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -37,12 +37,13 @@ import java.util.List;
 
 import de.doaktiv.BuildConfig;
 import de.doaktiv.R;
+import de.doaktiv.android.DoaktivFragment;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
 import de.doaktiv.database.Sponsor;
-import de.doaktiv.fragments.calendar.SponsorView;
+import de.doaktiv.android.fragments.calendar.SponsorView;
 
-public class CalendarDayFragment extends Fragment {
+public class CalendarDayFragment extends DoaktivFragment {
 
     private Event event;
 
@@ -62,7 +63,7 @@ public class CalendarDayFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                getRootController().doSystemBack();
             }
         });
 
@@ -115,7 +116,7 @@ public class CalendarDayFragment extends Fragment {
                 ParticipateFragment participateFragment = new ParticipateFragment();
                 participateFragment.setArguments(bundle);
 
-                CalendarDayFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, participateFragment).addToBackStack("participateFragment").commit();
+                getRootController().openScreen(participateFragment);
             }
         });
     }
@@ -123,13 +124,13 @@ public class CalendarDayFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+        getDoaktivActivity().hideBar();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        getDoaktivActivity().showBar();
     }
 
     private void buildMenu(Toolbar toolbar) {

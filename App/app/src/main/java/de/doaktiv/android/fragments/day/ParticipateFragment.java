@@ -1,9 +1,8 @@
-package de.doaktiv.fragments.day;
+package de.doaktiv.android.fragments.day;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import de.doaktiv.MainActivity;
 import de.doaktiv.R;
+import de.doaktiv.android.DoaktivActivity;
+import de.doaktiv.android.DoaktivFragment;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.DatabaseParticipateTask;
 import de.doaktiv.database.DatabaseRateTask;
@@ -23,7 +23,7 @@ import de.doaktiv.database.Event;
 
 import static de.doaktiv.database.DatabaseManager.INSTANCE;
 
-public class ParticipateFragment extends Fragment {
+public class ParticipateFragment extends DoaktivFragment {
 
     private Event event;
 
@@ -48,7 +48,7 @@ public class ParticipateFragment extends Fragment {
                     if (!event.isParticipating() && participateButtonClickable) {
                         participateButtonClickable = false;
 
-                        final DatabaseManager databaseManager = ((MainActivity) ParticipateFragment.this.getActivity()).getDatabaseManager();
+                        final DatabaseManager databaseManager = ((DoaktivActivity) ParticipateFragment.this.getActivity()).getDatabaseManager();
                         databaseManager.executeTask(new DatabaseParticipateTask(), new Event[]{event}, new DatabaseTaskWatcher() {
                             @Override
                             public void onFinish(Object result) {
@@ -76,7 +76,7 @@ public class ParticipateFragment extends Fragment {
                     if (fromUser) {
                         int r = Math.max(0, Math.min(5, (int) rating));
 
-                        final DatabaseManager databaseManager = ((MainActivity) ParticipateFragment.this.getActivity()).getDatabaseManager();
+                        final DatabaseManager databaseManager = ((DoaktivActivity) ParticipateFragment.this.getActivity()).getDatabaseManager();
                         databaseManager.executeTask(new DatabaseRateTask(), new DatabaseRateTask.RateParamsWrapper[]{new DatabaseRateTask.RateParamsWrapper(event, r)}, new DatabaseTaskWatcher() {
                             @Override
                             public void onFinish(Object result) {

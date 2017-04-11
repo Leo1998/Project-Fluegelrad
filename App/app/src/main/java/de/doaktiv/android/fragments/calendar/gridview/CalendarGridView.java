@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.calendar.gridview;
+package de.doaktiv.android.fragments.calendar.gridview;
 
 import android.content.Context;
 import android.graphics.Color;

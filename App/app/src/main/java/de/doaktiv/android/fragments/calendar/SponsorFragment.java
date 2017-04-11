@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.calendar;
+package de.doaktiv.android.fragments.calendar;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +12,7 @@ import de.doaktiv.R;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Image;
 import de.doaktiv.database.Sponsor;
-import de.doaktiv.fragments.AsyncImageView;
+import de.doaktiv.android.fragments.AsyncImageView;
 
 public class SponsorFragment extends Fragment {
 

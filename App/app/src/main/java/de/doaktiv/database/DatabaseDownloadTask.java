@@ -12,7 +12,6 @@ public class DatabaseDownloadTask implements DatabaseTask<Void, Void> {
 
             databaseManager.readDatabase(json, true);
         } catch (Exception e) {
-            databaseManager.getLogger().log(e.getMessage());
             e.printStackTrace();
         }
 

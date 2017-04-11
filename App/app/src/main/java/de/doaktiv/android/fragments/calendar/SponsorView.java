@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.calendar;
+package de.doaktiv.android.fragments.calendar;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 import de.doaktiv.R;
 import de.doaktiv.database.Image;
 import de.doaktiv.database.Sponsor;
-import de.doaktiv.fragments.AsyncImageView;
+import de.doaktiv.android.fragments.AsyncImageView;
 
 public class SponsorView extends RelativeLayout {
 
@@ -44,7 +44,7 @@ public class SponsorView extends RelativeLayout {
                     SponsorFragment sponsorFragment = new SponsorFragment();
                     sponsorFragment.setArguments(bundle);
 
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
+                    //activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
                 }
             }
         });

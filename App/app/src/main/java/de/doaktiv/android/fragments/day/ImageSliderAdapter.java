@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.day;
+package de.doaktiv.android.fragments.day;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import de.doaktiv.R;
 import de.doaktiv.database.Event;
-import de.doaktiv.fragments.AsyncImageView;
+import de.doaktiv.android.fragments.AsyncImageView;
 
 public class ImageSliderAdapter extends PagerAdapter {
 

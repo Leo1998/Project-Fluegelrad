@@ -1,4 +1,4 @@
-package de.doaktiv.fragments.day;
+package de.doaktiv.android.fragments.day;
 
 
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import de.doaktiv.R;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
 import de.doaktiv.database.Image;
-import de.doaktiv.fragments.AsyncImageView;
+import de.doaktiv.android.fragments.AsyncImageView;
 
 public class ImageFragment extends Fragment {
 

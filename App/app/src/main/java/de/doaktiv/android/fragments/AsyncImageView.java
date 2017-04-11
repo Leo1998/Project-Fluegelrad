@@ -1,4 +1,4 @@
-package de.doaktiv.fragments;
+package de.doaktiv.android.fragments;
 
 import android.content.Context;
 import android.os.AsyncTask;
