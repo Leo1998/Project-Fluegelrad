@@ -55,115 +55,128 @@
 <!doctype html>
 
 <html>
-<head>
-	<title>Home</title>
-    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
-	<meta charset="utf-8">
-	<meta name="author" content="@Firmenname" /> <!-- Hier sollte der Name des Autors, der Inhalte erstellt, rein. -->
-	<meta name="Description" content="Ersellen sie ihr Event!" /> 
-    <link href="site/css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> <!-- Hier sollte der Pfad zur CSS-datei eingetragen werden, 
-           die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
-	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" /> <!-- Cookie Message -->
-	<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
-	<script>
-		window.addEventListener("load", function(){
-		window.cookieconsent.initialise({
-			"palette": {
-				"popup": {
-					"background": "#ffffff",
-					"text": "#000000"
+	<head>
+		<title>Home</title>
+		<script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+		<meta charset="utf-8">
+		<meta name="author" content="@Firmenname" /> <!-- Hier sollte der Name des Autors, der Inhalte erstellt, rein. -->
+		<meta name="Description" content="Ersellen sie ihr Event!" /> 
+		<link href="site/css/screen.css" rel="stylesheet" type="text/css" media="screen, projection" /> <!-- Hier sollte der Pfad zur CSS-datei eingetragen werden, 
+			   die für die Bildschirmausgabe zuständig ist. Je nachdem in welchem Verzeichnis sich diese Datei befindet muss der Pfad angepasst werden. -->
+		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" /> <!-- Cookie Message -->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+		<script>
+			window.addEventListener("load", function(){
+			window.cookieconsent.initialise({
+				"palette": {
+					"popup": {
+						"background": "#ffffff",
+						"text": "#000000"
+					},
+					"button": {
+						"background": "#dddddd",
+						"text": "#000000"
+					}
 				},
-				"button": {
-					"background": "#dddddd",
-					"text": "#000000"
-				}
-			},
-			"theme": "edgeless",
-			"position": "bottom-right"
-		})});
+				"theme": "edgeless",
+				"position": "bottom-right"
+			})});
+			
+			var mapDiv;
 		
-		var mapDiv;
-	
-		function init(){
-			if(hostStuff != null){
-				var div = document.createElement('div');
-				div.id = "Host";
+			function init(){
+				if(hostStuff != null){
+					var navLogout = document.createElement("a");
+					navLogout.href = "site/logout.php";
+					navLogout.innerHTML = "Abmelden";
+					
+					document.getElementById("loginfield").appendChild(navLogout);
+					
+					var div = document.createElement('div');
+					
+					div.appendChild(document.createTextNode("Angemeldet als:"));
+					div.appendChild(document.createElement("br"));
+					div.appendChild(document.createTextNode(hostStuff["name"]));
+					div.appendChild(document.createElement("br"));
+					
+					var image = document.createElement('img');
+					image.src= "../"+hostStuff["image"];
+					image.alt= "Bild nicht verfügbar";
+					image.title= "Vorschau";
+					image.style.width="100px";
+					image.style.height="100px";
+					div.appendChild(image);
+					
+					div.appendChild(document.createElement("br"));
+					
+					var logout = document.createElement("a");
+					logout.href = "site/logout.php";
+					logout.innerHTML = "Abmelden";
+					div.appendChild(logout);
+					
+					document.getElementById("hostInfos").appendChild(div);
+					
+					document.getElementById("hostInfos").className = "show";
+				}else{
+					var login = document.createElement("a");
+					login.href = "site/login.php";
+					login.innerHTML = "Anmelden";
+					
+					document.getElementById("loginfield").appendChild(login);
+				}
 				
-				var nameLabel = document.createTextNode(hostStuff["name"]);
-				var image = document.createElement('img');
-				image.src= hostStuff["image"];
-				image.alt= "Bild nicht verfügbar";
-				image.title= "Vorschau";
-				image.style.height="50px";
+				if(message != null){
+					// Get the snackbar DIV
+					var snackbar = document.getElementById("snackbar")
+					
+					// Set the message
+					snackbar.innerHTML = message;
+					
+					// Add the "show" class to DIV
+					snackbar.className = "show";
+
+					// After 3 seconds, remove the show class from DIV
+					setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 5500);
+				}
 				
-				var logout = document.createElement("a");
-				logout.href = "site/logout.php";
-				logout.innerHTML = "Abmelden";
-				
-				div.appendChild(nameLabel);
-				div.appendChild(image);
-				//div.appendChild(logout);
-				document.getElementById("loginfield").appendChild(logout);
-				//document.getElementById("header").appendChild(div);
-			}else{
-				var login = document.createElement("a");
-				login.href = "site/login.php";
-				login.innerHTML = "Anmelden";
-				
-				document.getElementById("loginfield").appendChild(login);
 			}
+		</script>
+	</head>
+
+	<body onload='init();'>
+
+	  <header>
+	   <a id="logo" href="./"><span>Do</span>-Aktiv</a> 
+	  </header>
+	  
+	  <nav>
+		<ul>
+			<li class="active">Home</li>
+			<li><a href="site/createEvent.php">Event erstellen</a></li>
+			<li><a href="site/eventList.php">Eventliste</a></li>
+			<li id= "loginfield"></li>
+		</ul>
+	  </nav>
+
+	  <main role="main">
+
+
+	  <section>
+				Home
+		</section>    
+	   
+		<aside>
+			<!-- Sidebar -->
 			
-			if(message != null){
-				// Get the snackbar DIV
-				var snackbar = document.getElementById("snackbar")
-				
-				// Set the message
-				snackbar.innerHTML = message;
-				
-				// Add the "show" class to DIV
-				snackbar.className = "show";
+		</aside>
+		
+		</main>
+		
+		<footer>
+			<!-- Footer -->
+		</footer>
 
-				// After 3 seconds, remove the show class from DIV
-				setTimeout(function(){ snackbar.className = snackbar.className.replace("show", ""); }, 5500);
-			}
-			
-		}
-	</script>
-</head>
-
-<body onload='init();'>
-
-  <header>
-   <a id="logo" href="./"><span>Do</span>-Aktiv</a> 
-  </header>
-  
-  <nav>
-  	<ul>
-   		<li class="active">Home</li>
-   		<li><a href="site/createEvent.php">Event erstellen</a></li>
-   		<li><a href="site/eventList.php">Eventliste</a></li>
-		<li id= "loginfield"></li>
-  	</ul>
-  </nav>
-
-  <main role="main">
-
-
-  <section>
-			Home
-    </section>    
-   
-  	<aside>
-		<!-- Sidebar -->
-    	
-	</aside>
-	
-    </main>
-  	
-    <footer>
-		<!-- Footer -->
-	</footer>
-
-	<div id="snackbar"></div>
-</body>
+		<div id="snackbar"></div>
+		<div id="hostInfos"></div>
+	</body>
 </html>

@@ -1,10 +1,7 @@
 <?php
-	session_start();
-	
-	if(!isset($_SESSION['hostId'])){
-		header("Location: home.php?m=3");
-		exit();
-	}
+	//Spam protection, IP ban, Initalize PDO
+	$hostRequired=true;
+	require('../scripts/sitePrepare.php');
 	
 	if(isset($_GET['k'])) {
 		

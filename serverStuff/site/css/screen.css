@@ -265,6 +265,27 @@ main a[href^="/"]:after { /* Der Mozilla/Firefox zeigen, im Gegensatz zum Opera,
 }
 
 /* Snackbar */
+#hostInfos {
+    visibility: hidden; /* Hidden by default. Visible on click */
+    min-width: 100px; /* Set a default minimum width */
+    margin-left: -50px; /* Divide value of min-width by 2 */
+    background-color: #fff; /* Black background color */
+    color: #333; /* White text color */
+    text-align: left; /* Centered text */
+	font-size: 1em;
+	font-family: verdana, arial, sans-serif;
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 1; /* Add a z-index if needed */
+    right: 30px; /* 30px from the right*/
+    bottom: 30px; /* 30px from the bottom */
+}
+
+#hostInfos.show {
+    visibility: visible; /* Show the snackbar */
+}
+
 /* The snackbar - position it at the bottom and in the middle of the screen */
 #snackbar {
     visibility: hidden; /* Hidden by default. Visible on click */
@@ -290,7 +311,7 @@ main a[href^="/"]:after { /* Der Mozilla/Firefox zeigen, im Gegensatz zum Opera,
 /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
 However, delay the fade out process for 2.5 seconds */
     -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    animation: fadein 0.5s, fadeout 0.5s 5s;
+    animation: fadein 0.5s/*, fadeout 0.5s 5s;
 }
 
 /* Animations to fade the snackbar in and out */

@@ -1,10 +1,7 @@
 <?php
-	session_start();
-
-	if(!isset($_SESSION['hostId'])){
-		header("Location: ../index.php?m=3");
-		exit();
-	}
+	//Spam protection, IP ban, Initalize PDO
+	$hostRequired=true;
+	require('../scripts/sitePrepare.php');
 	
 	// ---- Non-Fatal Errors ----
 	$nfErrors = array();
@@ -78,10 +75,6 @@
 		move_uploaded_file($_FILES[$name]['tmp_name'], $new_path);
 		return str_replace("../",$new_path,"");
 	}
-	
-	//Spam protection, IP ban, Initalize PDO
-	$type=2;
-	require('../scripts/spamProtector.php');
 	
 	// ---- AGE ----
 	$ageMin = getPost('ageMin',false,null);
@@ -251,26 +244,37 @@
 			})});
 			
 			function init(){
+				var navLogout = document.createElement("a");
+				navLogout.href = "logout.php";
+				navLogout.innerHTML = "Abmelden";
+				
+				document.getElementById("loginfield").appendChild(navLogout);
+				
 				var div = document.createElement('div');
-				div.id = "Host";
-					
-				var nameLabel = document.createTextNode(hostStuff["name"]);
+				
+				div.appendChild(document.createTextNode("Angemeldet als:"));
+				div.appendChild(document.createElement("br"));
+				div.appendChild(document.createTextNode(hostStuff["name"]));
+				div.appendChild(document.createElement("br"));
+				
 				var image = document.createElement('img');
 				image.src= "../"+hostStuff["image"];
 				image.alt= "Bild nicht verfügbar";
 				image.title= "Vorschau";
-				image.style.height="50px";
+				image.style.width="100px";
+				image.style.height="100px";
+				div.appendChild(image);
+				
+				div.appendChild(document.createElement("br"));
 				
 				var logout = document.createElement("a");
 				logout.href = "logout.php";
 				logout.innerHTML = "Abmelden";
+				div.appendChild(logout);
 				
-				div.appendChild(nameLabel);
-				div.appendChild(image);
-			
-				document.getElementById("loginfield").appendChild(logout);
-			
-				//document.getElementById("header").appendChild(div);
+				document.getElementById("hostInfos").appendChild(div);
+				
+				document.getElementById("hostInfos").className = "show";
 				
 				if(fErrors.length < 1){
 					document.getElementById("successMessage").innerHTML = "Event wurde erfolgreich hochgeladen";
@@ -346,4 +350,6 @@
 			<!-- Footer -->
 		</footer>
 	</body>
+	
+	<div id="hostInfos"></div>
 </html>
