@@ -50,9 +50,9 @@
 	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$pHash = $row['pass'];
 		$hId = $row['id'];
+		$knownHost = true;
 		//Checks password with hashed password
 		if(password_verify($pass, $pHash)){
-			$knownHost = true;
 			//Rehash pHash if necessary
 			if(password_needs_rehash($pHash, PASSWORD_DEFAULT)){
 				$pHash = password_hash($pass, PASSWORD_DEFAULT);
