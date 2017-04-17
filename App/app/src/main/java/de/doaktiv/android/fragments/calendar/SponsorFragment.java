@@ -1,7 +1,6 @@
 package de.doaktiv.android.fragments.calendar;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,18 +8,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import de.doaktiv.R;
-import de.doaktiv.database.DatabaseManager;
+import de.doaktiv.android.DoaktivFragment;
+import de.doaktiv.android.fragments.AsyncImageView;
 import de.doaktiv.database.Image;
 import de.doaktiv.database.Sponsor;
-import de.doaktiv.android.fragments.AsyncImageView;
 
-public class SponsorFragment extends Fragment {
+public class SponsorFragment extends DoaktivFragment {
 
     private Sponsor sponsor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        this.sponsor = DatabaseManager.INSTANCE.getSponsor(getArguments().getInt("sponsorId"));
+        this.sponsor = database.getSponsor(getArguments().getInt("sponsorId"));
 
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.sponsor_fragment, container, false);
 

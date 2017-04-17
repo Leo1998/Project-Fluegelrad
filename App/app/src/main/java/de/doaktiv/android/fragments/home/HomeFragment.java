@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.doaktiv.R;
-import de.doaktiv.android.DoaktivFragment;
 import de.doaktiv.android.DoaktivActivity;
+import de.doaktiv.android.DoaktivFragment;
+import de.doaktiv.android.fragments.RecyclerViewAdapter;
 import de.doaktiv.database.DatabaseDownloadTask;
 import de.doaktiv.database.DatabaseTaskWatcher;
-import de.doaktiv.android.fragments.RecyclerViewAdapter;
 
 public class HomeFragment extends DoaktivFragment {
 
@@ -28,8 +28,9 @@ public class HomeFragment extends DoaktivFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        this.adapter = new RecyclerViewAdapter(true);
+        this.adapter = new RecyclerViewAdapter();
         adapter.setActivity((DoaktivActivity) getActivity());
+        adapter.setEventList(database.getHomeEventList());
         recyclerView.setAdapter(adapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -62,5 +63,4 @@ public class HomeFragment extends DoaktivFragment {
             });
         }
     }
-
 }

@@ -16,22 +16,19 @@ import java.util.List;
 import de.doaktiv.R;
 import de.doaktiv.android.DoaktivActivity;
 import de.doaktiv.android.DoaktivFragment;
+import de.doaktiv.android.fragments.day.CalendarDayFragment;
 import de.doaktiv.database.DatabaseDownloadTask;
-import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.DatabaseTaskWatcher;
 import de.doaktiv.database.Event;
-import de.doaktiv.android.fragments.day.CalendarDayFragment;
 
 public class CalendarGridViewFragment extends DoaktivFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final List<Event> events = DatabaseManager.INSTANCE.getEventList();
-
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.calender_grid_fragment, container, false);
 
         final CalendarGridView calendarGridView = (CalendarGridView) swipeRefreshLayout.findViewById(R.id.calendar_view);
-        calendarGridView.setEvents(events);
+        calendarGridView.setDatabase(database);
 
         GridView gridView = (GridView) calendarGridView.findViewById(R.id.calendar_grid);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -39,7 +36,7 @@ public class CalendarGridViewFragment extends DoaktivFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 List<Event> eventsOnDate = new ArrayList<Event>();
 
-                for (Event e : events) {
+                for (Event e : database.getEventList()) {
                     Calendar calendar = e.getDateStart();
 
                     if (calendar.get(Calendar.YEAR) == calendarGridView.getDaysShown().get(i).get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == calendarGridView.getDaysShown().get(i).get(Calendar.MONTH) && calendar.get(Calendar.DAY_OF_MONTH) == calendarGridView.getDaysShown().get(i).get(Calendar.DAY_OF_MONTH)) {

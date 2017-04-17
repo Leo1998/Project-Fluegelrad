@@ -1,13 +1,6 @@
 package de.doaktiv.android.fragments.settings;
 
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
-
-import de.doaktiv.R;
 import de.doaktiv.android.DoaktivFragment;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;

@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import de.doaktiv.android.fragments.day.CalendarDayFragment;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
-import de.doaktiv.android.fragments.day.CalendarDayFragment;
 
 public class CalendarDayDialog extends DialogFragment {
 
@@ -29,17 +28,8 @@ public class CalendarDayDialog extends DialogFragment {
         builder.setTitle("Wähle ein Event");//TODO
 
         int[] eventIds = getArguments().getIntArray("eventIds");
-        List<Event> allEvents = DatabaseManager.INSTANCE.getEventList();
-        final List<Event> events = new ArrayList<>();
-        for (Event e : allEvents) {
-            for (int i = 0; i < eventIds.length; i++) {
-                int id = eventIds[i];
+        final List<Event> events = DatabaseManager.INSTANCE.getDatabase().getEvents(eventIds);
 
-                if (e.getId() == id) {
-                    events.add(e);
-                }
-            }
-        }
         String[] shortDescriptions = new String[events.size()];
         for (int i = 0; i < events.size(); i++) {
             shortDescriptions[i] = events.get(i).getName();

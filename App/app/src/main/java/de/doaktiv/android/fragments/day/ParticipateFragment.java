@@ -21,8 +21,6 @@ import de.doaktiv.database.DatabaseRateTask;
 import de.doaktiv.database.DatabaseTaskWatcher;
 import de.doaktiv.database.Event;
 
-import static de.doaktiv.database.DatabaseManager.INSTANCE;
-
 public class ParticipateFragment extends DoaktivFragment {
 
     private Event event;
@@ -31,7 +29,7 @@ public class ParticipateFragment extends DoaktivFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        this.event = INSTANCE.getEvent(getArguments().getInt("eventId"));
+        this.event = database.getEvent(getArguments().getInt("eventId"));
 
         final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.participate_fragment, container, false);
 

@@ -10,9 +10,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import de.doaktiv.R;
+import de.doaktiv.android.fragments.AsyncImageView;
 import de.doaktiv.database.Image;
 import de.doaktiv.database.Sponsor;
-import de.doaktiv.android.fragments.AsyncImageView;
 
 public class SponsorView extends RelativeLayout {
 

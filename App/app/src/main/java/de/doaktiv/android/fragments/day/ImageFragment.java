@@ -2,24 +2,23 @@ package de.doaktiv.android.fragments.day;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import de.doaktiv.R;
-import de.doaktiv.database.DatabaseManager;
+import de.doaktiv.android.DoaktivFragment;
+import de.doaktiv.android.fragments.AsyncImageView;
 import de.doaktiv.database.Event;
 import de.doaktiv.database.Image;
-import de.doaktiv.android.fragments.AsyncImageView;
 
-public class ImageFragment extends Fragment {
+public class ImageFragment extends DoaktivFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.image_base, container, false);
 
-        Event event = DatabaseManager.INSTANCE.getEvent(getArguments().getInt("eventId"));
+        Event event = database.getEvent(getArguments().getInt("eventId"));
         Image image = null;
         for (Image i : event.getImages()) {
             if (i.getPath().equals(getArguments().getString("imagePath"))) {

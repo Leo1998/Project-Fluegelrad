@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import de.doaktiv.R;
-import de.doaktiv.database.Event;
 import de.doaktiv.android.fragments.AsyncImageView;
+import de.doaktiv.database.Event;
 
 public class ImageSliderAdapter extends PagerAdapter {
 

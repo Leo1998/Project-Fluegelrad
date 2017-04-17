@@ -1,7 +1,6 @@
 package de.doaktiv.android.fragments;
 
 
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,26 +9,26 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.List;
 
 import de.doaktiv.R;
 import de.doaktiv.android.DoaktivActivity;
-import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.Event;
-import de.doaktiv.android.fragments.day.CalendarDayFragment;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private DoaktivActivity activity;
+    private List<Event> eventList;
 
-    private boolean homeView;
-
-    public RecyclerViewAdapter(boolean homeView) {
-        this.homeView = homeView;
+    public RecyclerViewAdapter() {
     }
 
     public void setActivity(DoaktivActivity activity) {
         this.activity = activity;
+    }
+
+    public void setEventList(List<Event> eventList) {
+        this.eventList = eventList;
     }
 
     @Override
@@ -42,15 +41,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        final Event event;
-
-        if (homeView) {
-            event = DatabaseManager.INSTANCE.getHomeEventList().get(position);
-        } else {
-            event = DatabaseManager.INSTANCE.getRecentEventList().get(position);
-        }
-
-        Calendar i = event.getDateStart();
+        final Event event = eventList.get(position);
 
         holder.getCategoryTextView().setText(event.getName());
 
@@ -68,14 +59,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.getCardView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("eventId", event.getId());
-
-                CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
-                calendarDayFragment.setArguments(bundle);
-
                 if (activity != null) {
-                    activity.getController().openScreen(calendarDayFragment);
+                    activity.getController().openEventView(event.getId());
                 }
             }
         });
@@ -83,11 +68,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        if (homeView) {
-            return DatabaseManager.INSTANCE.getHomeEventList().size();
-        } else {
-            return DatabaseManager.INSTANCE.getRecentEventList().size();
-        }
+        return eventList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

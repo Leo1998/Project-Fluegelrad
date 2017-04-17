@@ -18,9 +18,9 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import de.doaktiv.R;
+import de.doaktiv.database.Database;
 import de.doaktiv.database.Event;
 
 public class CalendarGridView extends LinearLayout {
@@ -36,7 +36,7 @@ public class CalendarGridView extends LinearLayout {
     private TextView txtDate;
     private GridView grid;
 
-    private List<Event> events;
+    private Database database;
 
     private ArrayList<Calendar> daysShown;
 
@@ -67,8 +67,8 @@ public class CalendarGridView extends LinearLayout {
         updateCalendar();
     }
 
-    public void setEvents(List<Event> events) {
-        this.events = events;
+    public void setDatabase(Database database) {
+        this.database = database;
     }
 
     private void loadDateFormat() {
@@ -160,15 +160,13 @@ public class CalendarGridView extends LinearLayout {
                 view = inflater.inflate(R.layout.calendar_grid_item, parent, false);
             }
 
-            if (events != null) {
-                for (Event eventDate : events) {
-                    Calendar cal = eventDate.getDateStart();
+            for (Event eventDate : database.getEventList()) {
+                Calendar cal = eventDate.getDateStart();
 
-                    if (cal.get(Calendar.DAY_OF_MONTH) == day && cal.get(Calendar.MONTH) == month && cal.get(Calendar.YEAR) == year) {
-                        view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.event));
+                if (cal.get(Calendar.DAY_OF_MONTH) == day && cal.get(Calendar.MONTH) == month && cal.get(Calendar.YEAR) == year) {
+                    view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.event));
 
-                        break;
-                    }
+                    break;
                 }
             }
 

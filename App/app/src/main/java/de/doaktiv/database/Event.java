@@ -74,7 +74,11 @@ public class Event {
 
         JSONArray sponsorsArray = new JSONArray();
         for (int i = 0; i < event.getSponsors().length; i++) {
-            sponsorsArray.put(event.getSponsors()[i]);
+            JSONObject obj0 = new JSONObject();
+            obj0.put("eventId", event.getId());
+            obj0.put("sponsorId", event.getSponsors()[i]);
+
+            sponsorsArray.put(obj0);
         }
         obj.put("sponsors", sponsorsArray);
 

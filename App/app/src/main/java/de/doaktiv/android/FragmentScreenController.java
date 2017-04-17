@@ -8,6 +8,11 @@ import android.view.View;
 import java.util.ArrayList;
 
 import de.doaktiv.R;
+import de.doaktiv.android.fragments.calendar.gridview.CalendarGridViewFragment;
+import de.doaktiv.android.fragments.calendar.listview.CalendarListFragment;
+import de.doaktiv.android.fragments.day.CalendarDayFragment;
+import de.doaktiv.android.fragments.home.HomeFragment;
+import de.doaktiv.android.fragments.settings.SettingsFragment;
 
 public class FragmentScreenController implements RootController {
 
@@ -52,8 +57,7 @@ public class FragmentScreenController implements RootController {
         }
     }
 
-    @Override
-    public void openScreen(DoaktivFragment fragment) {
+    private void openScreen(DoaktivFragment fragment) {
         FragmentTransaction transaction = prepareTransaction();
 
         if (backStack.size() > 0) {
@@ -96,6 +100,37 @@ public class FragmentScreenController implements RootController {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void openHome() {
+        openScreen(new HomeFragment());
+    }
+
+    @Override
+    public void openCalendar() {
+        openScreen(new CalendarGridViewFragment());
+    }
+
+    @Override
+    public void openEventList() {
+        openScreen(new CalendarListFragment());
+    }
+
+    @Override
+    public void openSettings() {
+        openScreen(new SettingsFragment());
+    }
+
+    @Override
+    public void openEventView(int eventId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("eventId", eventId);
+
+        CalendarDayFragment fragment = new CalendarDayFragment();
+        fragment.setArguments(bundle);
+
+        openScreen(fragment);
     }
 
     public BackStackChangeListener getListener() {

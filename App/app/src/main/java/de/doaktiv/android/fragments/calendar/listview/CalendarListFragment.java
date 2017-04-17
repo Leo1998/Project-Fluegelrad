@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import de.doaktiv.R;
 import de.doaktiv.android.DoaktivActivity;
 import de.doaktiv.android.DoaktivFragment;
+import de.doaktiv.android.fragments.RecyclerViewAdapter;
 import de.doaktiv.database.DatabaseDownloadTask;
 import de.doaktiv.database.DatabaseTaskWatcher;
-import de.doaktiv.android.fragments.RecyclerViewAdapter;
 
 public class CalendarListFragment extends DoaktivFragment {
 
@@ -27,8 +27,9 @@ public class CalendarListFragment extends DoaktivFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
-        this.adapter = new RecyclerViewAdapter(false);
+        this.adapter = new RecyclerViewAdapter();
         adapter.setActivity((DoaktivActivity) getActivity());
+        adapter.setEventList(database.getRecentEventList());
         recyclerView.setAdapter(adapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

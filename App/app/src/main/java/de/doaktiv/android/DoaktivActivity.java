@@ -3,7 +3,6 @@ package de.doaktiv.android;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -13,10 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import de.doaktiv.R;
-import de.doaktiv.android.fragments.calendar.gridview.CalendarGridViewFragment;
-import de.doaktiv.android.fragments.calendar.listview.CalendarListFragment;
-import de.doaktiv.android.fragments.home.HomeFragment;
-import de.doaktiv.android.fragments.settings.SettingsFragment;
 import de.doaktiv.database.DatabaseManager;
 
 public class DoaktivActivity extends AppCompatActivity {
@@ -72,18 +67,18 @@ public class DoaktivActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.nav_calender) {
-                    controller.openScreen(new CalendarGridViewFragment());
+                    controller.openCalendar();
                 } else if (item.getItemId() == R.id.nav_calender_list) {
-                    controller.openScreen(new CalendarListFragment());
+                    controller.openEventList();
                 } else if (item.getItemId() == R.id.nav_settings) {
-                    controller.openScreen(new SettingsFragment());
+                    controller.openSettings();
                 }
 
                 return true;
             }
         });
 
-        getController().openScreen(new HomeFragment());
+        getController().openHome();
     }
 
     @Override
