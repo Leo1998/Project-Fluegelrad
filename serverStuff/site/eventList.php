@@ -23,18 +23,19 @@
 	$statement->execute(array($time));
 	
 	while($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$desc = explode("\\n",$row["description"]);
-		unset($row["description"]);
-		if(isset($desc[0])){
-			$row["description1"] = $desc[0];
+		$desc = $row["description"];
+		$descArr = explode("\\n",$row["description"]);
+		if(count($descArr) > 1){
+			$desc = $descArr[0]."<br>".$descArr[1]."<br>...";
 		}else{
-			$row["description1"] = "";
+			if(isset($descArr[0])){
+				$desc = $descArr[0];
+			}
 		}
-		if(isset($desc[1])){
-			$row["description2"] = $desc[1];
-		}else{
-			$row["description2"] = "";
+		if(strlen($desc) > 100){
+			$desc = substr($desc,0,100)."...";
 		}
+		$row['description'] = $desc;
 		$eventArray[] = $row;
 	}
 	
@@ -205,7 +206,7 @@
 				
 				var desc = document.createElement('span');
 				desc.class = 'eventDesc';
-				desc.innerHTML = event["description1"]+"<br>"+event["description2"]+"<br>";
+				desc.innerHTML = event["description"]+"<br>";
 				
 				var sponsorImg = document.createElement('img');
 				sponsorImg.class = "sponsorImg";
