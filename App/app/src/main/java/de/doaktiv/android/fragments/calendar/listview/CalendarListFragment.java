@@ -52,19 +52,14 @@ public class CalendarListFragment extends DoaktivFragment {
         return swipeRefreshLayout;
     }
 
-    public void refreshData() {
-        if (this.adapter != null && this.getView() != null) {
-            this.getView().post(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.notifyDataSetChanged();
-                }
-            });
-        }
-    }
-
     @Override
     protected void onRefreshLayout() {
-
+        this.getView().post(new Runnable() {
+            @Override
+            public void run() {
+                adapter.setEventList(database.getHomeEventList());
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }

@@ -55,13 +55,12 @@ public class HomeFragment extends DoaktivFragment {
 
     @Override
     protected void onRefreshLayout() {
-        if (this.adapter != null && this.getView() != null) {
-            this.getView().post(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.notifyDataSetChanged();
-                }
-            });
-        }
+        this.getView().post(new Runnable() {
+            @Override
+            public void run() {
+                adapter.setEventList(database.getHomeEventList());
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }

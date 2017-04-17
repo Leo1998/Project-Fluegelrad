@@ -2,6 +2,7 @@ package de.doaktiv.android;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import de.doaktiv.database.Database;
 import de.doaktiv.database.DatabaseReceiver;
@@ -37,6 +38,7 @@ public abstract class DoaktivFragment extends Fragment implements DatabaseReceiv
     public void onReceive(Database database) {
         this.database = database;
 
+        Log.i(TAG, "onRefreshLayout");
         onRefreshLayout();
     }
 
