@@ -34,4 +34,8 @@ public class ImageFragment extends DoaktivFragment {
         return rootView;
     }
 
+    @Override
+    protected void onRefreshLayout() {
+
+    }
 }

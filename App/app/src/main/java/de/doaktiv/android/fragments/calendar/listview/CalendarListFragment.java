@@ -62,4 +62,9 @@ public class CalendarListFragment extends DoaktivFragment {
             });
         }
     }
+
+    @Override
+    protected void onRefreshLayout() {
+
+    }
 }

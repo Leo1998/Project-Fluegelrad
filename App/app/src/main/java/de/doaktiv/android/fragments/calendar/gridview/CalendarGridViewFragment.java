@@ -89,4 +89,9 @@ public class CalendarGridViewFragment extends DoaktivFragment {
 
         return swipeRefreshLayout;
     }
+
+    @Override
+    protected void onRefreshLayout() {
+
+    }
 }

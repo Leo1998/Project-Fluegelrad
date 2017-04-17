@@ -119,6 +119,11 @@ public class CalendarDayFragment extends DoaktivFragment {
     }
 
     @Override
+    protected void onRefreshLayout() {
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         getDoaktivActivity().hideBar();

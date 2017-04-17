@@ -106,4 +106,8 @@ public class ParticipateFragment extends DoaktivFragment {
         snackbar.show();
     }
 
+    @Override
+    protected void onRefreshLayout() {
+
+    }
 }

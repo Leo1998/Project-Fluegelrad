@@ -46,4 +46,8 @@ public class SponsorFragment extends DoaktivFragment {
         return layout;
     }
 
+    @Override
+    protected void onRefreshLayout() {
+
+    }
 }

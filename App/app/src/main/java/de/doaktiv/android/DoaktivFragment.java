@@ -37,8 +37,10 @@ public abstract class DoaktivFragment extends Fragment implements DatabaseReceiv
     public void onReceive(Database database) {
         this.database = database;
 
-        //TODO
+        onRefreshLayout();
     }
+
+    protected abstract void onRefreshLayout();
 
     @Override
     public void onPause() {
