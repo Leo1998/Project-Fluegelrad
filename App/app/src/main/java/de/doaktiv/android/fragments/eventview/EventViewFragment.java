@@ -1,4 +1,4 @@
-package de.doaktiv.android.fragments.day;
+package de.doaktiv.android.fragments.eventview;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -40,7 +40,7 @@ import de.doaktiv.android.fragments.calendar.SponsorView;
 import de.doaktiv.database.Event;
 import de.doaktiv.database.Sponsor;
 
-public class CalendarDayFragment extends DoaktivFragment {
+public class EventViewFragment extends DoaktivFragment {
 
     private Event event;
 
@@ -107,13 +107,7 @@ public class CalendarDayFragment extends DoaktivFragment {
         layout.findViewById(R.id.participateFab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("eventId", event.getId());
-
-                ParticipateFragment participateFragment = new ParticipateFragment();
-                participateFragment.setArguments(bundle);
-
-                //getRootController().openScreen(participateFragment);
+                getRootController().openParticipateView(event.getId());
             }
         });
     }
@@ -180,7 +174,7 @@ public class CalendarDayFragment extends DoaktivFragment {
         hostTitle.setText(R.string.host_title);
         sponsorsContainer.addView(hostTitle);
 
-        SponsorView hostView = new SponsorView(this.getContext(), this.getActivity());
+        SponsorView hostView = new SponsorView(this.getContext(), this.getRootController());
         hostView.setSponsor(database.getSponsor(event.getHostId()));
 
         sponsorsContainer.addView(hostView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -193,7 +187,7 @@ public class CalendarDayFragment extends DoaktivFragment {
             sponsorsContainer.addView(sponsorsTitle);
 
             for (Sponsor sponsor : sponsors) {
-                SponsorView sponsorView = new SponsorView(this.getContext(), this.getActivity());
+                SponsorView sponsorView = new SponsorView(this.getContext(), this.getRootController());
                 sponsorView.setSponsor(sponsor);
 
                 sponsorsContainer.addView(sponsorView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -256,10 +250,10 @@ public class CalendarDayFragment extends DoaktivFragment {
         intent.putExtra(CalendarContract.Events.TITLE, event.getName());
         intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, event.getDateStart().getTimeInMillis());
         intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, event.getDateEnd().getTimeInMillis());
-        intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + CalendarDayFragment.this.getString(R.string.calender_organized_by) + " " + database.getSponsor(event.getHostId()).getName());//TODO
+        intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + EventViewFragment.this.getString(R.string.calender_organized_by) + " " + database.getSponsor(event.getHostId()).getName());//TODO
         intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
 
-        CalendarDayFragment.this.startActivity(intent);
+        EventViewFragment.this.startActivity(intent);
     }
 
 }

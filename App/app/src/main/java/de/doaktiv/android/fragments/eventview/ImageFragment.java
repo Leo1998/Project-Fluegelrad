@@ -1,4 +1,4 @@
-package de.doaktiv.android.fragments.day;
+package de.doaktiv.android.fragments.eventview;
 
 
 import android.os.Bundle;

@@ -1,7 +1,6 @@
 package de.doaktiv.android.fragments.calendar.gridview;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import java.util.List;
 import de.doaktiv.R;
 import de.doaktiv.android.DoaktivActivity;
 import de.doaktiv.android.DoaktivFragment;
-import de.doaktiv.android.fragments.day.CalendarDayFragment;
 import de.doaktiv.database.DatabaseDownloadTask;
 import de.doaktiv.database.DatabaseTaskWatcher;
 import de.doaktiv.database.Event;
@@ -45,16 +43,11 @@ public class CalendarGridViewFragment extends DoaktivFragment {
                 }
 
                 if (eventsOnDate.size() == 1) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("eventId", eventsOnDate.get(0).getId());
-
-                    CalendarDayFragment calendarDayFragment = new CalendarDayFragment();
-                    calendarDayFragment.setArguments(bundle);
-
-                    //CalendarGridViewFragment.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, calendarDayFragment).addToBackStack("calendarDayFragment").commit();
+                    getRootController().openEventView(eventsOnDate.get(0).getId());
                 }
                 if (eventsOnDate.size() > 1) {
-                    DialogFragment newFragment = new CalendarDayDialog();
+                    //TODO
+                    /*DialogFragment newFragment = new CalendarDayDialog();
 
                     Bundle bundle = new Bundle();
                     int[] array = new int[eventsOnDate.size()];
@@ -64,7 +57,7 @@ public class CalendarGridViewFragment extends DoaktivFragment {
                     bundle.putIntArray("eventIds", array);
 
                     newFragment.setArguments(bundle);
-                    newFragment.show(CalendarGridViewFragment.this.getActivity().getSupportFragmentManager(), "eventsOnDateDialog");
+                    newFragment.show(CalendarGridViewFragment.this.getActivity().getSupportFragmentManager(), "eventsOnDateDialog");*/
                 }
 
             }

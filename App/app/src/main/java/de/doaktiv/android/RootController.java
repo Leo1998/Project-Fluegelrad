@@ -12,6 +12,10 @@ public interface RootController {
 
     void openEventView(int eventId);
 
+    void openParticipateView(int eventId);
+
+    void openSponsorView(int sponsorId);
+
     boolean doSystemBack();
 
 }

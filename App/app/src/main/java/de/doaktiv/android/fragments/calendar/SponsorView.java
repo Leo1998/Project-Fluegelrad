@@ -1,8 +1,6 @@
 package de.doaktiv.android.fragments.calendar;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import de.doaktiv.R;
+import de.doaktiv.android.RootController;
 import de.doaktiv.android.fragments.AsyncImageView;
 import de.doaktiv.database.Image;
 import de.doaktiv.database.Sponsor;
@@ -21,30 +20,24 @@ public class SponsorView extends RelativeLayout {
 
     private Sponsor sponsor;
 
-    public SponsorView(Context context, FragmentActivity activity) {
+    public SponsorView(Context context, RootController rootController) {
         super(context);
 
-        init(context, activity);
+        init(context, rootController);
     }
 
-    public SponsorView(Context context, AttributeSet attrs, FragmentActivity activity) {
+    public SponsorView(Context context, AttributeSet attrs, RootController rootController) {
         super(context, attrs);
 
-        init(context, activity);
+        init(context, rootController);
     }
 
-    private void init(Context context, final FragmentActivity activity) {
+    private void init(Context context, final RootController rootController) {
         this.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (sponsor != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("sponsorId", sponsor.getId());
-
-                    SponsorFragment sponsorFragment = new SponsorFragment();
-                    sponsorFragment.setArguments(bundle);
-
-                    //activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, sponsorFragment).addToBackStack("sponsorFragment").commit();
+                    rootController.openSponsorView(sponsor.getId());
                 }
             }
         });

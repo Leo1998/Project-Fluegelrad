@@ -8,9 +8,11 @@ import android.view.View;
 import java.util.ArrayList;
 
 import de.doaktiv.R;
+import de.doaktiv.android.fragments.calendar.SponsorFragment;
 import de.doaktiv.android.fragments.calendar.gridview.CalendarGridViewFragment;
 import de.doaktiv.android.fragments.calendar.listview.CalendarListFragment;
-import de.doaktiv.android.fragments.day.CalendarDayFragment;
+import de.doaktiv.android.fragments.eventview.EventViewFragment;
+import de.doaktiv.android.fragments.eventview.ParticipateFragment;
 import de.doaktiv.android.fragments.home.HomeFragment;
 import de.doaktiv.android.fragments.settings.SettingsFragment;
 
@@ -127,7 +129,29 @@ public class FragmentScreenController implements RootController {
         Bundle bundle = new Bundle();
         bundle.putInt("eventId", eventId);
 
-        CalendarDayFragment fragment = new CalendarDayFragment();
+        EventViewFragment fragment = new EventViewFragment();
+        fragment.setArguments(bundle);
+
+        openScreen(fragment);
+    }
+
+    @Override
+    public void openParticipateView(int eventId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("eventId", eventId);
+
+        ParticipateFragment fragment = new ParticipateFragment();
+        fragment.setArguments(bundle);
+
+        openScreen(fragment);
+    }
+
+    @Override
+    public void openSponsorView(int sponsorId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("sponsorId", sponsorId);
+
+        SponsorFragment fragment = new SponsorFragment();
         fragment.setArguments(bundle);
 
         openScreen(fragment);
