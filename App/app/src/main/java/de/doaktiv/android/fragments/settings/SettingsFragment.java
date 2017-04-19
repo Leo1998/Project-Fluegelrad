@@ -45,6 +45,7 @@ public class SettingsFragment extends DoaktivFragment {
         notices.addNotice(new Notice("support:preference-v7", null, "Copyright (c) 2005 Android Open Source Project", new ApacheSoftwareLicense20()));
 
         notices.addNotice(new Notice("osmdroid", "https://github.com/osmdroid/osmdroid", "", new ApacheSoftwareLicense20())); // wer ist der owner???
+        notices.addNotice(new Notice("FloatingActionButton", "https://github.com/Clans/FloatingActionButton", "Copyright 2015 Dmytro Tarianyk", new ApacheSoftwareLicense20()));
 
         new LicensesDialog.Builder(SettingsFragment.this.getApplication())
                 .setNotices(notices)

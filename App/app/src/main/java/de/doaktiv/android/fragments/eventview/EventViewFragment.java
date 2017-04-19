@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -51,14 +52,14 @@ public class EventViewFragment extends DoaktivFragment {
     public View createView(Context context) {
         this.event = database.getEvent(getArguments().getInt("eventId"));
 
-        CoordinatorLayout layout = (CoordinatorLayout) inflater().inflate(R.layout.event_view_fragment, null, false);
+        FrameLayout layout = (FrameLayout) inflater().inflate(R.layout.event_view_fragment, null, false);
 
         assignEventData(layout);
 
         return layout;
     }
 
-    private void assignEventData(CoordinatorLayout layout) {
+    private void assignEventData(FrameLayout layout) {
         Toolbar toolbar = this.getToolbar();
         if (toolbar != null) {
             toolbar.setTitleText(event.getName());
@@ -97,6 +98,20 @@ public class EventViewFragment extends DoaktivFragment {
             @Override
             public void onClick(View v) {
                 getRootController().openParticipateView(event.getId());
+            }
+        });
+
+        layout.findViewById(R.id.shareFab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                share();
+            }
+        });
+
+        layout.findViewById(R.id.addToCalendarFab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addToCalendar();
             }
         });
     }
@@ -193,8 +208,7 @@ public class EventViewFragment extends DoaktivFragment {
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, "N/A");//TODO!!!
         sendIntent.setType("text/plain");
-        //startActivity(sendIntent);
-        //TODO
+        getApplication().startActivity(sendIntent);
     }
 
     private void addToCalendar() {
@@ -208,8 +222,7 @@ public class EventViewFragment extends DoaktivFragment {
         intent.putExtra(CalendarContract.Events.DESCRIPTION, event.getDescription() + "\n " + getResources().getString(R.string.calender_organized_by) + " " + database.getSponsor(event.getHostId()).getName());//TODO
         intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getLocation().getAddress());
 
-        //EventViewFragment.this.startActivity(intent);
-        //TODO
+        getApplication().startActivity(intent);
     }
 
 }
