@@ -36,7 +36,7 @@ public abstract class BaseFragment {
         this.fragmentController = fragmentController;
 
         if (fragmentController != null) {
-            this.toolbar = createToolbar(fragmentController.getActivity());
+            this.createToolbar(fragmentController.getActivity());
         }
     }
 
@@ -47,7 +47,6 @@ public abstract class BaseFragment {
     void setFragmentView(View fragmentView) {
         this.fragmentView = fragmentView;
     }
-
 
     public View createView(Context context) {
         return null;
@@ -65,8 +64,8 @@ public abstract class BaseFragment {
         return toolbar;
     }
 
-    protected Toolbar createToolbar(Context context) {
-        final Toolbar toolbar = new Toolbar(context);
+    protected void createToolbar(Context context) {
+        this.toolbar = new Toolbar(context);
         toolbar.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
 
         toolbar.addListener(new Toolbar.ToolbarListener() {
@@ -81,8 +80,6 @@ public abstract class BaseFragment {
                 }
             }
         });
-
-        return toolbar;
     }
 
     protected LayoutInflater inflater() {

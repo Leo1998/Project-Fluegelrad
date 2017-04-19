@@ -3,16 +3,17 @@ package de.doaktiv.android.base;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.doaktiv.R;
 import de.doaktiv.util.AndroidUtils;
 
-public class Toolbar extends FrameLayout {
+public class Toolbar extends LinearLayout {
 
     public enum NavigationButtonState {
         Back, Menu;
@@ -25,6 +26,8 @@ public class Toolbar extends FrameLayout {
     private MenuDrawable menuDrawable;
     private ImageView navigationButtonImageView;
     private NavigationButtonState navigationButtonState;
+    private TextView titleTextView;
+
     private List<ToolbarListener> listeners = new ArrayList<>();
 
     public Toolbar(Context context) {
@@ -34,10 +37,10 @@ public class Toolbar extends FrameLayout {
     }
 
     private void init(Context context) {
-        this.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getToolbarHeight()));
+        this.setOrientation(HORIZONTAL);
+        this.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, getToolbarHeight()));
 
         this.menuDrawable = new MenuDrawable();
-
         this.navigationButtonImageView = new ImageView(context);
         this.navigationButtonImageView.setScaleType(ImageView.ScaleType.CENTER);
         this.navigationButtonImageView.setImageDrawable(menuDrawable);
@@ -48,9 +51,17 @@ public class Toolbar extends FrameLayout {
                     listener.onMenuItemClick(-1);
             }
         });
-        addView(this.navigationButtonImageView, new LayoutParams(getToolbarHeight(), getToolbarHeight(), Gravity.LEFT | Gravity.TOP));
-
+        LayoutParams layoutParams = new LayoutParams(getToolbarHeight(), getToolbarHeight());
+        addView(this.navigationButtonImageView, layoutParams);
         setNavigationButtonState(NavigationButtonState.Back);
+
+        this.titleTextView = new TextView(context);
+        this.titleTextView.setText("");
+        this.titleTextView.setTextAppearance(context, R.style.TitleTextLight);
+        layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER_VERTICAL;
+        layoutParams.leftMargin = AndroidUtils.dp(3);
+        addView(titleTextView, layoutParams);
     }
 
     public NavigationButtonState getNavigationButtonState() {
@@ -64,6 +75,10 @@ public class Toolbar extends FrameLayout {
             this.menuDrawable.setRotation(1, true);
         else if (navigationButtonState == NavigationButtonState.Menu)
             this.menuDrawable.setRotation(0, true);
+    }
+
+    public void setTitleText(String titleText) {
+        this.titleTextView.setText(titleText);
     }
 
     public List<ToolbarListener> getListeners() {

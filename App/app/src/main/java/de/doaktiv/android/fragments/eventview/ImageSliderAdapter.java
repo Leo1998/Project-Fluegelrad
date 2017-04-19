@@ -1,6 +1,5 @@
 package de.doaktiv.android.fragments.eventview;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
@@ -21,7 +20,7 @@ public class ImageSliderAdapter extends PagerAdapter {
     public ImageSliderAdapter(Context context, Event event) {
         this.event = event;
 
-        this.inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        this.inflater = LayoutInflater.from(context);
     }
 
     @Override

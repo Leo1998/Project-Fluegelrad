@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
+import de.doaktiv.android.base.Toolbar;
 import de.doaktiv.android.fragments.AsyncImageView;
 import de.doaktiv.database.Image;
 import de.doaktiv.database.Sponsor;
@@ -25,8 +26,10 @@ public class SponsorFragment extends DoaktivFragment {
             AsyncImageView sponsorImage = (AsyncImageView) layout.findViewById(R.id.sponsor_image);
             sponsorImage.setImageAsync(new Image(sponsor.getImagePath()));
 
-            TextView sponsorName = (TextView) layout.findViewById(R.id.sponsor_name);
-            sponsorName.setText(sponsor.getName());
+            Toolbar toolbar = this.getToolbar();
+            if (toolbar != null) {
+                toolbar.setTitleText(sponsor.getName());
+            }
 
             TextView sponsorWeb = (TextView) layout.findViewById(R.id.sponsor_web);
             sponsorWeb.setText(this.getResources().getString(R.string.website) + ": " + sponsor.getWeb());

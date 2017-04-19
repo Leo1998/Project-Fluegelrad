@@ -29,6 +29,10 @@ public abstract class DoaktivFragment extends BaseFragment implements DatabaseRe
 
         this.application = (DoaktivApplication) getFragmentController().getApplication();
 
+        if (getToolbar() != null) {
+            getToolbar().setTitleText("DO Aktiv");
+        }
+
         this.application.registerReceiver(this);
         this.onReceive(this.application.getDatabaseManager().getDatabase()); //
     }

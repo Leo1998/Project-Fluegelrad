@@ -2,16 +2,10 @@ package de.doaktiv.android.fragments.eventview;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.provider.CalendarContract;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -34,6 +28,7 @@ import java.util.List;
 import de.doaktiv.BuildConfig;
 import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
+import de.doaktiv.android.base.Toolbar;
 import de.doaktiv.android.fragments.calendar.SponsorView;
 import de.doaktiv.database.Event;
 import de.doaktiv.database.Sponsor;
@@ -43,26 +38,20 @@ public class EventViewFragment extends DoaktivFragment {
     private Event event;
 
     @Override
-    public View createView(Context context) {
+    public void onFragmentCreate() {
+        super.onFragmentCreate();
+
         // setup osmdroid
         Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-        Configuration.getInstance().setOsmdroidBasePath(new File(context.getCacheDir(), "osmdroid"));
+        Configuration.getInstance().setOsmdroidBasePath(new File(getApplication().getCacheDir(), "osmdroid"));
         Configuration.getInstance().setOsmdroidTileCache(new File(Configuration.getInstance().getOsmdroidBasePath(), "tiles"));
+    }
 
+    @Override
+    public View createView(Context context) {
         this.event = database.getEvent(getArguments().getInt("eventId"));
 
-        CoordinatorLayout layout = (CoordinatorLayout) inflater().inflate(R.layout.calendar_day_fragment, null, false);
-
-        Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolbar_day_fragment);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_back_white));
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getRootController().doSystemBack();
-            }
-        });
-
-        buildMenu(toolbar);
+        CoordinatorLayout layout = (CoordinatorLayout) inflater().inflate(R.layout.event_view_fragment, null, false);
 
         assignEventData(layout);
 
@@ -70,8 +59,10 @@ public class EventViewFragment extends DoaktivFragment {
     }
 
     private void assignEventData(CoordinatorLayout layout) {
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) layout.findViewById(R.id.collapsingToolbar);
-        collapsingToolbar.setTitle(event.getName());
+        Toolbar toolbar = this.getToolbar();
+        if (toolbar != null) {
+            toolbar.setTitleText(event.getName());
+        }
 
         //stupid bug fix
         layout.findViewById(R.id.scroll_container).setOnClickListener(new View.OnClickListener() {
@@ -85,8 +76,8 @@ public class EventViewFragment extends DoaktivFragment {
             }
         });
 
-        ViewPager slider = (ViewPager) layout.findViewById(R.id.image_slider);
-        buildImageSlider(slider);
+        CardView imageSliderCard = (CardView) layout.findViewById(R.id.image_slider_container);
+        buildImageSlider(imageSliderCard);
 
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 
@@ -111,45 +102,18 @@ public class EventViewFragment extends DoaktivFragment {
     }
 
     @Override
-    protected de.doaktiv.android.base.Toolbar createToolbar(Context context) {
-        return null;
-    }
-
-    @Override
     protected void onRefreshLayout() {
     }
 
-    private void buildMenu(Toolbar toolbar) {
-        toolbar.inflateMenu(R.menu.day_view_menu);
+    private void buildImageSlider(CardView imageSliderCard) {
+        if (event.getImages().size() == 0) {
+            imageSliderCard.setVisibility(View.GONE);
 
-        Menu menu = toolbar.getMenu();
-
-        // tint icons
-        for (int i = 0; i < menu.size(); i++) {
-            Drawable drawable = menu.getItem(i).getIcon();
-            if (drawable != null) {
-                drawable.mutate();
-                drawable.setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_IN);
-            }
+            return;
         }
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                int id = item.getItemId();
+        ViewPager slider = (ViewPager) imageSliderCard.findViewById(R.id.image_slider);
 
-                if (id == R.id.share) {
-                    share();
-                } else if (id == R.id.add_calendar) {
-                    addToCalendar();
-                }
-
-                return true;
-            }
-        });
-    }
-
-    private void buildImageSlider(ViewPager slider) {
         ImageSliderAdapter adapter = new ImageSliderAdapter(slider.getContext(), event);
         slider.setAdapter(adapter);
     }

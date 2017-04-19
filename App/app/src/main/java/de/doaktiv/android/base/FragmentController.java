@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.ViewDragHelper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +83,7 @@ public class FragmentController implements RootController {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.TOP | Gravity.LEFT);
 
         this.drawerLayout = new DrawerLayout(activity);
+        enlargeDrawerLayoutDragZone();
         drawerLayout.setLayoutParams(layoutParams);
         rootContainer.addView(drawerLayout);
 
@@ -95,6 +98,24 @@ public class FragmentController implements RootController {
 
     public DrawerLayout getDrawerLayout() {
         return drawerLayout;
+    }
+
+    /**
+     * # so mother******* hacky! dayum
+     */
+    private void enlargeDrawerLayoutDragZone() {
+        try {
+            Field mDragger = this.drawerLayout.getClass().getDeclaredField("mLeftDragger");
+            mDragger.setAccessible(true);
+            ViewDragHelper draggerObj = (ViewDragHelper) mDragger.get(this.drawerLayout);
+
+            Field mEdgeSize = draggerObj.getClass().getDeclaredField("mEdgeSize");
+            mEdgeSize.setAccessible(true);
+
+            int edge = mEdgeSize.getInt(draggerObj);
+            mEdgeSize.setInt(draggerObj, edge * 5);
+        } catch (Exception e) {
+        }
     }
 
     public View getDrawerView() {
@@ -192,9 +213,11 @@ public class FragmentController implements RootController {
             detachFragmentFromContainer(fragment);
         }
 
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        fragmentView.setLayoutParams(layoutParams);
-        container.addView(fragmentView);
+        if (fragmentView != null) {
+            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            fragmentView.setLayoutParams(layoutParams);
+            container.addView(fragmentView);
+        }
     }
 
     private void detachFragmentFromContainer(BaseFragment fragment) {
