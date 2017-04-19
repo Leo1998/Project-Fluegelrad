@@ -18,14 +18,14 @@
             android:name="de.doaktiv.android.DoaktivActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="sensor">
         </activity>
 
         <activity
             android:name="de.doaktiv.android.SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="sensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

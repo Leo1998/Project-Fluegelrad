@@ -13,6 +13,8 @@ import de.doaktiv.database.DatabaseReceiver;
 
 public class DoaktivApplication extends Application implements DatabaseReceiver {
 
+    public static DoaktivApplication applicationInstance = null;
+
     private static final String TAG = "DoaktivApplication";
 
     private DatabaseManager databaseManager;
@@ -22,6 +24,7 @@ public class DoaktivApplication extends Application implements DatabaseReceiver 
     @Override
     public void onCreate() {
         super.onCreate();
+        applicationInstance = this;
 
         Log.i(TAG, "onCreate");
 

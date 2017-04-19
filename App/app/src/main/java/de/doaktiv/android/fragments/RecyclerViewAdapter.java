@@ -12,19 +12,19 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import de.doaktiv.R;
-import de.doaktiv.android.DoaktivActivity;
+import de.doaktiv.android.RootController;
 import de.doaktiv.database.Event;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-    private DoaktivActivity activity;
+    private RootController controller;
     private List<Event> eventList;
 
     public RecyclerViewAdapter() {
     }
 
-    public void setActivity(DoaktivActivity activity) {
-        this.activity = activity;
+    public void setController(RootController controller) {
+        this.controller = controller;
     }
 
     public void setEventList(List<Event> eventList) {
@@ -59,9 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.getCardView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (activity != null) {
-                    activity.getController().openEventView(event.getId());
-                }
+                controller.openEventView(event.getId());
             }
         });
     }

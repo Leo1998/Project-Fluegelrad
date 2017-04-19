@@ -1,20 +1,16 @@
 package de.doaktiv.android.fragments.eventview;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import de.doaktiv.R;
-import de.doaktiv.android.DoaktivActivity;
-import de.doaktiv.android.DoaktivFragment;
+import de.doaktiv.android.base.DoaktivFragment;
 import de.doaktiv.database.DatabaseManager;
 import de.doaktiv.database.DatabaseParticipateTask;
 import de.doaktiv.database.DatabaseRateTask;
@@ -28,10 +24,10 @@ public class ParticipateFragment extends DoaktivFragment {
     private boolean participateButtonClickable = true;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View createView(Context context) {
         this.event = database.getEvent(getArguments().getInt("eventId"));
 
-        final LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.participate_fragment, container, false);
+        final LinearLayout layout = (LinearLayout) inflater().inflate(R.layout.participate_fragment, null, false);
 
         if (event != null) {
             assignData(layout);
@@ -46,7 +42,7 @@ public class ParticipateFragment extends DoaktivFragment {
                     if (!event.isParticipating() && participateButtonClickable) {
                         participateButtonClickable = false;
 
-                        final DatabaseManager databaseManager = ((DoaktivActivity) ParticipateFragment.this.getActivity()).getDatabaseManager();
+                        final DatabaseManager databaseManager = ParticipateFragment.this.getApplication().getDatabaseManager();
                         databaseManager.executeTask(new DatabaseParticipateTask(), new Event[]{event}, new DatabaseTaskWatcher() {
                             @Override
                             public void onFinish(Object result) {
@@ -74,7 +70,7 @@ public class ParticipateFragment extends DoaktivFragment {
                     if (fromUser) {
                         int r = Math.max(0, Math.min(5, (int) rating));
 
-                        final DatabaseManager databaseManager = ((DoaktivActivity) ParticipateFragment.this.getActivity()).getDatabaseManager();
+                        final DatabaseManager databaseManager = ParticipateFragment.this.getApplication().getDatabaseManager();
                         databaseManager.executeTask(new DatabaseRateTask(), new DatabaseRateTask.RateParamsWrapper[]{new DatabaseRateTask.RateParamsWrapper(event, r)}, new DatabaseTaskWatcher() {
                             @Override
                             public void onFinish(Object result) {

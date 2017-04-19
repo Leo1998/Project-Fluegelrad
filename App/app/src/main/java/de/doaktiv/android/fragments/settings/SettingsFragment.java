@@ -1,7 +1,7 @@
 package de.doaktiv.android.fragments.settings;
 
 
-import de.doaktiv.android.DoaktivFragment;
+import de.doaktiv.android.base.DoaktivFragment;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
 import de.psdev.licensesdialog.licenses.MITLicense;
@@ -46,7 +46,7 @@ public class SettingsFragment extends DoaktivFragment {
 
         notices.addNotice(new Notice("osmdroid", "https://github.com/osmdroid/osmdroid", "", new ApacheSoftwareLicense20())); // wer ist der owner???
 
-        new LicensesDialog.Builder(SettingsFragment.this.getContext())
+        new LicensesDialog.Builder(SettingsFragment.this.getApplication())
                 .setNotices(notices)
                 .setIncludeOwnLicense(true)
                 .build()

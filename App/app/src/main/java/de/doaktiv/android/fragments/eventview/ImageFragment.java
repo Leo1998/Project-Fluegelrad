@@ -1,13 +1,11 @@
 package de.doaktiv.android.fragments.eventview;
 
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 
 import de.doaktiv.R;
-import de.doaktiv.android.DoaktivFragment;
+import de.doaktiv.android.base.DoaktivFragment;
 import de.doaktiv.android.fragments.AsyncImageView;
 import de.doaktiv.database.Event;
 import de.doaktiv.database.Image;
@@ -15,8 +13,8 @@ import de.doaktiv.database.Image;
 public class ImageFragment extends DoaktivFragment {
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.image_base, container, false);
+    public View createView(Context context) {
+        View rootView = inflater().inflate(R.layout.image_base, null, false);
 
         Event event = database.getEvent(getArguments().getInt("eventId"));
         Image image = null;
