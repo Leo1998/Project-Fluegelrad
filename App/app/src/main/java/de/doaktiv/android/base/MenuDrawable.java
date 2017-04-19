@@ -22,7 +22,7 @@ public class MenuDrawable extends Drawable {
 
     public MenuDrawable() {
         super();
-        paint.setColor(0xffffffff);
+        paint.setColor(0xFFFFFFFF);
         paint.setStrokeWidth(AndroidUtils.dp(2));
     }
 

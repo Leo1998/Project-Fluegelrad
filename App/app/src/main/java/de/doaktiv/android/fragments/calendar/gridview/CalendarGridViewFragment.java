@@ -18,9 +18,11 @@ import de.doaktiv.database.Event;
 
 public class CalendarGridViewFragment extends DoaktivFragment {
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     public View createView(Context context) {
-        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater().inflate(R.layout.calender_grid_fragment, null, false);
+        this.swipeRefreshLayout = (SwipeRefreshLayout) inflater().inflate(R.layout.calender_grid_fragment, null, false);
 
         final CalendarGridView calendarGridView = (CalendarGridView) swipeRefreshLayout.findViewById(R.id.calendar_view);
         calendarGridView.setDatabase(database);
@@ -78,6 +80,15 @@ public class CalendarGridViewFragment extends DoaktivFragment {
         });
 
         return swipeRefreshLayout;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (this.swipeRefreshLayout != null) {
+            this.swipeRefreshLayout.clearAnimation();
+        }
     }
 
     @Override

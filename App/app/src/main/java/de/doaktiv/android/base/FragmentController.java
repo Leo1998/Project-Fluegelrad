@@ -137,6 +137,7 @@ public class FragmentController implements RootController {
                     drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                     Toolbar toolbar = fragmentsStack.get(fragmentsStack.size() - 1).getToolbar();
                     if (toolbar != null) {
+                        toolbar.setNavigationButtonState(Toolbar.NavigationButtonState.Back, false);
                         toolbar.setNavigationButtonState(Toolbar.NavigationButtonState.Menu);
                     }
                 } else {
@@ -274,6 +275,7 @@ public class FragmentController implements RootController {
 
         fragment.setFragmentController(this);
         fragment.onFragmentCreate();
+        fragment.onResume();
 
         attachFragmentToContainer(fragment, containerViewFront);
 
@@ -317,6 +319,7 @@ public class FragmentController implements RootController {
             final BaseFragment currentFragment = fragmentsStack.get(fragmentsStack.size() - 1);
             final BaseFragment lastFragment = fragmentsStack.get(fragmentsStack.size() - 2);
 
+            currentFragment.onPause();
             currentFragment.onFragmentDestroy();
             currentFragment.setFragmentController(null);
             fragmentsStack.remove(currentFragment);

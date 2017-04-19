@@ -69,12 +69,16 @@ public class Toolbar extends LinearLayout {
     }
 
     public void setNavigationButtonState(NavigationButtonState navigationButtonState) {
+        setNavigationButtonState(navigationButtonState, true);
+    }
+
+    public void setNavigationButtonState(NavigationButtonState navigationButtonState, boolean animate) {
         this.navigationButtonState = navigationButtonState;
 
         if (navigationButtonState == NavigationButtonState.Back)
-            this.menuDrawable.setRotation(1, true);
+            this.menuDrawable.setRotation(1, animate);
         else if (navigationButtonState == NavigationButtonState.Menu)
-            this.menuDrawable.setRotation(0, true);
+            this.menuDrawable.setRotation(0, animate);
     }
 
     public void setTitleText(String titleText) {

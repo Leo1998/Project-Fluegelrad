@@ -16,9 +16,11 @@ public class HomeFragment extends DoaktivFragment {
 
     private RecyclerViewAdapter adapter;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     public View createView(Context context) {
-        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) inflater().inflate(R.layout.home_fragment, null, false);
+        this.swipeRefreshLayout = (SwipeRefreshLayout) inflater().inflate(R.layout.home_fragment, null, false);
 
         RecyclerView recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -47,6 +49,15 @@ public class HomeFragment extends DoaktivFragment {
         });
 
         return swipeRefreshLayout;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (this.swipeRefreshLayout != null) {
+            this.swipeRefreshLayout.clearAnimation();
+        }
     }
 
     @Override
