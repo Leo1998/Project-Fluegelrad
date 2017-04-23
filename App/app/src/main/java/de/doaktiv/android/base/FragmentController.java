@@ -127,7 +127,7 @@ public class FragmentController implements RootController {
             return;
 
         this.drawerView = drawerView;
-        this.drawerView.setLayoutParams(new DrawerLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.START));
+        this.drawerView.setLayoutParams(new DrawerLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.START));
         drawerLayout.addView(this.drawerView);
 
         this.addListener(new FragmentsStackChangeListener() {
@@ -202,6 +202,8 @@ public class FragmentController implements RootController {
     }
 
     private void attachFragmentToContainer(BaseFragment fragment, LinearLayoutContainer container) {
+        container.setBackgroundColor(fragment.getBackgroundColor());
+
         if (fragment.getToolbar() != null && fragment.isAddToolbarToContainer()) {
             container.addView(fragment.getToolbar());
         }
@@ -290,7 +292,6 @@ public class FragmentController implements RootController {
             ArrayList<Animator> animators = new ArrayList<>();
             animators.add(ObjectAnimator.ofFloat(containerViewFront, "alpha", 0.0f, 1.0f));
             animators.add(ObjectAnimator.ofFloat(containerViewFront, "translationX", AndroidUtils.dp(transitionSlideDistanceInDp), 0.0f));
-            animators.add(ObjectAnimator.ofFloat(containerViewBack, "alpha", 1.0f, 0.0f));
 
             currentAnimation = new AnimatorSet();
             currentAnimation.playTogether(animators);
@@ -338,7 +339,6 @@ public class FragmentController implements RootController {
                 ArrayList<Animator> animators = new ArrayList<>();
                 animators.add(ObjectAnimator.ofFloat(containerViewFront, "alpha", 1.0f, 0.0f));
                 animators.add(ObjectAnimator.ofFloat(containerViewFront, "translationX", 0.0f, AndroidUtils.dp(transitionSlideDistanceInDp)));
-                animators.add(ObjectAnimator.ofFloat(containerViewBack, "alpha", 0.0f, 1.0f));
 
                 currentAnimation = new AnimatorSet();
                 currentAnimation.playTogether(animators);

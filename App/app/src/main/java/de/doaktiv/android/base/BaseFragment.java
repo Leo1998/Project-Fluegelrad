@@ -3,6 +3,7 @@ package de.doaktiv.android.base;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ public abstract class BaseFragment {
     private static final String TAG = "BaseFragment";
 
     private View fragmentView;
+    private int backgroundColor = Color.WHITE;
     private Toolbar toolbar;
     private boolean addToolbarToContainer = true;
     private Bundle arguments;
@@ -80,6 +82,14 @@ public abstract class BaseFragment {
                 }
             }
         });
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     protected LayoutInflater inflater() {
