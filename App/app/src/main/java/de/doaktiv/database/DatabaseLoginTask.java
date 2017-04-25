@@ -13,19 +13,21 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
+import de.doaktiv.android.DatabaseService;
+
 /**
  * logs in with the saved user profile or tries to create a new one
  */
-public class DatabaseLoginTask implements DatabaseTask<Void, User> {
+public class DatabaseLoginTask extends DatabaseTask<Void, User> {
 
     @Override
-    public User execute(DatabaseManager databaseManager, Void... params) {
+    public User execute(DatabaseService service) {
         int attempt = 0;
 
         // 2 attempts then cancel
         while (attempt < 2) {
             try {
-                File userFile = new File(databaseManager.getFilesDirectory(), "user.dat");
+                File userFile = new File(service.getFilesDirectory(), "user.dat");
                 String userJson = null;
                 if (userFile.exists()) {
                     // login with saved user

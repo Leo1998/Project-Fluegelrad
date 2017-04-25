@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import de.doaktiv.R;
+import de.doaktiv.database.Database;
 
 public abstract class BaseFragment {
 
@@ -128,6 +129,9 @@ public abstract class BaseFragment {
      */
     public boolean onBackPressed() {
         return fragmentController.doSystemBack();
+    }
+
+    public void onDatabaseReceived(Database database) {
     }
 
     public void saveSelf(Bundle args) {

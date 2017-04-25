@@ -1,7 +1,6 @@
 package de.doaktiv.android.fragments.eventview;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
@@ -10,40 +9,61 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import de.doaktiv.R;
+import de.doaktiv.android.DatabaseService;
 import de.doaktiv.android.base.DoaktivFragment;
-import de.doaktiv.database.DatabaseManager;
-import de.doaktiv.database.DatabaseParticipateTask;
-import de.doaktiv.database.DatabaseRateTask;
-import de.doaktiv.database.DatabaseTaskWatcher;
+import de.doaktiv.database.Database;
 import de.doaktiv.database.Event;
 
 public class ParticipateFragment extends DoaktivFragment {
 
-    private Event event;
+    private LinearLayout layout;
+    private CardView ratingCard;
+    private Button participateButton;
+    private RatingBar ratingBar;
 
     private boolean participateButtonClickable = true;
 
     @Override
     public View createView(Context context) {
-        this.event = database.getEvent(getArguments().getInt("eventId"));
+        this.layout = (LinearLayout) inflater().inflate(R.layout.participate_fragment, null, false);
+        this.ratingCard = (CardView) layout.findViewById(R.id.ratingCard);
+        this.participateButton = (Button) layout.findViewById(R.id.participateButton);
+        this.ratingBar = (RatingBar) layout.findViewById(R.id.ratingBar);
 
-        final LinearLayout layout = (LinearLayout) inflater().inflate(R.layout.participate_fragment, null, false);
+        return layout;
+    }
 
-        if (event != null) {
-            assignData(layout);
-
-            final CardView ratingCard = (CardView) layout.findViewById(R.id.ratingCard);
-            ratingCard.setVisibility(event.isParticipating() ? View.VISIBLE : View.INVISIBLE);
-
-            final Button participateButton = (Button) layout.findViewById(R.id.participateButton);
-            participateButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onDatabaseReceived(final Database database) {
+        if (this.getFragmentView() != null) {
+            this.getFragmentView().post(new Runnable() {
                 @Override
-                public void onClick(View v) {
-                    if (!event.isParticipating() && participateButtonClickable) {
-                        participateButtonClickable = false;
+                public void run() {
+                    Event event = database.getEvent(getArguments().getInt("eventId"));
 
-                        final DatabaseManager databaseManager = ParticipateFragment.this.getApplication().getDatabaseManager();
-                        databaseManager.executeTask(new DatabaseParticipateTask(), new Event[]{event}, new DatabaseTaskWatcher() {
+                    assignData(event);
+                }
+            });
+        }
+    }
+
+    private void assignData(final Event event) {
+        final TextView participantsTextView = (TextView) layout.findViewById(R.id.participantsTextView);
+        participantsTextView.setText(getResources().getString(R.string.participants) + ": " + event.getParticipants() + " / " + event.getMaxParticipants());
+
+        final TextView messageTextView = (TextView) layout.findViewById(R.id.messageTextView);
+        messageTextView.setText(event.isParticipating() ? getResources().getString(R.string.participating) : "");
+
+        ratingCard.setVisibility(event.isParticipating() ? View.VISIBLE : View.INVISIBLE);
+
+        participateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!event.isParticipating() && participateButtonClickable) {
+                    participateButtonClickable = false;
+
+                    final DatabaseService databaseService = getRootController().getActivity().getDatabaseService();
+                        /*databaseManager.executeTask(new DatabaseParticipateTask(), new Event[]{event}, new DatabaseTaskObserver() {
                             @Override
                             public void onFinish(Object result) {
                                 boolean success = (Boolean) result;
@@ -58,52 +78,29 @@ public class ParticipateFragment extends DoaktivFragment {
                                     participateButtonClickable = true;
                                 }
                             }
-                        });
-                    }
+                        });*///TODO
                 }
-            });
+            }
+        });
 
-            final RatingBar ratingBar = (RatingBar) layout.findViewById(R.id.ratingBar);
-            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-                @Override
-                public void onRatingChanged(final RatingBar ratingBar, float rating, boolean fromUser) {
-                    if (fromUser) {
-                        int r = Math.max(0, Math.min(5, (int) rating));
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(final RatingBar ratingBar, float rating, boolean fromUser) {
+                if (fromUser) {
+                    int r = Math.max(0, Math.min(5, (int) rating));
 
-                        final DatabaseManager databaseManager = ParticipateFragment.this.getApplication().getDatabaseManager();
-                        databaseManager.executeTask(new DatabaseRateTask(), new DatabaseRateTask.RateParamsWrapper[]{new DatabaseRateTask.RateParamsWrapper(event, r)}, new DatabaseTaskWatcher() {
-                            @Override
-                            public void onFinish(Object result) {
-                                boolean success = (Boolean) result;
+                    /**final DatabaseManager databaseManager = ParticipateFragment.this.getApplication().getDatabaseManager();
+                     databaseManager.executeTask(new DatabaseRateTask(), new DatabaseRateTask.RateParamsWrapper[]{new DatabaseRateTask.RateParamsWrapper(event, r)}, new DatabaseTaskObserver() {
+                    @Override public void onFinish(Object result) {
+                    boolean success = (Boolean) result;
 
-                                if (!success) {
-                                    makeSnackbar(layout, getResources().getString(R.string.rating_error));
-                                }
-                            }
-                        });
+                    if (!success) {
+                    makeSnackbar(layout, getResources().getString(R.string.rating_error));
                     }
+                    }
+                    });*///TODO
                 }
-            });
-        }
-
-        return layout;
-    }
-
-    private void assignData(LinearLayout layout) {
-        final TextView participantsTextView = (TextView) layout.findViewById(R.id.participantsTextView);
-        participantsTextView.setText(getResources().getString(R.string.participants) + ": " + event.getParticipants() + " / " + event.getMaxParticipants());
-
-        final TextView messageTextView = (TextView) layout.findViewById(R.id.messageTextView);
-        messageTextView.setText(event.isParticipating() ? getResources().getString(R.string.participating) : "");
-    }
-
-    private void makeSnackbar(View view, String msg) {
-        Snackbar snackbar = Snackbar.make(view, msg, Snackbar.LENGTH_LONG);
-        snackbar.show();
-    }
-
-    @Override
-    protected void onRefreshLayout() {
-
+            }
+        });
     }
 }

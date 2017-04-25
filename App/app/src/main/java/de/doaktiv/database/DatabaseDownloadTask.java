@@ -1,22 +1,21 @@
 package de.doaktiv.database;
 
+import de.doaktiv.android.DatabaseService;
+
 /**
  * Downloads all data from the server
  */
-public class DatabaseDownloadTask implements DatabaseTask<Void, Void> {
+public class DatabaseDownloadTask extends DatabaseTask<Void, Void> {
 
     private static final String TAG = "DatabaseDownloadTask";
 
     @Override
-    public Void execute(DatabaseManager databaseManager, Void... params) {
+    public Void execute(DatabaseService service) {
         try {
-            String json = databaseManager.executeScript("http://fluegelrad.ddns.net/scripts/getEvents.php", null);
+            String json = service.executeScript("http://fluegelrad.ddns.net/scripts/getEvents.php", null);
 
-            databaseManager.getDatabase().readDatabase(json);
-            databaseManager.saveDatabaseToStorage();
-
-            if (databaseManager.getReceiver() != null)
-                databaseManager.getReceiver().onReceive(databaseManager.getDatabase());
+            service.getDatabase().readDatabase(json);
+            service.saveDatabaseToStorage();
         } catch (Exception e) {
             e.printStackTrace();
         }

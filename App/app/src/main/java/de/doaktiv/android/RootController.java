@@ -2,6 +2,8 @@ package de.doaktiv.android;
 
 public interface RootController {
 
+    DoaktivActivity getActivity();
+
     void openHome();
 
     void openCalendar();

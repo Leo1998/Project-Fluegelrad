@@ -53,9 +53,4 @@ public class SettingsFragment extends DoaktivFragment {
                 .build()
                 .show();
     }
-
-    @Override
-    protected void onRefreshLayout() {
-
-    }
 }

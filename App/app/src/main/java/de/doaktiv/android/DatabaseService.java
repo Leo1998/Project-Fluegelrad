@@ -1,6 +1,13 @@
-package de.doaktiv.database;
+package de.doaktiv.android;
 
-import android.os.AsyncTask;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Binder;
+import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -15,89 +22,115 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * the DatabaseManager is the main class of the database system
- */
-public class DatabaseManager {
+import de.doaktiv.R;
+import de.doaktiv.database.Database;
+import de.doaktiv.database.DatabaseDownloadTask;
+import de.doaktiv.database.DatabaseException;
+import de.doaktiv.database.DatabaseLoginTask;
+import de.doaktiv.database.DatabaseTaskObserver;
+import de.doaktiv.database.DatabaseTaskWorker;
+import de.doaktiv.database.Event;
+import de.doaktiv.database.Sponsor;
+import de.doaktiv.database.User;
 
-    /**
-     * a wrapper to link a running {@link DatabaseTask} to its {@link AsyncTask}
-     */
-    private class RunningTaskWrapper {
-        DatabaseTask<?, ?> databaseTask;
-        AsyncTask asyncTask;
+public class DatabaseService extends Service {
+
+    public class LocalBinder extends Binder {
+        public DatabaseService getService() {
+            return DatabaseService.this;
+        }
     }
 
-    private static final String TAG = "DatabaseManager";
+    private static final String TAG = "DatabaseService";
 
-    /**
-     * static reference on the DatabaseManager
-     */
-    public static DatabaseManager INSTANCE;
+    private final IBinder binder = new LocalBinder();
 
-    /**
-     * the receiver
-     */
-    private DatabaseReceiver receiver;
-    /**
-     * the local database
-     */
-    private final Database database;
     /**
      * the directory to store the Database files
      */
-    private final File filesDirectory;
+    private File filesDirectory;
+    /**
+     * the local database
+     */
+    private Database database;
     /**
      * the Database user account
      */
     private User user;
-    /**
-     * list of all running tasks
-     */
-    private final List<RunningTaskWrapper> runningTasks = new ArrayList<>();
+    private DatabaseTaskWorker worker;
 
-    /**
-     * Constructor.
-     *
-     * @param filesDirectory
-     */
-    public DatabaseManager(File filesDirectory, DatabaseReceiver receiver) {
-        if (INSTANCE != null)
-            throw new IllegalStateException("Only one Instance allowed!");
-        INSTANCE = this;
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-        this.filesDirectory = filesDirectory;
+        this.filesDirectory = new File(getApplicationContext().getFilesDir(), "database");
         if (!filesDirectory.exists()) {
             filesDirectory.mkdirs();
         }
 
-        this.receiver = receiver;
-
-        Log.i(TAG, "firstLogin");
-
         File databaseFile = new File(filesDirectory, "database.dat");
         this.database = new Database(databaseFile);
-        if (this.receiver != null)
-            this.receiver.onReceive(this.database);
 
-        executeTask(new DatabaseLoginTask(), null, new DatabaseTaskWatcher() {
+        this.worker = new DatabaseTaskWorker(this);
+
+        worker.execute(new DatabaseLoginTask(), new DatabaseTaskObserver() {
             @Override
             public void onFinish(Object result) {
                 assert (result != null && result instanceof User);
 
-                DatabaseManager.this.user = (User) result;
+                DatabaseService.this.user = (User) result;
 
-                Log.i(TAG, "Logged in as: " + DatabaseManager.this.user.toString());
+                Log.i(TAG, "Logged in as: " + DatabaseService.this.user.toString());
 
-                executeTask(new DatabaseDownloadTask(), null, null);
+                downloadDatabase();
             }
         });
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        this.worker.stop();
+        saveDatabaseToStorage();
+    }
+
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "onStartCommand");
+
+        return START_STICKY;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    public void downloadDatabase() {
+        worker.execute(new DatabaseDownloadTask(), new DatabaseTaskObserver() {
+            @Override
+            public void onFinish(Object result) {
+                Intent intent = new Intent("de.doaktiv.databaseUpdate");
+                sendBroadcast(intent);
+            }
+        });
+    }
+
+    public File getFilesDirectory() {
+        return filesDirectory;
+    }
+
+    public Database getDatabase() {
+        return database;
+    }
+
+    public User getUser() {
+        return user;
+    }
 
     /**
      * writes the Database to a file on device storage
@@ -140,56 +173,20 @@ public class DatabaseManager {
     }
 
     /**
-     * @param task
-     * @param watcher
-     */
-    public void executeTask(final DatabaseTask task, final Object[] params, final DatabaseTaskWatcher watcher) {
-        // wrapper
-        final RunningTaskWrapper wrapper = new RunningTaskWrapper();
-
-        AsyncTask<Object, Void, Object> asyncTask = new AsyncTask<Object, Void, Object>() {
-            @Override
-            protected Object doInBackground(Object... params) {
-                return task.execute(DatabaseManager.this, params);
-            }
-
-            @Override
-            protected void onPostExecute(Object result) {
-                if (watcher != null)
-                    watcher.onFinish(result);
-
-                DatabaseManager.this.runningTasks.remove(wrapper);
-            }
-        };
-
-        // register in running tasks
-        wrapper.databaseTask = task;
-        wrapper.asyncTask = asyncTask;
-        this.runningTasks.add(wrapper);
-
-        // execute it
-        asyncTask.execute(params);
-    }
-
-    /**
      * @param scriptAddress the scripts address (without arguments)
      * @param args          arguments for the script
      * @return the json text
      * @throws DatabaseException
      */
-    String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
-        // TODO:check network
-        /*ConnectivityManager cm = (ConnectivityManager) attachedView.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+    public String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
-        if (!isConnected) {
-            throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.network_failure).toString());
-        }*/
-
-        if (user == null) {
-            //throw new DatabaseException(attachedView.getContext().getResources().getText(R.string.database_access_failure).toString());
-        }
+        if (!isConnected)
+            throw new DatabaseException(getResources().getText(R.string.network_failure).toString());
+        if (user == null)
+            throw new DatabaseException(getResources().getText(R.string.database_access_failure).toString());
 
         // append user data
         String address = scriptAddress + "?u=" + user.getId() + "&t=" + user.getHashedToken();
@@ -218,25 +215,7 @@ public class DatabaseManager {
         // the raw result
         String raw = jsonBuilder.toString();
         if (raw.startsWith("Error:")) {
-            if (raw.equals("Error: Invalid Token") || raw.equals("Error: Unknown ID")) {
-                // fix wrong user
-                this.user = null;
-                new File(filesDirectory, "user.dat").delete();
-
-                executeTask(new DatabaseLoginTask(), null, new DatabaseTaskWatcher() {
-                    @Override
-                    public void onFinish(Object result) {
-                        assert (result != null && result instanceof User);
-
-                        DatabaseManager.this.user = (User) result;
-
-                        Log.i("DatabaseManager", "Logged in as: " + DatabaseManager.this.user.toString());
-                    }
-                });
-            } else {
-                // error!!!
-                throw new DatabaseException(raw);
-            }
+            throw new DatabaseException(raw);
         }
 
         // split header and data
@@ -274,28 +253,4 @@ public class DatabaseManager {
         }
     }
 
-    /**
-     * stops the DatabaseService and saves all data
-     */
-    public void destroy() {
-        saveDatabaseToStorage();
-
-        INSTANCE = null;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public File getFilesDirectory() {
-        return filesDirectory;
-    }
-
-    public Database getDatabase() {
-        return database;
-    }
-
-    public DatabaseReceiver getReceiver() {
-        return receiver;
-    }
 }

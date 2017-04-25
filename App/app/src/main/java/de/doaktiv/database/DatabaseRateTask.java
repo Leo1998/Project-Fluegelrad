@@ -3,7 +3,9 @@ package de.doaktiv.database;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DatabaseRateTask implements DatabaseTask<DatabaseRateTask.RateParamsWrapper, Boolean> {
+import de.doaktiv.android.DatabaseService;
+
+public class DatabaseRateTask extends DatabaseTask<DatabaseRateTask.RateParamsWrapper, Boolean> {
 
     public static class RateParamsWrapper {
         public final Event event;
@@ -16,7 +18,7 @@ public class DatabaseRateTask implements DatabaseTask<DatabaseRateTask.RateParam
     }
 
     @Override
-    public Boolean execute(DatabaseManager databaseManager, RateParamsWrapper... params) {
+    public Boolean execute(DatabaseService service) {
         try {
             RateParamsWrapper wrapper = params[0];
 
@@ -24,7 +26,7 @@ public class DatabaseRateTask implements DatabaseTask<DatabaseRateTask.RateParam
             args.put("k", Integer.toString(wrapper.event.getId()));
             args.put("r", Integer.toString(wrapper.rating));
 
-            String result = databaseManager.executeScript("http://fluegelrad.ddns.net/scripts/rate.php", args);
+            String result = service.executeScript("http://fluegelrad.ddns.net/scripts/rate.php", args);
 
             return Boolean.TRUE;
         } catch (Exception e) {

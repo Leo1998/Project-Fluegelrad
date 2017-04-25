@@ -9,8 +9,7 @@ import android.view.View;
 import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
 import de.doaktiv.android.fragments.RecyclerViewAdapter;
-import de.doaktiv.database.DatabaseDownloadTask;
-import de.doaktiv.database.DatabaseTaskWatcher;
+import de.doaktiv.database.Database;
 
 public class HomeFragment extends DoaktivFragment {
 
@@ -28,23 +27,20 @@ public class HomeFragment extends DoaktivFragment {
 
         this.adapter = new RecyclerViewAdapter();
         adapter.setController(getFragmentController());
-        adapter.setEventList(database.getHomeEventList());
         recyclerView.setAdapter(adapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                HomeFragment.this.getApplication().getDatabaseManager().executeTask(new DatabaseDownloadTask(), null, new DatabaseTaskWatcher() {
-                    @Override
-                    public void onFinish(Object result) {
-                        swipeRefreshLayout.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
-                        });
-                    }
+                /**HomeFragment.this.getApplication().getDatabaseManager().executeTask(new DatabaseDownloadTask(), null, new DatabaseTaskObserver() {
+                @Override public void onFinish(Object result) {
+                swipeRefreshLayout.post(new Runnable() {
+                @Override public void run() {
+                swipeRefreshLayout.setRefreshing(false);
+                }
                 });
+                }
+                });*/ //TODO
             }
         });
 
@@ -61,7 +57,7 @@ public class HomeFragment extends DoaktivFragment {
     }
 
     @Override
-    protected void onRefreshLayout() {
+    public void onDatabaseReceived(final Database database) {
         if (this.getFragmentView() != null) {
             this.getFragmentView().post(new Runnable() {
                 @Override

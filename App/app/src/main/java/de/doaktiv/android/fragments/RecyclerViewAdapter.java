@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.doaktiv.R;
@@ -18,7 +19,7 @@ import de.doaktiv.database.Event;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private RootController controller;
-    private List<Event> eventList;
+    private List<Event> eventList = new ArrayList<>();
 
     public RecyclerViewAdapter() {
     }

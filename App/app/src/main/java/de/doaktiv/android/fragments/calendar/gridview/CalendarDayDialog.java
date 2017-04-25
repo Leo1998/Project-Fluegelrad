@@ -6,12 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-import java.util.List;
-
-import de.doaktiv.android.fragments.eventview.EventViewFragment;
-import de.doaktiv.database.DatabaseManager;
-import de.doaktiv.database.Event;
-
 public class CalendarDayDialog extends DialogFragment {
 
     @Override
@@ -28,25 +22,24 @@ public class CalendarDayDialog extends DialogFragment {
         builder.setTitle("Wähle ein Event");//TODO
 
         int[] eventIds = getArguments().getIntArray("eventIds");
-        final List<Event> events = DatabaseManager.INSTANCE.getDatabase().getEvents(eventIds);
+        /**final List<Event> events = DatabaseManager.INSTANCE.getDatabase().getEvents(eventIds);
 
-        String[] shortDescriptions = new String[events.size()];
-        for (int i = 0; i < events.size(); i++) {
-            shortDescriptions[i] = events.get(i).getName();
+         String[] shortDescriptions = new String[events.size()];
+         for (int i = 0; i < events.size(); i++) {
+         shortDescriptions[i] = events.get(i).getName();
+         }
+
+         builder.setItems(shortDescriptions, new DialogInterface.OnClickListener() {
+        @Override public void onClick(DialogInterface dialogInterface, int i) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("eventId", events.get(i).getId());
+
+        EventViewFragment eventViewFragment = new EventViewFragment();
+        eventViewFragment.setArguments(bundle);
+
+        //CalendarDayDialog.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventViewFragment).addToBackStack("eventViewFragment").commit();
         }
-
-        builder.setItems(shortDescriptions, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("eventId", events.get(i).getId());
-
-                EventViewFragment eventViewFragment = new EventViewFragment();
-                eventViewFragment.setArguments(bundle);
-
-                //CalendarDayDialog.this.getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, eventViewFragment).addToBackStack("eventViewFragment").commit();
-            }
-        });
+        });*///TODO
 
         return builder.create();
     }

@@ -31,6 +31,7 @@ import de.doaktiv.android.fragments.eventview.EventViewFragment;
 import de.doaktiv.android.fragments.eventview.ParticipateFragment;
 import de.doaktiv.android.fragments.home.HomeFragment;
 import de.doaktiv.android.fragments.settings.SettingsFragment;
+import de.doaktiv.database.Database;
 import de.doaktiv.util.AndroidUtils;
 
 public class FragmentController implements RootController {
@@ -155,6 +156,7 @@ public class FragmentController implements RootController {
         this.listeners.add(listener);
     }
 
+    @Override
     public DoaktivActivity getActivity() {
         return activity;
     }
@@ -201,6 +203,13 @@ public class FragmentController implements RootController {
         }
     }
 
+    public void onDatabaseReceived(Database database) {
+        if (!fragmentsStack.isEmpty()) {
+            BaseFragment lastFragment = fragmentsStack.get(fragmentsStack.size() - 1);
+            lastFragment.onDatabaseReceived(database);
+        }
+    }
+
     private void attachFragmentToContainer(BaseFragment fragment, LinearLayoutContainer container) {
         container.setBackgroundColor(fragment.getBackgroundColor());
 
@@ -217,6 +226,10 @@ public class FragmentController implements RootController {
         }
 
         if (fragmentView != null) {
+            if (activity.getDatabase() != null) {
+                fragment.onDatabaseReceived(activity.getDatabase());
+            }
+
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             fragmentView.setLayoutParams(layoutParams);
             container.addView(fragmentView);

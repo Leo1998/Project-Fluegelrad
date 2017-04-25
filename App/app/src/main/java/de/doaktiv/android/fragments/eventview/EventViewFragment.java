@@ -3,7 +3,6 @@ package de.doaktiv.android.fragments.eventview;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.CalendarContract;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.view.View;
@@ -31,12 +30,16 @@ import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
 import de.doaktiv.android.base.Toolbar;
 import de.doaktiv.android.fragments.calendar.SponsorView;
+import de.doaktiv.database.Database;
 import de.doaktiv.database.Event;
 import de.doaktiv.database.Sponsor;
 
 public class EventViewFragment extends DoaktivFragment {
 
+    private FrameLayout layout;
+
     private Event event;
+    private Database database;//bad style
 
     @Override
     public void onFragmentCreate() {
@@ -50,16 +53,27 @@ public class EventViewFragment extends DoaktivFragment {
 
     @Override
     public View createView(Context context) {
-        this.event = database.getEvent(getArguments().getInt("eventId"));
-
-        FrameLayout layout = (FrameLayout) inflater().inflate(R.layout.event_view_fragment, null, false);
-
-        assignEventData(layout);
+        this.layout = (FrameLayout) inflater().inflate(R.layout.event_view_fragment, null, false);
 
         return layout;
     }
 
-    private void assignEventData(FrameLayout layout) {
+    @Override
+    public void onDatabaseReceived(final Database database) {
+        if (this.getFragmentView() != null) {
+            this.getFragmentView().post(new Runnable() {
+                @Override
+                public void run() {
+                    EventViewFragment.this.database = database;
+                    EventViewFragment.this.event = database.getEvent(getArguments().getInt("eventId"));
+
+                    assignEventData();
+                }
+            });
+        }
+    }
+
+    private void assignEventData() {
         Toolbar toolbar = this.getToolbar();
         if (toolbar != null) {
             toolbar.setTitleText(event.getName());
@@ -114,10 +128,6 @@ public class EventViewFragment extends DoaktivFragment {
                 addToCalendar();
             }
         });
-    }
-
-    @Override
-    protected void onRefreshLayout() {
     }
 
     private void buildImageSlider(CardView imageSliderCard) {
