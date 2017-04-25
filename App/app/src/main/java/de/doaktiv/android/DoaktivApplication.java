@@ -16,8 +16,5 @@ public class DoaktivApplication extends Application {
         applicationInstance = this;
 
         Log.i(TAG, "onCreate");
-
-        Intent intent = new Intent(this, DatabaseService.class);
-        startService(intent);
     }
 }

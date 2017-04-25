@@ -66,6 +66,8 @@ public class DatabaseService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        Log.i(TAG, "onCreate");
+
         this.filesDirectory = new File(getApplicationContext().getFilesDir(), "database");
         if (!filesDirectory.exists()) {
             filesDirectory.mkdirs();
@@ -93,6 +95,8 @@ public class DatabaseService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        Log.i(TAG, "onDestroy");
 
         this.worker.stop();
         saveDatabaseToStorage();
