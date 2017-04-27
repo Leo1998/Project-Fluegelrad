@@ -1,10 +1,14 @@
 package de.doaktiv.android.fragments.calendar;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.flipboard.bottomsheet.BottomSheetLayout;
@@ -15,6 +19,7 @@ import java.util.List;
 
 import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
+import de.doaktiv.android.fragments.eventlist.EventListView;
 import de.doaktiv.database.Database;
 import de.doaktiv.database.Event;
 
@@ -69,7 +74,7 @@ public class CalendarFragment extends DoaktivFragment {
 
     @Override
     public View createView(Context context) {
-        this.bottomSheetLayout = (BottomSheetLayout) inflater().inflate(R.layout.calender_grid_fragment, null, false);
+        this.bottomSheetLayout = (BottomSheetLayout) inflater().inflate(R.layout.calender_fragment, null, false);
 
         init();
 
@@ -166,9 +171,35 @@ public class CalendarFragment extends DoaktivFragment {
             getRootController().openEventView(eventsOnDate.get(0).getId());
         }
         if (eventsOnDate.size() > 1) {
-            EventSelectView eventSelectView = new EventSelectView(getApplication(), eventsOnDate, getRootController());
+            LinearLayout container = new LinearLayout(getApplication());
+            container.setOrientation(LinearLayout.VERTICAL);
+            container.setBackgroundColor(0xFFFFFFFF);
 
-            bottomSheetLayout.showWithSheetView(eventSelectView);
+            FrameLayout header = new FrameLayout(getApplication());
+            header.setBackgroundColor(ContextCompat.getColor(getApplication(), R.color.colorPrimary));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            container.addView(header, params);
+
+            TextView titleText = new TextView(getApplication());
+            titleText.setTextAppearance(getApplication(), R.style.TitleTextLight);
+            titleText.setText(R.string.choose_event);
+            params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.CENTER_HORIZONTAL;
+            header.addView(titleText, params);
+
+            EventListView listView = new EventListView(getApplication());
+            listView.setEventList(eventsOnDate, getRootController());
+            container.addView(listView);
+
+            listView.setOnEventSelectedListener(new EventListView.OnEventSelectedListener() {
+                @Override
+                public void onEventSelect(final Event event) {
+                    bottomSheetLayout.dismissSheet();
+                    getRootController().openEventView(event.getId());
+                }
+            });
+
+            bottomSheetLayout.showWithSheetView(container);
         }
     }
 

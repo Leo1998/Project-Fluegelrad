@@ -1,39 +1,39 @@
 package de.doaktiv.android.fragments.settings;
 
 
+import android.content.Context;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+
+import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
 import de.psdev.licensesdialog.LicensesDialog;
 import de.psdev.licensesdialog.licenses.ApacheSoftwareLicense20;
+import de.psdev.licensesdialog.licenses.BSD3ClauseLicense;
 import de.psdev.licensesdialog.licenses.MITLicense;
 import de.psdev.licensesdialog.model.Notice;
 import de.psdev.licensesdialog.model.Notices;
 
 public class SettingsFragment extends DoaktivFragment {
 
-    /*@Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        addPreferencesFromResource(R.xml.settings_preferences);
+    private LinearLayout layout;
 
-        Preference openLicensesPreference = findPreference("open_licenses");
-        openLicensesPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+    @Override
+    public View createView(Context context) {
+        this.layout = (LinearLayout) inflater().inflate(R.layout.settings_fragment, null, false);
+
+        ((Button) layout.findViewById(R.id.show_licenses_button)).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onPreferenceClick(Preference preference) {
+            public void onClick(View v) {
                 launchLicensesDialog();
-
-                return true;
             }
         });
 
-        Preference appVersionPreference = findPreference("app_version");
-        try {
-            PackageInfo info = this.getActivity().getPackageManager().getPackageInfo(this.getActivity().getPackageName(), 0);
+        return layout;
+    }
 
-            appVersionPreference.setSummary(info.versionName + " (versionCode: " + info.versionCode + ")");
-        } catch (PackageManager.NameNotFoundException e) {
-        }
-    }*/
-
-    public void launchLicensesDialog() {
+    private void launchLicensesDialog() {
         final Notices notices = new Notices();
         notices.addNotice(new Notice("JSON-java", "http://www.JSON.org/", "Copyright (c) 2002 JSON.org", new MITLicense()));
 
@@ -46,10 +46,12 @@ public class SettingsFragment extends DoaktivFragment {
 
         notices.addNotice(new Notice("osmdroid", "https://github.com/osmdroid/osmdroid", "", new ApacheSoftwareLicense20())); // wer ist der owner???
         notices.addNotice(new Notice("FloatingActionButton", "https://github.com/Clans/FloatingActionButton", "Copyright 2015 Dmytro Tarianyk", new ApacheSoftwareLicense20()));
+        notices.addNotice(new Notice("bottomsheet", "https://github.com/Flipboard/bottomsheet", "Copyright 2015 Flipboard", new BSD3ClauseLicense()));
 
-        new LicensesDialog.Builder(SettingsFragment.this.getApplication())
+        new LicensesDialog.Builder(layout.getContext())
                 .setNotices(notices)
                 .setIncludeOwnLicense(true)
+                .setCloseText(R.string.notices_close)
                 .build()
                 .show();
     }

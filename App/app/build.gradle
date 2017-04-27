@@ -36,8 +36,8 @@ dependencies {
     compile ('com.android.support:support-v4:25.3.1')
     compile ('com.android.support:preference-v7:25.3.1')
 
-    compile ('de.psdev.licensesdialog:licensesdialog:1.8.1')
-    compile ('org.osmdroid:osmdroid-android:5.6.2')
+    compile ('de.psdev.licensesdialog:licensesdialog:1.8.2')
+    compile ('org.osmdroid:osmdroid-android:5.6.4')
     compile ('com.github.clans:fab:1.6.4')
     compile ('com.flipboard:bottomsheet-core:1.5.3')
 }

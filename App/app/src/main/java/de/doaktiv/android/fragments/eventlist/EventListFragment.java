@@ -2,37 +2,27 @@ package de.doaktiv.android.fragments.eventlist;
 
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
-import de.doaktiv.android.fragments.RecyclerViewAdapter;
 import de.doaktiv.database.Database;
 
-public class CalendarListFragment extends DoaktivFragment {
-
-    private RecyclerViewAdapter adapter;
+public class EventListFragment extends DoaktivFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private EventListView eventListView;
 
     @Override
     public View createView(Context context) {
-        this.swipeRefreshLayout = (SwipeRefreshLayout) inflater().inflate(R.layout.calender_list_fragment, null, false);
+        this.swipeRefreshLayout = (SwipeRefreshLayout) inflater().inflate(R.layout.event_list_fragment, null, false);
 
-        RecyclerView recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setHasFixedSize(true);
-
-        this.adapter = new RecyclerViewAdapter();
-        adapter.setController(getRootController());
-        recyclerView.setAdapter(adapter);
+        this.eventListView = (EventListView) swipeRefreshLayout.findViewById(R.id.event_list);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                CalendarListFragment.this.getRootController().getDatabaseService().downloadDatabase(new Runnable() {
+                EventListFragment.this.getRootController().getDatabaseService().downloadDatabase(new Runnable() {
                     @Override
                     public void run() {
                         swipeRefreshLayout.post(new Runnable() {
@@ -64,7 +54,7 @@ public class CalendarListFragment extends DoaktivFragment {
             this.getFragmentView().post(new Runnable() {
                 @Override
                 public void run() {
-                    adapter.setEventList(database.getHomeEventList());
+                    eventListView.setEventList(database.getRecentEventList(), getRootController());
                 }
             });
         }

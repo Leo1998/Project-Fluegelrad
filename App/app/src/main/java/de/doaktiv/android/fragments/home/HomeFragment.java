@@ -2,32 +2,23 @@ package de.doaktiv.android.fragments.home;
 
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
-import de.doaktiv.android.fragments.RecyclerViewAdapter;
+import de.doaktiv.android.fragments.eventlist.EventListView;
 import de.doaktiv.database.Database;
 
 public class HomeFragment extends DoaktivFragment {
 
-    private RecyclerViewAdapter adapter;
-
     private SwipeRefreshLayout swipeRefreshLayout;
+    private EventListView eventListView;
 
     @Override
     public View createView(Context context) {
         this.swipeRefreshLayout = (SwipeRefreshLayout) inflater().inflate(R.layout.home_fragment, null, false);
 
-        RecyclerView recyclerView = (RecyclerView) swipeRefreshLayout.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        recyclerView.setHasFixedSize(true);
-
-        this.adapter = new RecyclerViewAdapter();
-        adapter.setController(getRootController());
-        recyclerView.setAdapter(adapter);
+        this.eventListView = (EventListView) swipeRefreshLayout.findViewById(R.id.event_list);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -64,7 +55,7 @@ public class HomeFragment extends DoaktivFragment {
             this.getFragmentView().post(new Runnable() {
                 @Override
                 public void run() {
-                    adapter.setEventList(database.getHomeEventList());
+                    eventListView.setEventList(database.getRecentEventList(), getRootController());
                 }
             });
         }

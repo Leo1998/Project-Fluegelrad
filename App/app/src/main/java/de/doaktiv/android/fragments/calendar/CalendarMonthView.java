@@ -151,7 +151,7 @@ public class CalendarMonthView extends LinearLayout {
         private LayoutInflater inflater;
 
         public CalendarAdapter(Context context, List<Calendar> days) {
-            super(context, R.layout.calendar_grid_item, days);
+            super(context, R.layout.calendar_item, days);
             inflater = LayoutInflater.from(context);
         }
 
@@ -165,7 +165,7 @@ public class CalendarMonthView extends LinearLayout {
             Calendar today = Calendar.getInstance();
 
             if (view == null) {
-                view = inflater.inflate(R.layout.calendar_grid_item, parent, false);
+                view = inflater.inflate(R.layout.calendar_item, parent, false);
             }
 
             if (database != null) {

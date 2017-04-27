@@ -20,7 +20,7 @@ import de.doaktiv.R;
 import de.doaktiv.android.base.FragmentController;
 import de.doaktiv.android.fragments.SponsorFragment;
 import de.doaktiv.android.fragments.calendar.CalendarFragment;
-import de.doaktiv.android.fragments.eventlist.CalendarListFragment;
+import de.doaktiv.android.fragments.eventlist.EventListFragment;
 import de.doaktiv.android.fragments.eventview.EventViewFragment;
 import de.doaktiv.android.fragments.eventview.ParticipateFragment;
 import de.doaktiv.android.fragments.home.HomeFragment;
@@ -185,7 +185,7 @@ public class DoaktivActivity extends Activity implements RootController {
 
     @Override
     public void openEventList() {
-        controller.presentFragment(new CalendarListFragment());
+        controller.presentFragment(new EventListFragment());
     }
 
     @Override
