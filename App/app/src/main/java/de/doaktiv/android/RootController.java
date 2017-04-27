@@ -2,7 +2,9 @@ package de.doaktiv.android;
 
 public interface RootController {
 
-    DoaktivActivity getActivity();
+    DatabaseService getDatabaseService();
+
+    boolean doSystemBack();
 
     void openHome();
 
@@ -17,7 +19,5 @@ public interface RootController {
     void openParticipateView(int eventId);
 
     void openSponsorView(int sponsorId);
-
-    boolean doSystemBack();
 
 }

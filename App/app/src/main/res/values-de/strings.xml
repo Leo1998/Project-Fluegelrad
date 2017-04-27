@@ -38,4 +38,5 @@
     <string name="participating">Du bist angemeldet!</string>
     <string name="participate_error">Fehler beim teilnehmen!</string>
     <string name="rating_error">Fehler beim bewerten!</string>
+    <string name="choose_event">Wähle ein Event</string>
 </resources>

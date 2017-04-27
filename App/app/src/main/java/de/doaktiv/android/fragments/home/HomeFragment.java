@@ -26,21 +26,23 @@ public class HomeFragment extends DoaktivFragment {
         recyclerView.setHasFixedSize(true);
 
         this.adapter = new RecyclerViewAdapter();
-        adapter.setController(getFragmentController());
+        adapter.setController(getRootController());
         recyclerView.setAdapter(adapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                /**HomeFragment.this.getApplication().getDatabaseManager().executeTask(new DatabaseDownloadTask(), null, new DatabaseTaskObserver() {
-                @Override public void onFinish(Object result) {
-                swipeRefreshLayout.post(new Runnable() {
-                @Override public void run() {
-                swipeRefreshLayout.setRefreshing(false);
-                }
+                HomeFragment.this.getRootController().getDatabaseService().downloadDatabase(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+                    }
                 });
-                }
-                });*/ //TODO
             }
         });
 
@@ -63,7 +65,6 @@ public class HomeFragment extends DoaktivFragment {
                 @Override
                 public void run() {
                     adapter.setEventList(database.getHomeEventList());
-                    adapter.notifyDataSetChanged();
                 }
             });
         }

@@ -1,4 +1,4 @@
-package de.doaktiv.android.fragments.calendar.listview;
+package de.doaktiv.android.fragments.eventlist;
 
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,15 +26,15 @@ public class CalendarListFragment extends DoaktivFragment {
         recyclerView.setHasFixedSize(true);
 
         this.adapter = new RecyclerViewAdapter();
-        adapter.setController(getFragmentController());
+        adapter.setController(getRootController());
         recyclerView.setAdapter(adapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                /*CalendarListFragment.this.getApplication().getDatabaseManager().executeTask(new DatabaseDownloadTask(), null, new DatabaseTaskObserver() {
+                CalendarListFragment.this.getRootController().getDatabaseService().downloadDatabase(new Runnable() {
                     @Override
-                    public void onFinish(Object result) {
+                    public void run() {
                         swipeRefreshLayout.post(new Runnable() {
                             @Override
                             public void run() {
@@ -42,7 +42,7 @@ public class CalendarListFragment extends DoaktivFragment {
                             }
                         });
                     }
-                });*/
+                });
             }
         });
 
@@ -65,7 +65,6 @@ public class CalendarListFragment extends DoaktivFragment {
                 @Override
                 public void run() {
                     adapter.setEventList(database.getHomeEventList());
-                    adapter.notifyDataSetChanged();
                 }
             });
         }

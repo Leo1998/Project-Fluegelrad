@@ -62,7 +62,7 @@ public class ParticipateFragment extends DoaktivFragment {
                 if (!event.isParticipating() && participateButtonClickable) {
                     participateButtonClickable = false;
 
-                    final DatabaseService databaseService = getRootController().getActivity().getDatabaseService();
+                    final DatabaseService databaseService = getRootController().getDatabaseService();
                         /*databaseManager.executeTask(new DatabaseParticipateTask(), new Event[]{event}, new DatabaseTaskObserver() {
                             @Override
                             public void onFinish(Object result) {

@@ -11,12 +11,12 @@
     <string name="missing_driver_failure">Driver missing!</string>
     <string name="no_connction_failure">Not yet connected!</string>
 
-
     <string name="action_settings">Settings</string>
 
     <string name="calender_grid">Calender</string>
     <string name="calender_list">Event List</string>
     <string name="calender_organized_by">organized by</string>
+    <string name="choose_event">Choose an Event</string>
     <string name="drawer_home">Home</string>
     <string name="drawer_calender">Calender</string>
     <string name="drawer_search">Search</string>

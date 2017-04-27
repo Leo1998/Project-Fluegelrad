@@ -1,4 +1,4 @@
-package de.doaktiv.android.fragments.calendar.gridview;
+package de.doaktiv.android.fragments.calendar;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import de.doaktiv.R;
 
 public class CircleText extends TextView {
+
     private Drawable drawable;
 
     private GradientDrawable pressed;

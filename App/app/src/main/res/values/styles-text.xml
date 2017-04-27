@@ -6,4 +6,9 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="TitleTextDark">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
 </resources>

@@ -87,7 +87,7 @@ public class DatabaseService extends Service {
 
                 Log.i(TAG, "Logged in as: " + DatabaseService.this.user.toString());
 
-                downloadDatabase();
+                downloadDatabase(null);
             }
         });
     }
@@ -114,12 +114,15 @@ public class DatabaseService extends Service {
         return binder;
     }
 
-    public void downloadDatabase() {
+    public void downloadDatabase(final Runnable after) {
         worker.execute(new DatabaseDownloadTask(), new DatabaseTaskObserver() {
             @Override
             public void onFinish(Object result) {
                 Intent intent = new Intent("de.doaktiv.databaseUpdate");
                 sendBroadcast(intent);
+
+                if (after != null)
+                    after.run();
             }
         });
     }

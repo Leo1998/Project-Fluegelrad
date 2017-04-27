@@ -17,7 +17,7 @@ public class ImageFragment extends DoaktivFragment {
     public View createView(Context context) {
         View rootView = inflater().inflate(R.layout.image_base, null, false);
 
-        Database database = getRootController().getActivity().getDatabase();//bad style
+        Database database = getRootController().getDatabaseService().getDatabase();//bad style
         if (database != null) {
             Event event = database.getEvent(getArguments().getInt("eventId"));
             Image image = null;

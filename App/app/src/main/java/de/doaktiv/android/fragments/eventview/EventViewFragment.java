@@ -29,7 +29,7 @@ import de.doaktiv.BuildConfig;
 import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
 import de.doaktiv.android.base.Toolbar;
-import de.doaktiv.android.fragments.calendar.SponsorView;
+import de.doaktiv.android.fragments.SponsorView;
 import de.doaktiv.database.Database;
 import de.doaktiv.database.Event;
 import de.doaktiv.database.Sponsor;

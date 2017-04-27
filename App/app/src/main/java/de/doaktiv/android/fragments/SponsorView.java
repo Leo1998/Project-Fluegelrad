@@ -1,4 +1,4 @@
-package de.doaktiv.android.fragments.calendar;
+package de.doaktiv.android.fragments;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import de.doaktiv.R;
 import de.doaktiv.android.RootController;
-import de.doaktiv.android.fragments.AsyncImageView;
 import de.doaktiv.database.Image;
 import de.doaktiv.database.Sponsor;
 

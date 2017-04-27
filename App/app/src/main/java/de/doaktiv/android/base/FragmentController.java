@@ -9,7 +9,6 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.ViewDragHelper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,24 +16,15 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.doaktiv.android.DoaktivActivity;
 import de.doaktiv.android.DoaktivApplication;
-import de.doaktiv.android.RootController;
-import de.doaktiv.android.fragments.calendar.SponsorFragment;
-import de.doaktiv.android.fragments.calendar.gridview.CalendarGridViewFragment;
-import de.doaktiv.android.fragments.calendar.listview.CalendarListFragment;
-import de.doaktiv.android.fragments.eventview.EventViewFragment;
-import de.doaktiv.android.fragments.eventview.ParticipateFragment;
-import de.doaktiv.android.fragments.home.HomeFragment;
-import de.doaktiv.android.fragments.settings.SettingsFragment;
 import de.doaktiv.database.Database;
 import de.doaktiv.util.AndroidUtils;
 
-public class FragmentController implements RootController {
+public class FragmentController {
 
     public class LinearLayoutContainer extends LinearLayout {
 
@@ -84,7 +74,6 @@ public class FragmentController implements RootController {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.TOP | Gravity.LEFT);
 
         this.drawerLayout = new DrawerLayout(activity);
-        enlargeDrawerLayoutDragZone();
         drawerLayout.setLayoutParams(layoutParams);
         rootContainer.addView(drawerLayout);
 
@@ -99,24 +88,6 @@ public class FragmentController implements RootController {
 
     public DrawerLayout getDrawerLayout() {
         return drawerLayout;
-    }
-
-    /**
-     * # so mother******* hacky! dayum
-     */
-    private void enlargeDrawerLayoutDragZone() {
-        try {
-            Field mDragger = this.drawerLayout.getClass().getDeclaredField("mLeftDragger");
-            mDragger.setAccessible(true);
-            ViewDragHelper draggerObj = (ViewDragHelper) mDragger.get(this.drawerLayout);
-
-            Field mEdgeSize = draggerObj.getClass().getDeclaredField("mEdgeSize");
-            mEdgeSize.setAccessible(true);
-
-            int edge = mEdgeSize.getInt(draggerObj);
-            mEdgeSize.setInt(draggerObj, edge * 5);
-        } catch (Exception e) {
-        }
     }
 
     public View getDrawerView() {
@@ -156,7 +127,6 @@ public class FragmentController implements RootController {
         this.listeners.add(listener);
     }
 
-    @Override
     public DoaktivActivity getActivity() {
         return activity;
     }
@@ -274,11 +244,11 @@ public class FragmentController implements RootController {
         currentAnimation = null;
     }
 
-    private void presentFragment(BaseFragment fragment) {
+    public void presentFragment(BaseFragment fragment) {
         presentFragment(fragment, true);
     }
 
-    private void presentFragment(BaseFragment fragment, boolean animate) {
+    public void presentFragment(BaseFragment fragment, boolean animate) {
         checkTransitionAnimation();
 
         final BaseFragment currentFragment = !fragmentsStack.isEmpty() ? fragmentsStack.get(fragmentsStack.size() - 1) : null;
@@ -372,7 +342,6 @@ public class FragmentController implements RootController {
         }
     }
 
-    @Override
     public boolean doSystemBack() {
         if (fragmentsStack.size() > 1) {
             popFragment();
@@ -381,58 +350,5 @@ public class FragmentController implements RootController {
         } else {
             return false;
         }
-    }
-
-    @Override
-    public void openHome() {
-        presentFragment(new HomeFragment());
-    }
-
-    @Override
-    public void openCalendar() {
-        presentFragment(new CalendarGridViewFragment());
-    }
-
-    @Override
-    public void openEventList() {
-        presentFragment(new CalendarListFragment());
-    }
-
-    @Override
-    public void openSettings() {
-        presentFragment(new SettingsFragment());
-    }
-
-    @Override
-    public void openEventView(int eventId) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("eventId", eventId);
-
-        EventViewFragment fragment = new EventViewFragment();
-        fragment.setArguments(bundle);
-
-        presentFragment(fragment);
-    }
-
-    @Override
-    public void openParticipateView(int eventId) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("eventId", eventId);
-
-        ParticipateFragment fragment = new ParticipateFragment();
-        fragment.setArguments(bundle);
-
-        presentFragment(fragment);
-    }
-
-    @Override
-    public void openSponsorView(int sponsorId) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("sponsorId", sponsorId);
-
-        SponsorFragment fragment = new SponsorFragment();
-        fragment.setArguments(bundle);
-
-        presentFragment(fragment);
     }
 }

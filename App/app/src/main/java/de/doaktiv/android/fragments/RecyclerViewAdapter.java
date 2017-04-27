@@ -30,6 +30,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public void setEventList(List<Event> eventList) {
         this.eventList = eventList;
+        this.notifyDataSetChanged();
     }
 
     @Override

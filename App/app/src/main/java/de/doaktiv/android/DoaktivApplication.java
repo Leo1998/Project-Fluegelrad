@@ -1,7 +1,6 @@
 package de.doaktiv.android;
 
 import android.app.Application;
-import android.content.Intent;
 import android.util.Log;
 
 public class DoaktivApplication extends Application {

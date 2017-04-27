@@ -40,6 +40,6 @@ public abstract class DoaktivFragment extends BaseFragment {
     }
 
     public RootController getRootController() {
-        return getFragmentController();
+        return getFragmentController().getActivity();
     }
 }

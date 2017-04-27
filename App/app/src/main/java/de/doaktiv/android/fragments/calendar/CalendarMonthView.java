@@ -1,4 +1,4 @@
-package de.doaktiv.android.fragments.calendar.gridview;
+package de.doaktiv.android.fragments.calendar;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,21 +9,26 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import de.doaktiv.R;
 import de.doaktiv.database.Database;
 import de.doaktiv.database.Event;
 
-public class CalendarGridView extends LinearLayout {
+public class CalendarMonthView extends LinearLayout {
+
+    public interface DaySelectListener {
+        public void onDaySelect(Calendar day);
+    }
 
     private static final int DAYS_COUNT = 42;
 
@@ -31,44 +36,71 @@ public class CalendarGridView extends LinearLayout {
     private Calendar currentDate = Calendar.getInstance();
 
     private LinearLayout header;
-    private ImageView btnPrev;
-    private ImageView btnNext;
-    private TextView txtDate;
     private GridView grid;
 
     private Database database;
 
-    private ArrayList<Calendar> daysShown;
+    private CalendarAdapter calendarAdapter;
+    private List<Calendar> daysShown = new ArrayList<>();
+    private String currentDateTitle;
+    private DaySelectListener daySelectListener;
 
-    public CalendarGridView(Context context) {
+    public CalendarMonthView(Context context) {
         super(context);
-        initControl(context);
+        init(context);
     }
 
-    public CalendarGridView(Context context, AttributeSet attrs) {
+    public CalendarMonthView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initControl(context);
+        init(context);
     }
 
-    public CalendarGridView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CalendarMonthView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        initControl(context);
+        init(context);
     }
 
-
-    private void initControl(Context context) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.calendar_grid_controls, this);
+    private void init(Context context) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        inflater.inflate(R.layout.calendar_month, this);
 
         assignUiElements();
-        assignClickHandlers();
         loadDateFormat();
+
+        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Calendar day = daysShown.get(position);
+
+                if (daySelectListener != null) {
+                    daySelectListener.onDaySelect(day);
+                }
+            }
+        });
 
         updateCalendar();
     }
 
+    public String getCurrentDateTitle() {
+        return currentDateTitle;
+    }
+
     public void setDatabase(Database database) {
         this.database = database;
+        updateCalendar();
+    }
+
+    public void setCurrentDate(Calendar currentDate) {
+        this.currentDate = currentDate;
+        updateCalendar();
+    }
+
+    public DaySelectListener getDaySelectListener() {
+        return daySelectListener;
+    }
+
+    public void setDaySelectListener(DaySelectListener daySelectListener) {
+        this.daySelectListener = daySelectListener;
     }
 
     private void loadDateFormat() {
@@ -89,33 +121,12 @@ public class CalendarGridView extends LinearLayout {
     }
 
     private void assignUiElements() {
-        header = (LinearLayout) findViewById(R.id.calendar_header);
-        btnPrev = (ImageView) findViewById(R.id.calendar_prev_button);
-        btnNext = (ImageView) findViewById(R.id.calendar_next_button);
-        txtDate = (TextView) findViewById(R.id.calendar_date_display);
-        grid = (GridView) findViewById(R.id.calendar_grid);
+        this.header = (LinearLayout) findViewById(R.id.calendar_header);
+        this.grid = (GridView) findViewById(R.id.calendar_grid);
     }
 
-    private void assignClickHandlers() {
-        btnNext.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentDate.add(Calendar.MONTH, 1);
-                CalendarGridView.this.updateCalendar();
-            }
-        });
-
-        btnPrev.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentDate.add(Calendar.MONTH, -1);
-                CalendarGridView.this.updateCalendar();
-            }
-        });
-    }
-
-    public void updateCalendar() {
-        daysShown = new ArrayList<>();
+    private void updateCalendar() {
+        this.daysShown.clear();
         Calendar calendar = (Calendar) currentDate.clone();
 
         calendar.set(Calendar.DAY_OF_MONTH, 1);
@@ -128,28 +139,25 @@ public class CalendarGridView extends LinearLayout {
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        grid.setAdapter(new CalendarAdapter(getContext(), daysShown));
+        this.calendarAdapter = new CalendarAdapter(getContext(), daysShown);
+        this.grid.setAdapter(this.calendarAdapter);
 
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-        txtDate.setText(sdf.format(currentDate.getTime()));
-    }
-
-    public ArrayList<Calendar> getDaysShown() {
-        return daysShown;
+        currentDateTitle = sdf.format(currentDate.getTime());
     }
 
     private class CalendarAdapter extends ArrayAdapter<Calendar> {
 
         private LayoutInflater inflater;
 
-        public CalendarAdapter(Context context, ArrayList<Calendar> days) {
+        public CalendarAdapter(Context context, List<Calendar> days) {
             super(context, R.layout.calendar_grid_item, days);
             inflater = LayoutInflater.from(context);
         }
 
         @Override
         public View getView(int position, View view, ViewGroup parent) {
-            Calendar date = getItem(position);
+            final Calendar date = getItem(position);
             int day = date.get(Calendar.DAY_OF_MONTH);
             int month = date.get(Calendar.MONTH);
             int year = date.get(Calendar.YEAR);
@@ -160,13 +168,15 @@ public class CalendarGridView extends LinearLayout {
                 view = inflater.inflate(R.layout.calendar_grid_item, parent, false);
             }
 
-            for (Event eventDate : database.getEventList()) {
-                Calendar cal = eventDate.getDateStart();
+            if (database != null) {
+                for (Event eventDate : database.getEventList()) {
+                    Calendar cal = eventDate.getDateStart();
 
-                if (cal.get(Calendar.DAY_OF_MONTH) == day && cal.get(Calendar.MONTH) == month && cal.get(Calendar.YEAR) == year) {
-                    view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.event));
+                    if (cal.get(Calendar.DAY_OF_MONTH) == day && cal.get(Calendar.MONTH) == month && cal.get(Calendar.YEAR) == year) {
+                        view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.event));
 
-                    break;
+                        break;
+                    }
                 }
             }
 
@@ -184,7 +194,6 @@ public class CalendarGridView extends LinearLayout {
 
             GridView.LayoutParams params = new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, grid.getColumnWidth());
             view.setLayoutParams(params);
-
 
             return view;
         }

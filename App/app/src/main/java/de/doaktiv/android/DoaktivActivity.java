@@ -18,9 +18,16 @@ import android.widget.FrameLayout;
 
 import de.doaktiv.R;
 import de.doaktiv.android.base.FragmentController;
+import de.doaktiv.android.fragments.SponsorFragment;
+import de.doaktiv.android.fragments.calendar.CalendarFragment;
+import de.doaktiv.android.fragments.eventlist.CalendarListFragment;
+import de.doaktiv.android.fragments.eventview.EventViewFragment;
+import de.doaktiv.android.fragments.eventview.ParticipateFragment;
+import de.doaktiv.android.fragments.home.HomeFragment;
+import de.doaktiv.android.fragments.settings.SettingsFragment;
 import de.doaktiv.database.Database;
 
-public class DoaktivActivity extends Activity {
+public class DoaktivActivity extends Activity implements RootController {
 
     private static final String TAG = "DoaktivActivity";
 
@@ -52,7 +59,7 @@ public class DoaktivActivity extends Activity {
             Log.i(TAG, "DatabaseService disconnected!");
         }
     };
-    
+
     private DoaktivApplication application;
     private FragmentController controller;
     private DatabaseService databaseService = null;
@@ -73,11 +80,11 @@ public class DoaktivActivity extends Activity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.nav_calender) {
-                    controller.openCalendar();
+                    openCalendar();
                 } else if (item.getItemId() == R.id.nav_calender_list) {
-                    controller.openEventList();
+                    openEventList();
                 } else if (item.getItemId() == R.id.nav_settings) {
-                    controller.openSettings();
+                    openSettings();
                 }
 
                 return true;
@@ -85,7 +92,7 @@ public class DoaktivActivity extends Activity {
         });
         controller.setDrawerView(navigationView);
 
-        getController().openHome();
+        openHome();
     }
 
     @Override
@@ -148,15 +155,74 @@ public class DoaktivActivity extends Activity {
         return application;
     }
 
-    public DatabaseService getDatabaseService() {
-        return databaseService;
-    }
-
     public Database getDatabase() {
         if (databaseService != null) {
             return databaseService.getDatabase();
         }
 
         return null;
+    }
+
+    @Override
+    public DatabaseService getDatabaseService() {
+        return databaseService;
+    }
+
+    @Override
+    public boolean doSystemBack() {
+        return controller.doSystemBack();
+    }
+
+    @Override
+    public void openHome() {
+        controller.presentFragment(new HomeFragment());
+    }
+
+    @Override
+    public void openCalendar() {
+        controller.presentFragment(new CalendarFragment());
+    }
+
+    @Override
+    public void openEventList() {
+        controller.presentFragment(new CalendarListFragment());
+    }
+
+    @Override
+    public void openSettings() {
+        controller.presentFragment(new SettingsFragment());
+    }
+
+    @Override
+    public void openEventView(int eventId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("eventId", eventId);
+
+        EventViewFragment fragment = new EventViewFragment();
+        fragment.setArguments(bundle);
+
+        controller.presentFragment(fragment);
+    }
+
+    @Override
+    public void openParticipateView(int eventId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("eventId", eventId);
+
+        ParticipateFragment fragment = new ParticipateFragment();
+        fragment.setArguments(bundle);
+
+        controller.presentFragment(fragment);
+    }
+
+    @Override
+    public void openSponsorView(int sponsorId) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("sponsorId", sponsorId);
+
+        SponsorFragment fragment = new SponsorFragment();
+        fragment.setArguments(bundle);
+
+        controller.presentFragment(fragment);
     }
 }
