@@ -1,4 +1,14 @@
 <?php
+	/*
+		TODO
+		Erst ALLE Informationen sammeln (Auch zu Sponsoren & Bildern) und erst am Ende entweder:
+		1) Hochladen, wenn es keine Fehler gab
+		2) Auf createEvent MIT vorher eingetragenen Infos zurückschicken
+		
+		Alle Informationen in $eventParams
+		Fortschritt: bis Sponsors (exklusiv)
+	*/
+
 	//Spam protection, IP ban, Initalize PDO
 	$hostRequired=true;
 	require('../scripts/sitePrepare.php');
@@ -7,6 +17,10 @@
 	$nfErrors = array();
 	// ---- Fatal Errors ----
 	$fErrors = array();
+	// ---- Image Upload Params ----
+	$imageParams = array();
+	// ---- Event Params for Upload ----
+	$eventParams = array();
 	
 	// Very usefull function
 	/*	id : parameter-name
@@ -28,8 +42,10 @@
 		return false;
 	}
 	
-	// Uploads an image
-	function uploadImage($name,$description){
+	// Prepares Image-Upload
+	function prepareImage($name,$description){
+		global $nfErrors;
+		global $fErrors;
 		$upload_folder = '../upload/files/'; //Directory
 		$filename = pathinfo($_FILES[$name]['name'], PATHINFO_FILENAME);
 		$extension = strtolower(pathinfo($_FILES[$name]['name'], PATHINFO_EXTENSION));
@@ -61,7 +77,61 @@
 	 
 		//Path for upload
 		$new_path = $upload_folder.$filename.'.'.$extension;
+		
+		return array(
+			'new_path' => $upload_folder.$filename.'.'.$extension,
+			'name' => $name,
+			'filename' => $filename,
+			'upload_folder' => $upload_folder,
+			'extension' => $extension
+		);
+		
+		/*//New name if name already exists
+		if(file_exists($new_path)) { //If name already exists, add number to name
+			$id = 1;
+			do {
+				$new_path = $upload_folder.$filename.'_'.$id.'.'.$extension;
+				$id++;
+			} while(file_exists($new_path));
+		}
 	 
+		//Upload file
+		move_uploaded_file($_FILES[$name]['tmp_name'], $new_path);
+		return str_replace("../","",$new_path);*/
+	}
+	
+	//Uploads an image (use return from prepareImage for params)
+	function uploadImage($params){
+		if(isset($params['new_path'])){
+			$new_path = $params['new_path'];
+		}else{
+			return;
+		}
+		
+		if(isset($params['name'])){
+			$name = $params['name'];
+		}else{
+			return;
+		}
+		
+		if(isset($params['filename'])){
+			$filename = $params['filename'];
+		}else{
+			return;
+		}
+		
+		if(isset($params['upload_folder'])){
+			$upload_folder = $params['upload_folder'];
+		}else{
+			return;
+		}
+		
+		if(isset($params['extension'])){
+			$extension = $params['extension'];
+		}else{
+			return;
+		}
+		
 		//New name if name already exists
 		if(file_exists($new_path)) { //If name already exists, add number to name
 			$id = 1;
@@ -87,34 +157,30 @@
 	}
 	if(empty($fErrors)){
 		if($ageMin > $ageMax){ //assure that ageMin is smaller then ageMax
-			$ageMin = $ageMax;
-			$ageMax = getPost('ageMin',true,"Mindestalter war nicht gesetzt");
+			$eventParams['ageMin'] = $ageMax;
+			$eventParams['ageMax'] = $ageMin;
+		}else{
+			$eventParams['ageMax'] = $ageMax;
+			$eventParams['ageMin'] = $ageMin;
 		}
 	}
 	
-	// ---- RETRIEVE POSSIBLE FATAL: IMAGECOUNT AND EVENT-PARAMS ----
-	$newImages = getPost('imageCount',true,"Es wurden keine Bilder hochgeladen");
-	$eParams = array(
-		'name' => getPost('eventName',true,"Eventname war nicht gesetzt"),
-		'locId' => 0,
-		'price' => (getPost('price',false,null) == false) ? (0) : (getPost('price',true,"Fehler 02.1 beim Event-Hochladen")),
-		'maxParticipants' => (getPost('participants',false,null) == false) ? (-1) : (getPost('participants',true,"Fehler 02.2 beim Event-Hochladen")),
-		'participants' => (getPost('countParticipants',false,null) == "on") ? (0) : (-1),
-		'hostId' => $_SESSION['hostId'],
-		'dateStart' => getPost('dateStart',true,"Startdatum war nicht gesetzt"),
-		'dateEnd' => getPost('dateEnd',true,"Enddatum war nicht gesetzt"),
-		'ageMin' => $ageMin,
-		'ageMax' => $ageMax,
-		'description' => getPost('description',true,"Beschreibung war nicht gesetzt"),
-		'formId' => 0,
-	);
+	// ---- RETRIEVE PARAMS ----
+	$eventParams['name'] = getPost('eventName',true,"Eventname war nicht gesetzt");
+	$eventParams['price'] = (getPost('price',false,null) == false) ? (0) : (getPost('price',true,"Fehler 02.1 beim Event-Hochladen"));
+	$eventParams['maxParticipants'] = (getPost('participants',false,null) == false) ? (-1) : (getPost('participants',true,"Fehler 02.2 beim Event-Hochladen"));
+	$eventParams['participants'] = (getPost('countParticipants',false,null) == "on") ? (0) : (-1);
+	$eventParams['hostId'] = $_SESSION['hostId'];
+	$eventParams['dateStart'] = getPost('dateStart',true,"Startdatum war nicht gesetzt");
+	$eventParams['dateEnd'] = getPost('dateEnd',true,"Enddatum war nicht gesetzt");
+	$eventParams['description'] = getPost('description',true,"Beschreibung war nicht gesetzt");
+	$eventParams['formId'] = 0;
 	
 	
 	// ---- LOCATION ----
-	$locId;
 	
 	if(getPost('knowLoc',true,"Fehler 01 beim Event-Hochladen") == 1){ //Old Location
-		$locId = getPost('location',true,"Addresse war nicht gesetzt");
+		$eventParams['locId'] = getPost('location',true,"Addresse war nicht gesetzt");
 	}else if(!empty(getPost('knowLoc',false,null))){ //New Location
 	
 		//Get attributes for new location
@@ -124,34 +190,34 @@
 		
 		if(empty($fErrors)){
 			//Insert location into database and retrieve Id
-			$statement = $pdo->prepare("INSERT INTO `locations` (`id`, `address`, `latitude`, `longitude`) VALUES (NULL, ?, ?, ?);");
+			/*$statement = $pdo->prepare("INSERT INTO `locations` (`id`, `address`, `latitude`, `longitude`) VALUES (NULL, ?, ?, ?);");
 			$statement->execute(array($nAdd,$nLat,$nLon));
-			$locId = intval($pdo->lastInsertId());
+			intval($pdo->lastInsertId());*/
+			$eventParams['newLoc'] = array(
+				'address' => $nAdd,
+				'lat' => $nLat,
+				'lon' => $nLon);
 		}
-	}else{
-		$locId = 0;
 	}
-	$eParams['locId'] = $locId;
 	
 	// ---- UPLOAD EVENT  (And retrieve some data from the form)----
 	
-	if(empty($fErrors)){
+	/*if(empty($fErrors)){
 		$statement = $pdo->prepare("INSERT INTO `events` (`id`, `name`, `locationId`, `price`, `maxParticipants`, `participants`, `hostId`, `dateStart`, `dateEnd`, `ageMin`, `ageMax`, `description`, `formId`)
 								VALUES (NULL, :name, :locId, :price, :maxParticipants, :participants, :hostId, :dateStart, :dateEnd, :ageMin, :ageMax, :description, :formId)");
 		$statement->execute($eParams);
 		$eventId = intval($pdo->lastInsertId());
 	}else{
 		$eventId = 0;
-	}
+	}*/
 	
 	
 	// ---- SPONSORS ----
-	$sponsorIds = array();
 	
 	$maxSponsorId = getPost('maxSponsorId',true,"Fehler 03 beim Event-Hochladen"); //Retrieve when to stop
 	for($i = 1; $i <= $maxSponsorId; $i++){
-		if(getPost('sponsor '.$i,false,null) != false){ //Checkbox does only post if checked, so if getPost isn´t false, Checkbox existed and has been checked.
-			$sponsorIds[] = $i;
+		if(getPost('sponsor'.$i,false,null) != false){ //Checkbox does only post if checked, so if getPost isn´t false, Checkbox existed and has been checked.
+			$eventParams['sponsorIds'][] = $i;
 		}
 	}
 	
@@ -159,49 +225,110 @@
 	if(!empty($newSponsors)){
 		for($i = 1; $i <= $newSponsors; $i++ ){
 			if(getPost('nameSponsor'.$i,false,null) != false){ //If getPost is false, either sponsor has been deleted or hasn´t been completed. In both situation, no need to add Sponsor.
-				$imgPath = uploadImage('imageSponsor'.$i,getPost('nameSponsor'.$i,true,"Fehler 05 beim Event-Hochladen"));
-				$params = array(
-					'imagePath' => $imgPath,
+				$eventParams['newSponsors'][] = array(
+					'image' => prepareImage('imageSponsor'.$i,getPost('nameSponsor'.$i,true,"Fehler 05 beim Event-Hochladen")),
 					'phone' => getPost('phoneSponsor'.$i,false,null),
 					'mail' => getPost('mailSponsor'.$i,false,null),
 					'web' => getPost('webSponsor'.$i,false,null),
 					'description' => getPost('descriptionSponsor'.$i,false,null),
 					'name' => getPost('nameSponsor'.$i,true,"Fehler 05 beim Event-Hochladen"),
 				);
-				if(empty($fErrors)){
+				/*if(empty($fErrors)){
 					$statement = $pdo->prepare("INSERT INTO `sponsors` (`id`, `imagePath`, `phone`, `mail`, `web`, `name`, `decribtion`) 
 												VALUES (NULL, :imagePath, :phone, :mail, :web, :name, :description);");
 					$statement->execute();
 					$sponsorIds[] = intval($pdo->lastInsertId());
-				}
+				}*/
 			}
 		}
 	}
 	
-	if(empty($fErrors)){
+	/*if(empty($fErrors)){
 		foreach($sponsorIds AS $sponsorId){
 			$statement = $pdo->prepare("INSERT INTO `sponsoring` (`eventId`, `sponsorId`) VALUES (?,?)");
 			$statement->execute(array($eventId,$sponsorId));
 		}
-	}
+	}*/
 	
 	
 	// ---- IMAGES ----
+	$newImages = getPost('imageCount',false,null);
+	
 	for($i = 1; $i <= $newImages; $i++ ){
 		if(getPost('descriptionImage'.$i,false,null) != false){ //If getPost is false, either image has been deleted or hasn´t been completed. In both situation, no need to add Image.
-			$imgPath = uploadImage('imageImage'.$i,getPost('descriptionImage'.$i,false,null));
-			$params = array(
-				'path' => $imgPath,
-				'eventId' => $eventId,
+			$eventParams['images'][] = $params = array(
+				'image' => prepareImage('imageImage'.$i,getPost('descriptionImage'.$i,false,null)),
 				'description' => getPost('descriptionImage'.$i,false,"Bildbeschreibung bei Bild $i wurde nicht gesetzt"),
 			);
-			if(empty($fErrors)){
+			/*if(empty($fErrors)){
 				$statement = $pdo->prepare("INSERT INTO `imagePaths` (`id`, `path`, `eventId`, `description`)
 										VALUES (NULL, :path, :eventId, :description)");
 				$statement->execute($params);
-			}
+			}*/
 		}
 	}
+	
+	if(empty($eventParams['images'])){
+		$fErrors[] = 'Es wurden keine Bilder hochgeladen';
+	}
+	
+	//------ UPLOAD STARTS HERE -------
+	if(empty($fErrors)){
+		if(isset($eventParams['newLoc'])){ //Upload new Location if necassary
+			$statement = $pdo->prepare("INSERT INTO `locations` (`id`, `address`, `latitude`, `longitude`) VALUES (NULL, :address, :lat, :lon);");
+			$statement->execute($eventParams['newLoc']);
+			unset($eventParams['newLoc']);
+			$eventParams['locId'] = intval($pdo->lastInsertId());
+		}
+		
+		//Upload event
+		$statement = $pdo->prepare("INSERT INTO `events` (`id`, `name`, `locationId`, `price`, `maxParticipants`, `participants`, `hostId`, `dateStart`, `dateEnd`, `ageMin`, `ageMax`, `description`, `formId`)
+								VALUES (NULL, :name, :locId, :price, :maxParticipants, :participants, :hostId, :dateStart, :dateEnd, :ageMin, :ageMax, :description, :formId)");
+		$statement->execute(array(
+			'name' => $eventParams['name'],
+			'locId' => $eventParams['locId'],
+			'price' => $eventParams['price'],
+			'maxParticipants' => $eventParams['maxParticipants'],
+			'participants' => $eventParams['participants'],
+			'hostId' => $eventParams['hostId'],
+			'dateStart' => $eventParams['dateStart'],
+			'dateEnd' => $eventParams['dateEnd'],
+			'ageMin' => $eventParams['ageMin'],
+			'ageMax' => $eventParams['ageMax'],
+			'description' => $eventParams['description'],
+			'formId' => $eventParams['formId']
+		));
+		$eventParams['eventId'] = intval($pdo->lastInsertId());
+		
+		//Upload Sponsors
+		if(isset($eventParams['newSponsors'])){
+			foreach($eventParams['newSponsors'] as $sponsor){
+				$sponsor['imagePath'] = uploadImage($sponsor['image']);
+				unset($sponsor['image']);
+				$statement = $pdo->prepare("INSERT INTO `sponsors` (`id`, `imagePath`, `phone`, `mail`, `web`, `name`, `decribtion`) 
+											VALUES (NULL, :imagePath, :phone, :mail, :web, :name, :description);");
+				$statement->execute($sponsor);
+				$eventParams['sponsorIds'][] = intval($pdo->lastInsertId());
+			}
+		}
+		
+		//Upload sponsoring
+		foreach($eventParams['sponsorIds'] as $sponsorId){
+			$statement = $pdo->prepare("INSERT INTO `sponsoring` (`eventId`, `sponsorId`) VALUES (?,?)");
+			$statement->execute(array($eventParams['eventId'],$sponsorId));
+		}
+		
+		//Upload Images
+		foreach($eventParams['images'] as $image){
+			$image['imagePath'] = uploadImage($image['image']);
+			unset($image['image']);
+			$image['eventId'] = $eventParams['eventId'];
+			$statement = $pdo->prepare("INSERT INTO `imagePaths` (`id`, `path`, `eventId`, `description`)
+										VALUES (NULL, :imagePath, :eventId, :description)");
+			$statement->execute($image);
+		}
+	}
+	
 	
 	$hostStuff = "const hostStuff = {\"id\" : ".$_SESSION['hostId'].", \"name\" : \"".$_SESSION['name']."\", \"image\" : \"".$_SESSION['image']."\"}";
 	

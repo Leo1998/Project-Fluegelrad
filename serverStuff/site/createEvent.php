@@ -144,9 +144,9 @@
 				
 				var checkbox = document.createElement('input');
 				checkbox.type = "checkbox";
-				checkbox.name = "sponsor "+id;
+				checkbox.name = "sponsor"+id;
 				checkbox.value = id;
-				checkbox.id = "sponsor "+id;
+				checkbox.id = "sponsor"+id;
 				checkbox.class = "sponsorCheckbox";
 				
 				var img=document.createElement('img');

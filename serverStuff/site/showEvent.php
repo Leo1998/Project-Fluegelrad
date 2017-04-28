@@ -1,4 +1,11 @@
 <?php
+	if(isset($_GET['k'])){
+		$k = $_GET['k'];
+	}else{
+		header("Location: ../index.php?m=10");
+		exit();
+	}
+	
 	//Spam protection, IP ban, Initalize PDO
 	$hostRequired=false;
 	require('../scripts/sitePrepare.php');
@@ -20,7 +27,7 @@
 	if($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$event = $row;
 	}else{
-		header("Location: eventList.php");
+		//header("Location: eventList.php");
 		exit();
 	}
 	
@@ -34,8 +41,9 @@
 	$statement->bindParam('eventId', $k,PDO::PARAM_INT);
 	$statement->execute();
 	
+	$sponsors = null;
 	if($row = $statement->fetchAll(PDO::FETCH_ASSOC)) {
-		$sponsors = $row;
+		$sponsors= $row;
 	}
 	
 	
@@ -46,6 +54,7 @@
 	$statement->bindParam('eventId', $k,PDO::PARAM_INT);
 	$statement->execute();
 	
+	$images = null;
 	if($row = $statement->fetchAll(PDO::FETCH_ASSOC)) {
 		$images = $row;
 	}
@@ -193,12 +202,15 @@
 				var sponsorsDiv = document.createElement("div");
 				sponsorsDiv.id = "sponsorsDiv";
 				
-				for(var i = 0 ; i in data["images"] ; i++){
-					addImage(data["images"][i],imagesDiv);
+				if(data["images"] !== null){
+					for(var i = 0 ; i in data["images"] ; i++){
+						imagesDiv.appendChild(addImage(data["images"][i]));
+					}
 				}
-				
-				for(var i = 0 ; i in data["sponsors"] ; i++){
-					addSponsor(data["sponsors"][i],imagesDiv);
+				if(data["sponsors"] !== null){
+					for(var i = 0 ; i in data["sponsors"] ; i++){
+						sponsorsDiv.appendChild(addSponsor(data["sponsors"][i]));
+					}
 				}
 				
 				var ul = document.getElementById("event");
@@ -209,31 +221,68 @@
 				ul.appendChild(price);
 				ul.appendChild(description);
 				ul.appendChild(hostName);
+				ul.appendChild(document.createElement("br"));
 				ul.appendChild(hostImage);
 				ul.appendChild(sponsorsDiv);
 			}
 			
-			function addSponsor(sponsor,div){
+			function addSponsor(sponsor){
+				var name = sponsor["name"]+"";
+				var src = "../"+sponsor["imagePath"];
+				var id = sponsor["id"]+0;
+				var web = sponsor["web"]+"";
 				
+				var sponsorDiv = document.createElement("div");
+				sponsorDiv.class = "sponsorDiv";
+				
+				var sponsorName = document.createElement("a");
+				sponsorName.innerHTML = name;
+				sponsorName.href = "showSponsor.php?k="+id;
+				
+				var image = document.createElement('img');
+				image.src= src;
+				image.alt= src;
+				image.title= "SponsorBild";
+				image.style.height="100px";
+				
+				var sponsorWeb = document.createElement("a");
+				sponsorWeb.innerHTML = web;
+				sponsorWeb.href = web;
+				
+				sponsorDiv.style.textAlign= "center";
+				
+				sponsorDiv.appendChild(image);
+				sponsorDiv.appendChild(document.createElement("br"));
+				sponsorDiv.appendChild(sponsorName);
+				sponsorDiv.appendChild(document.createTextNode(" Web:"));
+				sponsorDiv.appendChild(sponsorWeb);
+				
+				return sponsorDiv;
 			}
 
 			
-			function addImage(image,div){
+			function addImage(image){
+				var src = "../"+image["path"];
+				var desc = image["description"]+"";
+				
 				var imageDiv = document.createElement("div");
 				imageDiv.class = "imageDiv";
 				
 				var image = document.createElement('img');
-				image.src= "../"+image["path"];
-				image.alt= "Bild nicht verfügbar";
+				image.src= src;
+				image.alt= src;
 				image.title= "EventBild";
-				image.style.height="100px";
+				image.style.width="50%";
 				
-				var description = document.createTextNode(image["description"]);
+				var description = document.createTextNode(desc);
+				
+				imageDiv.style.textAlign= "center";
 				
 				imageDiv.appendChild(image);
+				imageDiv.appendChild(document.createElement("br"));
 				imageDiv.appendChild(description);
 				
-				div.appendChild(imageDiv);
+				return imageDiv;
 			}
 		</script>
 	</head>
