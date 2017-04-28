@@ -1,7 +1,7 @@
 package de.doaktiv.android.fragments.eventlist;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -19,6 +19,7 @@ import java.util.List;
 import de.doaktiv.R;
 import de.doaktiv.android.RootController;
 import de.doaktiv.android.fragments.AsyncImageView;
+import de.doaktiv.database.Database;
 import de.doaktiv.database.Event;
 
 public class EventListView extends FrameLayout {
@@ -32,6 +33,7 @@ public class EventListView extends FrameLayout {
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
 
+    private Database database;
     private RootController rootController;
 
     private OnEventSelectedListener onEventSelectedListener = new OnEventSelectedListener() {
@@ -62,12 +64,14 @@ public class EventListView extends FrameLayout {
         this.recyclerView = new RecyclerView(context);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
 
         LayoutParams params = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         addView(recyclerView, params);
     }
 
-    public void setEventList(List<Event> eventList, RootController rootController) {
+    public void setEventList(List<Event> eventList, Database database, RootController rootController) {
+        this.database = database;
         this.rootController = rootController;
 
         if (this.adapter == null) {
@@ -113,20 +117,21 @@ public class EventListView extends FrameLayout {
         public void onBindViewHolder(ViewHolder holder, final int position) {
             final Event event = eventList.get(position);
 
-            holder.getCategoryTextView().setText(event.getName());
-
             if (event.getImages().size() > 0) {
                 holder.getImageView().setImageAsync(event.getImages().get(0));
             }
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat();
-            simpleDateFormat.applyPattern("E \ndd.MM.yyyy \n HH:mm");
-            holder.getDateTextView().setText(simpleDateFormat.format(event.getDateStart().getTime()));
+            simpleDateFormat.applyPattern("dd.MM.yyyy HH:mm");
+            String dateFormatted = simpleDateFormat.format(event.getDateStart().getTime());
 
-            holder.getLocationTextView().setText(event.getLocation().getAddress());
-            holder.getHostTextView().setText("N/A");
+            String hostName = database.getSponsor(event.getHostId()).getName();
 
-            holder.getCardView().setOnClickListener(new View.OnClickListener() {
+            holder.getTitleText().setText(event.getName());
+
+            holder.getSubtitleText().setText(dateFormatted + " ● " + hostName);
+
+            holder.getContainer().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     EventListView.this.onEventSelectedListener.onEventSelect(event);
@@ -141,48 +146,34 @@ public class EventListView extends FrameLayout {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            private TextView dateTextView;
-            private TextView categoryTextView;
-            private TextView locationTextView;
-            private TextView hostTextView;
+            private FrameLayout container;
+            private TextView titleText;
+            private TextView subtitleText;
             private AsyncImageView imageView;
-
-            private CardView cardView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                dateTextView = (TextView) itemView.findViewById(R.id.date);
-                categoryTextView = (TextView) itemView.findViewById(R.id.category);
-                locationTextView = (TextView) itemView.findViewById(R.id.location);
-                hostTextView = (TextView) itemView.findViewById(R.id.host);
-                imageView = (AsyncImageView) itemView.findViewById(R.id.imageView);
-
-                cardView = (CardView) itemView.findViewById(R.id.card_view);
+                this.container = (FrameLayout) itemView.findViewById(R.id.event_list_container);
+                this.titleText = (TextView) itemView.findViewById(R.id.event_title);
+                this.subtitleText = (TextView) itemView.findViewById(R.id.event_subtitle);
+                this.imageView = (AsyncImageView) itemView.findViewById(R.id.event_image_view);
             }
 
-            public TextView getDateTextView() {
-                return dateTextView;
+            public FrameLayout getContainer() {
+                return container;
             }
 
-            public TextView getCategoryTextView() {
-                return categoryTextView;
+            public TextView getTitleText() {
+                return titleText;
             }
 
-            public TextView getLocationTextView() {
-                return locationTextView;
-            }
-
-            public TextView getHostTextView() {
-                return hostTextView;
+            public TextView getSubtitleText() {
+                return subtitleText;
             }
 
             public AsyncImageView getImageView() {
                 return imageView;
-            }
-
-            public CardView getCardView() {
-                return cardView;
             }
         }
     }

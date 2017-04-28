@@ -158,48 +158,49 @@ public class CalendarFragment extends DoaktivFragment {
     }
 
     private void presentDay(Calendar day) {
-        List<Event> eventsOnDate = new ArrayList<>();
         if (database != null) {
+            List<Event> eventsOnDate = new ArrayList<>();
             for (Event e : database.getEventList()) {
                 Calendar calendar = e.getDateStart();
                 if (calendar.get(Calendar.YEAR) == day.get(Calendar.YEAR) && calendar.get(Calendar.MONTH) == day.get(Calendar.MONTH) && calendar.get(Calendar.DAY_OF_MONTH) == day.get(Calendar.DAY_OF_MONTH)) {
                     eventsOnDate.add(e);
                 }
             }
-        }
-        if (eventsOnDate.size() == 1) {
-            getRootController().openEventView(eventsOnDate.get(0).getId());
-        }
-        if (eventsOnDate.size() > 1) {
-            LinearLayout container = new LinearLayout(getApplication());
-            container.setOrientation(LinearLayout.VERTICAL);
-            container.setBackgroundColor(0xFFFFFFFF);
 
-            FrameLayout header = new FrameLayout(getApplication());
-            header.setBackgroundColor(ContextCompat.getColor(getApplication(), R.color.colorPrimary));
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            container.addView(header, params);
+            if (eventsOnDate.size() == 1) {
+                getRootController().openEventView(eventsOnDate.get(0).getId());
+            }
+            if (eventsOnDate.size() > 1) {
+                LinearLayout container = new LinearLayout(getApplication());
+                container.setOrientation(LinearLayout.VERTICAL);
+                container.setBackgroundColor(0xFFFFFFFF);
 
-            TextView titleText = new TextView(getApplication());
-            titleText.setTextAppearance(getApplication(), R.style.TitleTextLight);
-            titleText.setText(R.string.choose_event);
-            params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.gravity = Gravity.CENTER_HORIZONTAL;
-            header.addView(titleText, params);
+                FrameLayout header = new FrameLayout(getApplication());
+                header.setBackgroundColor(ContextCompat.getColor(getApplication(), R.color.colorPrimary));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                container.addView(header, params);
 
-            EventListView listView = new EventListView(getApplication());
-            listView.setEventList(eventsOnDate, getRootController());
-            container.addView(listView);
+                TextView titleText = new TextView(getApplication());
+                titleText.setTextAppearance(getApplication(), R.style.TitleTextLight);
+                titleText.setText(R.string.choose_event);
+                params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                params.gravity = Gravity.CENTER_HORIZONTAL;
+                header.addView(titleText, params);
 
-            listView.setOnEventSelectedListener(new EventListView.OnEventSelectedListener() {
-                @Override
-                public void onEventSelect(final Event event) {
-                    bottomSheetLayout.dismissSheet();
-                    getRootController().openEventView(event.getId());
-                }
-            });
+                EventListView listView = new EventListView(getApplication());
+                listView.setEventList(eventsOnDate, database, getRootController());
+                container.addView(listView);
 
-            bottomSheetLayout.showWithSheetView(container);
+                listView.setOnEventSelectedListener(new EventListView.OnEventSelectedListener() {
+                    @Override
+                    public void onEventSelect(final Event event) {
+                        bottomSheetLayout.dismissSheet();
+                        getRootController().openEventView(event.getId());
+                    }
+                });
+
+                bottomSheetLayout.showWithSheetView(container);
+            }
         }
     }
 

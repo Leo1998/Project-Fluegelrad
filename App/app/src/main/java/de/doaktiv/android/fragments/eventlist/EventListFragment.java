@@ -54,7 +54,7 @@ public class EventListFragment extends DoaktivFragment {
             this.getFragmentView().post(new Runnable() {
                 @Override
                 public void run() {
-                    eventListView.setEventList(database.getRecentEventList(), getRootController());
+                    eventListView.setEventList(database.getRecentEventList(), database, getRootController());
                 }
             });
         }

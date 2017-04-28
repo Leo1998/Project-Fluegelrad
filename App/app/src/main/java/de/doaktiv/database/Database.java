@@ -227,7 +227,7 @@ public class Database {
         List<Event> list = new ArrayList<>();
 
         for (int i = eventList.size() - 1; i >= 0; i--) {
-            if (eventList.get(i).getDateStart().compareTo(Calendar.getInstance()) > 0) {
+            if (eventList.get(i).getDateEnd().compareTo(Calendar.getInstance()) > 0) {
                 list.add(eventList.get(i));
             } else {
                 break;
@@ -239,11 +239,11 @@ public class Database {
         return list;
     }
 
-    public List<Event> getHomeEventList() {
+    public List<Event> getHomeEventList() {//TODO
         List<Event> recent = getRecentEventList();
         List<Event> shown = new ArrayList<>();
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 1; i++) {//wtf macht ihr?
             if (recent.size() >= 1) {
                 shown.add(recent.get(0));
                 recent.remove(0);

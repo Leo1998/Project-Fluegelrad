@@ -41,6 +41,13 @@ public class HomeFragment extends DoaktivFragment {
     }
 
     @Override
+    protected void createToolbar(Context context) {
+        super.createToolbar(context);
+
+        this.getToolbar().setSearchButtonEnabled(true);
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
 
@@ -55,7 +62,7 @@ public class HomeFragment extends DoaktivFragment {
             this.getFragmentView().post(new Runnable() {
                 @Override
                 public void run() {
-                    eventListView.setEventList(database.getRecentEventList(), getRootController());
+                    eventListView.setEventList(database.getHomeEventList(), database, getRootController());
                 }
             });
         }

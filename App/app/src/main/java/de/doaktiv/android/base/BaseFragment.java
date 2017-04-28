@@ -73,14 +73,20 @@ public abstract class BaseFragment {
 
         toolbar.addListener(new Toolbar.ToolbarListener() {
             @Override
-            public void onMenuItemClick(int id) {
-                if (id == -1) {
-                    if (toolbar.getNavigationButtonState() == Toolbar.NavigationButtonState.Back) {
-                        fragmentController.doSystemBack();
-                    } else if (toolbar.getNavigationButtonState() == Toolbar.NavigationButtonState.Menu) {
-                        fragmentController.getDrawerLayout().openDrawer(GravityCompat.START);
-                    }
+            public void onBackPressed() {
+                if (toolbar.getNavigationButtonState() == Toolbar.NavigationButtonState.Back) {
+                    fragmentController.doSystemBack();
+                } else if (toolbar.getNavigationButtonState() == Toolbar.NavigationButtonState.Menu) {
+                    fragmentController.getDrawerLayout().openDrawer(GravityCompat.START);
                 }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence text) {
+            }
+
+            @Override
+            public void onSearchPressed(CharSequence text) {
             }
         });
     }
@@ -119,6 +125,11 @@ public abstract class BaseFragment {
     }
 
     public void onPause() {
+        if (toolbar != null) {
+            if (toolbar.isSearchFieldActive()) {
+                toolbar.toggleSearchView();
+            }
+        }
     }
 
     public void onConfigurationChanged(Configuration newConfig) {

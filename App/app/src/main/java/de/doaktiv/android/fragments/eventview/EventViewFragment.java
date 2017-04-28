@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -21,11 +20,9 @@ import org.osmdroid.views.overlay.ItemizedIconOverlay;
 import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.OverlayItem;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.doaktiv.BuildConfig;
 import de.doaktiv.R;
 import de.doaktiv.android.base.DoaktivFragment;
 import de.doaktiv.android.base.Toolbar;
