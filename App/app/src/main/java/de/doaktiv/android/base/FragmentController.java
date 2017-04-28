@@ -9,7 +9,9 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -26,6 +28,8 @@ import de.doaktiv.util.AndroidUtils;
 
 public class FragmentController {
 
+    private static final String TAG = "FragmentController";
+
     public class LinearLayoutContainer extends LinearLayout {
 
         public LinearLayoutContainer(Context context) {
@@ -36,6 +40,15 @@ public class FragmentController {
         @Override
         protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
             return super.drawChild(canvas, child, drawingTime);
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(MotionEvent ev) {
+            if (currentAnimation != null) {
+                return true;
+            }
+
+            return super.onInterceptTouchEvent(ev);
         }
 
         @Override
@@ -51,6 +64,7 @@ public class FragmentController {
     private DoaktivActivity activity;
     private DoaktivApplication application;
 
+    private FrameLayout rootContainer;
     private View drawerView;
     private DrawerLayout drawerLayout;
     private LinearLayoutContainer containerViewFront;
@@ -61,7 +75,7 @@ public class FragmentController {
     private DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator();
 
     private List<FragmentsStackChangeListener> listeners = new ArrayList<>();
-    private ArrayList<BaseFragment> fragmentsStack = new ArrayList<BaseFragment>();
+    private List<BaseFragment> fragmentsStack = new ArrayList<>();
 
     public FragmentController(DoaktivActivity activity, FrameLayout rootContainer, Bundle savedState) {//TODO: save state
         this.activity = activity;
@@ -71,6 +85,8 @@ public class FragmentController {
     }
 
     private void init(FrameLayout rootContainer) {
+        this.rootContainer = rootContainer;
+
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.TOP | Gravity.LEFT);
 
         this.drawerLayout = new DrawerLayout(activity);
@@ -135,7 +151,7 @@ public class FragmentController {
         return application;
     }
 
-    public ArrayList<BaseFragment> getFragmentsStack() {
+    public List<BaseFragment> getFragmentsStack() {
         return fragmentsStack;
     }
 
@@ -183,16 +199,16 @@ public class FragmentController {
     private void attachFragmentToContainer(BaseFragment fragment, LinearLayoutContainer container) {
         container.setBackgroundColor(fragment.getBackgroundColor());
 
-        if (fragment.getToolbar() != null && fragment.isAddToolbarToContainer()) {
-            container.addView(fragment.getToolbar());
-        }
-
         View fragmentView = fragment.getFragmentView();
         if (fragmentView == null) {
             fragmentView = fragment.createView(activity);
             fragment.setFragmentView(fragmentView);
         } else {
             detachFragmentFromContainer(fragment);
+        }
+
+        if (fragment.getToolbar() != null && fragment.isAddToolbarToContainer()) {
+            container.addView(fragment.getToolbar());
         }
 
         if (fragmentView != null) {
@@ -212,7 +228,6 @@ public class FragmentController {
             if (parent != null) {
                 parent.removeView(fragment.getFragmentView());
             }
-            fragment.setFragmentView(null);//not neccessary but good
         }
         if (fragment.getToolbar() != null && fragment.isAddToolbarToContainer()) {
             ViewGroup parent = (ViewGroup) fragment.getToolbar().getParent();
@@ -254,15 +269,11 @@ public class FragmentController {
         final BaseFragment currentFragment = !fragmentsStack.isEmpty() ? fragmentsStack.get(fragmentsStack.size() - 1) : null;
         if (currentFragment != null) {
             currentFragment.onPause();
-
-            detachFragmentFromContainer(currentFragment);
         }
 
         fragment.setFragmentController(this);
         fragment.onFragmentCreate();
         fragment.onResume();
-
-        attachFragmentToContainer(fragment, containerViewFront);
 
         fragmentsStack.add(fragment);
         for (FragmentsStackChangeListener listener : listeners)
@@ -270,7 +281,9 @@ public class FragmentController {
 
         if (animate && currentFragment != null) {
             containerViewBack.setVisibility(View.VISIBLE);
+            detachFragmentFromContainer(currentFragment);
             attachFragmentToContainer(currentFragment, containerViewBack);
+            attachFragmentToContainer(fragment, containerViewFront);
 
             ArrayList<Animator> animators = new ArrayList<>();
             animators.add(ObjectAnimator.ofFloat(containerViewFront, "alpha", 0.0f, 1.0f));
@@ -283,12 +296,17 @@ public class FragmentController {
             currentAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    onTransitionAnimationEnd();
-
                     detachFragmentFromContainer(currentFragment);
+
+                    onTransitionAnimationEnd();
                 }
             });
             currentAnimation.start();
+        } else {
+            if (currentFragment != null) {
+                detachFragmentFromContainer(currentFragment);
+            }
+            attachFragmentToContainer(fragment, containerViewFront);
         }
     }
 
@@ -303,19 +321,21 @@ public class FragmentController {
             final BaseFragment currentFragment = fragmentsStack.get(fragmentsStack.size() - 1);
             final BaseFragment lastFragment = fragmentsStack.get(fragmentsStack.size() - 2);
 
-            currentFragment.onPause();
-            currentFragment.onFragmentDestroy();
-            currentFragment.setFragmentController(null);
-            fragmentsStack.remove(currentFragment);
-            for (FragmentsStackChangeListener listener : listeners)
-                listener.onFragmentsStackChanged();
+            final Runnable afterAnimationRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    currentFragment.onPause();
+                    currentFragment.onFragmentDestroy();//TODO
+                    currentFragment.setFragmentController(null);
+                    fragmentsStack.remove(currentFragment);
+                    for (FragmentsStackChangeListener listener : listeners)
+                        listener.onFragmentsStackChanged();
 
-            lastFragment.onResume();
+                    lastFragment.onResume();
+                }
+            };
 
-            if (!animate) {
-                detachFragmentFromContainer(currentFragment);
-                attachFragmentToContainer(lastFragment, containerViewFront);
-            } else {
+            if (animate) {
                 containerViewBack.setVisibility(View.VISIBLE);
                 attachFragmentToContainer(lastFragment, containerViewBack);
 
@@ -330,14 +350,22 @@ public class FragmentController {
                 currentAnimation.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        onTransitionAnimationEnd();
+                        Log.i(TAG, "onAnimationEnd");
+                        afterAnimationRunnable.run();
 
                         detachFragmentFromContainer(currentFragment);
                         detachFragmentFromContainer(lastFragment);
                         attachFragmentToContainer(lastFragment, containerViewFront);
+
+                        onTransitionAnimationEnd();
                     }
                 });
                 currentAnimation.start();
+            } else {
+                afterAnimationRunnable.run();
+
+                detachFragmentFromContainer(currentFragment);
+                attachFragmentToContainer(lastFragment, containerViewFront);
             }
         }
     }

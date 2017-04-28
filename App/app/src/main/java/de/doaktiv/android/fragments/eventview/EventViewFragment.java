@@ -44,11 +44,6 @@ public class EventViewFragment extends DoaktivFragment {
     @Override
     public void onFragmentCreate() {
         super.onFragmentCreate();
-
-        // setup osmdroid
-        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-        Configuration.getInstance().setOsmdroidBasePath(new File(getApplication().getCacheDir(), "osmdroid"));
-        Configuration.getInstance().setOsmdroidTileCache(new File(Configuration.getInstance().getOsmdroidBasePath(), "tiles"));
     }
 
     @Override

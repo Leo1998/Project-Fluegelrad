@@ -3,6 +3,12 @@ package de.doaktiv.android;
 import android.app.Application;
 import android.util.Log;
 
+import org.osmdroid.config.Configuration;
+
+import java.io.File;
+
+import de.doaktiv.BuildConfig;
+
 public class DoaktivApplication extends Application {
 
     public static DoaktivApplication applicationInstance = null;
@@ -15,5 +21,10 @@ public class DoaktivApplication extends Application {
         applicationInstance = this;
 
         Log.i(TAG, "onCreate");
+
+        // setup osmdroid
+        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+        Configuration.getInstance().setOsmdroidBasePath(new File(this.getCacheDir(), "osmdroid"));
+        Configuration.getInstance().setOsmdroidTileCache(new File(Configuration.getInstance().getOsmdroidBasePath(), "tiles"));
     }
 }
