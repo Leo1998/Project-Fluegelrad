@@ -1,4 +1,11 @@
 <?php
+	if(isset($_GET['k'])){
+		$k = $_GET['k'];
+	}else{
+		header("Location: ../index.php?m=10");
+		exit();
+	}
+	
 	//Spam protection, IP ban, Initalize PDO
 	$hostRequired=false;
 	require('../scripts/sitePrepare.php');
