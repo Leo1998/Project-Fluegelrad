@@ -59,7 +59,7 @@
 		}
 	 
 		//Testing size
-		$max_size = 500*1024; //500 KB
+		$max_size = 5*1024*1024; //5 MB
 		if($_FILES[$name]['size'] > $max_size) {
 			$nfErrors[] = "Datei zu groß bei Bild mit der Beschreibung: "+$description;
 			return null;
