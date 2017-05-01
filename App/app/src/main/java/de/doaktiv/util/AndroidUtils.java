@@ -2,6 +2,8 @@ package de.doaktiv.util;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -55,6 +57,12 @@ public class AndroidUtils {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         } catch (Exception e) {
         }
+    }
+
+    public static boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) DoaktivApplication.applicationInstance.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
 }

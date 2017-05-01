@@ -1,10 +1,7 @@
 package de.doaktiv.android;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -35,6 +32,7 @@ import de.doaktiv.database.DatabaseTaskWorker;
 import de.doaktiv.database.Event;
 import de.doaktiv.database.Sponsor;
 import de.doaktiv.database.User;
+import de.doaktiv.util.AndroidUtils;
 
 public class DatabaseService extends Service {
 
@@ -186,11 +184,7 @@ public class DatabaseService extends Service {
      * @throws DatabaseException
      */
     public String executeScript(String scriptAddress, Map<String, String> args) throws Exception {
-        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-
-        if (!isConnected)
+        if (!AndroidUtils.isNetworkConnected())
             throw new DatabaseException(getResources().getText(R.string.network_failure).toString());
         if (user == null)
             throw new DatabaseException(getResources().getText(R.string.database_access_failure).toString());

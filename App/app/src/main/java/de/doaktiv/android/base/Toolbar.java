@@ -7,7 +7,6 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -95,7 +94,6 @@ public class Toolbar extends LinearLayout {
         this.searchField.setBackgroundResource(0);
         this.searchField.setPadding(0, 0, 0, 0);
         this.searchField.setTextIsSelectable(false);
-        searchField.setInputType(searchField.getInputType() | EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         searchField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

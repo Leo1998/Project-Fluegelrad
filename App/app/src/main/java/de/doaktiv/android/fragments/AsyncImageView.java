@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 import de.doaktiv.database.Image;
+import de.doaktiv.util.AndroidUtils;
 
 public class AsyncImageView extends ImageView {
 
@@ -59,19 +60,21 @@ public class AsyncImageView extends ImageView {
 
             final Image image = images[0];
 
-            try {
-                image.load(imageCacheDir);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            AsyncImageView.this.post(new Runnable() {
-                @Override
-                public void run() {
-                    AsyncImageView.this.setImageBitmap(image.getBitmap());
-                    AsyncImageView.this.setContentDescription(image.getDescription());
+            if (AndroidUtils.isNetworkConnected()) {
+                try {
+                    image.load(imageCacheDir);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            });
+
+                AsyncImageView.this.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        AsyncImageView.this.setImageBitmap(image.getBitmap());
+                        AsyncImageView.this.setContentDescription(image.getDescription());
+                    }
+                });
+            }
 
             return null;
         }
