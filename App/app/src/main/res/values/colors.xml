@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#049b25</color>
     <color name="colorAccent">#FFFFFF</color>
 
-    <!--Calendar-->
+    <color name="dimWhite">#CFFFFFFF</color>
     <color name="today">#4b82ff</color>
     <color name="greyed_out">#c7c7c7</color>
     <color name="day_week">#44eebd82</color>

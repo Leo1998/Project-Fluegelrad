@@ -4,13 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.provider.CalendarContract;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.GridView;
 import android.widget.TextView;
+
+import com.github.clans.fab.FloatingActionMenu;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -83,8 +84,8 @@ public class EventViewFragment extends DoaktivFragment {
             }
         });
 
-        CardView imageSliderCard = (CardView) layout.findViewById(R.id.image_slider_container);
-        buildImageSlider(imageSliderCard);
+        ViewPager slider = (ViewPager) layout.findViewById(R.id.image_slider);
+        buildImageSlider(slider);
 
         ((TextView) layout.findViewById(R.id.description)).setText(event.getDescription());
 
@@ -92,13 +93,16 @@ public class EventViewFragment extends DoaktivFragment {
 
         ((TextView) layout.findViewById(R.id.age)).setText(getResources().getString(R.string.age) + ": " + event.getAgeMin() + " - " + event.getAgeMax());
 
-        CardView sponsorsCard = (CardView) layout.findViewById(R.id.sponsors_container);
-        buildSponsorsContainer(sponsorsCard);
+        GridView sponsorsGrid = (GridView) layout.findViewById(R.id.sponsorsGrid);
+        buildSponsorsContainer(sponsorsGrid);
 
         ((TextView) layout.findViewById(R.id.location)).setText(getResources().getString(R.string.address) + ": " + event.getLocation().getAddress());
 
         MapView mapView = (MapView) layout.findViewById(R.id.mapView);
         buildMapView(mapView);
+
+        final FloatingActionMenu menu = (FloatingActionMenu) layout.findViewById(R.id.fam);
+        menu.setClosedOnTouchOutside(true);
 
         layout.findViewById(R.id.participateFab).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,52 +126,43 @@ public class EventViewFragment extends DoaktivFragment {
         });
     }
 
-    private void buildImageSlider(CardView imageSliderCard) {
+    private void buildImageSlider(ViewPager slider) {
         if (event.getImages().size() == 0) {
-            imageSliderCard.setVisibility(View.GONE);
-
-            return;
+            slider.setVisibility(View.GONE);
         }
-
-        ViewPager slider = (ViewPager) imageSliderCard.findViewById(R.id.image_slider);
 
         ImageSliderAdapter adapter = new ImageSliderAdapter(slider.getContext(), event);
         slider.setAdapter(adapter);
     }
 
-    private void buildSponsorsContainer(CardView sponsorsCard) {
-        LinearLayout sponsorsContainer = new LinearLayout(sponsorsCard.getContext());
-        sponsorsContainer.setOrientation(LinearLayout.VERTICAL);
-        sponsorsContainer.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);//TODO dividers not working
+    private void buildSponsorsContainer(GridView sponsorsGrid) {
+        final List<Sponsor> sponsors = database.getSponsors(event);
+        sponsors.add(0, database.getSponsor(event.getHostId()));
 
-        //build host
-        TextView hostTitle = new TextView(sponsorsCard.getContext());
-        hostTitle.setText(R.string.host_title);
-        sponsorsContainer.addView(hostTitle);
-
-        SponsorView hostView = new SponsorView(sponsorsCard.getContext(), this.getRootController());
-        hostView.setSponsor(database.getSponsor(event.getHostId()));
-
-        sponsorsContainer.addView(hostView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-        //build other sponsors
-        List<Sponsor> sponsors = database.getSponsors(event);
-        if (!sponsors.isEmpty()) {
-            TextView sponsorsTitle = new TextView(sponsorsCard.getContext());
-            sponsorsTitle.setText(R.string.sponsors_title);
-            sponsorsContainer.addView(sponsorsTitle);
-
-            for (Sponsor sponsor : sponsors) {
-                SponsorView sponsorView = new SponsorView(sponsorsCard.getContext(), this.getRootController());
-                sponsorView.setSponsor(sponsor);
-
-                sponsorsContainer.addView(sponsorView, new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        sponsorsGrid.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() {
+                return sponsors.size();
             }
-        }
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(6, 6, 6, 6);
-        sponsorsCard.addView(sponsorsContainer, params);
+            @Override
+            public Object getItem(int position) {
+                return sponsors.get(position);
+            }
+
+            @Override
+            public long getItemId(int position) {
+                return 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                SponsorView view = new SponsorView(getApplication(), getRootController());
+                view.setSponsor(sponsors.get(position));
+
+                return view;
+            }
+        });
     }
 
     private void buildMapView(MapView mapView) {

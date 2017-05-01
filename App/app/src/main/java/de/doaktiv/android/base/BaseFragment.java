@@ -1,5 +1,7 @@
 package de.doaktiv.android.base;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -10,8 +12,12 @@ import android.support.v4.view.GravityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.doaktiv.R;
 import de.doaktiv.database.Database;
+import de.doaktiv.util.AndroidUtils;
 
 public abstract class BaseFragment {
 
@@ -89,6 +95,22 @@ public abstract class BaseFragment {
             public void onSearchPressed(CharSequence text) {
             }
         });
+    }
+
+    public List<Animator> getEnterAnimators(View container) {
+        List<Animator> animators = new ArrayList<>();
+        animators.add(ObjectAnimator.ofFloat(container, "alpha", 0.0f, 1.0f));
+        animators.add(ObjectAnimator.ofFloat(container, "translationX", AndroidUtils.dp(100), 0.0f));
+
+        return animators;
+    }
+
+    public List<Animator> getExitAnimators(View container) {
+        List<Animator> animators = new ArrayList<>();
+        animators.add(ObjectAnimator.ofFloat(container, "alpha", 1.0f, 0.0f));
+        animators.add(ObjectAnimator.ofFloat(container, "translationX", 0.0f, AndroidUtils.dp(100)));
+
+        return animators;
     }
 
     public int getBackgroundColor() {

@@ -71,6 +71,7 @@ public class AsyncImageView extends ImageView {
                     @Override
                     public void run() {
                         AsyncImageView.this.setImageBitmap(image.getBitmap());
+                        AsyncImageView.this.requestLayout();
                         AsyncImageView.this.setContentDescription(image.getDescription());
                     }
                 });

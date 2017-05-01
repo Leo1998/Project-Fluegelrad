@@ -3,13 +3,11 @@ package de.doaktiv.android.base;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,7 +22,6 @@ import java.util.List;
 import de.doaktiv.android.DoaktivActivity;
 import de.doaktiv.android.DoaktivApplication;
 import de.doaktiv.database.Database;
-import de.doaktiv.util.AndroidUtils;
 
 public class FragmentController {
 
@@ -71,7 +68,6 @@ public class FragmentController {
     private LinearLayoutContainer containerViewBack;
     private AnimatorSet currentAnimation;
     private int transitionAnimationDuration = 300;
-    private int transitionSlideDistanceInDp = 100;
     private DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator();
 
     private List<FragmentsStackChangeListener> listeners = new ArrayList<>();
@@ -285,9 +281,7 @@ public class FragmentController {
             attachFragmentToContainer(currentFragment, containerViewBack);
             attachFragmentToContainer(fragment, containerViewFront);
 
-            ArrayList<Animator> animators = new ArrayList<>();
-            animators.add(ObjectAnimator.ofFloat(containerViewFront, "alpha", 0.0f, 1.0f));
-            animators.add(ObjectAnimator.ofFloat(containerViewFront, "translationX", AndroidUtils.dp(transitionSlideDistanceInDp), 0.0f));
+            List<Animator> animators = fragment.getEnterAnimators(containerViewFront);
 
             currentAnimation = new AnimatorSet();
             currentAnimation.playTogether(animators);
@@ -339,9 +333,7 @@ public class FragmentController {
                 containerViewBack.setVisibility(View.VISIBLE);
                 attachFragmentToContainer(lastFragment, containerViewBack);
 
-                ArrayList<Animator> animators = new ArrayList<>();
-                animators.add(ObjectAnimator.ofFloat(containerViewFront, "alpha", 1.0f, 0.0f));
-                animators.add(ObjectAnimator.ofFloat(containerViewFront, "translationX", 0.0f, AndroidUtils.dp(transitionSlideDistanceInDp)));
+                List<Animator> animators = currentFragment.getExitAnimators(containerViewFront);
 
                 currentAnimation = new AnimatorSet();
                 currentAnimation.playTogether(animators);
@@ -350,7 +342,6 @@ public class FragmentController {
                 currentAnimation.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        Log.i(TAG, "onAnimationEnd");
                         afterAnimationRunnable.run();
 
                         detachFragmentFromContainer(currentFragment);
