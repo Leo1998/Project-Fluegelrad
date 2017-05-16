@@ -27,6 +27,8 @@ import de.doaktiv.database.Database;
 import de.doaktiv.database.DatabaseDownloadTask;
 import de.doaktiv.database.DatabaseException;
 import de.doaktiv.database.DatabaseLoginTask;
+import de.doaktiv.database.DatabaseParticipateTask;
+import de.doaktiv.database.DatabaseRateTask;
 import de.doaktiv.database.DatabaseTaskObserver;
 import de.doaktiv.database.DatabaseTaskWorker;
 import de.doaktiv.database.Event;
@@ -118,6 +120,34 @@ public class DatabaseService extends Service {
             public void onFinish(Object result) {
                 Intent intent = new Intent("de.doaktiv.databaseUpdate");
                 sendBroadcast(intent);
+
+                if (after != null)
+                    after.run();
+            }
+        });
+    }
+
+    public void participateEvent(Event event, final Runnable after) {
+        worker.execute(new DatabaseParticipateTask(event), new DatabaseTaskObserver() {
+            @Override
+            public void onFinish(Object result) {
+                boolean success = (Boolean) result;
+
+                if (after != null)
+                    after.run();
+            }
+        });
+    }
+
+    public void rateEvent(Event event, int rating, final Runnable after) {
+        DatabaseRateTask.RateParamsWrapper wrapper = new DatabaseRateTask.RateParamsWrapper(event, rating);
+
+        event.rate(rating);
+
+        worker.execute(new DatabaseRateTask(wrapper), new DatabaseTaskObserver() {
+            @Override
+            public void onFinish(Object result) {
+                boolean success = (Boolean) result;
 
                 if (after != null)
                     after.run();

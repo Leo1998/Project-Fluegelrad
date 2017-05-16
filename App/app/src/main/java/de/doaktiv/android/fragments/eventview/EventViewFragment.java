@@ -35,6 +35,7 @@ import de.doaktiv.database.Sponsor;
 public class EventViewFragment extends DoaktivFragment {
 
     private FrameLayout layout;
+    private FloatingActionMenu menu;
 
     private Event event;
     private Database database;//bad style
@@ -47,6 +48,9 @@ public class EventViewFragment extends DoaktivFragment {
     @Override
     public View createView(Context context) {
         this.layout = (FrameLayout) inflater().inflate(R.layout.event_view_fragment, null, false);
+
+        menu = (FloatingActionMenu) layout.findViewById(R.id.fam);
+        menu.setClosedOnTouchOutside(true);
 
         return layout;
     }
@@ -66,23 +70,18 @@ public class EventViewFragment extends DoaktivFragment {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        menu.close(true);
+    }
+
     private void assignEventData() {
         Toolbar toolbar = this.getToolbar();
         if (toolbar != null) {
             toolbar.setTitleText(event.getName());
         }
-
-        //stupid bug fix
-        layout.findViewById(R.id.scroll_container).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
-        layout.findViewById(R.id.image_slider).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
 
         ViewPager slider = (ViewPager) layout.findViewById(R.id.image_slider);
         buildImageSlider(slider);
@@ -100,9 +99,6 @@ public class EventViewFragment extends DoaktivFragment {
 
         MapView mapView = (MapView) layout.findViewById(R.id.mapView);
         buildMapView(mapView);
-
-        final FloatingActionMenu menu = (FloatingActionMenu) layout.findViewById(R.id.fam);
-        menu.setClosedOnTouchOutside(true);
 
         layout.findViewById(R.id.participateFab).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,7 +143,7 @@ public class EventViewFragment extends DoaktivFragment {
 
             @Override
             public Object getItem(int position) {
-                return sponsors.get(position);
+                return null;
             }
 
             @Override

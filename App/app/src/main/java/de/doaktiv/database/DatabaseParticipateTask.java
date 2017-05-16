@@ -10,6 +10,10 @@ import de.doaktiv.android.DatabaseService;
  */
 public class DatabaseParticipateTask extends DatabaseTask<Event, Boolean> {
 
+    public DatabaseParticipateTask(Event... events) {
+        super(events);
+    }
+
     @Override
     public Boolean execute(DatabaseService service) {
         try {
@@ -19,8 +23,6 @@ public class DatabaseParticipateTask extends DatabaseTask<Event, Boolean> {
             args.put("k", Integer.toString(event.getId()));
 
             String result = service.executeScript("http://fluegelrad.ddns.net/scripts/participate.php", args);
-
-            event.participate(true);
 
             return Boolean.TRUE;
         } catch (Exception e) {

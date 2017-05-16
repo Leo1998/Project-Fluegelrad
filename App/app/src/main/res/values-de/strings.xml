@@ -39,4 +39,6 @@
     <string name="participate_error">Fehler beim teilnehmen!</string>
     <string name="rating_error">Fehler beim bewerten!</string>
     <string name="choose_event">Wähle ein Event</string>
+    <string name="participantsNotCounted">Teilnehmer werden nicht gezählt.</string>
+    <string name="rate">Bewerten</string>
 </resources>

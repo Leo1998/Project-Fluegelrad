@@ -27,6 +27,7 @@ public abstract class BaseFragment {
     private int backgroundColor = Color.WHITE;
     private Toolbar toolbar;
     private boolean addToolbarToContainer = true;
+    private boolean swipeBackEnabled = true;
     private Bundle arguments;
     private FragmentController fragmentController;
 
@@ -95,6 +96,14 @@ public abstract class BaseFragment {
             public void onSearchPressed(CharSequence text) {
             }
         });
+    }
+
+    public boolean isSwipeBackEnabled() {
+        return swipeBackEnabled;
+    }
+
+    public void setSwipeBackEnabled(boolean swipeBackEnabled) {
+        this.swipeBackEnabled = swipeBackEnabled;
     }
 
     public List<Animator> getEnterAnimators(View container) {

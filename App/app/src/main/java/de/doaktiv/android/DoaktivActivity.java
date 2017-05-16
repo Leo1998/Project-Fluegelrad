@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import de.doaktiv.R;
 import de.doaktiv.android.base.FragmentController;
@@ -70,8 +69,8 @@ public class DoaktivActivity extends Activity implements RootController {
 
         this.application = (DoaktivApplication) this.getApplication();//safe cast
 
-        this.setContentView(R.layout.app_main);
-        this.controller = new FragmentController(this, (FrameLayout) this.findViewById(android.R.id.content), savedInstanceState);
+        this.controller = new FragmentController(this, savedInstanceState);
+        this.setContentView(controller);
 
         NavigationView navigationView = new NavigationView(this);
         navigationView.inflateHeaderView(R.layout.nav_header_main);

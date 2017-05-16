@@ -74,6 +74,8 @@ public class CalendarFragment extends DoaktivFragment {
 
     @Override
     public View createView(Context context) {
+        this.setSwipeBackEnabled(false);
+
         this.bottomSheetLayout = (BottomSheetLayout) inflater().inflate(R.layout.calender_fragment, null, false);
 
         init();

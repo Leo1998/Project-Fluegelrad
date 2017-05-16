@@ -1,11 +1,15 @@
 package de.doaktiv.database;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import de.doaktiv.android.DatabaseService;
 
 public class DatabaseRateTask extends DatabaseTask<DatabaseRateTask.RateParamsWrapper, Boolean> {
+
+    private static final String TAG = "DatabaseRateTask";
 
     public static class RateParamsWrapper {
         public final Event event;
@@ -15,6 +19,10 @@ public class DatabaseRateTask extends DatabaseTask<DatabaseRateTask.RateParamsWr
             this.event = event;
             this.rating = rating;
         }
+    }
+
+    public DatabaseRateTask(RateParamsWrapper... rateParamsWrappers) {
+        super(rateParamsWrappers);
     }
 
     @Override
@@ -27,6 +35,8 @@ public class DatabaseRateTask extends DatabaseTask<DatabaseRateTask.RateParamsWr
             args.put("r", Integer.toString(wrapper.rating));
 
             String result = service.executeScript("http://fluegelrad.ddns.net/scripts/rate.php", args);
+
+            Log.i(TAG, result);
 
             return Boolean.TRUE;
         } catch (Exception e) {

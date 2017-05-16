@@ -4,18 +4,16 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/scroll_container"
-            android:showDividers="middle">
+            android:id="@+id/scroll_container">
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -75,7 +73,7 @@
 
             <GridView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:numColumns="2"
                 android:verticalSpacing="6dp"
                 android:horizontalSpacing="6dp"
@@ -111,13 +109,14 @@
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </ScrollView>
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/fam"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom|right"
+        android:layout_margin="10dp"
         app:menu_colorNormal="@color/colorPrimary"
         app:menu_colorPressed="@color/colorPrimary"
         app:menu_colorRipple="@color/colorPrimary"
@@ -126,8 +125,7 @@
         app:menu_labels_colorRipple="@color/colorPrimary"
         app:menu_animationDelayPerItem="150"
         app:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
-        app:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
-        app:menu_backgroundColor="@color/dimWhite">
+        app:menu_labels_hideAnimation="@anim/fab_slide_out_to_right">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/addToCalendarFab"
